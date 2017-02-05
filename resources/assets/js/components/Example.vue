@@ -5,6 +5,11 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Example Component</div>
 
+                    <passport-clients></passport-clients>
+                    <passport-authorized-clients></passport-authorized-clients>
+                    <passport-personal-access-tokens></passport-personal-access-tokens>
+
+
                     <div class="panel-body">
                         I'm an example component!
                     </div>

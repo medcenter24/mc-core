@@ -7,3 +7,8 @@
 
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+@import "styles";
+
+@import "mixins/offset";
+@include offsets();

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright (c) 2017.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
 
 return [
 
@@ -12,7 +17,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'Laravel',
+    'name' => 'MyDoctor 24',
 
     /*
     |--------------------------------------------------------------------------
@@ -178,8 +183,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         //--- Added
-        Laravel\Passport\PassportServiceProvider::class,
-
+        // file manager
+        Barryvdh\Elfinder\ElfinderServiceProvider::class,
     ],
 
     /*

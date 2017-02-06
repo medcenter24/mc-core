@@ -14,3 +14,21 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], function () {
+    Route::get('/', 'Admin\MainController@index');
+    Route::resource('users', 'Admin\UsersController');
+    Route::resource('roles', 'Admin\RolesController');
+});
+
+Route::group(['prefix' => 'doctor', 'middleware' => ['auth', 'role:doctor']], function () {
+    Route::get('/', 'Doctor\MainController@index');
+});
+
+Route::group(['prefix' => 'director', 'middleware' => ['auth', 'role:director']], function () {
+    Route::get('/', 'Director\MainController@index');
+});

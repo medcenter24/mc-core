@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright (c) 2017.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
 
 namespace App\Http\Controllers\Auth;
 
@@ -25,7 +30,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.

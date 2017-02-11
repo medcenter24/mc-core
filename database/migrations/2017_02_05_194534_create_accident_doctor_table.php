@@ -5,6 +5,7 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
+use App\AccidentDoctor;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -20,7 +21,18 @@ class CreateAccidentDoctorTable extends Migration
     {
         Schema::create('accident_doctor', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('doctor_id', false, true)->index();
+            $table->integer('city_id', false, true)->index();
+            $table->enum('status', [
+                AccidentDoctor::STATUS_NEW,
+                AccidentDoctor::STATUS_IN_PROGRESS,
+                AccidentDoctor::STATUS_SIGNED,
+                AccidentDoctor::STATUS_SENT,
+                AccidentDoctor::STATUS_PAID,
+                AccidentDoctor::STATUS_CLOSED,
+            ])->index();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

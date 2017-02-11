@@ -183,8 +183,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         //--- Added
-        // file manager
-        Barryvdh\Elfinder\ElfinderServiceProvider::class,
+        // media manager
+        Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
     ],
 
     /*

@@ -16,3 +16,28 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(\App\Doctor::class, function (\Faker\Generator $faker) {
+
+    return [
+        'name' => $faker->name,
+        'description' => $faker->text(),
+        'ref_key' => str_random(3),
+    ];
+});
+
+$factory->define(\App\AccidentDoctor::class, function (\Faker\Generator $faker) {
+
+    return [
+        'doctor_id' => $faker->numberBetween(1,10),
+        'city_id' => $faker->numberBetween(1,10),
+        'status' => \App\AccidentDoctor::STATUS_NEW,
+    ];
+});
+
+$factory->define(\App\Document::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->title,
+    ];
+});

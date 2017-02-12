@@ -7,6 +7,7 @@
 
 namespace App\Helpers;
 
+
 abstract class Menu
 {
     /**
@@ -129,7 +130,7 @@ abstract class Menu
     {
         foreach ($menu as $key => $item) {
             if (isset($item['role'])) {
-                if (!auth()->user()->hasRole($item['role'])) {
+                if (!\Roles::hasRole(auth()->user(), $item['role'])) {
                     unset($menu[$key]);
                 }
             } elseif (isset($item['submenu'])) {

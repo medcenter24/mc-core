@@ -185,6 +185,7 @@ return [
         //--- Added
         // media manager
         Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
+        \App\Providers\RoleServiceProvider::class,
     ],
 
     /*
@@ -234,6 +235,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        // extend
+        'Roles' => App\Support\Facades\Roles::class,
     ],
 
 ];

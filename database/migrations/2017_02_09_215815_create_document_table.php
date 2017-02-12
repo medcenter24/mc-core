@@ -20,8 +20,8 @@ class CreateDocumentTable extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('created_by', false, true)->index();
-            $table->string('title')->index();
+            $table->integer('created_by', false, true)->default('')->index();
+            $table->string('title')->default('')->index();
             $table->timestamps();
             $table->softDeletes();
         });

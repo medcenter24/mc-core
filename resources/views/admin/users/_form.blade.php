@@ -23,7 +23,7 @@
             <label for="roles">@lang('content.roles')</label>
             <select name="roles[]" id="roles" size="4" class="form-control" multiple title="@lang('admin.roles')">
                 @foreach(\App\Role::all() as $role)
-                    <option value="{{ $role->id }}"{{ count(old('roles')) ? (in_array($role->id, old('roles')) ? 'selected' : '') : ($user->hasRole($role->title) ? ' selected' : '') }}>
+                    <option value="{{ $role->id }}"{{ count(old('roles')) ? (in_array($role->id, old('roles')) ? 'selected' : '') : (\Roles::hasRole(auth()->user(), $role->title) ? ' selected' : '') }}>
                         {{ $role->title }}
                     </option>
                 @endforeach

@@ -19,7 +19,7 @@ class RoleRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->user()->hasRole(Role::ROLE_ADMIN);
+        return \Roles::hasRole(auth()->user(), Role::ROLE_ADMIN);
     }
 
     /**

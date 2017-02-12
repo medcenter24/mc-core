@@ -5,12 +5,9 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-namespace Tests\Feature\Feature\Admin;
+namespace Tests\Feature\Admin;
 
-use App\Role;
 use App\User;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Prophecy\Argument;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;

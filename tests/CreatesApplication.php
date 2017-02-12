@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright (c) 2017.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
 
 namespace Tests;
 
@@ -13,6 +18,8 @@ trait CreatesApplication
      */
     public function createApplication()
     {
+        putenv('DB_CONNECTION=sqliteTests');
+
         $app = require __DIR__.'/../bootstrap/app.php';
 
         $app->make(Kernel::class)->bootstrap();

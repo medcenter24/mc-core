@@ -5,7 +5,7 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-namespace Tests\Feature\Services;
+namespace Tests\Unit\Services;
 
 use App\Role;
 use App\Services\RoleService;
@@ -33,8 +33,20 @@ class RoleServiceTest extends TestCase
         $role = $this->prophesize(Role::class)->reveal();
         $role->title = 'roleName';
 
+        $storage = new class {
+            private $sameRole = false;
+            public function where($title, $role)
+            {
+                $this->sameRole = $role == 'roleName';
+                return $this;
+            }
+            public function count() {
+                return $this->sameRole;
+            }
+        };
+
         $user = $this->prophesize(User::class);
-        $user->roles()->willReturn([$role]);
+        $user->roles()->willReturn($storage);
 
         $this->user = $user->reveal();
     }

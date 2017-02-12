@@ -19,7 +19,7 @@ class CreateAccidentDoctorTable extends Migration
      */
     public function up()
     {
-        Schema::create('accident_doctor', function (Blueprint $table) {
+        Schema::create('accident_doctors', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('doctor_id', false, true)->index();
             $table->integer('city_id', false, true)->index();
@@ -43,6 +43,6 @@ class CreateAccidentDoctorTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accident_doctor');
+        Schema::dropIfExists('accident_doctors');
     }
 }

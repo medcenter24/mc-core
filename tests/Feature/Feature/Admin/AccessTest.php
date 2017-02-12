@@ -7,7 +7,9 @@
 
 namespace Tests\Feature\Feature\Admin;
 
+use App\Role;
 use App\User;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Prophecy\Argument;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -17,26 +19,12 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class AccessTest extends TestCase
 {
 
-    private $admin;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $user = $this->prophesize(User::class);
-
-        $user->hasRole(Argument::type('string'))
-            ->will(function ($args) {
-                return $args[0] == 'admin';
-            });
-
-        $this->admin = $user->reveal();
-    }
-
     public function testMain()
     {
+        \Roles::shouldReceive('hasRole')->times(0);
+
         $response = $this
-            ->actingAs($this->admin)
+            ->actingAs(factory(User::class)->make())
             ->get('/');
 
         $response->assertStatus(200);
@@ -44,8 +32,14 @@ class AccessTest extends TestCase
 
     public function testAdmin()
     {
+        \Roles::shouldReceive('hasRole')
+            ->times(3)
+            ->andReturnUsing(function ($user, $role) {
+                return true;
+            });
+
         $response = $this
-            ->actingAs($this->admin)
+            ->actingAs(factory(User::class)->make())
             ->get('/admin');
 
         $response->assertStatus(200);
@@ -53,18 +47,30 @@ class AccessTest extends TestCase
 
     public function testDoctor()
     {
+        \Roles::shouldReceive('hasRole')
+            ->times(1)
+            ->andReturnUsing(function ($user, $role) {
+                return false;
+            });
+
         $response = $this
-            ->actingAs($this->admin)
-            ->get('/doctor');
+            ->actingAs(factory(User::class)->make())
+            ->get('/admin');
 
         $response->assertStatus(403);
     }
 
     public function testDirector()
     {
+        \Roles::shouldReceive('hasRole')
+            ->times(1)
+            ->andReturnUsing(function ($user, $role) {
+                return false;
+            });
+
         $response = $this
-            ->actingAs($this->admin)
-            ->get('/director');
+            ->actingAs(factory(User::class)->make())
+            ->get('/admin');
 
         $response->assertStatus(403);
     }

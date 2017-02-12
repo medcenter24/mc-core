@@ -1,4 +1,4 @@
-@if(!isset($cell['role']) || auth()->user()->hasRole($cell['role']))
+@if(!isset($cell['role']) || \Roles::hasRole(auth()->user(), $cell['role']))
 
     @if(isset($cell['submenu']) && count($cell['submenu']))
         <li class="dropdown{{ isset($submenu) ? ' dropdown-submenu' : '' }}{{ isset($cell['active']) ? ' active': '' }}">

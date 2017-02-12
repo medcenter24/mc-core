@@ -38,6 +38,8 @@ $factory->define(\App\AccidentDoctor::class, function (\Faker\Generator $faker) 
 $factory->define(\App\Document::class, function (\Faker\Generator $faker) {
 
     return [
+        // mock for user
+        'created_by' => 1,
         'title' => $faker->title,
     ];
 });

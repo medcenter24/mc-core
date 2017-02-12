@@ -7,6 +7,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\Facades\Roles;
 use Closure;
 
 class RoleMiddleware
@@ -22,7 +23,7 @@ class RoleMiddleware
      */
     public function handle($request, Closure $next, $role)
     {
-        if (!$request->user()->hasRole($role)) {
+        if (!\Roles::hasRole(auth()->user(), $role)) {
             if ($request->ajax()) {
                 return response(trans('content.403'), 403);
             } else {

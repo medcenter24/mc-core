@@ -15,6 +15,7 @@ class MainController extends AdminController
 {
     public function index()
     {
+        //dd(\Roles::hasRole());
         return view('admin.main.index');
     }
 }

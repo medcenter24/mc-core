@@ -49,3 +49,21 @@ $factory->define(\App\Document::class, function (\Faker\Generator $faker) {
         'title' => $faker->title,
     ];
 });
+
+$factory->define(\App\Assistant::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->text(120),
+        'ref_key' => str_random(3),
+        'email' => $faker->email,
+        'comment' => $faker->text(200),
+    ];
+});
+
+$factory->define(\App\AccidentCheckpoint::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->text(120),
+        'description' => $faker->text(),
+    ];
+});

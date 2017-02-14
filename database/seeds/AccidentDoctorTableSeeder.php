@@ -18,9 +18,15 @@ class AccidentDoctorTableSeeder extends Seeder
     public function run()
     {
         AccidentDoctor::truncate();
-        $docs = factory(AccidentDoctor::class, 10)->make();
-        foreach($docs as $doc) {
-            $doc->save();
-        }
+        DB::table('accident_doctor_document')->delete();
+
+        // 10 doc accidents without docs
+        factory(AccidentDoctor::class, 10)->create();
+        // 10 doc accidents with docs
+        factory(AccidentDoctor::class, 10)
+            ->create()
+            ->each(function ($d) {
+                $d->documents()->save(factory(\App\Document::class)->make());
+            });
     }
 }

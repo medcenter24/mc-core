@@ -17,6 +17,12 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(\App\Role::class, function () {
+    return [
+        'title' => \App\Role::ROLE_LOGIN,
+    ];
+});
+
 $factory->define(\App\Doctor::class, function (\Faker\Generator $faker) {
 
     return [

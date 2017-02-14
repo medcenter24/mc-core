@@ -18,11 +18,6 @@ class DocumentsTableSeeder extends Seeder
     public function run()
     {
         Document::truncate();
-
-        $docs = factory(Document::class, 10)->make();
-        foreach($docs as $doc) {
-            $doc->user =
-            $doc->save();
-        }
+        factory(Document::class, 10)->create();
     }
 }

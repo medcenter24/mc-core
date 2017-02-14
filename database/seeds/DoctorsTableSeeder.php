@@ -18,9 +18,6 @@ class DoctorsTableSeeder extends Seeder
     public function run()
     {
         Doctor::truncate();
-        $docs = factory(Doctor::class, 10)->make();
-        foreach($docs as $doc) {
-            $doc->save();
-        }
+        factory(Doctor::class, 10)->create();
     }
 }

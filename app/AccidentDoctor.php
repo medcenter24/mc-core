@@ -23,9 +23,8 @@ class AccidentDoctor extends Model
 
     protected $fillable = ['status'];
 
-    public function docs()
+    public function documents()
     {
-        $this->hasMany(Document::class);
+        return $this->belongsToMany(Document::class);
     }
-
 }

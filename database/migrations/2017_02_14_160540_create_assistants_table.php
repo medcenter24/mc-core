@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDoctorsTable extends Migration
+class CreateAssistantsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,12 +18,12 @@ class CreateDoctorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('doctors', function (Blueprint $table) {
+        Schema::create('assistants', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id', false, true)->default('0')->index();
-            $table->string('name')->index();
-            $table->text('description');
+            $table->string('title')->default('')->index();
             $table->string('ref_key')->default('');
+            $table->string('email')->default('');
+            $table->text('comment');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -36,6 +36,6 @@ class CreateDoctorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('doctors');
+        Schema::dropIfExists('assistants');
     }
 }

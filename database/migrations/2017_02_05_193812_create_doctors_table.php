@@ -20,8 +20,8 @@ class CreateDoctorsTable extends Migration
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id', false, true)->default('0')->index();
-            $table->string('name')->index();
+            $table->integer('user_id', false, true)->default(0)->index();
+            $table->string('name')->default('')->index();
             $table->text('description');
             $table->string('ref_key')->default('');
             $table->timestamps();

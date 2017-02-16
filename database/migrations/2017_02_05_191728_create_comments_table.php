@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright (c) 2017.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,7 +20,7 @@ class CreateCommentsTable extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id', false, true)->index();
+            $table->integer('created_by', false, true)->default(0)->index();
             $table->text('comment');
             $table->timestamps();
             $table->softDeletes();

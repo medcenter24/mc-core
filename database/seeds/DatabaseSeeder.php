@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RolesTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(DoctorsTableSeeder::class);
-        $this->call(AccidentDoctorTableSeeder::class);
+        $this->call(DoctorAccidentsTableSeeder::class);
         $this->call(AssistantTableSeeder::class);
         $this->call(AccidentCheckpointTableSeeder::class);
         $this->call(FormsTableSeeder::class);

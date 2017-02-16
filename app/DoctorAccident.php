@@ -21,10 +21,15 @@ class DoctorAccident extends Model
     const STATUS_PAID = 'paid';
     const STATUS_CLOSED = 'closed';
 
-    protected $fillable = ['city_id', 'status', 'doctor_id'];
+    protected $fillable = ['city_id', 'status', 'doctor_id', 'diagnose'];
 
     public function documents()
     {
         return $this->morphToMany(Document::class, 'documentable');
+    }
+
+    public function diagnostics()
+    {
+        return $this->belongsToMany(Diagnostic::class);
     }
 }

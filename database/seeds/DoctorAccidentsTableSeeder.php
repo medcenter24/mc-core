@@ -25,7 +25,10 @@ class DoctorAccidentsTableSeeder extends Seeder
         factory(DoctorAccident::class, 10)
             ->create()
             ->each(function ($doctorAccident) {
-                $doctorAccident->documents()->save(factory(\App\Document::class)->make());
+                for ($i=0; $i<2; $i++) {
+                    $doctorAccident->documents()->save(factory(\App\Document::class)->make());
+                    $doctorAccident->diagnostics()->save(factory(\App\Diagnostic::class)->make());
+                }
             });
     }
 }

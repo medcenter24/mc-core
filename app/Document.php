@@ -25,4 +25,10 @@ class Document extends Model implements HasMedia
     use HasMediaTrait;
 
     protected $fillable = ['title'];
+
+    public function documentable()
+    {
+        return $this->morphedByMany(Patient::class, 'documentable');
+    }
+
 }

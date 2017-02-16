@@ -32,12 +32,12 @@ $factory->define(\App\Doctor::class, function (\Faker\Generator $faker) {
     ];
 });
 
-$factory->define(\App\AccidentDoctor::class, function (\Faker\Generator $faker) {
+$factory->define(\App\DoctorAccident::class, function (\Faker\Generator $faker) {
 
     return [
         'doctor_id' => $faker->numberBetween(1, 10),
         'city_id' => $faker->numberBetween(1, 10),
-        'status' => \App\AccidentDoctor::STATUS_NEW,
+        'status' => \App\DoctorAccident::STATUS_NEW,
     ];
 });
 

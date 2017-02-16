@@ -6,11 +6,12 @@
  */
 
 use App\AccidentDoctor;
+use App\DoctorAccident;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAccidentDoctorTable extends Migration
+class CreateDoctorAccidentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -19,17 +20,17 @@ class CreateAccidentDoctorTable extends Migration
      */
     public function up()
     {
-        Schema::create('accident_doctors', function (Blueprint $table) {
+        Schema::create('doctor_accidents', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('doctor_id', false, true)->index();
-            $table->integer('city_id', false, true)->index();
+            $table->integer('doctor_id', false, true)->default(0)->index();
+            $table->integer('city_id', false, true)->default(0)->index();
             $table->enum('status', [
-                AccidentDoctor::STATUS_NEW,
-                AccidentDoctor::STATUS_IN_PROGRESS,
-                AccidentDoctor::STATUS_SIGNED,
-                AccidentDoctor::STATUS_SENT,
-                AccidentDoctor::STATUS_PAID,
-                AccidentDoctor::STATUS_CLOSED,
+                DoctorAccident::STATUS_NEW,
+                DoctorAccident::STATUS_IN_PROGRESS,
+                DoctorAccident::STATUS_SIGNED,
+                DoctorAccident::STATUS_SENT,
+                DoctorAccident::STATUS_PAID,
+                DoctorAccident::STATUS_CLOSED,
             ])->index();
             $table->timestamps();
             $table->softDeletes();
@@ -43,6 +44,6 @@ class CreateAccidentDoctorTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accident_doctors');
+        Schema::dropIfExists('doctor_accidents');
     }
 }

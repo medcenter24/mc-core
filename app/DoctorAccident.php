@@ -10,7 +10,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class AccidentDoctor extends Model
+class DoctorAccident extends Model
 {
     use SoftDeletes;
 
@@ -21,10 +21,10 @@ class AccidentDoctor extends Model
     const STATUS_PAID = 'paid';
     const STATUS_CLOSED = 'closed';
 
-    protected $fillable = ['status'];
+    protected $fillable = ['city_id', 'status', 'doctor_id'];
 
     public function documents()
     {
-        return $this->belongsToMany(Document::class);
+        return $this->morphToMany(Document::class, 'documentable');
     }
 }

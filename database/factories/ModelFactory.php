@@ -38,6 +38,7 @@ $factory->define(\App\DoctorAccident::class, function (\Faker\Generator $faker) 
         'doctor_id' => $faker->numberBetween(1, 10),
         'city_id' => $faker->numberBetween(1, 10),
         'status' => \App\DoctorAccident::STATUS_NEW,
+        'diagnose' => $faker->paragraphs(3, true),
     ];
 });
 
@@ -90,5 +91,13 @@ $factory->define(\App\FormReport::class, function (\Faker\Generator $faker) {
             ])->id;
         },
         'values' => json_encode(['className' => \App\FormReport::class, 'generatorName' => 'ModelFactory']),
+    ];
+});
+
+$factory->define(\App\Diagnostic::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->text(20),
+        'description' => $faker->text(),
     ];
 });

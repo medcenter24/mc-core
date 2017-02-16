@@ -32,6 +32,7 @@ class CreateDoctorAccidentsTable extends Migration
                 DoctorAccident::STATUS_PAID,
                 DoctorAccident::STATUS_CLOSED,
             ])->index();
+            $table->text('diagnose');
             $table->timestamps();
             $table->softDeletes();
         });

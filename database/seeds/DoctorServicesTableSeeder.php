@@ -5,10 +5,10 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-use App\Document;
+use App\DoctorService;
 use Illuminate\Database\Seeder;
 
-class DocumentsTableSeeder extends Seeder
+class DoctorServicesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,8 +17,7 @@ class DocumentsTableSeeder extends Seeder
      */
     public function run()
     {
-        Document::truncate();
-        DB::table('documentables')->delete();
-        factory(Document::class, 10)->create();
+        DoctorService::truncate();
+        factory(DoctorService::class, 10)->create();
     }
 }

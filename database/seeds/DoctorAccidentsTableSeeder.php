@@ -19,6 +19,8 @@ class DoctorAccidentsTableSeeder extends Seeder
     {
         DoctorAccident::truncate();
 
+        DB::table('diagnostic_doctor_accident')->delete();
+
         // 10 doc accidents without docs
         factory(DoctorAccident::class, 10)->create();
         // 10 doc accidents with docs

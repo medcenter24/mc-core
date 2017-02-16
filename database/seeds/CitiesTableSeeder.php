@@ -5,10 +5,9 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-use App\Document;
 use Illuminate\Database\Seeder;
 
-class DocumentsTableSeeder extends Seeder
+class CitiesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,8 +16,7 @@ class DocumentsTableSeeder extends Seeder
      */
     public function run()
     {
-        Document::truncate();
-        DB::table('documentables')->delete();
-        factory(Document::class, 10)->create();
+        \App\City::truncate();
+        factory(\App\City::class, 10)->create();
     }
 }

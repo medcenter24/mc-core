@@ -101,3 +101,32 @@ $factory->define(\App\Diagnostic::class, function (\Faker\Generator $faker) {
         'description' => $faker->text(),
     ];
 });
+
+$factory->define(\App\City::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->city,
+    ];
+});
+
+$factory->define(\App\Patient::class, function (\Faker\Generator $faker) {
+
+    return [
+        'name' => $faker->firstName . ' ' . $faker->lastName,
+        'address' => $faker->address,
+        'phones' => $faker->phoneNumber,
+        'birthday' => $faker->date(),
+        'comment' => $faker->paragraphs(2, true),
+    ];
+});
+
+$factory->define(\App\DoctorService::class, function (\Faker\Generator $faker) {
+
+    return [
+        'serviceable_id' => rand(1, 999),
+        'serviceable_type' => 'Faked Service',
+        'title' => $faker->text(20),
+        'description' => $faker->text(),
+        'price' => $faker->randomFloat(),
+    ];
+});

@@ -26,5 +26,8 @@ class DatabaseSeeder extends Seeder
         $this->call(AccidentCheckpointTableSeeder::class);
         $this->call(FormsTableSeeder::class);
         $this->call(FormReportsTableSeeder::class);
+        $this->call(CitiesTableSeeder::class);
+        $this->call(PatientsTableSeeder::class);
+        $this->call(DoctorServicesTableSeeder::class);
     }
 }

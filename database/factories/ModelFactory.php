@@ -130,3 +130,11 @@ $factory->define(\App\DoctorService::class, function (\Faker\Generator $faker) {
         'price' => $faker->randomFloat(),
     ];
 });
+
+$factory->define(\App\AccidentType::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->text(20),
+        'description' => $faker->text(),
+    ];
+});

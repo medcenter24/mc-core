@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCommentMorphTalbe extends Migration
+class CreateAccidentTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,12 +18,12 @@ class CreateCommentMorphTalbe extends Migration
      */
     public function up()
     {
-        Schema::create('comment_morph', function (Blueprint $table) {
-            $table->integer('comment_id');
-            $table->morphs('bind');
-
-            $table->primary(['comment_id', 'bind_type', 'bind_id']);
-            $table->index(['bind_type', 'bind_id']);
+        Schema::create('accident_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title')->default('')->index();
+            $table->text('description');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -34,6 +34,6 @@ class CreateCommentMorphTalbe extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comment_morph');
+        Schema::dropIfExists('accident_types');
     }
 }

@@ -12,6 +12,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
 
+/**
+ * Insurance partners
+ *
+ * Class Assistant
+ * @package App
+ */
 class Assistant extends Model implements HasMedia
 {
 

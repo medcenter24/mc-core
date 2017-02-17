@@ -7,12 +7,19 @@
 
 namespace App;
 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Services provided by a Doctor
+ *
+ * Class DoctorService
+ * @package App
+ */
 class DoctorService extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['serviciabe_id', 'serviciable_type', 'title', 'description', 'price'];
+    protected $fillable = ['serviceabe_id', 'serviceable_type', 'title', 'description', 'price'];
 }

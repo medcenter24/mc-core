@@ -7,24 +7,23 @@
 
 namespace App;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Kinds of the diagnostics that should be done by the Doctor through the Accident
+ * Statuses of the Accident
  *
- * Class Diagnostic
+ * Class AccidentStatus
  * @package App
  */
-class Diagnostic extends Model
+class AccidentStatus extends Model
 {
     use SoftDeletes;
 
     protected $fillable = ['title', 'description'];
 
-    public function doctorAccident()
+    public function statusable()
     {
-        return $this->belongsTo(DoctorAccident::class);
+        return $this->morphTo();
     }
 }

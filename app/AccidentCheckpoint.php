@@ -10,6 +10,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * A lot of checkpoints should be done through Accident
+ * so let keep list of them to cross finished steps
+ *
+ * Class AccidentCheckpoint
+ * @package App
+ */
 class AccidentCheckpoint extends Model
 {
     use SoftDeletes;

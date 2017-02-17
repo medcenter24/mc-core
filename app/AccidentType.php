@@ -10,6 +10,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Can be different cases
+ * for example insurance or non-insurance case
+ *
+ * Class AccidentType
+ * @package App
+ */
 class AccidentType extends Model
 {
     use SoftDeletes;

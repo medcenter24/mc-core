@@ -59,14 +59,4 @@ class DoctorAccident extends Model
     {
         return $this->morphMany(AccidentStatusable::class, 'statusable');
     }
-
-    /**
-     * Assignment from the Doctor_Accident to the status
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function accidentStatuses()
-    {
-        return $this->morphMany(AccidentStatusable::class, 'caseable');
-    }
 }

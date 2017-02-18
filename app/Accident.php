@@ -23,16 +23,6 @@ class Accident extends Model
     protected $fillable = [];
 
     /**
-     * Statuses which related to accident model
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function accidentStatuses()
-    {
-        return $this->morphMany(AccidentStatus::class, 'caseable');
-    }
-
-    /**
      * Statuses history with commentaries
      * if we use that relation we can restore history about changing statuses
      *

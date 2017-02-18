@@ -7,6 +7,7 @@
 
 namespace App;
 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -28,7 +29,7 @@ class AccidentStatusable extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function caseable()
+    public function statusable()
     {
         return $this->morphTo();
     }

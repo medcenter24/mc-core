@@ -22,7 +22,7 @@ class CreateAccidentStatusesTable extends Migration
             $table->increments('id');
             $table->string('title')->default('')->index();
             $table->text('description');
-            $table->morphs('caseable');
+            $table->text('caseable_type')->default('')->index();
             $table->timestamps();
             $table->softDeletes();
         });

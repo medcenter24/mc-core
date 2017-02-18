@@ -20,10 +20,5 @@ class AccidentStatus extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description'];
-
-    public function statusable()
-    {
-        return $this->morphTo();
-    }
+    protected $fillable = ['title', 'description', 'caseable_type'];
 }

@@ -32,16 +32,6 @@ $factory->define(\App\Doctor::class, function (\Faker\Generator $faker) {
     ];
 });
 
-$factory->define(\App\DoctorAccident::class, function (\Faker\Generator $faker) {
-
-    return [
-        'doctor_id' => $faker->numberBetween(1, 10),
-        'city_id' => $faker->numberBetween(1, 10),
-        'status' => \App\DoctorAccident::STATUS_NEW,
-        'diagnose' => $faker->paragraphs(3, true),
-    ];
-});
-
 $factory->define(\App\Document::class, function (\Faker\Generator $faker) {
 
     return [
@@ -136,5 +126,37 @@ $factory->define(\App\AccidentType::class, function (\Faker\Generator $faker) {
     return [
         'title' => $faker->text(20),
         'description' => $faker->text(),
+    ];
+});
+
+$factory->define(\App\AccidentStatus::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->text(20),
+        'description' => $faker->paragraphs(2, true),
+        'caseable_type' => $faker->text(20),
+    ];
+});
+
+$factory->define(\App\AccidentStatusable::class, function (\Faker\Generator $faker) {
+
+    return [
+        'commentary' => $faker->paragraphs(2, true),
+        'accident_status_id' => function () {
+            return factory(\App\AccidentStatus::class)->create()->id;
+        }
+    ];
+});
+
+$factory->define(\App\DoctorAccident::class, function (\Faker\Generator $faker) {
+
+    return [
+        'doctor_id' => $faker->numberBetween(1, 10),
+        'city_id' => $faker->numberBetween(1, 10),
+        'status' => \App\DoctorAccident::STATUS_NEW,
+        'diagnose' => $faker->paragraphs(3, true),
+        'accident_statusable_id' => function () {
+            return factory(\App\AccidentStatusable::class)->create()->id;
+        }
     ];
 });

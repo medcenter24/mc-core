@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright (c) 2017.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
 
 /*
 |--------------------------------------------------------------------------
@@ -31,4 +36,5 @@ Route::group(['prefix' => 'doctor', 'middleware' => ['auth', 'role:doctor']], fu
 
 Route::group(['prefix' => 'director', 'middleware' => ['auth', 'role:director']], function () {
     Route::get('/', 'Director\MainController@index');
+    Route::resource('/accidentStatus', 'Director\AccidentStatusController');
 });

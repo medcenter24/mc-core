@@ -7,7 +7,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Support\Facades\Roles;
 use Closure;
 
 class RoleMiddleware

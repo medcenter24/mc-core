@@ -9,8 +9,8 @@ namespace App\Http\Controllers\Director;
 
 
 use App\AccidentStatus;
-use App\Http\Requests\AccidentStatusRequest;
 use App\Http\Requests\StoreAccidentStatus;
+use App\Http\Requests\UpdateAccidentStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -45,30 +45,26 @@ class AccidentStatusController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return AccidentStatus::findOrFail($id)->toJson();
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateAccidentStatus $request, $id)
     {
-        //
+        /** @var \Eloquent $status */
+        $status = AccidentStatus::findOrFail($id);
+        foreach ($status->getVisible() as $item) {
+            if ($request->has($item)) {
+                $status->$item = $request->get($item);
+            }
+        }
+        $status->save();
     }
 
     /**
@@ -79,6 +75,6 @@ class AccidentStatusController extends Controller
      */
     public function destroy($id)
     {
-        //
+        AccidentStatus::destroy($id);
     }
 }

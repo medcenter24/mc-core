@@ -15,6 +15,7 @@ class Patient extends Model
     use SoftDeletes;
 
     protected $fillable = ['name', 'address', 'phones', 'birthday', 'comment'];
+    protected $visible = ['name', 'address', 'phones', 'birthday', 'comment'];
 
     public function documents()
     {

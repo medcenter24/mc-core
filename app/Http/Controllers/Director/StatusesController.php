@@ -9,12 +9,13 @@ namespace App\Http\Controllers\Director;
 
 
 use App\AccidentStatus;
+use App\Http\Controllers\DirectorController;
 use App\Http\Requests\StoreAccidentStatus;
 use App\Http\Requests\UpdateAccidentStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class AccidentStatusController extends Controller
+class StatusesController extends DirectorController
 {
     /**
      * Display a listing of the resource.
@@ -51,9 +52,9 @@ class AccidentStatusController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateAccidentStatus $request
+     * @param $id
+     * @return array
      */
     public function update(UpdateAccidentStatus $request, $id)
     {
@@ -65,16 +66,20 @@ class AccidentStatusController extends Controller
             }
         }
         $status->save();
+
+        return ['success' => true];
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return array
      */
     public function destroy($id)
     {
         AccidentStatus::destroy($id);
+
+        return ['success' => true];
     }
 }

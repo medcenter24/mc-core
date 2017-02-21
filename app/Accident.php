@@ -43,4 +43,14 @@ class Accident extends Model
     {
         return $this->belongsTo(AccidentStatusable::class);
     }
+
+    /**
+     * Case checkpoints - statuses which could be selected in different order
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function checkpoints()
+    {
+        return $this->belongsToMany(AccidentCheckpoint::class);
+    }
 }

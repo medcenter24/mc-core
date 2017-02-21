@@ -22,4 +22,5 @@ class AccidentCheckpoint extends Model
     use SoftDeletes;
 
     protected $fillable = ['title', 'description'];
+    protected $visible = ['title', 'description'];
 }

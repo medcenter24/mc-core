@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class AccidentStatusTest extends TestCase
+class StatusesTest extends TestCase
 {
     use DatabaseMigrations;
     use WithoutMiddleware;
@@ -35,7 +35,7 @@ class AccidentStatusTest extends TestCase
     {
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/accidentStatus');
+            ->get('/director/statuses');
 
         $response->assertStatus(200)
                 ->assertJson([]);
@@ -46,7 +46,7 @@ class AccidentStatusTest extends TestCase
     {
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->post('/director/accidentStatus', [], [
+            ->post('/director/statuses', [], [
                 'Accept' => 'application/json'
             ]);
 
@@ -70,7 +70,7 @@ class AccidentStatusTest extends TestCase
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->post('/director/accidentStatus', $data, [
+            ->post('/director/statuses', $data, [
                 'Accept' => 'application/json'
             ]);
 
@@ -87,7 +87,7 @@ class AccidentStatusTest extends TestCase
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/accidentStatus/1', ['Accept' => 'application/json']);
+            ->get('/director/statuses/' . $status->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(200)->assertJson($status->toArray());
     }
@@ -98,7 +98,7 @@ class AccidentStatusTest extends TestCase
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->patch('/director/accidentStatus/1', [
+            ->patch('/director/statuses/1', [
                 'title' => 'Replaced by this'
             ]);
 
@@ -109,7 +109,7 @@ class AccidentStatusTest extends TestCase
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/accidentStatus/' . $status->id, ['Accept' => 'application/json']);
+            ->get('/director/statuses/' . $status->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(200)->assertJson($source);
     }
@@ -120,20 +120,23 @@ class AccidentStatusTest extends TestCase
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/accidentStatus/' . $status->id, ['Accept' => 'application/json']);
+            ->get('/director/statuses/' . $status->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(200)->assertJson($status->toArray());
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->delete('/director/accidentStatus/' . $status->id);
+            ->delete('/director/statuses/' . $status->id);
 
         $response->assertStatus(200);
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/accidentStatus/' . $status->id, ['Accept' => 'application/json']);
+            ->get('/director/statuses/' . $status->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(404);
-        }
+
+        $deleted = AccidentStatus::withTrashed()->find($status->id);
+        self::assertEquals($status->id, $deleted->id, 'Soft deleted');
+    }
 }

@@ -7,12 +7,10 @@
 
 namespace App\Http\Requests;
 
-
 use App\Role;
 use Illuminate\Foundation\Http\FormRequest;
 
-
-class StoreAccidentStatus extends FormRequest
+class UpdateDoctor extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,9 +30,9 @@ class StoreAccidentStatus extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|max:70',
-            'description' => 'required|max:255',
-            'caseable_type' => 'required|max:200',
+            'name' => 'min:1|max:150',
+            'description' => 'min:1|max:255',
+            'ref_key' => 'min:1|max:5',
         ];
     }
 }

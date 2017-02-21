@@ -38,4 +38,6 @@ Route::group(['prefix' => 'director', 'middleware' => ['auth', 'role:director']]
     Route::get('/', 'Director\MainController@index');
     Route::resource('/statuses', 'Director\StatusesController');
     Route::resource('/checkpoints', 'Director\CheckpointsController');
+    Route::resource('/types', 'Director\TypesController');
+    Route::resource('/cities', 'Director\CitiesController');
 });

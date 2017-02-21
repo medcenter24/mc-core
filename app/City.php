@@ -16,4 +16,5 @@ class City extends Model
     use SoftDeletes;
 
     protected $fillable = ['title'];
+    protected $visible = ['title'];
 }

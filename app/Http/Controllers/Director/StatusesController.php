@@ -12,8 +12,6 @@ use App\AccidentStatus;
 use App\Http\Controllers\DirectorController;
 use App\Http\Requests\StoreAccidentStatus;
 use App\Http\Requests\UpdateAccidentStatus;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class StatusesController extends DirectorController
 {

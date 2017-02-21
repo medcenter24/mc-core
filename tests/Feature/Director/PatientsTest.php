@@ -66,9 +66,7 @@ class PatientsTest extends TestCase
                 'Accept' => 'application/json'
             ]);
 
-        $response->assertStatus(200)->assertJson([
-            'name' => $data['name'],
-        ]);
+        $response->assertStatus(200)->assertJson($data);
     }
 
     public function testStoreFull()

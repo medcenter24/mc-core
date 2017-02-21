@@ -70,10 +70,7 @@ class TypesTest extends TestCase
                 'Accept' => 'application/json'
             ]);
 
-        $response->assertStatus(200)->assertJson([
-            'title' => $data['title'],
-            'description' => $data['description'],
-        ]);
+        $response->assertStatus(200)->assertJson($data);
     }
 
     public function testShow()

@@ -68,9 +68,7 @@ class CitiesTest extends TestCase
                 'Accept' => 'application/json'
             ]);
 
-        $response->assertStatus(200)->assertJson([
-            'title' => $data['title'],
-        ]);
+        $response->assertStatus(200)->assertJson($data);
     }
 
     public function testShow()

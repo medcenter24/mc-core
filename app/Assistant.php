@@ -26,4 +26,5 @@ class Assistant extends Model implements HasMedia
     use HasMediaTrait;
 
     protected $fillable = ['title', 'ref_key', 'email', 'comment'];
+    protected $visible = ['title', 'ref_key', 'email', 'comment'];
 }

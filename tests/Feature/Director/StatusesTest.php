@@ -74,11 +74,7 @@ class StatusesTest extends TestCase
                 'Accept' => 'application/json'
             ]);
 
-        $response->assertStatus(200)->assertJson([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'caseable_type' => $data['caseable_type'],
-        ]);
+        $response->assertStatus(200)->assertJson($data);
     }
 
     public function testShow()

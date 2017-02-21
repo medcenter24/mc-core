@@ -68,11 +68,7 @@ class DoctorsTest extends TestCase
                 'Accept' => 'application/json'
             ]);
 
-        $response->assertStatus(200)->assertJson([
-            'name' => $data['name'],
-            'description' => $data['description'],
-            'ref_key' => $data['ref_key'],
-        ]);
+        $response->assertStatus(200)->assertJson($data);
     }
 
     public function testShow()

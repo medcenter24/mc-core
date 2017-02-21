@@ -76,60 +76,60 @@ class ServicesTest extends TestCase
 
     public function testShow()
     {
-        $doctor = factory(DoctorService::class)->create();
+        $service = factory(DoctorService::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/services/' . $doctor->id, ['Accept' => 'application/json']);
+            ->get('/director/services/' . $service->id, ['Accept' => 'application/json']);
 
-        $response->assertStatus(200)->assertJson($doctor->toArray());
+        $response->assertStatus(200)->assertJson($service->toArray());
     }
 
     public function testUpdate()
     {
-        $doctor = factory(DoctorService::class)->create();
+        $service = factory(DoctorService::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->patch('/director/services/' . $doctor->id, [
+            ->patch('/director/services/' . $service->id, [
                 'title' => 'Replaced by this'
             ]);
 
         $response->assertStatus(200);
 
-        $source = $doctor->toArray();
+        $source = $service->toArray();
         $source['title'] = 'Replaced by this';
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/services/' . $doctor->id, ['Accept' => 'application/json']);
+            ->get('/director/services/' . $service->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(200)->assertJson($source);
     }
 
     public function testDelete()
     {
-        $doctor = factory(DoctorService::class)->create();
+        $service = factory(DoctorService::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/services/' . $doctor->id, ['Accept' => 'application/json']);
+            ->get('/director/services/' . $service->id, ['Accept' => 'application/json']);
 
-        $response->assertStatus(200)->assertJson($doctor->toArray());
+        $response->assertStatus(200)->assertJson($service->toArray());
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->delete('/director/services/' . $doctor->id);
+            ->delete('/director/services/' . $service->id);
 
         $response->assertStatus(200);
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/services/' . $doctor->id, ['Accept' => 'application/json']);
+            ->get('/director/services/' . $service->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(404);
 
-        $deleted = DoctorService::withTrashed()->find($doctor->id);
-        self::assertEquals($doctor->id, $deleted->id, 'Soft deleted');
+        $deleted = DoctorService::withTrashed()->find($service->id);
+        self::assertEquals($service->id, $deleted->id, 'Soft deleted');
     }
 }

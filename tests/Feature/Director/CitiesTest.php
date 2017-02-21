@@ -73,60 +73,60 @@ class CitiesTest extends TestCase
 
     public function testShow()
     {
-        $checkpoint = factory(City::class)->create();
+        $city = factory(City::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/cities/' . $checkpoint->id, ['Accept' => 'application/json']);
+            ->get('/director/cities/' . $city->id, ['Accept' => 'application/json']);
 
-        $response->assertStatus(200)->assertJson($checkpoint->toArray());
+        $response->assertStatus(200)->assertJson($city->toArray());
     }
 
     public function testUpdate()
     {
-        $checkpoint = factory(City::class)->create();
+        $city = factory(City::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->patch('/director/cities/' . $checkpoint->id, [
+            ->patch('/director/cities/' . $city->id, [
                 'title' => 'Replaced by this'
             ]);
 
         $response->assertStatus(200);
 
-        $source = $checkpoint->toArray();
+        $source = $city->toArray();
         $source['title'] = 'Replaced by this';
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/cities/' . $checkpoint->id, ['Accept' => 'application/json']);
+            ->get('/director/cities/' . $city->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(200)->assertJson($source);
     }
 
     public function testDelete()
     {
-        $checkpoint = factory(City::class)->create();
+        $city = factory(City::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/cities/' . $checkpoint->id, ['Accept' => 'application/json']);
+            ->get('/director/cities/' . $city->id, ['Accept' => 'application/json']);
 
-        $response->assertStatus(200)->assertJson($checkpoint->toArray());
+        $response->assertStatus(200)->assertJson($city->toArray());
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->delete('/director/cities/' . $checkpoint->id);
+            ->delete('/director/cities/' . $city->id);
 
         $response->assertStatus(200);
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/cities/' . $checkpoint->id, ['Accept' => 'application/json']);
+            ->get('/director/cities/' . $city->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(404);
 
-        $deleted = City::withTrashed()->find($checkpoint->id);
-        self::assertEquals($checkpoint->id, $deleted->id, 'Soft deleted');
+        $deleted = City::withTrashed()->find($city->id);
+        self::assertEquals($city->id, $deleted->id, 'Soft deleted');
     }
 }

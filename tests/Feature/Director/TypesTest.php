@@ -75,60 +75,60 @@ class TypesTest extends TestCase
 
     public function testShow()
     {
-        $checkpoint = factory(AccidentType::class)->create();
+        $type = factory(AccidentType::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/types/' . $checkpoint->id, ['Accept' => 'application/json']);
+            ->get('/director/types/' . $type->id, ['Accept' => 'application/json']);
 
-        $response->assertStatus(200)->assertJson($checkpoint->toArray());
+        $response->assertStatus(200)->assertJson($type->toArray());
     }
 
     public function testUpdate()
     {
-        $checkpoint = factory(AccidentType::class)->create();
+        $type = factory(AccidentType::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->patch('/director/types/' . $checkpoint->id, [
+            ->patch('/director/types/' . $type->id, [
                 'title' => 'Replaced by this'
             ]);
 
         $response->assertStatus(200);
 
-        $source = $checkpoint->toArray();
+        $source = $type->toArray();
         $source['title'] = 'Replaced by this';
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/types/' . $checkpoint->id, ['Accept' => 'application/json']);
+            ->get('/director/types/' . $type->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(200)->assertJson($source);
     }
 
     public function testDelete()
     {
-        $checkpoint = factory(AccidentType::class)->create();
+        $type = factory(AccidentType::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/types/' . $checkpoint->id, ['Accept' => 'application/json']);
+            ->get('/director/types/' . $type->id, ['Accept' => 'application/json']);
 
-        $response->assertStatus(200)->assertJson($checkpoint->toArray());
+        $response->assertStatus(200)->assertJson($type->toArray());
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->delete('/director/types/' . $checkpoint->id);
+            ->delete('/director/types/' . $type->id);
 
         $response->assertStatus(200);
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/types/' . $checkpoint->id, ['Accept' => 'application/json']);
+            ->get('/director/types/' . $type->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(404);
 
-        $deleted = AccidentType::withTrashed()->find($checkpoint->id);
-        self::assertEquals($checkpoint->id, $deleted->id, 'Soft deleted');
+        $deleted = AccidentType::withTrashed()->find($type->id);
+        self::assertEquals($type->id, $deleted->id, 'Soft deleted');
     }
 }

@@ -30,7 +30,7 @@ class StoreAccidentCheckpoint extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|min:1|max:70',
+            'title' => 'required|max:70',
             'description' => 'required|max:255',
         ];
     }

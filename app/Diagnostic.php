@@ -22,6 +22,7 @@ class Diagnostic extends Model
     use SoftDeletes;
 
     protected $fillable = ['title', 'description'];
+    protected $visible = ['title', 'description'];
 
     public function doctorAccident()
     {

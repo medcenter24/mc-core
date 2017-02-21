@@ -10,7 +10,7 @@ namespace App\Http\Requests;
 use App\Role;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAccidentStatus extends FormRequest
+class StoreAccidentCheckpoint extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,9 +30,8 @@ class UpdateAccidentStatus extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'min:1|max:70',
-            'description' => 'max:255',
-            'caseable_type' => 'max:200',
+            'title' => 'required|min:1|max:70',
+            'description' => 'required|max:255',
         ];
     }
 }

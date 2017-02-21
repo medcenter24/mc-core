@@ -21,5 +21,6 @@ class DoctorService extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['serviceabe_id', 'serviceable_type', 'title', 'description', 'price'];
+    protected $fillable = ['title', 'description', 'price'];
+    protected $visible = ['title', 'description', 'price'];
 }

@@ -113,8 +113,6 @@ $factory->define(\App\Patient::class, function (\Faker\Generator $faker) {
 $factory->define(\App\DoctorService::class, function (\Faker\Generator $faker) {
 
     return [
-        'serviceable_id' => rand(1, 999),
-        'serviceable_type' => 'Faked Service',
         'title' => $faker->text(20),
         'description' => $faker->text(),
         'price' => $faker->randomFloat(),

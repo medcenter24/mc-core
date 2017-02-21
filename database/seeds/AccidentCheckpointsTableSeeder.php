@@ -8,7 +8,7 @@
 use App\AccidentCheckpoint;
 use Illuminate\Database\Seeder;
 
-class AccidentCheckpointTableSeeder extends Seeder
+class AccidentCheckpointsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

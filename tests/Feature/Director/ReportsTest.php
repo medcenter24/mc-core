@@ -7,13 +7,13 @@
 
 namespace Tests\Feature\Director;
 
-use App\Form;
+use App\FormReport;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class FormsTest extends TestCase
+class ReportsTest extends TestCase
 {
     use DatabaseMigrations;
     use WithoutMiddleware;
@@ -34,7 +34,7 @@ class FormsTest extends TestCase
     {
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/forms');
+            ->get('/director/reports');
 
         $response->assertStatus(200)->assertJson([]);
     }
@@ -44,30 +44,22 @@ class FormsTest extends TestCase
     {
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->post('/director/forms', [], [
+            ->post('/director/reports', [], [
                 'Accept' => 'application/json'
             ]);
 
-        $response->assertStatus(422)->assertJson([]);
-
-        //
-        self::assertEquals(
-            '{"title":["The title field is required."],"description":["The description field is required."],"template":["The template field is required."]}'
-            , $response->getContent());
+        $response->assertStatus(200)->assertJson([]);
     }
 
     public function testStore()
     {
         $data = [
-            'title' => 'Title',
-            'description' => 'What about that title?',
-            'template' => 'aat',
-            'variables' => ''
+            'values' => json_encode(['key_1' => 'val_1', 'key_2' => 'val_2'])
         ];
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->post('/director/forms', $data, [
+            ->post('/director/reports', $data, [
                 'Accept' => 'application/json'
             ]);
 
@@ -76,60 +68,60 @@ class FormsTest extends TestCase
 
     public function testShow()
     {
-        $form = factory(Form::class)->create();
+        $form = factory(FormReport::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/forms/' . $form->id, ['Accept' => 'application/json']);
+            ->get('/director/reports/' . $form->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(200)->assertJson($form->toArray());
     }
 
     public function testUpdate()
     {
-        $form = factory(Form::class)->create();
+        $form = factory(FormReport::class)->create();
+
+        $test = ['values' => json_encode(['k_1' => 'v_1'])];
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->patch('/director/forms/' . $form->id, [
-                'title' => 'Replaced by this'
-            ]);
+            ->patch('/director/reports/' . $form->id, $test);
 
         $response->assertStatus(200);
 
         $source = $form->toArray();
-        $source['title'] = 'Replaced by this';
+        $source = array_merge($source, $test);
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/forms/' . $form->id, ['Accept' => 'application/json']);
+            ->get('/director/reports/' . $form->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(200)->assertJson($source);
     }
 
     public function testDelete()
     {
-        $form = factory(Form::class)->create();
+        $form = factory(FormReport::class)->create();
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/forms/' . $form->id, ['Accept' => 'application/json']);
+            ->get('/director/reports/' . $form->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(200)->assertJson($form->toArray());
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->delete('/director/forms/' . $form->id);
+            ->delete('/director/reports/' . $form->id);
 
         $response->assertStatus(200);
 
         $response = $this
             ->actingAs(factory(User::class)->make())
-            ->get('/director/forms/' . $form->id, ['Accept' => 'application/json']);
+            ->get('/director/reports/' . $form->id, ['Accept' => 'application/json']);
 
         $response->assertStatus(404);
 
-        $deleted = Form::withTrashed()->find($form->id);
+        $deleted = FormReport::withTrashed()->find($form->id);
         self::assertEquals($form->id, $deleted->id, 'Soft deleted');
     }
 }

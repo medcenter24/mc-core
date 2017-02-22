@@ -20,7 +20,8 @@ class FormReport extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = [];
+    protected $fillable = ['values'];
+    protected $visible = ['values'];
 
     protected function forms()
     {

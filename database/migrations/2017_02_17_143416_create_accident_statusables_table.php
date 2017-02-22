@@ -21,7 +21,7 @@ class CreateAccidentStatusablesTable extends Migration
         Schema::create('accident_statusables', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('accident_status_id')->default(0)->index();
-            $table->text('commentary');
+            $table->text('commentary')->default('');
             $table->timestamps();
             $table->softDeletes();
         });

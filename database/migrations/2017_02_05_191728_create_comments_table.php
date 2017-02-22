@@ -22,7 +22,7 @@ class CreateCommentsTable extends Migration
             $table->increments('id');
             $table->morphs('commentable');
             $table->integer('created_by', false, true)->default(0)->index();
-            $table->text('comment');
+            $table->text('comment')->default('');
             $table->timestamps();
             $table->softDeletes();
         });

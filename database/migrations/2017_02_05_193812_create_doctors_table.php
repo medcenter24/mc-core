@@ -22,7 +22,7 @@ class CreateDoctorsTable extends Migration
             $table->increments('id');
             $table->integer('user_id', false, true)->default(0)->index();
             $table->string('name')->default('')->index();
-            $table->text('description');
+            $table->text('description')->default('');
             $table->string('ref_key')->default('');
             $table->timestamps();
             $table->softDeletes();

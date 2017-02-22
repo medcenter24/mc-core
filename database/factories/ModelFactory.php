@@ -115,7 +115,7 @@ $factory->define(\App\DoctorService::class, function (\Faker\Generator $faker) {
     return [
         'title' => $faker->text(20),
         'description' => $faker->text(),
-        'price' => $faker->randomFloat(),
+        'price' => $faker->randomFloat(2, 0, 10000),
     ];
 });
 

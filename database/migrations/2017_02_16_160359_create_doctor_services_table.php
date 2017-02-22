@@ -22,7 +22,7 @@ class CreateDoctorServicesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('created_by')->default(0)->index();
             $table->string('title')->default('')->index();
-            $table->text('description');
+            $table->text('description')->default('');
             $table->decimal('price', 8, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();

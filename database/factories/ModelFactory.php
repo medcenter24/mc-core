@@ -136,16 +136,6 @@ $factory->define(\App\AccidentStatus::class, function (\Faker\Generator $faker) 
     ];
 });
 
-$factory->define(\App\AccidentStatusable::class, function (\Faker\Generator $faker) {
-
-    return [
-        'commentary' => $faker->paragraphs(2, true),
-        'accident_status_id' => function () {
-            return factory(\App\AccidentStatus::class)->create()->id;
-        }
-    ];
-});
-
 $factory->define(\App\DoctorAccident::class, function (\Faker\Generator $faker) {
 
     return [
@@ -153,8 +143,55 @@ $factory->define(\App\DoctorAccident::class, function (\Faker\Generator $faker) 
         'city_id' => $faker->numberBetween(1, 10),
         'status' => \App\DoctorAccident::STATUS_NEW,
         'diagnose' => $faker->paragraphs(3, true),
-        'accident_statusable_id' => function () {
-            return factory(\App\AccidentStatusable::class)->create()->id;
-        }
+        'accident_status_id' => function () {
+            return factory(\App\AccidentStatus::class)->create()->id;
+        },
+    ];
+});
+
+$factory->define(\App\Accident::class, function (\Faker\Generator $faker) {
+
+    return [
+        'created_by' => function () {
+            return factory(\App\User::class)->create()->id;
+        },
+        'parent_id' => 0,
+        'patient_id' => function () {
+            return factory(\App\Patient::class)->create()->id;
+        },
+        'accident_type_id' => function () {
+            return factory(\App\AccidentType::class)->create()->id;
+        },
+        'accident_status_id' => function () {
+            return factory(\App\AccidentStatus::class)->create()->id;
+        },
+        'assistant_id' => function () {
+            return factory(\App\Assistant::class)->create()->id;
+        },
+        'assistant_ref_num' => $faker->text(20),
+        'caseable_id' => function () {
+            return factory(\App\DoctorAccident::class)->create()->id;
+        },
+        'caseable_type' => \App\DoctorAccident::class,
+        'ref_num' => $faker->text(10),
+        'title' => $faker->text(30),
+        'city_id' => function () {
+            return factory(\App\City::class)->create()->id;
+        },
+        'address' => $faker->address,
+        'contacts' => $faker->company . "\n" . $faker->companyEmail . "\n" . $faker->phoneNumber,
+        'symptoms' => $faker->paragraphs(4, true),
+    ];
+});
+
+$factory->define(\App\AccidentStatusHistory::class, function (\Faker\Generator $faker) {
+
+    return [
+        'commentary' => $faker->text(20),
+        'statusable_id' => function () {
+            // could be each of accident Doctor_Accident Accident Hospital_Accident ...
+            return factory(\App\Accident::class)->create()->id;
+        },
+        'statusable_type' => \App\Accident::class,
     ];
 });

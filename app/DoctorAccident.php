@@ -29,6 +29,7 @@ class DoctorAccident extends Model
     const STATUS_CLOSED = 'closed';
 
     protected $fillable = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_statusable_id'];
+    protected $visible = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_statusable_id'];
 
     /**
      * Photos of the documents from the patient

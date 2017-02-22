@@ -22,4 +22,14 @@ class AccidentStatus extends Model
 
     protected $fillable = ['title', 'description', 'caseable_type'];
     protected $visible  = ['title', 'description', 'caseable_type'];
+
+    public function accidents()
+    {
+        return $this->morphedByMany(Accident::class, 'accident_statusable');
+    }
+
+    public function history()
+    {
+        return $this->morphTo();
+    }
 }

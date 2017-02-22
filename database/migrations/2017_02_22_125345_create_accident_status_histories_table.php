@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAccidentStatusablesTable extends Migration
+class CreateAccidentStatusHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,12 +18,9 @@ class CreateAccidentStatusablesTable extends Migration
      */
     public function up()
     {
-        Schema::create('accident_statusables', function (Blueprint $table) {
+        Schema::create('accident_status_histories', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('accident_status_id')->default(0)->index();
-            $table->text('commentary')->default('');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -34,6 +31,6 @@ class CreateAccidentStatusablesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accident_statusables');
+        Schema::dropIfExists('accident_status_histories');
     }
 }

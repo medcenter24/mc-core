@@ -25,6 +25,7 @@ class Document extends Model implements HasMedia
     use HasMediaTrait;
 
     protected $fillable = ['title'];
+    protected $visible = ['title'];
 
     public function documentable()
     {

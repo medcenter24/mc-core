@@ -22,17 +22,20 @@ class CreateAccidentsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('created_by')->default(0)->index();
             $table->unsignedInteger('parent_id')->default(0)->index();
-            $table->string('accident_ref_num')->default('')->index();
-            $table->string('accident_title')->default('')->index();
-            $table->unsignedInteger('accident_city_id')->default(0)->index();
-            $table->string('accident_address')->default('');
-            $table->text('accident_contacts')->default('');
+            $table->unsignedInteger('patient_id')->default(0)->index();
+            $table->unsignedInteger('accident_type_id')->default(0)->index();
+            $table->unsignedInteger('accident_status_id')->default(0)->index();
             $table->unsignedInteger('assistant_id')->default(0)->index();
             $table->string('assistant_ref_num')->default('')->index();
             $table->morphs('caseable');
-            $table->unsignedInteger('accident_statusable_id')->index();
+            $table->string('ref_num')->default('')->index();
+            $table->string('title')->default('')->index();
+            $table->unsignedInteger('city_id')->default(0)->index();
+            $table->string('address')->default('');
+            $table->text('contacts')->default('');
             $table->text('symptoms');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

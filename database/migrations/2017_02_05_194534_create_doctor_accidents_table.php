@@ -32,7 +32,7 @@ class CreateDoctorAccidentsTable extends Migration
                 DoctorAccident::STATUS_PAID,
                 DoctorAccident::STATUS_CLOSED,
             ])->index();
-            $table->text('diagnose');
+            $table->text('diagnose')->default('');
             $table->unsignedInteger('accident_statusable_id')->default(0)->index();
             $table->timestamps();
             $table->softDeletes();

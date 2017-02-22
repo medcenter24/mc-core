@@ -33,6 +33,7 @@ class UpdateForm extends FormRequest
             'title' => 'max:100',
             'description' => 'max:255',
             'template' => 'min:1',
+            'variables' => 'string',
         ];
     }
 }

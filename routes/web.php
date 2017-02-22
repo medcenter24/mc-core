@@ -46,4 +46,5 @@ Route::group(['prefix' => 'director', 'middleware' => ['auth', 'role:director']]
     Route::resource('/services', 'Director\ServicesController');
     Route::resource('/assistants', 'Director\AssistantsController');
     Route::resource('/forms', 'Director\FormsController');
+    Route::resource('/reports', 'Director\ReportsController');
 });

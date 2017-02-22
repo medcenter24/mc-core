@@ -21,7 +21,7 @@ class CreateDiagnosticsTable extends Migration
         Schema::create('diagnostics', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->default('')->index();
-            $table->text('description');
+            $table->text('description')->default('');
             $table->timestamps();
             $table->softDeletes();
         });

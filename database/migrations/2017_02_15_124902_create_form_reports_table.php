@@ -21,7 +21,7 @@ class CreateFormReportsTable extends Migration
         Schema::create('form_reports', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('form_id', false, true)->default(0)->index();
-            $table->text('values');
+            $table->json('values')->default('');
             $table->timestamps();
             $table->softDeletes();
         });

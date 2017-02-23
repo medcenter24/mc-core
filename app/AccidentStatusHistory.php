@@ -21,5 +21,5 @@ class AccidentStatusHistory extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['comment'];
+    protected $fillable = ['commentary'];
 }

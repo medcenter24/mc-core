@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCommentsTable extends Migration
+class CreateInvoicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,11 +18,11 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('invoices', function (Blueprint $table) {
             $table->increments('id');
-            $table->morphs('commentable');
-            $table->integer('created_by', false, true)->default(0)->index();
-            $table->text('texts')->default('');
+            $table->unsignedInteger('created_by')->index();
+            $table->string('title')->default('')->index();
+            $table->decimal('price', 8, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -35,6 +35,6 @@ class CreateCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('invoices');
     }
 }

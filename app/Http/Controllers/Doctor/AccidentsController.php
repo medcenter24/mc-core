@@ -8,18 +8,14 @@
 namespace App\Http\Controllers\Doctor;
 
 use App\DoctorAccident;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\DoctorController;
 
-class AccidentsController extends Controller
+class AccidentsController extends DoctorController
 {
+
     public function index()
     {
-        return DoctorAccident::all();
-    }
-
-    public function store(StoreDoctorAccident $request)
-    {
-        return DoctorAccident::create($request->all());
+        return DoctorAccident::where('doctor_id', $this->doctor())->all();
     }
 
     public function show($id)
@@ -40,12 +36,4 @@ class AccidentsController extends Controller
 
         return ['success' => true];
     }
-
-    public function destroy($id)
-    {
-        DoctorAccident::destroy($id);
-
-        return ['success' => true];
-    }
-
 }

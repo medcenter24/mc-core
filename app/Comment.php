@@ -22,11 +22,11 @@ class Comment extends Model
      */
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ['user_id', 'comment'];
+    protected $fillable = ['text'];
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\User', 'created_by');
     }
 
     /**

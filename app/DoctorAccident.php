@@ -8,19 +8,14 @@
 namespace App;
 
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
 /**
  * Accident that needs Doctor involvement
  *
  * Class DoctorAccident
  * @package App
  */
-class DoctorAccident extends Model
+class DoctorAccident extends AccidentAbstract
 {
-    use SoftDeletes;
-
     const STATUS_NEW = 'new';
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_SIGNED = 'signed';
@@ -56,8 +51,8 @@ class DoctorAccident extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function accidentStatusable()
+    public function statusHistory()
     {
-        return $this->morphMany(AccidentStatusable::class, 'statusable');
+        return $this->morphMany(AccidentStatusHistory::class, 'historyable');
     }
 }

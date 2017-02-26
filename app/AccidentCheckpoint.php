@@ -23,4 +23,9 @@ class AccidentCheckpoint extends Model
 
     protected $fillable = ['title', 'description'];
     protected $visible = ['title', 'description'];
+
+    protected function accidents()
+    {
+        return $this->belongsTo(Accident::class);
+    }
 }

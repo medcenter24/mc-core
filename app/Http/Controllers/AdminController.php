@@ -18,5 +18,9 @@ use Illuminate\Http\Request;
  */
 class AdminController extends Controller
 {
-    //
+    public function __construct()
+    {
+        view()->share('current_menu', '');
+        //   view()->share('locations', config('translation-manager.locales'));
+    }
 }

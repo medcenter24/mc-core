@@ -7,6 +7,7 @@
 
 namespace App\Events;
 
+use App\AccidentAbstract;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -20,13 +21,40 @@ class AccidentStatusChanged
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
+     * @var AccidentAbstract
+     */
+    private $accident;
+    /**
+     * @var string
+     */
+    private $commentary;
+
+    /**
      * Create a new event instance.
      *
-     * @return void
+     * @param AccidentAbstract $accident
+     * @param string $commentary
      */
-    public function __construct()
+    public function __construct(AccidentAbstract $accident, $commentary = '')
     {
-        //
+        $this->accident = $accident;
+        $this->commentary = $commentary;
+    }
+
+    /**
+     * @return AccidentAbstract
+     */
+    public function getAccident()
+    {
+        return $this->accident;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCommentary()
+    {
+        return $this->commentary;
     }
 
     /**

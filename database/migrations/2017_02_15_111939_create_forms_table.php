@@ -24,6 +24,7 @@ class CreateFormsTable extends Migration
             $table->string('description')->default('');
             $table->longText('template');
             $table->text('variables')->default('');
+            $table->string('formable_type')->default('')->index();
             $table->timestamps();
             $table->softDeletes();
         });

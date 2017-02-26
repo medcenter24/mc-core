@@ -32,7 +32,11 @@ class UpdateDoctorAccident extends FormRequest
     public function rules()
     {
         return [
-            'status' => Rule::in([DoctorAccident::STATUS_IN_PROGRESS.','.DoctorAccident::STATUS_SIGNED.','.DoctorAccident::STATUS_SENT]),
+            'status' => Rule::in([
+                DoctorAccident::STATUS_IN_PROGRESS,
+                DoctorAccident::STATUS_SIGNED,
+                DoctorAccident::STATUS_SENT,
+            ]),
             'diagnose' => 'min:3',
         ];
     }

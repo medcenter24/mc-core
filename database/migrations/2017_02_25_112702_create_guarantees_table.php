@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCommentsTable extends Migration
+class CreateGuaranteesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,13 +18,12 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('guarantees', function (Blueprint $table) {
             $table->increments('id');
-            $table->morphs('commentable');
-            $table->integer('created_by', false, true)->default(0)->index();
-            $table->text('texts')->default('');
+            $table->unsignedInteger('form_report_id')->default(0)->index();
+            $table->string('title')->default('')->index();
+            $table->enum('status', ['new', 'signed', 'sent'])->default('new')->index();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -35,6 +34,6 @@ class CreateCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('guarantees');
     }
 }

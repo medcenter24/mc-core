@@ -66,6 +66,7 @@ $factory->define(\App\Form::class, function (\Faker\Generator $faker) {
         'description' => $faker->text(200),
         'template' => '<p>Hello :firstName, :lastName</p><p>Some text in here with :param</p>',
         'variables' => 'firstName,lastName,param',
+        'formable_type' => \App\Accident::class,
     ];
 });
 
@@ -188,10 +189,59 @@ $factory->define(\App\AccidentStatusHistory::class, function (\Faker\Generator $
 
     return [
         'commentary' => $faker->text(20),
-        'statusable_id' => function () {
+        'historyable_id' => function () {
             // could be each of accident Doctor_Accident Accident Hospital_Accident ...
             return factory(\App\Accident::class)->create()->id;
         },
-        'statusable_type' => \App\Accident::class,
+        'historyable_type' => \App\Accident::class,
     ];
 });
+
+$factory->define(\App\Hospital::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->text(30),
+        'description' => $faker->text(),
+        'ref_key' => str_random(2),
+        'address' => $faker->address,
+        'phones' => $faker->phoneNumber.','.$faker->phoneNumber,
+    ];
+});
+
+$factory->define(\App\Comment::class, function (\Faker\Generator $faker) {
+
+    return [
+        'created_by' => function () {
+            return factory(\App\User::class)->create()->id;
+        },
+        'text' => $faker->paragraphs(3, true),
+        'commentable_type' => \App\Accident::class,
+        'commentable_id' => function () {
+            return factory(\App\Accident::class)->create()->id;
+        },
+    ];
+});
+
+$factory->define(\App\Invoice::class, function (\Faker\Generator $faker) {
+
+    return [
+        'created_by' => function () {
+            return factory(\App\User::class)->create()->id;
+        },
+        'title' => $faker->text(30),
+        'price' => $faker->randomFloat(2, 0, 50000),
+    ];
+});
+
+
+$factory->define(\App\Guarantee::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->text(30),
+        'form_report_id' => function () {
+            return factory(\App\FormReport::class)->create()->id;
+        },
+        'status' => 'new',
+    ];
+});
+

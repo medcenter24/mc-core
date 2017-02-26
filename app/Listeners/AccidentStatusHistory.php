@@ -7,7 +7,8 @@
 
 namespace App\Listeners;
 
-use App\Events\SomeEvent;
+use App\AccidentStatusHistory as History;
+use App\Events\AccidentStatusChanged;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -26,11 +27,17 @@ class AccidentStatusHistory
     /**
      * Handle the event.
      *
-     * @param  SomeEvent  $event
+     * @param  AccidentStatusChanged  $event
      * @return void
      */
-    public function handle(SomeEvent $event)
+    public function handle(AccidentStatusChanged $event)
     {
-        //
+        History::create([
+            'status_id' => $event->getAccident()->status_id,
+            'historyable_id' => $event->getAccident()->id,
+            'historyable_type' => get_class($event->getAccident()),
+            'commentary' => $event->getCommentary(),
+        ]);
     }
+
 }

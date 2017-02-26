@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCommentsTable extends Migration
+class CreateHospitalsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,11 +18,13 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('hospitals', function (Blueprint $table) {
             $table->increments('id');
-            $table->morphs('commentable');
-            $table->integer('created_by', false, true)->default(0)->index();
-            $table->text('texts')->default('');
+            $table->string('title')->default('')->index();
+            $table->text('description')->default('');
+            $table->string('ref_key')->default('');
+            $table->string('address')->default('');
+            $table->text('phones')->default('');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -35,6 +37,6 @@ class CreateCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('hospitals');
     }
 }

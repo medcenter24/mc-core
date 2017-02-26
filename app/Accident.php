@@ -7,8 +7,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Case|Accident|...
@@ -16,9 +14,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Class Accident
  * @package App
  */
-class Accident extends Model
+class Accident extends AccidentAbstract
 {
-    use SoftDeletes;
 
     protected $fillable = [
         'created_by',
@@ -67,7 +64,7 @@ class Accident extends Model
      */
     public function history()
     {
-        return $this->morphMany(AccidentStatusHistory::class, 'accident_status_histories');
+        return $this->morphMany(AccidentStatusHistory::class, 'historyable');
     }
 
     /**
@@ -77,5 +74,14 @@ class Accident extends Model
     public function patient()
     {
         return $this->belongsTo(Patient::class);
+    }
+
+    /**
+     * Accident report stored as a FormReport element (which use Assignment form template)
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function formReport()
+    {
+        return $this->belongsTo(FormReport::class);
     }
 }

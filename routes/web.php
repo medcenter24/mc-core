@@ -31,7 +31,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
 });
 
 Route::group(['prefix' => 'doctor', 'middleware' => ['auth', 'role:doctor']], function () {
-    Route::get('/', 'Doctor\MainController@index');
+    Route::get('/accidents', 'Doctor\AccidentsController@index');
+    Route::get('/accidents/{id}', 'Doctor\AccidentsController@show');
+    Route::patch('/accidents/{id}', 'Doctor\AccidentsController@update');
 });
 
 Route::group(['prefix' => 'director', 'middleware' => ['auth', 'role:director']], function () {

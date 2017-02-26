@@ -23,8 +23,8 @@ class DoctorAccident extends AccidentAbstract
     const STATUS_PAID = 'paid';
     const STATUS_CLOSED = 'closed';
 
-    protected $fillable = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_statusable_id'];
-    protected $visible = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_statusable_id'];
+    protected $fillable = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id'];
+    protected $visible = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id'];
 
     /**
      * Photos of the documents from the patient

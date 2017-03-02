@@ -30,6 +30,9 @@ class AccidentsController extends DoctorController
         $status = DoctorAccident::findOrFail($id);
         foreach ($status->getVisible() as $item) {
             if ($request->has($item)) {
+                if (!in_array($item, array_keys($request->rules()))) {
+                    return response('Unprocessable Entity', 422);
+                }
                 $status->$item = $request->get($item);
             }
         }

@@ -35,8 +35,11 @@ class AccidentsTest extends TestCase
 
     public function testIndex()
     {
+        $user = factory(User::class)->create();
+        $doctor = factory(Doctor::class)->create(['user_id' => $user->id]);
+
         $response = $this
-            ->actingAs(factory(User::class)->make())
+            ->actingAs($user)
             ->get('/doctor/accidents');
 
         $response->assertStatus(200)->assertJson([]);
@@ -162,10 +165,9 @@ class AccidentsTest extends TestCase
 
         $response->assertStatus(200);
 
-
         $response = $this
             ->actingAs($user)
-            ->patch('/doctor/accidents/' . $accident->id, ['city_id' => 1]
+            ->patch('/doctor/accidents/' . $accident->id, ['city_id' => 777]
                 , ['Accept' => 'application/json']);
 
         $response->assertStatus(422);

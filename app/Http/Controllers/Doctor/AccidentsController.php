@@ -16,7 +16,7 @@ class AccidentsController extends DoctorController
 
     public function index()
     {
-        return DoctorAccident::where('doctor_id', $this->doctor())->get();
+        return DoctorAccident::where('doctor_id', $this->doctor()->id)->get();
     }
 
     public function show($id)

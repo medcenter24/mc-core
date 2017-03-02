@@ -43,6 +43,7 @@ Route::group(['prefix' => 'director', 'middleware' => ['auth', 'role:director']]
     Route::resource('/cities', 'Director\CitiesController');
     Route::resource('/doctors', 'Director\DoctorsController');
     Route::resource('/diagnostics', 'Director\DiagnosticsController');
+    Route::resource('/diagnostic/categories', 'Director\Diagnostic\CategoriesController');
     Route::resource('/patients', 'Director\PatientsController');
     Route::resource('/services', 'Director\ServicesController');
     Route::resource('/assistants', 'Director\AssistantsController');

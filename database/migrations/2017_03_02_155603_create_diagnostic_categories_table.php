@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDiagnosticsTable extends Migration
+class CreateDiagnosticCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,11 +18,9 @@ class CreateDiagnosticsTable extends Migration
      */
     public function up()
     {
-        Schema::create('diagnostics', function (Blueprint $table) {
+        Schema::create('diagnostic_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('diagnostic_category_id')->default(0)->index();
-            $table->string('title')->default('')->index();
-            $table->text('description')->default('');
+            $table->string('title')->default('');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -35,6 +33,6 @@ class CreateDiagnosticsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('diagnostics');
+        Schema::dropIfExists('diagnostic_categories');
     }
 }

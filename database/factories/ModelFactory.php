@@ -85,11 +85,21 @@ $factory->define(\App\FormReport::class, function (\Faker\Generator $faker) {
     ];
 });
 
+$factory->define(\App\DiagnosticCategory::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->text(70),
+    ];
+});
+
 $factory->define(\App\Diagnostic::class, function (\Faker\Generator $faker) {
 
     return [
         'title' => $faker->text(20),
         'description' => $faker->text(),
+        'diagnostic_category_id' => function () {
+            return factory(\App\DiagnosticCategory::class)->create()->id;
+        }
     ];
 });
 

@@ -28,4 +28,9 @@ class Diagnostic extends Model
     {
         return $this->belongsTo(DoctorAccident::class);
     }
+
+    public function category()
+    {
+        return $this->hasOne(DiagnosticCategory::class);
+    }
 }

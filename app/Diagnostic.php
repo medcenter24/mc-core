@@ -21,8 +21,8 @@ class Diagnostic extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description'];
-    protected $visible = ['title', 'description'];
+    protected $fillable = ['title', 'description', 'diagnostic_category_id'];
+    protected $visible = ['title', 'description', 'diagnostic_category_id'];
 
     public function doctorAccident()
     {
@@ -31,6 +31,6 @@ class Diagnostic extends Model
 
     public function category()
     {
-        return $this->hasOne(DiagnosticCategory::class);
+        return $this->belongsTo(DiagnosticCategory::class);
     }
 }

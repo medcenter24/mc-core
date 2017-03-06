@@ -32,6 +32,7 @@ class StoreDiagnostic extends FormRequest
         return [
             'title' => 'required|min:1|max:70',
             'description' => 'required|max:255',
+            'diagnostic_category_id' => 'required|exists:diagnostic_categories,id',
         ];
     }
 }

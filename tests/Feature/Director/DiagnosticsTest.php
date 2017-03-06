@@ -8,6 +8,7 @@
 namespace Tests\Feature\Director;
 
 use App\Diagnostic;
+use App\DiagnosticCategory;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -51,10 +52,11 @@ class diagnosticsTest extends TestCase
         $response->assertStatus(422)->assertJson([
             'title' => ['The title field is required.'],
             'description' => ['The description field is required.'],
+            "diagnostic_category_id" => ["The diagnostic category id field is required."]
         ]);
 
         //
-        self::assertEquals('{"title":["The title field is required."],"description":["The description field is required."]}', $response->getContent());
+        self::assertEquals('{"title":["The title field is required."],"description":["The description field is required."],"diagnostic_category_id":["The diagnostic category id field is required."]}', $response->getContent());
     }
 
     public function testStore()
@@ -62,6 +64,7 @@ class diagnosticsTest extends TestCase
         $data = [
             'title' => 'Has already done',
             'description' => 'What about that title?',
+            'diagnostic_category_id' => factory(DiagnosticCategory::class)->create()->id
         ];
 
         $response = $this

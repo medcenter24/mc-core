@@ -32,6 +32,7 @@ class UpdateDiagnostic extends FormRequest
         return [
             'title' => 'min:1|max:70',
             'description' => 'min:1|max:255',
+            'diagnostic_category_id' => 'exists:diagnostic_categories',
         ];
     }
 }

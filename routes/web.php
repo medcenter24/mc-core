@@ -30,7 +30,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
     Route::resource('roles', 'Admin\RolesController');
 });
 
-Route::group(['prefix' => 'doctor', 'middleware' => ['auth', 'role:doctor']], function () {
+Route::group(['prefix' => 'doctor', 'middleware' => ['cors', 'auth', 'role:doctor']], function () {
     Route::get('/accidents', 'Doctor\AccidentsController@index');
     Route::get('/accidents/{id}', 'Doctor\AccidentsController@show');
     Route::patch('/accidents/{id}', 'Doctor\AccidentsController@update');

@@ -19,5 +19,8 @@ class DoctorsTableSeeder extends Seeder
     {
         Doctor::truncate();
         factory(Doctor::class, 10)->create();
+        factory(Doctor::class)->create([
+            'user_id' => \App\User::where('email', 'doctor@mail.com')->first()->id
+        ]);
     }
 }

@@ -1,6 +1,11 @@
 <?php
+/**
+ * Copyright (c) 2017.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
 
-namespace Illuminate\Auth\Middleware;
+namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Auth\AuthenticationException;
@@ -38,15 +43,7 @@ class Authenticate
      */
     public function handle($request, Closure $next, ...$guards)
     {
-        try {
-            $this->authenticate($guards);
-        } catch (AuthenticationException $e) {
-            if ($request->ajax()) {
-                return response('Unauthorized.', 401);
-            } else {
-                return redirect()->guest('auth/login');
-            }
-        }
+        $this->authenticate($guards);
 
         return $next($request);
     }

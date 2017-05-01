@@ -20,7 +20,7 @@ class DoctorController extends Controller
     protected function doctor()
     {
         if (!self::$doctor) {
-            self::$doctor = Doctor::where('user_id', auth()->user()->id)->first();
+            self::$doctor = Doctor::where('user_id', auth()->user()->id)->firstOrFail();
         }
         return self::$doctor;
     }

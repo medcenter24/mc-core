@@ -186,6 +186,7 @@ return [
         // media manager
         Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
         \App\Providers\RoleServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
     ],
 
     /*

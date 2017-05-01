@@ -10,8 +10,21 @@ namespace App\Services;
 
 use App\User;
 
+/**
+ * Permissions and role interface
+ *
+ * Class RoleService
+ * @package App\Services
+ */
 class RoleService
 {
+    /**
+     * Check that user has role permissions
+     *
+     * @param User $user
+     * @param string $role
+     * @return mixed
+     */
     public function hasRole(User $user, string $role)
     {
         return $user->roles()->where('title', $role)->count();

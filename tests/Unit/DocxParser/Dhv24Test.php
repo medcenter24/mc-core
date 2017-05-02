@@ -71,7 +71,11 @@ class Dhv24Test extends TestCase
      */
     public function testCaseLoader()
     {
-        // todo
+        $path = $this->getSamplePath() . DIRECTORY_SEPARATOR . 't1.docx';
+        $service = $this->getService()->load($path);
+        $dom = $service->getDom();
+        $x = $dom->saveXML();
+        $b = $x;
     }
 
 }

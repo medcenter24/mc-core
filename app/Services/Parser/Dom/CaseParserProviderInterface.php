@@ -20,6 +20,6 @@ interface CaseParserProviderInterface extends DomParserProviderInterface
     public function getTitle();
     public function getPatientName();
     public function getDoctorName();
-    public function getSevices();
-    public function getSurvices();
+    public function getServices();
+    public function getSurveis();
 }

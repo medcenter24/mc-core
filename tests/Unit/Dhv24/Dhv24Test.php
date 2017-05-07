@@ -5,9 +5,12 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-namespace Tests\Unit\DocxParser;
+namespace Tests\Unit\Dhv24;
 
+use App\Helpers\Arr;
 use App\Services\DocxReader\SimpleDocxReaderService;
+use App\Services\DomDocumentService;
+use App\Services\ExtractTableFromArrayService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -26,22 +29,19 @@ class Dhv24Test extends TestCase
      */
     private $service;
 
+    public function setUp()
+    {
+        parent::setUp();
+        $this->service = new SimpleDocxReaderService();
+    }
+
     protected function getSamplePath()
     {
         if (!$this->samplePath) {
-            $this->samplePath = __DIR__ . DIRECTORY_SEPARATOR . 'dhv24';
+            $this->samplePath = __DIR__ . DIRECTORY_SEPARATOR . 'samples';
         }
 
         return $this->samplePath;
-    }
-
-    protected function getService()
-    {
-        if (!$this->service){
-            $this->service = new SimpleDocxReaderService();
-        }
-
-        return $this->service;
     }
 
     /**
@@ -50,7 +50,7 @@ class Dhv24Test extends TestCase
     public function testImages()
     {
         $path = $this->getSamplePath() . DIRECTORY_SEPARATOR . 't1.docx';
-        $img = $this->getService()->load($path)->getImages();
+        $img = $this->service->load($path)->getImages();
         self::assertCount(4, $img, 'In this document 4 images');
     }
 
@@ -60,8 +60,8 @@ class Dhv24Test extends TestCase
     public function testRead()
     {
         $path = $this->getSamplePath() . DIRECTORY_SEPARATOR . 't1.docx';
-        $this->getService()->load($path);
-        self::assertContains('NIF: B55570451', $this->getService()->getText(), 'This text is correct');
+        $this->service->load($path);
+        self::assertContains('NIF: B55570451', $this->service->getText(), 'This text is correct');
     }
 
     /**
@@ -72,13 +72,43 @@ class Dhv24Test extends TestCase
     public function testCaseLoader()
     {
         $path = $this->getSamplePath() . DIRECTORY_SEPARATOR . 't1.docx';
-        $service = $this->getService()->load($path);
+        $service = $this->service->load($path);
+
+        // it should be report invoice
+        self::assertContains('MEDICAL REPORT, INVOICE', $this->service->getText(), 'This is correct invoice');
+
         $dom = $service->getDom();
 
-        $v = $this->dom_to_array($dom);
+        $domService = new DomDocumentService([
+            DomDocumentService::STRIP_STRING => true,
+            DomDocumentService::CONFIG_WITHOUT_ATTRIBUTES => true,
+        ]);
 
-        $x = $dom->saveHTML();
+        $arrayDocument = $domService->toArray($dom);
 
-        $b = $x;
+        $tableExtractorService = new ExtractTableFromArrayService([
+            ExtractTableFromArrayService::CONFIG_TABLE => ['w:tbl'],
+            ExtractTableFromArrayService::CONFIG_ROW => ['w:tr'],
+            ExtractTableFromArrayService::CONFIG_CEIL => ['w:tc'],
+        ]);
+
+        $data = $tableExtractorService->extract($arrayDocument);
+        $this->assertEquals(5, count($data[ExtractTableFromArrayService::TABLES]), 'Document has 5 tables on the top');
+
+        $tables = $data[ExtractTableFromArrayService::TABLES];
+
+        // consists of the assistance, patient, referral number
+        $firstTableContainer = $tableExtractorService->extract($tables[1][2]);
+        $firstTable = current($firstTableContainer[ExtractTableFromArrayService::TABLES]);
+        $assistantInfo = current(array_shift($firstTable));
+        $this->assertEquals(2, count($assistantInfo), 'Assistant info includes 2 arrays');
+
+        $assistantMarker = Arr::multiArrayToString(array_shift($assistantInfo));
+        $this->assertEquals('A cargo de compañia', $assistantMarker);
+
+        // assistant information for case
+        $assistant = Arr::multiArrayToString(array_shift($assistantInfo));
+
+        $v = $firstTable;
     }
 }

@@ -8,13 +8,12 @@
 namespace Tests\Unit\DocxParser;
 
 use App\Services\DocxReader\SimpleDocxReaderService;
+use App\Services\Parser\SmartTextParser;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
-class Dhv24Test extends TestCase
+class TextStructureTest extends TestCase
 {
-    use DatabaseMigrations;
-
     /**
      * Path to the folder with docx examples
      * @var string
@@ -29,29 +28,10 @@ class Dhv24Test extends TestCase
     protected function getSamplePath()
     {
         if (!$this->samplePath) {
-            $this->samplePath = __DIR__ . DIRECTORY_SEPARATOR . 'dhv24';
+            $this->samplePath = __DIR__ . DIRECTORY_SEPARATOR . 'samples';
         }
 
         return $this->samplePath;
-    }
-
-    protected function getService()
-    {
-        if (!$this->service){
-            $this->service = new SimpleDocxReaderService();
-        }
-
-        return $this->service;
-    }
-
-    /**
-     * Looking for images in document
-     */
-    public function testImages()
-    {
-        $path = $this->getSamplePath() . DIRECTORY_SEPARATOR . 't1.docx';
-        $img = $this->getService()->load($path)->getImages();
-        self::assertCount(4, $img, 'In this document 4 images');
     }
 
     /**
@@ -59,8 +39,15 @@ class Dhv24Test extends TestCase
      */
     public function testRead()
     {
-        $path = $this->getSamplePath() . DIRECTORY_SEPARATOR . 't1.docx';
-        $this->getService()->load($path);
+        $path = $this->getSamplePath() . DIRECTORY_SEPARATOR . 'structure.xml';
+        $doc = new \DOMDocument();
+        $doc->loadXML(file_get_contents($path), LIBXML_NOBLANKS | LIBXML_NOCDATA | LIBXML_NOEMPTYTAG | LIBXML_NSCLEAN | LIBXML_PARSEHUGE | LIBXML_PEDANTIC );
+
+        $parser = new SmartTextParser();
+        $parser->loadDom($doc);
+        $arrayContent = $parser->getTextMap();
+dd($arrayContent);
+        $a = $doc->saveHTML();
         self::assertContains('NIF: B55570451', $this->getService()->getText(), 'This text is correct');
     }
 
@@ -71,7 +58,7 @@ class Dhv24Test extends TestCase
      */
     public function testCaseLoader()
     {
-        $path = $this->getSamplePath() . DIRECTORY_SEPARATOR . 't1.docx';
+        $path = $this->getSamplePath() . DIRECTORY_SEPARATOR . 'str';
         $service = $this->getService()->load($path);
         $dom = $service->getDom();
 

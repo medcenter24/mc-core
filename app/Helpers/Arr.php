@@ -28,12 +28,29 @@ class Arr
     /**
      * Create new array, where 'key' from first row and 'values' all other rows
      * @param $arr
+     * @param array $arr
+     * @return array
      */
-    public static function convertToKeyValue (array $arr) {
-        // 1. keys
+    public static function convertTableToKeyValue (array $arr)
+    {
         $keys = array_shift($arr);
-        foreach ($keys as $key) {
+        return array_map(function ($val) use ($keys) {
+            return array_combine($keys, $val);
+        }, $arr);
+    }
 
+    public static function collectTableRows (array $arr)
+    {
+        $result = [];
+        foreach (self::convertTableToKeyValue($arr) as $row) {
+            foreach ($row as $key => $value) {
+                if (!isset($result[$key])) {
+                    $result[$key] = [];
+                }
+                $result[$key][] = $value;
+            }
         }
+
+        return $result;
     }
 }

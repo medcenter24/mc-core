@@ -125,6 +125,7 @@ class Dhv24Test extends TestCase
             return Arr::multiArrayToString($row);
         }, $investigations);
 
+        $mergedInvestigations = array_values($mergedInvestigations);
         $this->assertContains('Причина обращения / Motivo de visita', $mergedInvestigations[0]);
         $this->assertContains('Данные осмотра / Exploraci ó n fisica :', $mergedInvestigations[1]);
         $this->assertContains('Дополнительные исследования/ Pruebas complementarias :', $mergedInvestigations[2]);
@@ -132,6 +133,10 @@ class Dhv24Test extends TestCase
         $this->assertCount(5, $mergedInvestigations);
 
         $diagnostico = $tableExtractorService->extract($tables[1][4][0]);
+        $diagnostics = [];
+        foreach($diagnostico[ExtractTableFromArrayService::TABLES][0][1][0] as $row) {
+            $diagnostics[] = Arr::multiArrayToString($row);
+        }
         $b= $caseInfoArray;
     }
 }

@@ -137,6 +137,8 @@ class Dhv24Test extends TestCase
         foreach($diagnostico[ExtractTableFromArrayService::TABLES][0][1][0] as $row) {
             $diagnostics[] = Arr::multiArrayToString($row);
         }
+
+        // todo services
         $b= $caseInfoArray;
     }
 }

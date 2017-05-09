@@ -109,6 +109,29 @@ class Dhv24Test extends TestCase
         // assistant information for case
         $assistant = Arr::multiArrayToString(array_shift($assistantInfo));
 
-        $v = $firstTable;
+        $caseInfoTable = array_map(function ($val1) {
+            return array_map(function ($val2) {
+                return Arr::multiArrayToString($val2);
+            }, $val1);
+        }, $firstTable);
+
+        // name, ref_num, dhv_ref_num
+        $caseInfoArray = Arr::collectTableRows($caseInfoTable);
+
+        // investigation table
+        $investigations = $tables[1][3][0];
+        // reason, condition, addition, advices
+        $mergedInvestigations = array_map(function ($row) {
+            return Arr::multiArrayToString($row);
+        }, $investigations);
+
+        $this->assertContains('Причина обращения / Motivo de visita', $mergedInvestigations[0]);
+        $this->assertContains('Данные осмотра / Exploraci ó n fisica :', $mergedInvestigations[1]);
+        $this->assertContains('Дополнительные исследования/ Pruebas complementarias :', $mergedInvestigations[2]);
+        $this->assertContains('Лечение и рекомендации / Tratamiento e recomendaciones :', $mergedInvestigations[3]);
+        $this->assertCount(5, $mergedInvestigations);
+
+        $diagnostico = $tableExtractorService->extract($tables[1][4][0]);
+        $b= $caseInfoArray;
     }
 }

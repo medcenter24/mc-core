@@ -8,6 +8,7 @@
 namespace Tests\Unit\Dhv24;
 
 use App\Helpers\Arr;
+use App\Helpers\Number;
 use App\Services\DocxReader\SimpleDocxReaderService;
 use App\Services\DomDocumentService;
 use App\Services\ExtractTableFromArrayService;
@@ -139,6 +140,39 @@ class Dhv24Test extends TestCase
         }
 
         // todo services
+        $services = [];
+        foreach ($tables[2] as $row) {
+            $this->assertEquals(2, count($row));
+            $service = [];
+            foreach ($row as $key => $col) {
+                $service[$key] = Arr::multiArrayToString($col);
+            }
+            $services[] = $service;
+        }
+
+        // check sum of services with total value
+
+        $total = [];
+        foreach ($tables[3][0] as $col) {
+            $total[] = Arr::multiArrayToString($col);
+        }
+
+        self::assertEquals('TOTAL IMPORT, EUR', $total[1]);
+
+        $totalValue = Number::toNumber($total[2]);
+
+        $amountFromServices = 0;
+        foreach ($services as $service) {
+            $amountFromServices += Number::toNumber($service[1]);
+        }
+
+
+        self::assertEquals($totalValue, $amountFromServices);
+
+        // date, place, visit time
+        $orgInfoTitle = Arr::multiArrayToString($tables[4][0][0]);
+        $orgInfoValue = Arr::multiArrayToString($tables[4][0][1]);
+
         $b= $caseInfoArray;
     }
 }

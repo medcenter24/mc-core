@@ -19,11 +19,6 @@ class Importer extends Configurable
     {
         foreach ($this->getOption('registeredDataProviders') as $registeredProvider) {
 
-            Log::debug('Checking that provider match to path', [
-                'provider' => $registeredProvider,
-                'path' => $path
-            ]);
-
             if ($provider = $registeredProvider->load($path)->check()) {
 
                 Log::debug('Provider has matched path', [
@@ -32,6 +27,12 @@ class Importer extends Configurable
                 ]);
 
                 $provider->import();
+            } else {
+
+                Log::debug('Provider does not match to path', [
+                    'provider' => $registeredProvider,
+                    'path' => $path
+                ]);
             }
         }
     }

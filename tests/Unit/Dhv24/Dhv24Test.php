@@ -13,17 +13,13 @@ use App\Services\DocxReader\SimpleDocxReaderService;
 use App\Services\DomDocumentService;
 use App\Services\ExtractTableFromArrayService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Tests\SamplePath;
 use Tests\TestCase;
 
 class Dhv24Test extends TestCase
 {
     use DatabaseMigrations;
-
-    /**
-     * Path to the folder with docx examples
-     * @var string
-     */
-    private $samplePath = '';
+    use SamplePath;
 
     /**
      * @var SimpleDocxReaderService
@@ -34,15 +30,6 @@ class Dhv24Test extends TestCase
     {
         parent::setUp();
         $this->service = new SimpleDocxReaderService();
-    }
-
-    protected function getSamplePath()
-    {
-        if (!$this->samplePath) {
-            $this->samplePath = __DIR__ . DIRECTORY_SEPARATOR . 'samples';
-        }
-
-        return $this->samplePath;
     }
 
     /**

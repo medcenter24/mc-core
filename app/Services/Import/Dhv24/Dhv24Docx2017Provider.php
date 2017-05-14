@@ -139,6 +139,11 @@ class Dhv24Docx2017Provider extends DataProvider
 
         $patient = $this->getPatient(current($caseInfoArray[self::PATIENT_NAME]));
 
+        // reason, condition, addition, advices
+        $mergedInvestigations = array_map(function ($row) {
+            return Arr::multiArrayToString($row);
+        }, $tables[1][3][0]);
+
         return $accident;
     }
 

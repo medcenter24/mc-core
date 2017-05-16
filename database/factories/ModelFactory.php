@@ -154,6 +154,7 @@ $factory->define(\App\DoctorAccident::class, function (\Faker\Generator $faker) 
         'city_id' => $faker->numberBetween(1, 10),
         'status' => \App\DoctorAccident::STATUS_NEW,
         'diagnose' => $faker->paragraphs(3, true),
+        'investigation' => $faker->paragraphs(3, true),
         'accident_status_id' => function () {
             return factory(\App\AccidentStatus::class)->create()->id;
         },

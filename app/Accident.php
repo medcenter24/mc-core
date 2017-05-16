@@ -84,4 +84,24 @@ class Accident extends AccidentAbstract
     {
         return $this->belongsTo(FormReport::class);
     }
+
+    /**
+     * by default it could be defined by the director
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function serviceable()
+    {
+        return $this->morphMany(DoctorService::class, 'serviceable');
+    }
+
+    /**
+     * by default it could be defined by the director
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function surveable()
+    {
+        return $this->morphMany(DoctorSurvey::class, 'surveable');
+    }
 }

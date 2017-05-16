@@ -29,7 +29,8 @@ class Docx2017ProiderTest extends TestCase
         $provider = new Dhv24Docx2017Provider();
         $provider->load($this->getSampleFile('t1.docx'));
         self::assertTrue($provider->check(), 'File content is checked');
-        $accident = $provider->import();
+        $provider->import();
+        $accident = $provider->getLastAccident();
         dd($accident);
     }
 }

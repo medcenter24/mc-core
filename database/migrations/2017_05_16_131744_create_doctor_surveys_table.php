@@ -1,15 +1,10 @@
 <?php
-/**
- * Copyright (c) 2017.
- *
- * @author Alexander Zagovorichev <zagovorichev@gmail.com>
- */
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDoctorServicesTable extends Migration
+class CreateDoctorSurveysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,13 +13,12 @@ class CreateDoctorServicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('doctor_services', function (Blueprint $table) {
+        Schema::create('doctor_surveys', function (Blueprint $table) {
             $table->increments('id');
-            $table->morphs('serviceable');
+            $table->morphs('surveable');
             $table->unsignedInteger('created_by')->default(0)->index();
             $table->string('title')->default('')->index();
             $table->text('description')->default('');
-            $table->decimal('price', 8, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -37,6 +31,6 @@ class CreateDoctorServicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('doctor_services');
+        Schema::dropIfExists('doctor_surveys');
     }
 }

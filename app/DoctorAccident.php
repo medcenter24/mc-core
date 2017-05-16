@@ -23,8 +23,8 @@ class DoctorAccident extends AccidentAbstract
     const STATUS_PAID = 'paid';
     const STATUS_CLOSED = 'closed';
 
-    protected $fillable = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id'];
-    protected $visible = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id'];
+    protected $fillable = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id', 'investigation'];
+    protected $visible = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id', 'investigation'];
 
     /**
      * Photos of the documents from the patient
@@ -54,5 +54,28 @@ class DoctorAccident extends AccidentAbstract
     public function statusHistory()
     {
         return $this->morphMany(AccidentStatusHistory::class, 'historyable');
+    }
+
+    /**
+     * Each DoctorAccident is able to has own services, created by a doctor
+     * but by default it could be defined by the director
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function serviceable()
+    {
+        return $this->morphMany(DoctorService::class, 'serviceable');
+    }
+
+    /**
+     * As same as serviceable()
+     * each doctorAccident is able to has his own survey
+     * but by default it could be defined by the director
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function surveable()
+    {
+        return $this->morphMany(DoctorSurvey::class, 'surveable');
     }
 }

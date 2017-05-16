@@ -19,11 +19,19 @@ use App\Services\DomDocumentService;
 use App\Services\ExtractTableFromArrayService;
 use App\Services\Import\DataProvider;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class Dhv24Docx2017Provider extends DataProvider
 {
 
     const PATIENT_NAME = 'P aciente , fecha de nacimiento';
+    const ASSISTANCE_REF_NUM = 'Assistance Ref. num.';
+    const DHV_REF_NUM = 'Ref.num. Doctor Home Visit';
+
+    const INVESTIGATION_SYMPTOMS = 'symptoms';
+    const INVESTIGATION_ADDITIONAL_SURVEY = 'additional_survey';
+    const INVESTIGATION_ADDITIONAL_INVESTIGATION = 'additional_investigation';
+    const INVESTIGATION_DIAGNOSE = 'diagnose';
 
     /**
      * @var SimpleDocxReaderService
@@ -40,6 +48,41 @@ class Dhv24Docx2017Provider extends DataProvider
      */
     private $domService;
 
+    /**
+     * Data about case
+     * @var array
+     */
+    private $investigations = [
+        'Причина обращения / Motivo de visita' => self::INVESTIGATION_SYMPTOMS,
+        'Данные осмотра / Exploraci ó n fisica :' => self::INVESTIGATION_ADDITIONAL_SURVEY,
+        'Дополнительные исследования/ Pruebas complementarias :' => self::INVESTIGATION_ADDITIONAL_INVESTIGATION,
+        'Лечение и рекомендации / Tratamiento e recomendaciones :' => self::INVESTIGATION_DIAGNOSE,
+    ];
+
+    /** Generated models from the imported file */
+
+    /**
+     * main accident
+     * @var Accident
+     */
+    private $accident;
+
+    /**
+     * @var DoctorAccident
+     */
+    private $doctorAccident;
+
+    /**
+     * @var Assistant
+     */
+    private $assistant;
+
+    /**
+     * Dhv24Docx2017Provider constructor.
+     * @param DocxReaderInterface|null $readerService
+     * @param null $tableExtractorService
+     * @param null $domService
+     */
     public function __construct(
         DocxReaderInterface $readerService = null,
         $tableExtractorService = null,
@@ -70,6 +113,10 @@ class Dhv24Docx2017Provider extends DataProvider
                 DomDocumentService::CONFIG_WITHOUT_ATTRIBUTES => true,
             ]);
         }
+
+        // Generate new models for import
+        $this->accident = new Accident();
+        $this->doctorAccident = new DoctorAccident();
     }
 
     public function load($path = '')
@@ -90,6 +137,8 @@ class Dhv24Docx2017Provider extends DataProvider
             'Fecha, lugar de visita SPAIN',
             'A cargo de compañia',
             'Paciente , fecha de nacimiento',
+            'Ref.num. Doctor Home Visit',
+            'Assistance Ref. num.',
         ];
 
         $text = $this->readerService->getText();
@@ -106,14 +155,8 @@ class Dhv24Docx2017Provider extends DataProvider
         return true;
     }
 
-    /**
-     * @return Accident
-     */
     public function import()
     {
-        $accident = new Accident();
-        $doctorAccident = new DoctorAccident();
-
         $data = $this->tableExtractorService->extract($this->domService->toArray($this->readerService->getDom()));
         $tables = $data[ExtractTableFromArrayService::TABLES];
 
@@ -126,7 +169,7 @@ class Dhv24Docx2017Provider extends DataProvider
         array_shift($assistantInfo);
         $assistant = Arr::multiArrayToString(array_shift($assistantInfo));
 
-        $accident->assistant_id = $this->getAssistant($assistant);
+        $this->accident->assistant_id = $this->getAssistant($assistant);
 
         $caseInfoTable = array_map(function ($val1) {
             return array_map(function ($val2) {
@@ -137,16 +180,72 @@ class Dhv24Docx2017Provider extends DataProvider
         // name, ref_num, dhv_ref_num
         $caseInfoArray = Arr::collectTableRows($caseInfoTable);
 
-        $patient = $this->getPatient(current($caseInfoArray[self::PATIENT_NAME]));
+        $this->accident->ref_num = str_replace(' ', '', current($caseInfoArray[self::DHV_REF_NUM]));
+        $this->accident->assistant_ref_num = str_replace(' ', '', current($caseInfoArray[self::ASSISTANCE_REF_NUM]));
+        $this->accident->patient_id = $this->getPatient(current($caseInfoArray[self::PATIENT_NAME]));
 
-        // reason, condition, addition, advices
-        $mergedInvestigations = array_map(function ($row) {
-            return Arr::multiArrayToString($row);
-        }, $tables[1][3][0]);
+        $this->loadAccidentInvestigations($tables[1][3][0]);
 
-        return $accident;
+        $this->accident->save();
+        $this->doctorAccident->save();
+
+        return true;
     }
 
+    /**
+     * Return last imported accident
+     */
+    public function getLastAccident()
+    {
+        $this->accident;
+    }
+
+    /**
+     * reason, condition, addition, advices
+     * @param array $data
+     */
+    private function loadAccidentInvestigations(array $data)
+    {
+        $mergedInvestigations = array_map(function ($row) {
+            return Arr::multiArrayToString($row);
+        }, $data);
+
+        $founded = [];
+        foreach ($this->investigations as $investigation => $key) {
+            foreach ($mergedInvestigations as $mergedInvestigation) {
+                if (mb_strpos($mergedInvestigation, $investigation) !== false) {
+                    $founded[] = $key;
+                    $withoutKey = str_replace($key, '', $mergedInvestigation);
+                    switch ($key) {
+                        case self::INVESTIGATION_SYMPTOMS:
+                            $this->accident->symptoms .= ($this->accident->symptoms ? "\n" : '') . $withoutKey;
+                            break;
+                        case self::INVESTIGATION_ADDITIONAL_SURVEY:
+                            $survey = DoctorSurvey();
+                            // add as a new survey?
+                            //$this->doctorAccident->add surveys? .= ($this->doctorAccident->diagnose ? "\n" : '') . $withoutKey;
+                            break;
+                        case self::INVESTIGATION_ADDITIONAL_INVESTIGATION:
+                            $this->doctorAccident->investigation .= ($this->doctorAccident->investigation ? "\n" : '') . $withoutKey;;
+                            break;
+                        case self::INVESTIGATION_DIAGNOSE:
+                            $this->doctorAccident->diagnose .= ($this->doctorAccident->diagnose ? "\n" : '') . $withoutKey;
+                            break;
+                        default:
+                            Log::error('Investigation key is not defined (should be added as a case)', ['key' => $key]);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * With returning of the identifier will initialize $this->assistant
+     * which could be used to update assistant
+     *
+     * @param string $assistantStr
+     * @return int
+     */
     private function getAssistant($assistantStr = '')
     {
         $title = $comment = '';
@@ -156,23 +255,25 @@ class Dhv24Docx2017Provider extends DataProvider
             $comment = trim($matches[2], '., ');
         }
 
-        $assistant = Assistant::firstOrNew(['title' => $title]);
+        $this->assistant = Assistant::firstOrNew(['title' => $title]);
 
-        if (empty($assistant->comment) && $comment){
-            $assistant->comment = $comment;
-            $assistant->save();
+        if (empty($this->assistant->comment) && $comment){
+            $this->assistant->comment = $comment;
+            $this->assistant->save();
         }
 
-        return $assistant->id;
+        return $this->assistant->id;
     }
 
     private function getPatient($patientStr = '')
     {
         list($name, $birthday) = explode(',', $patientStr);
 
-        return Patient::firstOrCreate([
+        $this->patient = Patient::firstOrCreate([
             'name' => trim(ucfirst(strtolower($name))),
             'birthday' => strtotime($birthday)
         ]);
+
+        return $this->patient->id;
     }
 }

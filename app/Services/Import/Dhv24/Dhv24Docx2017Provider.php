@@ -11,6 +11,7 @@ namespace App\Services\Import\Dhv24;
 use App\Accident;
 use App\Assistant;
 use App\DoctorAccident;
+use App\DoctorSurvey;
 use App\Helpers\Arr;
 use App\Patient;
 use app\Services\DocxReader\DocxReaderInterface;
@@ -19,7 +20,6 @@ use App\Services\DomDocumentService;
 use App\Services\ExtractTableFromArrayService;
 use App\Services\Import\DataProvider;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class Dhv24Docx2017Provider extends DataProvider
 {
@@ -113,10 +113,6 @@ class Dhv24Docx2017Provider extends DataProvider
                 DomDocumentService::CONFIG_WITHOUT_ATTRIBUTES => true,
             ]);
         }
-
-        // Generate new models for import
-        $this->accident = new Accident();
-        $this->doctorAccident = new DoctorAccident();
     }
 
     public function load($path = '')
@@ -138,7 +134,7 @@ class Dhv24Docx2017Provider extends DataProvider
             'A cargo de compañia',
             'Paciente , fecha de nacimiento',
             'Ref.num. Doctor Home Visit',
-            'Assistance Ref. num.',
+            'Assistance Ref.num.',
         ];
 
         $text = $this->readerService->getText();
@@ -157,6 +153,11 @@ class Dhv24Docx2017Provider extends DataProvider
 
     public function import()
     {
+        // Generate new models for import
+        $this->accident = $this->blankAccident();
+        $this->doctorAccident = $this->blankDoctorAccident();
+
+
         $data = $this->tableExtractorService->extract($this->domService->toArray($this->readerService->getDom()));
         $tables = $data[ExtractTableFromArrayService::TABLES];
 
@@ -221,9 +222,11 @@ class Dhv24Docx2017Provider extends DataProvider
                             $this->accident->symptoms .= ($this->accident->symptoms ? "\n" : '') . $withoutKey;
                             break;
                         case self::INVESTIGATION_ADDITIONAL_SURVEY:
-                            $survey = DoctorSurvey();
-                            // add as a new survey?
-                            //$this->doctorAccident->add surveys? .= ($this->doctorAccident->diagnose ? "\n" : '') . $withoutKey;
+                            $survey = new DoctorSurvey();
+                            $survey->title = 'Imported';
+                            $survey->description = $withoutKey;
+                            $survey->save();
+                            $this->accident->surveable()->attach($survey);
                             break;
                         case self::INVESTIGATION_ADDITIONAL_INVESTIGATION:
                             $this->doctorAccident->investigation .= ($this->doctorAccident->investigation ? "\n" : '') . $withoutKey;;

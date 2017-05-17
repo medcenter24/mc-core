@@ -104,4 +104,9 @@ class Accident extends AccidentAbstract
     {
         return $this->morphMany(DoctorSurvey::class, 'surveable');
     }
+
+    public function caseable()
+    {
+        return $this->morphTo();
+    }
 }

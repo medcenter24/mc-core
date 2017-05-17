@@ -13,6 +13,7 @@ use App\Assistant;
 use App\DoctorAccident;
 use App\DoctorSurvey;
 use App\Helpers\Arr;
+use App\Helpers\BlankModels;
 use App\Patient;
 use app\Services\DocxReader\DocxReaderInterface;
 use App\Services\DocxReader\SimpleDocxReaderService;
@@ -53,7 +54,7 @@ class Dhv24Docx2017Provider extends DataProvider
      * @var array
      */
     private $investigations = [
-        'Причина обращения / Motivo de visita' => self::INVESTIGATION_SYMPTOMS,
+        'Причина обращения / Motivo de visita :' => self::INVESTIGATION_SYMPTOMS,
         'Данные осмотра / Exploraci ó n fisica :' => self::INVESTIGATION_ADDITIONAL_SURVEY,
         'Дополнительные исследования/ Pruebas complementarias :' => self::INVESTIGATION_ADDITIONAL_INVESTIGATION,
         'Лечение и рекомендации / Tratamiento e recomendaciones :' => self::INVESTIGATION_DIAGNOSE,
@@ -154,9 +155,11 @@ class Dhv24Docx2017Provider extends DataProvider
     public function import()
     {
         // Generate new models for import
-        $this->accident = $this->blankAccident();
-        $this->doctorAccident = $this->blankDoctorAccident();
+        $this->accident = BlankModels::defaultAccident();
+        $this->doctorAccident = BlankModels::defaultDoctorAccident();
+        $this->doctorAccident->status = DoctorAccident::STATUS_CLOSED;
 
+        $this->doctorAccident->accident()->save($this->accident);
 
         $data = $this->tableExtractorService->extract($this->domService->toArray($this->readerService->getDom()));
         $tables = $data[ExtractTableFromArrayService::TABLES];
@@ -198,7 +201,7 @@ class Dhv24Docx2017Provider extends DataProvider
      */
     public function getLastAccident()
     {
-        $this->accident;
+        return $this->accident;
     }
 
     /**
@@ -216,23 +219,22 @@ class Dhv24Docx2017Provider extends DataProvider
             foreach ($mergedInvestigations as $mergedInvestigation) {
                 if (mb_strpos($mergedInvestigation, $investigation) !== false) {
                     $founded[] = $key;
-                    $withoutKey = str_replace($key, '', $mergedInvestigation);
+                    $withoutKey = trim(str_replace($investigation, '', $mergedInvestigation));
                     switch ($key) {
                         case self::INVESTIGATION_SYMPTOMS:
-                            $this->accident->symptoms .= ($this->accident->symptoms ? "\n" : '') . $withoutKey;
+                            $this->accident->symptoms = $withoutKey;
                             break;
                         case self::INVESTIGATION_ADDITIONAL_SURVEY:
-                            $survey = new DoctorSurvey();
-                            $survey->title = 'Imported';
-                            $survey->description = $withoutKey;
-                            $survey->save();
-                            $this->accident->surveable()->attach($survey);
+                            $this->doctorAccident->surveable()->create([
+                                'title' => 'Imported',
+                                'description' => $withoutKey
+                            ]);
                             break;
                         case self::INVESTIGATION_ADDITIONAL_INVESTIGATION:
-                            $this->doctorAccident->investigation .= ($this->doctorAccident->investigation ? "\n" : '') . $withoutKey;;
+                            $this->doctorAccident->investigation = $withoutKey;;
                             break;
                         case self::INVESTIGATION_DIAGNOSE:
-                            $this->doctorAccident->diagnose .= ($this->doctorAccident->diagnose ? "\n" : '') . $withoutKey;
+                            $this->doctorAccident->diagnose = $withoutKey;
                             break;
                         default:
                             Log::error('Investigation key is not defined (should be added as a case)', ['key' => $key]);
@@ -273,7 +275,7 @@ class Dhv24Docx2017Provider extends DataProvider
         list($name, $birthday) = explode(',', $patientStr);
 
         $this->patient = Patient::firstOrCreate([
-            'name' => trim(ucfirst(strtolower($name))),
+            'name' => trim(title_case($name)),
             'birthday' => strtotime($birthday)
         ]);
 

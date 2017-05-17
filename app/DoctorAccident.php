@@ -26,6 +26,11 @@ class DoctorAccident extends AccidentAbstract
     protected $fillable = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id', 'investigation'];
     protected $visible = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id', 'investigation'];
 
+    public function accident()
+    {
+        return $this->morphOne(Accident::class, 'caseable');
+    }
+
     /**
      * Photos of the documents from the patient
      *

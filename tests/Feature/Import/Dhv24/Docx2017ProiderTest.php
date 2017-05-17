@@ -7,6 +7,7 @@
 
 namespace Tests\Feature\Import\Dhv24;
 
+use App\DoctorAccident;
 use App\Services\Import\Dhv24\Dhv24Docx2017Provider;
 use Tests\SamplePath;
 use Tests\TestCase;
@@ -31,6 +32,26 @@ class Docx2017ProiderTest extends TestCase
         self::assertTrue($provider->check(), 'File content is checked');
         $provider->import();
         $accident = $provider->getLastAccident();
+
+        /** Accident data */
+        self::assertEquals(1, $accident->id, 'Accident is stored');
+        self::assertEquals(0, $accident->parent_id, 'Parent is 0');
+        self::assertEquals(1, $accident->patient_id, 'Patient has been loaded');
+        self::assertEquals(1, $accident->accident_type_id, 'Accident type selected');
+        self::assertEquals(1, $accident->accident_status_id, 'Accident status selected');
+        self::assertEquals(1, $accident->assistant_id, 'Assistant has been loaded');
+        self::assertNotEquals('FakeAssistantRef', $accident->assistant_ref_num, 'Assistant referral number has been parsed');
+        self::assertEquals(1, $accident->caseable_id, 'Caseable type is selected');
+        self::assertEquals(DoctorAccident::class, $accident->caseable_id, 'Caseable type is DoctorAccident');
+        self::assertNotEquals('Fake-import-num', $accident->ref_num, 'Accident Referral number is correct');
+        self::assertNotEquals('FakeImport', $accident->title, 'Accident title is correct');
+        self::assertNotEquals('FakeAddress', $accident->address, 'Address is presented');
+        self::assertNotEquals('FakeContacts', $accident->contacts, 'Contacts is presented');
+        self::assertNotEquals('FakeSymptoms', $accident->symptoms, 'Symptoms is presented');
+
+        /** DoctorAccident data */
+        $doctorAccident = $accident->caseable();
+
         dd($accident);
     }
 }

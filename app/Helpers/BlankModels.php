@@ -5,18 +5,19 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-namespace App\Services\Import\Helpers;
+namespace App\Helpers;
 
 
 use App\Accident;
 use App\DoctorAccident;
 
-class Blank
+class BlankModels
 {
     /**
+     * New blank accident
      * @return Accident
      */
-    public static function blankAccident()
+    public static function accident()
     {
         return factory(Accident::class)->create([
             'created_by' => 0,
@@ -27,7 +28,7 @@ class Blank
             'assistant_id' => 0,
             'assistant_ref_num' => 'FakeAssistantRef',
             'caseable_id' => 0,
-            'caseable_type' => \App\DoctorAccident::class,
+            'caseable_type' => '',
             'ref_num' => 'Fake-import-num',
             'title' => 'FakeImport',
             'city_id' => 0,
@@ -38,23 +39,25 @@ class Blank
     }
 
     /**
+     * todo redundant
+     * Accident with default values
      * @return Accident
      */
     public static function defaultAccident()
     {
-        $accident = self::blankAccident();
+        $accident = self::accident();
         return $accident;
     }
 
     /**
      * @return DoctorAccident
      */
-    public static function blankDoctorAccident()
+    public static function doctorAccident()
     {
         return factory(DoctorAccident::class)->create([
             'doctor_id' => 0,
             'city_id' => 0,
-            'status' => \App\DoctorAccident::STATUS_CLOSED,
+            'status' => DoctorAccident::STATUS_NEW,
             'diagnose' => 'FakeDiagnose',
             'investigation' => 'FakeInvestigation',
             'accident_status_id' => 0,
@@ -66,7 +69,7 @@ class Blank
      */
     public static function defaultDoctorAccident()
     {
-        $doctorAccident = self::blankDoctorAccident();
+        $doctorAccident = self::doctorAccident();
         return $doctorAccident;
     }
 }

@@ -36,6 +36,7 @@ class CreateDoctorAccidentsTable extends Migration
             $table->text('diagnose')->default('');
             $table->text('investigation')->default('');
             $table->unsignedInteger('accident_statusable_id')->default(0)->index();
+            $table->timestampTz('visit_time')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

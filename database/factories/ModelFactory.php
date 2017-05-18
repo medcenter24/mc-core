@@ -158,6 +158,7 @@ $factory->define(\App\DoctorAccident::class, function (\Faker\Generator $faker) 
         'accident_status_id' => function () {
             return factory(\App\AccidentStatus::class)->create()->id;
         },
+        'visit_time' => new DateTime(),
     ];
 });
 

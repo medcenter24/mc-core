@@ -23,8 +23,8 @@ class DoctorAccident extends AccidentAbstract
     const STATUS_PAID = 'paid';
     const STATUS_CLOSED = 'closed';
 
-    protected $fillable = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id', 'investigation'];
-    protected $visible = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id', 'investigation'];
+    protected $fillable = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id', 'investigation', 'visit_time'];
+    protected $visible = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id', 'investigation', 'visit_time'];
 
     public function accident()
     {
@@ -48,7 +48,7 @@ class DoctorAccident extends AccidentAbstract
      */
     public function diagnostics()
     {
-        return $this->belongsToMany(Diagnostic::class);
+        return $this->morphToMany(Diagnostic::class, 'diagnosticable');
     }
 
     /**

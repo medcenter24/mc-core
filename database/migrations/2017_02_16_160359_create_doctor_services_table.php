@@ -20,7 +20,6 @@ class CreateDoctorServicesTable extends Migration
     {
         Schema::create('doctor_services', function (Blueprint $table) {
             $table->increments('id');
-            $table->morphs('serviceable');
             $table->unsignedInteger('created_by')->default(0)->index();
             $table->string('title')->default('')->index();
             $table->text('description')->default('');

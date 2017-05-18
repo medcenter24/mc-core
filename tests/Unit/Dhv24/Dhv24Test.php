@@ -126,7 +126,6 @@ class Dhv24Test extends TestCase
             $diagnostics[] = Arr::multiArrayToString($row);
         }
 
-        // todo services
         $services = [];
         foreach ($tables[2] as $row) {
             $this->assertEquals(2, count($row));

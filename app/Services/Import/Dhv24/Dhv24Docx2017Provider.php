@@ -9,7 +9,11 @@ namespace App\Services\Import\Dhv24;
 
 
 use App\Accident;
+use App\AccidentStatus;
+use App\AccidentType;
 use App\Assistant;
+use App\Diagnostic;
+use App\DiagnosticCategory;
 use App\DoctorAccident;
 use App\DoctorSurvey;
 use App\Helpers\Arr;
@@ -79,6 +83,11 @@ class Dhv24Docx2017Provider extends DataProvider
     private $assistant;
 
     /**
+     * @var Patient
+     */
+    private $patient;
+
+    /**
      * Dhv24Docx2017Provider constructor.
      * @param DocxReaderInterface|null $readerService
      * @param null $tableExtractorService
@@ -136,6 +145,8 @@ class Dhv24Docx2017Provider extends DataProvider
             'Paciente , fecha de nacimiento',
             'Ref.num. Doctor Home Visit',
             'Assistance Ref.num.',
+            'Наименование услуги, Сoncept',
+            'Import, €',
         ];
 
         $text = $this->readerService->getText();
@@ -159,6 +170,11 @@ class Dhv24Docx2017Provider extends DataProvider
         $this->doctorAccident = BlankModels::defaultDoctorAccident();
         $this->doctorAccident->status = DoctorAccident::STATUS_CLOSED;
 
+        $accidentType = AccidentType::firstOrCreate(['title' => 'Insurance Case']);
+        $this->accident->accident_type_id = $accidentType->id;
+        $accidentStatus = AccidentStatus::firstOrCreate(['title' => 'Done by doctor', 'caseable_type' => DoctorAccident::class]);
+        $this->accident->accident_status_id = $accidentStatus->id;
+
         $this->doctorAccident->accident()->save($this->accident);
 
         $data = $this->tableExtractorService->extract($this->domService->toArray($this->readerService->getDom()));
@@ -173,7 +189,7 @@ class Dhv24Docx2017Provider extends DataProvider
         array_shift($assistantInfo);
         $assistant = Arr::multiArrayToString(array_shift($assistantInfo));
 
-        $this->accident->assistant_id = $this->getAssistant($assistant);
+        $this->accident->assistant_id = $this->getAssistant($assistant)->id;
 
         $caseInfoTable = array_map(function ($val1) {
             return array_map(function ($val2) {
@@ -186,9 +202,13 @@ class Dhv24Docx2017Provider extends DataProvider
 
         $this->accident->ref_num = str_replace(' ', '', current($caseInfoArray[self::DHV_REF_NUM]));
         $this->accident->assistant_ref_num = str_replace(' ', '', current($caseInfoArray[self::ASSISTANCE_REF_NUM]));
-        $this->accident->patient_id = $this->getPatient(current($caseInfoArray[self::PATIENT_NAME]));
+        $patient = $this->getPatient(current($caseInfoArray[self::PATIENT_NAME]));
+        $this->accident->patient_id = $patient->id;
 
         $this->loadAccidentInvestigations($tables[1][3][0]);
+        $this->loadDiagnostics($tables[1][4][0]);
+
+        $this->accident->title = str_limit('[' . $this->accident->ref_num . ']' . $patient->name . ' (' . $this->getAssistant()->title . ')', 255);
 
         $this->accident->save();
         $this->doctorAccident->save();
@@ -202,6 +222,26 @@ class Dhv24Docx2017Provider extends DataProvider
     public function getLastAccident()
     {
         return $this->accident;
+    }
+
+    private function loadDiagnostics(array $data)
+    {
+        $diagnostico = $this->tableExtractorService->extract($data);
+        foreach($diagnostico[ExtractTableFromArrayService::TABLES][0][1][0] as $row) {
+            $diagnoseStr = Arr::multiArrayToString($row);
+            $commaPos = mb_strrpos($diagnoseStr, ',');
+            if ($commaPos) {
+                $diagnosticCategory = DiagnosticCategory::firstOrCreate(['title' => trim(mb_substr($diagnoseStr, $commaPos+1))]);
+                $diagnose = Diagnostic::firstOrCreate([
+                    'title' => trim(mb_substr($diagnoseStr, 0, $commaPos)), d,
+                    'diagnostic_category_id' => $diagnosticCategory->id,
+                ]);
+
+                $this->doctorAccident->diagnostics()->attach($diagnose);
+            } else {
+                Log::debug('Last comma not found, but needed ');
+            }
+        }
     }
 
     /**
@@ -249,36 +289,42 @@ class Dhv24Docx2017Provider extends DataProvider
      * which could be used to update assistant
      *
      * @param string $assistantStr
-     * @return int
+     * @return Assistant
      */
     private function getAssistant($assistantStr = '')
     {
-        $title = $comment = '';
-        // first caps lock it's a title all other it is
-        if (preg_match('/^([A-Z ]+)(.*)$/', $assistantStr, $matches)) {
-            $title = ucfirst(strtolower($matches[1]));
-            $comment = trim($matches[2], '., ');
+        if (!$this->assistant) {
+            $title = $comment = '';
+            // first caps lock it's a title all other it is
+            if (preg_match('/^([A-Z ]+)(.*)$/', $assistantStr, $matches)) {
+                $title = ucfirst(strtolower($matches[1]));
+                $comment = trim($matches[2], '., ');
+            }
+
+            $this->assistant = Assistant::firstOrNew(['title' => $title]);
+
+            if (empty($this->assistant->comment) && $comment){
+                $this->assistant->comment = $comment;
+                $this->assistant->save();
+            }
         }
-
-        $this->assistant = Assistant::firstOrNew(['title' => $title]);
-
-        if (empty($this->assistant->comment) && $comment){
-            $this->assistant->comment = $comment;
-            $this->assistant->save();
-        }
-
-        return $this->assistant->id;
+        return $this->assistant;
     }
 
+    /**
+     * @param string $patientStr
+     * @return Patient
+     */
     private function getPatient($patientStr = '')
     {
-        list($name, $birthday) = explode(',', $patientStr);
+        if (!$this->patient) {
+            list($name, $birthday) = explode(',', $patientStr);
 
-        $this->patient = Patient::firstOrCreate([
-            'name' => trim(title_case($name)),
-            'birthday' => strtotime($birthday)
-        ]);
-
-        return $this->patient->id;
+            $this->patient = Patient::firstOrCreate([
+                'name' => trim(title_case($name)),
+                'birthday' => strtotime($birthday)
+            ]);
+        }
+        return $this->patient;
     }
 }

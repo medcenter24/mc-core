@@ -24,13 +24,13 @@ class Diagnostic extends Model
     protected $fillable = ['title', 'description', 'diagnostic_category_id'];
     protected $visible = ['title', 'description', 'diagnostic_category_id'];
 
-    public function doctorAccident()
-    {
-        return $this->belongsTo(DoctorAccident::class);
-    }
-
     public function category()
     {
         return $this->belongsTo(DiagnosticCategory::class);
+    }
+
+    public function diagnosticDoctorAccidents()
+    {
+        return $this->morphedByMany(DoctorAccident::class, 'diagnosticable');
     }
 }

@@ -42,7 +42,7 @@ class Docx2017ProiderTest extends TestCase
         self::assertEquals(1, $accident->assistant_id, 'Assistant has been loaded');
         self::assertNotEquals('FakeAssistantRef', $accident->assistant_ref_num, 'Assistant referral number has been parsed');
         self::assertEquals(1, $accident->caseable_id, 'Caseable type is selected');
-        self::assertEquals(DoctorAccident::class, $accident->caseable_id, 'Caseable type is DoctorAccident');
+        self::assertEquals(DoctorAccident::class, $accident->caseable_type, 'Caseable type is DoctorAccident');
         self::assertNotEquals('Fake-import-num', $accident->ref_num, 'Accident Referral number is correct');
         self::assertNotEquals('FakeImport', $accident->title, 'Accident title is correct');
         self::assertNotEquals('FakeAddress', $accident->address, 'Address is presented');
@@ -51,6 +51,7 @@ class Docx2017ProiderTest extends TestCase
 
         /** DoctorAccident data */
         $doctorAccident = $accident->caseable();
+
 
         dd($accident);
     }

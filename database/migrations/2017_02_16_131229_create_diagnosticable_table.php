@@ -18,12 +18,10 @@ class CreateDiagnosticableTable extends Migration
      */
     public function up()
     {
-        Schema::create('diagnosticable', function (Blueprint $table) {
+        Schema::create('diagnosticables', function (Blueprint $table) {
             $table->unsignedInteger('diagnostic_id');
-            $table->integer('diagnosticable_id', false, true);
-            $table->integer('diagnosticable_type', false, true);
+            $table->morphs('diagnosticable');
 
-            $table->primary(['diagnosticable_id', 'diagnosticable_type'], 'ind_diagnosticable');
             $table->index('diagnostic_id');
         });
     }
@@ -35,6 +33,6 @@ class CreateDiagnosticableTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('diagnosticable');
+        Schema::dropIfExists('diagnosticables');
     }
 }

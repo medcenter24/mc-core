@@ -12,9 +12,11 @@ use App\Accident;
 use App\AccidentStatus;
 use App\AccidentType;
 use App\Assistant;
+use App\City;
 use App\Diagnostic;
 use App\DiagnosticCategory;
 use App\DoctorAccident;
+use App\DoctorService;
 use App\DoctorSurvey;
 use App\Helpers\Arr;
 use App\Helpers\BlankModels;
@@ -147,6 +149,7 @@ class Dhv24Docx2017Provider extends DataProvider
             'Assistance Ref.num.',
             'Наименование услуги, Сoncept',
             'Import, €',
+            'Дата,  место, время визита Fecha, lugar de visita SPAIN',
         ];
 
         $text = $this->readerService->getText();
@@ -176,6 +179,8 @@ class Dhv24Docx2017Provider extends DataProvider
         $this->accident->accident_status_id = $accidentStatus->id;
 
         $this->doctorAccident->accident()->save($this->accident);
+        // data is absent in the docx
+        $this->accident->contacts = '';
 
         $data = $this->tableExtractorService->extract($this->domService->toArray($this->readerService->getDom()));
         $tables = $data[ExtractTableFromArrayService::TABLES];
@@ -210,6 +215,10 @@ class Dhv24Docx2017Provider extends DataProvider
 
         $this->accident->title = str_limit('[' . $this->accident->ref_num . ']' . $patient->name . ' (' . $this->getAssistant()->title . ')', 255);
 
+        $this->loadServices($tables[2]);
+
+        $this->loadVisitDateAndPlace($tables[4][0][1]);
+
         $this->accident->save();
         $this->doctorAccident->save();
 
@@ -224,6 +233,36 @@ class Dhv24Docx2017Provider extends DataProvider
         return $this->accident;
     }
 
+    private function loadServices(array $servicesTable)
+    {
+        $services = [];
+        foreach ($servicesTable as $row) {
+            $service = [];
+            foreach ($row as $key => $col) {
+                $service[$key] = Arr::multiArrayToString($col);
+            }
+            $mService = DoctorService::firstOrNew([
+                'title' => $service[0],
+                'price' => $service[1],
+            ]);
+            $this->doctorAccident->serviceable()->attach($mService);
+        }
+    }
+
+    private function loadVisitDateAndPlace($data)
+    {
+        $dateAndPlace = Arr::multiArrayToString($data);
+
+        $comma = mb_strpos($dateAndPlace, ',');
+        $date = str_replace(' ', '', mb_substr($dateAndPlace, 0, $comma));
+        $place = trim(mb_substr($dateAndPlace, $comma+1));
+        $this->accident->address = $place;
+
+        $this->doctorAccident->visit_time = $date;
+        $city = City::firstOrCreate(['title' => $place]);
+        $this->doctorAccident->city_id = $city->id;
+    }
+
     private function loadDiagnostics(array $data)
     {
         $diagnostico = $this->tableExtractorService->extract($data);
@@ -233,7 +272,7 @@ class Dhv24Docx2017Provider extends DataProvider
             if ($commaPos) {
                 $diagnosticCategory = DiagnosticCategory::firstOrCreate(['title' => trim(mb_substr($diagnoseStr, $commaPos+1))]);
                 $diagnose = Diagnostic::firstOrCreate([
-                    'title' => trim(mb_substr($diagnoseStr, 0, $commaPos)), d,
+                    'title' => trim(mb_substr($diagnoseStr, 0, $commaPos)),
                     'diagnostic_category_id' => $diagnosticCategory->id,
                 ]);
 

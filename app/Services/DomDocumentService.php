@@ -54,7 +54,9 @@ class DomDocumentService extends Configurable
             foreach ($children as $child) {
 
                 $resultChild = $this->toArray($child);
-                if (!$resultChild && $this->getOption(self::STRIP_STRING)) {
+                if ($this->getOption(self::STRIP_STRING)
+                    && !$resultChild && (!is_string($resultChild) || !mb_strlen($resultChild))) {
+
                     continue;
                 }
 

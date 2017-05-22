@@ -23,8 +23,8 @@ class DoctorAccident extends AccidentAbstract
     const STATUS_PAID = 'paid';
     const STATUS_CLOSED = 'closed';
 
-    protected $fillable = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id', 'investigation', 'visit_time'];
-    protected $visible = ['city_id', 'status', 'doctor_id', 'diagnose', 'accident_status_id', 'investigation', 'visit_time'];
+    protected $fillable = ['city_id', 'status', 'doctor_id', 'recommendation', 'accident_status_id', 'investigation', 'visit_time'];
+    protected $visible = ['city_id', 'status', 'doctor_id', 'recommendation', 'accident_status_id', 'investigation', 'visit_time'];
 
     public function accident()
     {
@@ -65,11 +65,11 @@ class DoctorAccident extends AccidentAbstract
      * Each DoctorAccident is able to has own services, created by a doctor
      * but by default it could be defined by the director
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function serviceable()
     {
-        return $this->morphMany(DoctorService::class, 'serviceable');
+        return $this->morphToMany(DoctorService::class, 'serviceable');
     }
 
     /**
@@ -82,5 +82,14 @@ class DoctorAccident extends AccidentAbstract
     public function surveable()
     {
         return $this->morphMany(DoctorSurvey::class, 'surveable');
+    }
+
+    /**
+     * Doctor of this accident
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class);
     }
 }

@@ -22,6 +22,7 @@ class CreateDiagnosticsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('diagnostic_category_id')->default(0)->index();
             $table->string('title')->default('')->index();
+            $table->string('disease_code')->default('')->index();
             $table->text('description')->default('');
             $table->timestamps();
             $table->softDeletes();

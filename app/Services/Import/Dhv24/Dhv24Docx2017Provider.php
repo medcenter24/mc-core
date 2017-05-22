@@ -15,6 +15,7 @@ use App\Assistant;
 use App\City;
 use App\Diagnostic;
 use App\DiagnosticCategory;
+use App\Doctor;
 use App\DoctorAccident;
 use App\DoctorService;
 use App\DoctorSurvey;
@@ -38,7 +39,7 @@ class Dhv24Docx2017Provider extends DataProvider
     const INVESTIGATION_SYMPTOMS = 'symptoms';
     const INVESTIGATION_ADDITIONAL_SURVEY = 'additional_survey';
     const INVESTIGATION_ADDITIONAL_INVESTIGATION = 'additional_investigation';
-    const INVESTIGATION_DIAGNOSE = 'diagnose';
+    const INVESTIGATION_RECOMMENDATION = 'recommendation';
 
     /**
      * @var SimpleDocxReaderService
@@ -60,10 +61,11 @@ class Dhv24Docx2017Provider extends DataProvider
      * @var array
      */
     private $investigations = [
+        'Повторное обращение / Segunda visita:' => self::INVESTIGATION_SYMPTOMS,
         'Причина обращения / Motivo de visita :' => self::INVESTIGATION_SYMPTOMS,
         'Данные осмотра / Exploraci ó n fisica :' => self::INVESTIGATION_ADDITIONAL_SURVEY,
         'Дополнительные исследования/ Pruebas complementarias :' => self::INVESTIGATION_ADDITIONAL_INVESTIGATION,
-        'Лечение и рекомендации / Tratamiento e recomendaciones :' => self::INVESTIGATION_DIAGNOSE,
+        'Лечение и рекомендации / Tratamiento e recomendaciones :' => self::INVESTIGATION_RECOMMENDATION,
     ];
 
     /** Generated models from the imported file */
@@ -133,6 +135,11 @@ class Dhv24Docx2017Provider extends DataProvider
         return $this;
     }
 
+    public function getInvestigations()
+    {
+        return $this->investigations;
+    }
+
     public function check()
     {
         // point 1 main phrazes and their order
@@ -149,7 +156,8 @@ class Dhv24Docx2017Provider extends DataProvider
             'Assistance Ref.num.',
             'Наименование услуги, Сoncept',
             'Import, €',
-            'Дата,  место, время визита Fecha, lugar de visita SPAIN',
+            'Дата,  место, время визита',
+            'Fecha, lugar de visita',
         ];
 
         $text = $this->readerService->getText();
@@ -207,16 +215,13 @@ class Dhv24Docx2017Provider extends DataProvider
 
         $this->accident->ref_num = str_replace(' ', '', current($caseInfoArray[self::DHV_REF_NUM]));
         $this->accident->assistant_ref_num = str_replace(' ', '', current($caseInfoArray[self::ASSISTANCE_REF_NUM]));
-        $patient = $this->getPatient(current($caseInfoArray[self::PATIENT_NAME]));
-        $this->accident->patient_id = $patient->id;
 
+        $this->loadPatient(current($caseInfoArray[self::PATIENT_NAME]));
         $this->loadAccidentInvestigations($tables[1][3][0]);
         $this->loadDiagnostics($tables[1][4][0]);
-
-        $this->accident->title = str_limit('[' . $this->accident->ref_num . ']' . $patient->name . ' (' . $this->getAssistant()->title . ')', 255);
-
+        $this->loadDoctor($tables);
+        $this->loadTitle();
         $this->loadServices($tables[2]);
-
         $this->loadVisitDateAndPlace($tables[4][0][1]);
 
         $this->accident->save();
@@ -233,9 +238,44 @@ class Dhv24Docx2017Provider extends DataProvider
         return $this->accident;
     }
 
+    private function loadTitle()
+    {
+        $this->accident->title = str_limit('[' . $this->accident->ref_num . '] ' . $this->patient->name . ' (' . $this->getAssistant()->title . ')', 255);
+    }
+
+    private function loadDoctor(array $tables)
+    {
+        $checkPoint = Arr::multiArrayToString($tables[1][5][0]);
+        if ($checkPoint == 'Н аименование услуги , С on cept') {
+            // without Doctor
+        } elseif (isset($tables[1][6][0]) && Arr::multiArrayToString($tables[1][6][0]) == 'Н аименование услуги , С on cept') {
+            // with Doctor
+            $doctorStr = Arr::multiArrayToString($tables[1][5][0]);
+            $dot = mb_strpos($doctorStr, '.');
+            $num = mb_strpos($doctorStr, 'num.');
+            $name = mb_substr($doctorStr, $dot, $num - $dot);
+            $name = trim($name, '., ');
+            $medical_board_num = mb_substr($doctorStr, $num);
+            $medical_board_num = trim(str_replace('num.col.', '', $medical_board_num));
+            $gender = str_replace(' ', '', mb_substr($doctorStr, 0, $dot));
+
+            $doctor = Doctor::firstOrCreate([
+                'name' => $name,
+                'gender' => $gender == 'Dra' ? 'female' : ($gender == 'Dr' ? 'male' : 'none'),
+                'medical_board_num' => $medical_board_num
+            ]);
+
+            $this->doctorAccident->doctor_id = $doctor->id;
+        }
+    }
+
+    /**
+     * Load case services
+     *
+     * @param array $servicesTable
+     */
     private function loadServices(array $servicesTable)
     {
-        $services = [];
         foreach ($servicesTable as $row) {
             $service = [];
             foreach ($row as $key => $col) {
@@ -245,6 +285,7 @@ class Dhv24Docx2017Provider extends DataProvider
                 'title' => $service[0],
                 'price' => $service[1],
             ]);
+
             $this->doctorAccident->serviceable()->attach($mService);
         }
     }
@@ -258,7 +299,7 @@ class Dhv24Docx2017Provider extends DataProvider
         $place = trim(mb_substr($dateAndPlace, $comma+1));
         $this->accident->address = $place;
 
-        $this->doctorAccident->visit_time = $date;
+        $this->doctorAccident->visit_time = strtotime($date);
         $city = City::firstOrCreate(['title' => $place]);
         $this->doctorAccident->city_id = $city->id;
     }
@@ -266,19 +307,21 @@ class Dhv24Docx2017Provider extends DataProvider
     private function loadDiagnostics(array $data)
     {
         $diagnostico = $this->tableExtractorService->extract($data);
-        foreach($diagnostico[ExtractTableFromArrayService::TABLES][0][1][0] as $row) {
+        foreach ( $diagnostico[ExtractTableFromArrayService::TABLES][0][1][0] as $row) {
+
             $diagnoseStr = Arr::multiArrayToString($row);
             $commaPos = mb_strrpos($diagnoseStr, ',');
+
             if ($commaPos) {
-                $diagnosticCategory = DiagnosticCategory::firstOrCreate(['title' => trim(mb_substr($diagnoseStr, $commaPos+1))]);
+
                 $diagnose = Diagnostic::firstOrCreate([
                     'title' => trim(mb_substr($diagnoseStr, 0, $commaPos)),
-                    'diagnostic_category_id' => $diagnosticCategory->id,
+                    'disease_code' => str_replace(' ', '', mb_substr($diagnoseStr, $commaPos+1)),
                 ]);
 
                 $this->doctorAccident->diagnostics()->attach($diagnose);
             } else {
-                Log::debug('Last comma not found, but needed ');
+                Log::debug('Diagnostic last comma not found, but needed for the disease code');
             }
         }
     }
@@ -294,32 +337,51 @@ class Dhv24Docx2017Provider extends DataProvider
         }, $data);
 
         $founded = [];
-        foreach ($this->investigations as $investigation => $key) {
-            foreach ($mergedInvestigations as $mergedInvestigation) {
+        foreach ($mergedInvestigations as $mergedInvestigation) {
+
+            $detected = false;
+            foreach ($this->investigations as $investigation => $key) {
                 if (mb_strpos($mergedInvestigation, $investigation) !== false) {
+                    $detected = true;
+
                     $founded[] = $key;
-                    $withoutKey = trim(str_replace($investigation, '', $mergedInvestigation));
-                    switch ($key) {
-                        case self::INVESTIGATION_SYMPTOMS:
-                            $this->accident->symptoms = $withoutKey;
-                            break;
-                        case self::INVESTIGATION_ADDITIONAL_SURVEY:
-                            $this->doctorAccident->surveable()->create([
-                                'title' => 'Imported',
-                                'description' => $withoutKey
-                            ]);
-                            break;
-                        case self::INVESTIGATION_ADDITIONAL_INVESTIGATION:
-                            $this->doctorAccident->investigation = $withoutKey;;
-                            break;
-                        case self::INVESTIGATION_DIAGNOSE:
-                            $this->doctorAccident->diagnose = $withoutKey;
-                            break;
-                        default:
-                            Log::error('Investigation key is not defined (should be added as a case)', ['key' => $key]);
-                    }
+                    $this->addInvestigation($key, $mergedInvestigation, $investigation);
                 }
             }
+
+            if (!$detected) {
+                // everything that goes after the recommendation add there
+                if (!empty($this->doctorAccident->recommendation)) {
+                    $this->doctorAccident->recommendation .= "\n" . $mergedInvestigation;
+                } else {
+                    Log::error('String is not investigation', ['source' => $mergedInvestigation]);
+                }
+            }
+
+        }
+    }
+
+    private function addInvestigation($key = '', $mergedInvestigation = '', $investigation = '')
+    {
+        $withoutKey = trim(str_replace($investigation, '', $mergedInvestigation));
+        switch ($key) {
+            case self::INVESTIGATION_SYMPTOMS:
+                $this->accident->symptoms = $withoutKey;
+                break;
+            case self::INVESTIGATION_ADDITIONAL_SURVEY:
+                $this->doctorAccident->surveable()->create([
+                    'title' => 'Imported',
+                    'description' => $withoutKey
+                ]);
+                break;
+            case self::INVESTIGATION_ADDITIONAL_INVESTIGATION:
+                $this->doctorAccident->investigation = $withoutKey;;
+                break;
+            case self::INVESTIGATION_RECOMMENDATION:
+                $this->doctorAccident->recommendation = $withoutKey;
+                break;
+            default:
+                Log::error('Investigation key is not defined (should be added as a case)', ['key' => $key]);
         }
     }
 
@@ -354,7 +416,7 @@ class Dhv24Docx2017Provider extends DataProvider
      * @param string $patientStr
      * @return Patient
      */
-    private function getPatient($patientStr = '')
+    private function loadPatient($patientStr = '')
     {
         if (!$this->patient) {
             list($name, $birthday) = explode(',', $patientStr);
@@ -364,6 +426,8 @@ class Dhv24Docx2017Provider extends DataProvider
                 'birthday' => strtotime($birthday)
             ]);
         }
+
+        $this->accident->patient_id = $this->patient->id;
         return $this->patient;
     }
 }

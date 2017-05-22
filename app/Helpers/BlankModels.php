@@ -58,7 +58,7 @@ class BlankModels
             'doctor_id' => 0,
             'city_id' => 0,
             'status' => DoctorAccident::STATUS_NEW,
-            'diagnose' => 'FakeDiagnose',
+            'recommendation' => 'FakeDiagnose',
             'investigation' => 'FakeInvestigation',
             'accident_status_id' => 0,
         ]);

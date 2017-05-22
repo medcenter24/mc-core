@@ -17,8 +17,8 @@ class Doctor extends Model implements HasMedia
     use SoftDeletes;
     use HasMediaTrait;
 
-    protected $fillable = ['name', 'description', 'ref_key'];
-    protected $visible  = ['name', 'description', 'ref_key'];
+    protected $fillable = ['name', 'description', 'ref_key', 'gender', 'medical_board_num'];
+    protected $visible  = ['name', 'description', 'ref_key', 'gender', 'medical_board_num'];
 
     public function user()
     {

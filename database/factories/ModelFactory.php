@@ -29,6 +29,8 @@ $factory->define(\App\Doctor::class, function (\Faker\Generator $faker) {
         'name' => $faker->name,
         'description' => $faker->text(),
         'ref_key' => str_random(3),
+        'gender' => $faker->randomElement(['male', 'female', 'none']),
+        'medical_board_num' => $faker->randomDigitNotNull
     ];
 });
 
@@ -96,6 +98,7 @@ $factory->define(\App\Diagnostic::class, function (\Faker\Generator $faker) {
 
     return [
         'title' => $faker->text(20),
+        'disease_code' => $faker->text(3),
         'description' => $faker->text(),
         'diagnostic_category_id' => function () {
             return factory(\App\DiagnosticCategory::class)->create()->id;
@@ -153,7 +156,7 @@ $factory->define(\App\DoctorAccident::class, function (\Faker\Generator $faker) 
         'doctor_id' => $faker->numberBetween(1, 10),
         'city_id' => $faker->numberBetween(1, 10),
         'status' => \App\DoctorAccident::STATUS_NEW,
-        'diagnose' => $faker->paragraphs(3, true),
+        'recommendation' => $faker->paragraphs(3, true),
         'investigation' => $faker->paragraphs(3, true),
         'accident_status_id' => function () {
             return factory(\App\AccidentStatus::class)->create()->id;

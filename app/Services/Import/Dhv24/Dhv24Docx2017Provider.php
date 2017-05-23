@@ -101,8 +101,7 @@ class Dhv24Docx2017Provider extends DataProvider
         DocxReaderInterface $readerService = null,
         $tableExtractorService = null,
         $domService = null
-    )
-    {
+    ) {
         if ($readerService) {
             $this->readerService = $readerService;
         } else {
@@ -132,12 +131,8 @@ class Dhv24Docx2017Provider extends DataProvider
     public function load($path = '')
     {
         $this->readerService->load($path);
-        return $this;
-    }
 
-    public function getInvestigations()
-    {
-        return $this->investigations;
+        return $this;
     }
 
     public function check()
@@ -167,6 +162,7 @@ class Dhv24Docx2017Provider extends DataProvider
                     $this->readerService->getFilePath(),
                     $checkPoint,
                 ]);
+
                 return false;
             }
         }
@@ -176,25 +172,97 @@ class Dhv24Docx2017Provider extends DataProvider
 
     public function import()
     {
+        $tables = $this->loadTables();
+
         // Generate new models for import
+        $this->setUpDoctorAccidentDefaults();
+        $this->loadAssistant($tables[1][2][1]);
+        $this->PatientReferralNum($tables[1][2][3]);
+
+        ///////
+
+        $this->loadAccidentInvestigations($tables[1][3][0]);
+        $this->loadDiagnostics($tables[1][4][0]);
+        $this->loadDoctor($tables);
+        $this->loadTitle();
+        $this->loadServices($tables[2]);
+        $this->loadVisitDateAndPlace($tables[4][0][1]);
+
+        $this->accident->save();
+        $this->doctorAccident->save();
+
+        return true;
+    }
+
+    /**
+     * Return last imported accident
+     */
+    public function getLastAccident()
+    {
+        return $this->accident;
+    }
+
+    /**
+     * All documents should have main tables in the content;
+     * @return mixed
+     */
+    private function loadTables()
+    {
+        $data = $this->tableExtractorService->extract($this->domService->toArray($this->readerService->getDom()));
+        $tables = $data[ExtractTableFromArrayService::TABLES];
+
+        $this->validate($tables);
+
+        return $tables;
+    }
+
+    public function validate(array $tables)
+    {
+        $this->checkValidTables($tables);
+        $this->checkCargoDeCompania($tables[1][2][0]);
+        $this->checkPacienteDeNacimiento($tables[1][2][2]);
+    }
+
+    /**
+     * checking that count of the table and structure are expected
+     */
+    private function checkValidTables(array $tables)
+    {
+
+    }
+
+    /**
+     * Initialize Accident and DoctorAccident models
+     * also creates AccidentType and AccidentStatus models it haven't been created yer
+     */
+    private function setUpDoctorAccidentDefaults()
+    {
         $this->accident = BlankModels::defaultAccident();
         $this->doctorAccident = BlankModels::defaultDoctorAccident();
         $this->doctorAccident->status = DoctorAccident::STATUS_CLOSED;
 
         $accidentType = AccidentType::firstOrCreate(['title' => 'Insurance Case']);
         $this->accident->accident_type_id = $accidentType->id;
-        $accidentStatus = AccidentStatus::firstOrCreate(['title' => 'Done by doctor', 'caseable_type' => DoctorAccident::class]);
+        $accidentStatus = AccidentStatus::firstOrCreate([
+            'title' => 'Done by doctor',
+            'caseable_type' => DoctorAccident::class
+        ]);
         $this->accident->accident_status_id = $accidentStatus->id;
 
         $this->doctorAccident->accident()->save($this->accident);
         // data is absent in the docx
         $this->accident->contacts = '';
+    }
 
-        $data = $this->tableExtractorService->extract($this->domService->toArray($this->readerService->getDom()));
-        $tables = $data[ExtractTableFromArrayService::TABLES];
-
+    /**
+     * @param $table
+     *
+     * will be initialized Assistant, Patient, and Accident::$ref_num
+     */
+    private function loadAssistantPatientReferralNum($table)
+    {
         // assistant, patient, ref_num
-        $firstTableContainer=$this->tableExtractorService->extract($tables[1][2]);
+        $firstTableContainer=$this->tableExtractorService->extract($table);
         $firstTable = current($firstTableContainer[ExtractTableFromArrayService::TABLES]);
         $assistantInfo = current(array_shift($firstTable));
 
@@ -217,25 +285,6 @@ class Dhv24Docx2017Provider extends DataProvider
         $this->accident->assistant_ref_num = str_replace(' ', '', current($caseInfoArray[self::ASSISTANCE_REF_NUM]));
 
         $this->loadPatient(current($caseInfoArray[self::PATIENT_NAME]));
-        $this->loadAccidentInvestigations($tables[1][3][0]);
-        $this->loadDiagnostics($tables[1][4][0]);
-        $this->loadDoctor($tables);
-        $this->loadTitle();
-        $this->loadServices($tables[2]);
-        $this->loadVisitDateAndPlace($tables[4][0][1]);
-
-        $this->accident->save();
-        $this->doctorAccident->save();
-
-        return true;
-    }
-
-    /**
-     * Return last imported accident
-     */
-    public function getLastAccident()
-    {
-        return $this->accident;
     }
 
     private function loadTitle()

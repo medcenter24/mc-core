@@ -57,6 +57,11 @@ class Docx2017ProiderTest extends TestCase
         self::assertEquals(DoctorAccident::STATUS_CLOSED, $doctorAccident->status, 'Status is closed');
         self::assertNotEquals('FakeDiagnose', $doctorAccident->diagnose);
         self::assertNotEquals('FakeInvestigation', $doctorAccident->investigation);
+
+        /** Patient */
+        $patient = $accident->patient;
+        self::assertEquals(1, $patient->id, 'Patient is loaded');
+        self::assertEquals('Artamonov Timur', $patient->name, 'Patient has correct name');
     }
 
     public function testImportWithDoctor()
@@ -91,5 +96,26 @@ class Docx2017ProiderTest extends TestCase
         self::assertEquals(DoctorAccident::STATUS_CLOSED, $doctorAccident->status, 'Status is closed');
         self::assertNotEquals('FakeDiagnose', $doctorAccident->diagnose);
         self::assertNotEquals('FakeInvestigation', $doctorAccident->investigation);
+
+        /** Doctor */
+        $doctor = $doctorAccident->doctor;
+        self::assertEquals(1, $doctor->id, 'Doctor is loaded');
+        self::assertEquals('Ralitsa Baharova', $doctor->name, 'Doctor name loaded');
+        self::assertEquals('female', $doctor->gender, 'Doctor sex loaded');
+        self::assertEquals('282870448', $doctor->medical_board_num, 'Doctor board loaded');
+
+        /** Patient */
+        $patient = $accident->patient;
+        self::assertEquals(1, $patient->id, 'Patient is loaded');
+        self::assertEquals('Zhukovich Nataliia', $patient->name, 'Patient has correct name');
+    }
+
+    public function testFosterAbigail()
+    {
+        $provider = new Dhv24Docx2017Provider();
+        $provider->load($this->getSampleFile('FosterAbigail.DHV.docx'));
+        self::assertTrue($provider->check(), 'File content is checked');
+        $provider->import();
+        // $accident = $provider->getLastAccident();
     }
 }

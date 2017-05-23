@@ -27,6 +27,7 @@ use App\Services\DocxReader\SimpleDocxReaderService;
 use App\Services\DomDocumentService;
 use App\Services\ExtractTableFromArrayService;
 use App\Services\Import\DataProvider;
+use App\Services\Import\ImporterException;
 use Illuminate\Support\Facades\Log;
 
 class Dhv24Docx2017Provider extends DataProvider
@@ -35,6 +36,7 @@ class Dhv24Docx2017Provider extends DataProvider
     const PATIENT_NAME = 'P aciente , fecha de nacimiento';
     const ASSISTANCE_REF_NUM = 'Assistance Ref. num.';
     const DHV_REF_NUM = 'Ref.num. Doctor Home Visit';
+    const MARKER_REAPPOINTMENT = 'Повторное обращение / Segunda visita:';
 
     const INVESTIGATION_SYMPTOMS = 'symptoms';
     const INVESTIGATION_ADDITIONAL_SURVEY = 'additional_survey';
@@ -67,6 +69,14 @@ class Dhv24Docx2017Provider extends DataProvider
         'Дополнительные исследования/ Pruebas complementarias :' => self::INVESTIGATION_ADDITIONAL_INVESTIGATION,
         'Лечение и рекомендации / Tratamiento e recomendaciones :' => self::INVESTIGATION_RECOMMENDATION,
     ];
+
+    /** Tools */
+
+    /**
+     * Main tables
+     * @var array
+     */
+    private $rootTables = [];
 
     /** Generated models from the imported file */
 
@@ -141,18 +151,15 @@ class Dhv24Docx2017Provider extends DataProvider
         $points = [
             'MEDICAL REPORT, INVOICE',
             'D  I  A  G  N  O  S  T  I  C  O',
-            'Наименование услуги, Сoncept',
             'TOTAL IMPORT, EUR',
             'Дата,  место, время визита',
-            'Fecha, lugar de visita SPAIN',
+            'Fecha, lugar de visita',
             'A cargo de compañia',
             'Paciente , fecha de nacimiento',
             'Ref.num. Doctor Home Visit',
             'Assistance Ref.num.',
             'Наименование услуги, Сoncept',
             'Import, €',
-            'Дата,  место, время визита',
-            'Fecha, lugar de visita',
         ];
 
         $text = $this->readerService->getText();
@@ -172,21 +179,17 @@ class Dhv24Docx2017Provider extends DataProvider
 
     public function import()
     {
-        $tables = $this->loadTables();
+        $this->loadTables();
 
         // Generate new models for import
         $this->setUpDoctorAccidentDefaults();
-        $this->loadAssistant($tables[1][2][1]);
-        $this->PatientReferralNum($tables[1][2][3]);
-
-        ///////
-
-        $this->loadAccidentInvestigations($tables[1][3][0]);
-        $this->loadDiagnostics($tables[1][4][0]);
-        $this->loadDoctor($tables);
+        $this->loadAssistantPatientReferralNum($this->rootTables[1][2]);
+        $this->loadAccidentInvestigations($this->rootTables[1][3][0]);
+        $this->loadDiagnostics($this->rootTables[1][4][0]);
+        $this->loadDoctor($this->rootTables);
         $this->loadTitle();
-        $this->loadServices($tables[2]);
-        $this->loadVisitDateAndPlace($tables[4][0][1]);
+        $this->loadServices($this->rootTables[2]);
+        $this->loadVisitDateAndPlace($this->rootTables[4][0][1]);
 
         $this->accident->save();
         $this->doctorAccident->save();
@@ -209,26 +212,65 @@ class Dhv24Docx2017Provider extends DataProvider
     private function loadTables()
     {
         $data = $this->tableExtractorService->extract($this->domService->toArray($this->readerService->getDom()));
-        $tables = $data[ExtractTableFromArrayService::TABLES];
-
-        $this->validate($tables);
-
-        return $tables;
-    }
-
-    public function validate(array $tables)
-    {
-        $this->checkValidTables($tables);
-        $this->checkCargoDeCompania($tables[1][2][0]);
-        $this->checkPacienteDeNacimiento($tables[1][2][2]);
+        $this->rootTables = $data[ExtractTableFromArrayService::TABLES];
+        $this->validateTables();
     }
 
     /**
-     * checking that count of the table and structure are expected
+     * Validate check point positions
      */
-    private function checkValidTables(array $tables)
+    private function validateTables()
     {
+        $this->checkTables();
+        $this->checkCargoDeCompaniaPacienteDeNacimiento();
+        $this->checkReappointment();
+    }
 
+    /**
+     * Checking that count of the table and structure are expected
+     */
+    private function checkTables()
+    {
+        $this->throwIfFalse(
+            count($this->rootTables) == 5,
+            'Count of the main tables is not equal 5 but dhv24 expect it'
+        );
+    }
+
+    /**
+     * Check that markers positions is matched
+     */
+    private function checkCargoDeCompaniaPacienteDeNacimiento()
+    {
+        $firstTableContainer = $this->tableExtractorService->extract($this->rootTables[1][2][0]);
+        $firstTable = current($firstTableContainer[ExtractTableFromArrayService::TABLES]);
+        $assistantInfo = current(array_shift($firstTable));
+        $this->throwIfFalse(2 == count($assistantInfo), 'Assistant info includes 2 arrays');
+        $assistantMarker = Arr::multiArrayToString(array_shift($assistantInfo));
+        $this->throwIfFalse('A cargo de compañia' == $assistantMarker, 'Marker "Cargo de compania" not found');
+    }
+
+    /**
+     * Check if this a second ... appointment then his parent exists
+     */
+    private function checkReappointment()
+    {
+        if ($this->isReappointment()) {
+            // check that parent already exists
+            // todo how to get ref num...
+        }
+    }
+
+    private function isReappointment()
+    {
+        return mb_strpos($this->readerService->getText(), self::MARKER_REAPPOINTMENT) !== false;
+    }
+
+    private function throwIfFalse($condition, $message = '')
+    {
+        if ($condition === false) {
+            throw new ImporterException($message);
+        }
     }
 
     /**
@@ -468,12 +510,18 @@ class Dhv24Docx2017Provider extends DataProvider
     private function loadPatient($patientStr = '')
     {
         if (!$this->patient) {
-            list($name, $birthday) = explode(',', $patientStr);
 
-            $this->patient = Patient::firstOrCreate([
-                'name' => trim(title_case($name)),
-                'birthday' => strtotime($birthday)
-            ]);
+            if (strpos($patientStr, ',') === false) {
+                $data = ['name' => trim(title_case($patientStr))];
+            } else {
+                list($name, $birthday) = explode(',', $patientStr);
+                $birthday = date('Y-m-d', strtotime($birthday));
+                $data = [
+                    'name' => trim(title_case($name)),
+                    'birthday' => $birthday,
+                ];
+            }
+            $this->patient = Patient::firstOrCreate($data);
         }
 
         $this->accident->patient_id = $this->patient->id;

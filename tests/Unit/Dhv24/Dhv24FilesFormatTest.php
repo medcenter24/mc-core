@@ -38,8 +38,8 @@ class Dhv24FilesFormatTest extends TestCase
     public function getDocuments()
     {
         return [
-            [$this->getSamplePath() . 't1.docx'],
-            [$this->getSamplePath() . 't2.docx'],
+            /*[$this->getSamplePath() . 't1.docx'],
+            [$this->getSamplePath() . 't2.docx'],*/
             [$this->getSamplePath() . 'FosterAbigail.DHV.docx'],
         ];
     }
@@ -116,8 +116,16 @@ class Dhv24FilesFormatTest extends TestCase
             'Ref.num. Doctor Home Visit',
         ], $keys, 'Patient data is correct');
 
-        // investigation table
-        $investigations = $tables[1][3][0];
+        $data = $tableExtractorService->extract($tables[1][3][0]);
+
+        if ( count($data[ExtractTableFromArrayService::TABLES]) ) {
+            $diagnostico = current($data[ExtractTableFromArrayService::TABLES]);
+        } else {
+            $diagnostico = $tableExtractorService->extract($tables[1][4][0]);
+        }
+
+        $investigations = current($data[ExtractTableFromArrayService::CONTENT]);
+
         // reason, condition, addition, advices
         $mergedInvestigations = array_map(function ($row) {
             return Arr::multiArrayToString($row);
@@ -126,7 +134,7 @@ class Dhv24FilesFormatTest extends TestCase
         $mergedInvestigations = array_values($mergedInvestigations);
         $this->assertGreaterThanOrEqual(4, $mergedInvestigations);
 
-        $diagnostico = $tableExtractorService->extract($tables[1][4][0]);
+
         $checkPoint = Arr::multiArrayToString($diagnostico[ExtractTableFromArrayService::TABLES][0][0]);
         self::assertStringStartsWith('D  I  A  G  N  O  S  T  I  C  O', $checkPoint, 'Diagnostic on the right place');
 

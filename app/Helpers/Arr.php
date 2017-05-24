@@ -8,6 +8,8 @@
 namespace App\Helpers;
 
 
+use App\Exceptions\InconsistentDataException;
+
 class Arr
 {
     /**
@@ -35,6 +37,11 @@ class Arr
     {
         $keys = array_shift($arr);
         return array_map(function ($val) use ($keys) {
+
+            if (count($keys) != count($val)) {
+                throw new InconsistentDataException('Key and Data tables should have the same size');
+            }
+
             return array_combine($keys, $val);
         }, $arr);
     }

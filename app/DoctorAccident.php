@@ -69,7 +69,7 @@ class DoctorAccident extends AccidentAbstract
      */
     public function serviceable()
     {
-        return $this->morphToMany(DoctorService::class, 'serviceable');
+        return $this->morphToMany(DoctorService::class, 'doctor_serviceables');
     }
 
     /**

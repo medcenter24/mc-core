@@ -15,7 +15,7 @@ class CreateDoctorServiceablesTable extends Migration
     {
         Schema::create('doctor_serviceables', function (Blueprint $table) {
             $table->unsignedInteger('doctor_service_id')->index();
-            $table->morphs('serviceables');
+            $table->morphs('doctor_serviceables');
         });
     }
 

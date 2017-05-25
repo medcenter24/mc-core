@@ -17,7 +17,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'MyDoctor 24',
+    'name' => 'MyDoctors 24',
 
     /*
     |--------------------------------------------------------------------------
@@ -187,6 +187,7 @@ return [
         Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
         \App\Providers\RoleServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
+        Dingo\Api\Provider\LaravelServiceProvider::class,
     ],
 
     /*

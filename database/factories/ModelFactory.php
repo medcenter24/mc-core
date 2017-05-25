@@ -98,7 +98,7 @@ $factory->define(\App\Diagnostic::class, function (\Faker\Generator $faker) {
 
     return [
         'title' => $faker->text(20),
-        'disease_code' => $faker->text(3),
+        'disease_code' => str_random(3),
         'description' => $faker->text(),
         'diagnostic_category_id' => function () {
             return factory(\App\DiagnosticCategory::class)->create()->id;

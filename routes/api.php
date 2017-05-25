@@ -1,18 +1,15 @@
 <?php
+/**
+ * Copyright (c) 2017.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
 
-use Illuminate\Http\Request;
+/** @var \Dingo\Api\Routing\Router $api */
+$api = app('Dingo\Api\Routing\Router');
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+$api->version('v1', function ($api) {
+    $api->group(['prefix' => 'director', 'middleware' => ['cors']], function ($api) {
+        $api->resource('cases', \App\Http\Controllers\Api\V1\Director\CasesController::class);
+    });
 });

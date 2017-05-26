@@ -16,6 +16,11 @@ namespace App;
  */
 class Accident extends AccidentAbstract
 {
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
 
     protected $fillable = [
         'created_by',

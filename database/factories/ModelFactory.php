@@ -189,7 +189,7 @@ $factory->define(\App\Accident::class, function (\Faker\Generator $faker) {
             return factory(\App\DoctorAccident::class)->create()->id;
         },
         'caseable_type' => \App\DoctorAccident::class,
-        'ref_num' => $faker->text(10),
+        'ref_num' => str_random(3) . '-' . $faker->numberBetween('100', '999') . '-' . str_random(2),
         'title' => $faker->text(30),
         'city_id' => function () {
             return factory(\App\City::class)->create()->id;

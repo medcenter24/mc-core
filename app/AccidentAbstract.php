@@ -14,6 +14,4 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class AccidentAbstract extends Model
 {
     use SoftDeletes;
-
-
 }

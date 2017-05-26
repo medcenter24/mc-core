@@ -18,9 +18,10 @@ class AccidentsTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('accident_accident_checkpoint')->delete();
         Accident::truncate();
-        factory(Accident::class, 10)->create()->each(function(Accident $accident) {
-            $accident->checkpoints()->save(factory(AccidentCheckpoint::class)->make());
+        factory(Accident::class, 100)->create()->each(function(Accident $accident) {
+            $accident->checkpoints()->save(factory(AccidentCheckpoint::class)->create());
         });
     }
 }

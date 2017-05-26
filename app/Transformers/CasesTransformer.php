@@ -25,7 +25,7 @@ class CasesTransformer extends TransformerAbstract
             'repeated' => $accident->parent_id,
             'ref_num' => $accident->ref_num,
             'case_type' => $accident->caseable_type,
-            'created_at' => $accident->created_at,
+            'created_at' => $accident->created_at->format(config('date.actionFormat')),
             'checkpoints' => 'guarantee,checkedLDM,paidLDM',
             'status' => 'new',
             'accident_status' => 'new',

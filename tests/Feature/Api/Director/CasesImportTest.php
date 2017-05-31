@@ -8,6 +8,7 @@
 namespace Tests\Feature\Api\Director;
 
 use App\Accident;
+use App\Services\CaseImporterService;
 use App\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -36,7 +37,7 @@ class CasesImportTest extends TestCase
         /** @var User $user */
         $user = factory(User::class)->create(['password' => bcrypt('foo')]);
 
-        Storage::fake('imports');
+        Storage::fake(CaseImporterService::DISC_IMPORTS);
 
         $response = $this->json('POST', '/api/director/cases/importer',
             [UploadedFile::fake()->create('imported.docx', 100)], $this->headers($user));
@@ -55,7 +56,7 @@ class CasesImportTest extends TestCase
     }
 
     /**
-     * Place import to the storage and run the import
+     * Place import to the storage and run the import by the uploaded id
      */
     public function testImport()
     {

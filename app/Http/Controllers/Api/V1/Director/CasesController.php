@@ -21,8 +21,8 @@ class CasesController extends Controller
     public function index(Request $request)
     {
         $rows = $request->get('rows', 10);
-
         $accidents = Accident::paginate($rows, $columns = ['*'], $pageName = 'page', $request->get('page', null)+1);
+
         return $this->response->paginator($accidents, new CasesTransformer);
     }
 }

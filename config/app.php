@@ -188,6 +188,7 @@ return [
         \App\Providers\RoleServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
     ],
 
     /*
@@ -239,6 +240,8 @@ return [
 
         // extend
         'Roles' => App\Support\Facades\Roles::class,
+
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
     ],
 
 ];

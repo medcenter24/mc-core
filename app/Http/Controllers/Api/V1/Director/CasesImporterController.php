@@ -61,8 +61,26 @@ class CasesImporterController extends Controller
         return $this->response->collection($uploadedFiles, new UploadedFileTransformer);
     }
 
-    public function import()
+    /**
+     * Already loaded list of files
+     * @return \Dingo\Api\Http\Response
+     */
+    public function uploads()
     {
+        return $this->response->collection($this->user()->uploadedCases()->get(), new UploadedFileTransformer);
+    }
 
+    /**
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function import(Request $request)
+    {
+        if (!$request->has('id')) {
+            $this->response->errorBadRequest('Undefined Upload id');
+        }
+        $uploadId = $request->get('id');
+        $accident = $this->service->import($uploadId);
+        return $this->response->accepted($accident->id, ['id' => $uploadId]);
     }
 }

@@ -23,4 +23,11 @@ class CaseImporterService
             'file_name' => $file->name,
         ]);
     }
+
+    public function import($uploadId)
+    {
+        $upload = Upload::findOrFail($uploadId);
+        // get Docx from the storage and run importer
+        return $accident;
+    }
 }

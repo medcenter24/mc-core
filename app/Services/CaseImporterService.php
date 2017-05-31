@@ -8,7 +8,9 @@
 namespace App\Services;
 
 
+use App\Services\Import\Dhv24\Dhv24Docx2017Provider;
 use App\Upload;
+use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Storage;
 
 class CaseImporterService
@@ -27,7 +29,12 @@ class CaseImporterService
     public function import($uploadId)
     {
         $upload = Upload::findOrFail($uploadId);
+        $path = Storage::disk(self::DISC_IMPORTS)->get($upload->path);
+
         // get Docx from the storage and run importer
-        return $accident;
+        $provider = new Dhv24Docx2017Provider();
+        $provider->load($path);
+        $provider->import();
+        return $provider->getLastAccident();
     }
 }

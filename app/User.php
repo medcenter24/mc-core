@@ -42,8 +42,19 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * If current user could import or create cases, then he can get uploaded cases
+     */
+    public function uploadedCases()
+    {
+        return $this->morphMany(Upload::class, 'uploadable');
     }
 }

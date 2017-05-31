@@ -7,36 +7,58 @@
 
 namespace App\Http\Controllers\Api\V1\Director;
 
+use App\Services\CaseImporterService;
+use App\Transformers\UploadedFileTransformer;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
 
 class CasesImporterController extends Controller
 {
     use Helpers;
 
     /**
-     * Need to be available (headers will be sent through cors)
+     * @var CaseImporterService
      */
-    public function options()
+    private $service;
+
+    /**
+     * CasesImporterController constructor.
+     * @param CaseImporterService $service
+     */
+    public function __construct(CaseImporterService $service)
     {
-        /*return $this->response->withHeaders([
-            'Allow' => 'POST, PUT, OPTIONS',
-            'Access-Control-Allow-Methods' => 'PUT, POST, OPTIONS',
-            'Access-Control-Allow-Origin' => 'http://director.mydoctors24.com:8001',
-            'Access-Control-Allow-Headers' => 'X-Custom-Header',
-        ]);*/
+        $this->service = $service;
     }
 
+    /**
+     * All imported files by this director that should be imported or deleted
+     */
+    public function files()
+    {
+
+    }
+
+    /**
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
+     */
     public function upload(Request $request)
     {
-        $path = Storage::putFile('imports', $request->file('case'));
+        if (!count($request->allFiles())) {
+            $this->response->errorBadRequest('You need to provide files for import');
+        }
 
-        return $this->response->created($path, ['files' => ['first' => [
-            'name' => $path,
-            '' => $path,
-        ]]]);
+        $uploadedFiles = new Collection();
+        foreach ($request->allFiles() as $i => $file) {
+
+            $uploadedCase = $this->service->upload($file);
+            $this->user()->uploadedCases()->save($uploadedCase);
+            $uploadedFiles->put($uploadedCase->id, $uploadedCase);
+        }
+
+        return $this->response->collection($uploadedFiles, new UploadedFileTransformer);
     }
 
     public function import()

@@ -28,22 +28,30 @@ class CasesImportTest extends TestCase
 
         $response = $this->json('OPTIONS', '/api/director/cases/importer', [], $this->headers($user));
         $response->assertStatus(200)
-            ->assertHeader('Allow', 'POST, PUT, OPTIONS');
+            ->assertHeader('Allow', 'GET,HEAD,POST,PUT,PATCH,DELETE');
     }
 
     public function testUpload()
     {
+        /** @var User $user */
+        $user = factory(User::class)->create(['password' => bcrypt('foo')]);
+
         Storage::fake('imports');
 
-        $response = $this->json('POST', '/api/director/cases/importer', [
-            'case' => UploadedFile::fake()->create('imported.docx', 100)
-        ]);
+        $response = $this->json('POST', '/api/director/cases/importer',
+            [UploadedFile::fake()->create('imported.docx', 100)], $this->headers($user));
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['data' => [['path', 'name']]]);
+
+        $data = $response->json();
 
         // Assert the file was stored...
-        Storage::disk('imports')->assertExists('imported.docx');
+        self::assertEquals('imported.docx', $data['data'][0]['name']);
+        Storage::disk('imports')->assertExists(str_replace('imports/', '', $data['data'][0]['path']));
 
-        // Assert a file does not exist...
-        Storage::disk('imports')->assertMissing('doesnotimported.docx');
+        self::assertCount(1, $user->uploadedCases()->get());
+        self::assertEquals($data['data'][0]['path'], $user->uploadedCases()->first()->path);
     }
 
     /**

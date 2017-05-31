@@ -9,7 +9,6 @@
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function($api) {
-    $api->options('authenticate', '\App\Http\Controllers\Api\V1\AuthenticateController@options');
     $api->post('authenticate', '\App\Http\Controllers\Api\V1\AuthenticateController@authenticate');
 });
 
@@ -19,7 +18,6 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
     $api->get('token', '\App\Http\Controllers\Api\V1\AuthenticateController@getToken');
 
     $api->group(['prefix' => 'director', 'middleware' => ['cors']], function ($api) {
-        $api->options('cases/importer', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@options');
         $api->post('cases/importer', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@upload');
         $api->put('cases/importer', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@import');
         $api->resource('cases', \App\Http\Controllers\Api\V1\Director\CasesController::class);

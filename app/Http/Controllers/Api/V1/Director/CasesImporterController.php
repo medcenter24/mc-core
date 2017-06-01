@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Services\CaseImporterService;
 use App\Transformers\UploadedFileTransformer;
+use App\Upload;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -51,11 +52,12 @@ class CasesImporterController extends Controller
         }
 
         $uploadedFiles = new Collection();
-        foreach ($request->allFiles() as $i => $file) {
-
-            $uploadedCase = $this->service->upload($file);
-            $this->user()->uploadedCases()->save($uploadedCase);
-            $uploadedFiles->put($uploadedCase->id, $uploadedCase);
+        foreach ($request->allFiles() as $file) {
+            foreach ($file as $item) {
+                $uploadedCase = $this->service->upload($item);
+                $this->user()->uploadedCases()->save($uploadedCase);
+                $uploadedFiles->put($uploadedCase->id, $uploadedCase);
+            }
         }
 
         return $this->response->collection($uploadedFiles, new UploadedFileTransformer);
@@ -67,20 +69,22 @@ class CasesImporterController extends Controller
      */
     public function uploads()
     {
-        return $this->response->collection($this->user()->uploadedCases()->get(), new UploadedFileTransformer);
+        return $this->response->collection($this->service->getUploadedCases($this->user()), new UploadedFileTransformer);
     }
 
     /**
-     * @param Request $request
+     * @param $id
      * @return \Dingo\Api\Http\Response
      */
-    public function import(Request $request)
+    public function import($id)
     {
-        if (!$request->has('id')) {
-            $this->response->errorBadRequest('Undefined Upload id');
-        }
-        $uploadId = $request->get('id');
-        $accident = $this->service->import($uploadId);
-        return $this->response->accepted($accident->id, ['id' => $uploadId]);
+        $accident = $this->service->import($id);
+        return $this->response->accepted('', ['uploadId' => $id, 'accidentId' => $accident->id]);
+    }
+
+    public function destroy ($id)
+    {
+        $this->service->delete($id);
+        return $this->response->noContent();
     }
 }

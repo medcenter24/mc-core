@@ -40,7 +40,8 @@ class CasesImportTest extends TestCase
         Storage::fake(CaseImporterService::DISC_IMPORTS);
 
         $response = $this->json('POST', '/api/director/cases/importer',
-            [UploadedFile::fake()->create('imported.docx', 100)], $this->headers($user));
+            [[UploadedFile::fake()->create('imported.docx', 100)]]
+            , $this->headers($user));
 
         $response->assertStatus(200)
             ->assertJsonStructure(['data' => [['path', 'name']]]);
@@ -53,14 +54,6 @@ class CasesImportTest extends TestCase
 
         self::assertCount(1, $user->uploadedCases()->get());
         self::assertEquals($data['data'][0]['path'], $user->uploadedCases()->first()->path);
-    }
-
-    /**
-     * Place import to the storage and run the import by the uploaded id
-     */
-    public function testImport()
-    {
-
     }
 
 }

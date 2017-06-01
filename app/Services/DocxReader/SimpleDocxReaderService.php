@@ -103,7 +103,7 @@ class SimpleDocxReaderService implements DocxReaderInterface
         $zip = new ZipArchive;
 
         // Open received archive file
-        if (true === $zip->open($archiveFile)) {
+        if (true === ($zipErr = $zip->open($archiveFile))) {
             Log::info('Zip was opened', ['file' => $archiveFile]);
             // If done, search for the data file in the archive
             if (($index = $zip->locateName($dataFile)) !== false) {
@@ -122,7 +122,7 @@ class SimpleDocxReaderService implements DocxReaderInterface
             $zip->close();
         }
 
-        Log::error('File can not be read', ['file' => $archiveFile]);
+        Log::error('File can not be read', ['file' => $archiveFile, 'err' => $zipErr]);
         // In case of failure return empty string
         return false;
     }

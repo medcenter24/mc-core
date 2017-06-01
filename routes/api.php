@@ -18,8 +18,13 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
     $api->get('token', '\App\Http\Controllers\Api\V1\AuthenticateController@getToken');
 
     $api->group(['prefix' => 'director', 'middleware' => ['cors']], function ($api) {
+
+        // Importer
         $api->post('cases/importer', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@upload');
-        $api->put('cases/importer', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@import');
+        $api->get('cases/importer', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@uploads');
+        $api->put('cases/importer/{id}', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@import');
+        $api->delete('cases/importer/{id}', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@destroy');
+
         $api->resource('cases', \App\Http\Controllers\Api\V1\Director\CasesController::class);
     });
 });

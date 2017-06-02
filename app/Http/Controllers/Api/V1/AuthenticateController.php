@@ -8,18 +8,15 @@
 namespace App\Http\Controllers\Api\V1;
 
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Dingo\Api\Routing\Helpers;
 use JWTAuth;
-use App\Http\Requests;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 
-class AuthenticateController extends Controller
+class AuthenticateController extends ApiController
 {
-    use Helpers;
-
     /**
      *  API Login, on success return JWT Auth token
      *

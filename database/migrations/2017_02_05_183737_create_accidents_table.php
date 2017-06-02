@@ -26,6 +26,7 @@ class CreateAccidentsTable extends Migration
             $table->unsignedInteger('accident_type_id')->default(0)->index();
             $table->unsignedInteger('accident_status_id')->default(0)->index();
             $table->unsignedInteger('assistant_id')->default(0)->index();
+            $table->unsignedInteger('form_report_id')->default(0)->index();
             $table->string('assistant_ref_num')->default('')->index();
             $table->morphs('caseable');
             $table->string('ref_num')->default('')->index();

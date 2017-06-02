@@ -16,6 +16,13 @@ namespace App;
  */
 class DoctorAccident extends AccidentAbstract
 {
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'visit_time',
+    ];
+
     const STATUS_NEW = 'new';
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_SIGNED = 'signed';
@@ -67,9 +74,9 @@ class DoctorAccident extends AccidentAbstract
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function serviceable()
+    public function services()
     {
-        return $this->morphToMany(DoctorService::class, 'doctor_serviceables');
+        return $this->morphToMany(DoctorService::class, 'doctor_serviceable');
     }
 
     /**

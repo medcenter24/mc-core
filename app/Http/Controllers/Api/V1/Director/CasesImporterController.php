@@ -7,18 +7,14 @@
 
 namespace App\Http\Controllers\Api\V1\Director;
 
+use App\Http\Controllers\ApiController;
 use App\Services\CaseImporterService;
 use App\Transformers\UploadedFileTransformer;
-use App\Upload;
-use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
 
-class CasesImporterController extends Controller
+class CasesImporterController extends ApiController
 {
-    use Helpers;
-
     /**
      * @var CaseImporterService
      */
@@ -31,14 +27,6 @@ class CasesImporterController extends Controller
     public function __construct(CaseImporterService $service)
     {
         $this->service = $service;
-    }
-
-    /**
-     * All imported files by this director that should be imported or deleted
-     */
-    public function files()
-    {
-
     }
 
     /**
@@ -82,6 +70,11 @@ class CasesImporterController extends Controller
         return $this->response->accepted('', ['uploadId' => $id, 'accidentId' => $accident->id]);
     }
 
+    /**
+     * Delete uploaded file
+     * @param $id
+     * @return \Dingo\Api\Http\Response
+     */
     public function destroy ($id)
     {
         $this->service->delete($id);

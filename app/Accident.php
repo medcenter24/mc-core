@@ -7,7 +7,6 @@
 
 namespace App;
 
-
 /**
  * Case|Accident|...
  *
@@ -83,7 +82,6 @@ class Accident extends AccidentAbstract
 
     /**
      * Accident report stored as a FormReport element (which use Assignment form template)
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function formReport()
     {
@@ -92,12 +90,21 @@ class Accident extends AccidentAbstract
 
     /**
      * by default it could be defined by the director
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function serviceable()
+    public function services()
     {
-        return $this->morphMany(DoctorService::class, 'serviceable');
+        return $this->morphToMany(DoctorService::class, 'doctor_serviceable');
+    }
+
+    /**
+     * by default it could be defined by the director
+     * Or director maybe want to create new case by them own
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function diagnostics()
+    {
+        return $this->morphToMany(Diagnostic::class, 'diagnosticable');
     }
 
     /**
@@ -110,6 +117,9 @@ class Accident extends AccidentAbstract
         return $this->morphMany(DoctorSurvey::class, 'surveable');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
     public function caseable()
     {
         return $this->morphTo();

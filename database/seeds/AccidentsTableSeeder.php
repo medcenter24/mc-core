@@ -7,6 +7,8 @@
 
 use App\Accident;
 use App\AccidentCheckpoint;
+use App\Diagnostic;
+use App\DoctorService;
 use Illuminate\Database\Seeder;
 
 class AccidentsTableSeeder extends Seeder
@@ -20,8 +22,15 @@ class AccidentsTableSeeder extends Seeder
     {
         DB::table('accident_accident_checkpoint')->delete();
         Accident::truncate();
-        factory(Accident::class, 100)->create()->each(function(Accident $accident) {
+        factory(Accident::class, 5)->create()->each(function(Accident $accident) {
             $accident->checkpoints()->save(factory(AccidentCheckpoint::class)->create());
+            $accident->services()->attach(factory(DoctorService::class)->create());
+            $accident->services()->attach(factory(DoctorService::class)->create());
+            $accident->caseable->services()->attach(factory(DoctorService::class)->create());
+
+            $accident->diagnostics()->attach(factory(Diagnostic::class)->create());
+            $accident->diagnostics()->attach(factory(Diagnostic::class)->create());
+            $accident->caseable->diagnostics()->attach(factory(Diagnostic::class)->create());
         });
     }
 }

@@ -188,6 +188,9 @@ $factory->define(\App\Accident::class, function (\Faker\Generator $faker) {
         'caseable_id' => function () {
             return factory(\App\DoctorAccident::class)->create()->id;
         },
+        'form_report_id' => function () {
+            return factory(\App\FormReport::class)->create()->id;
+        },
         'caseable_type' => \App\DoctorAccident::class,
         'ref_num' => str_random(3) . '-' . $faker->numberBetween('100', '999') . '-' . str_random(2),
         'title' => $faker->text(30),
@@ -257,6 +260,14 @@ $factory->define(\App\Guarantee::class, function (\Faker\Generator $faker) {
             return factory(\App\FormReport::class)->create()->id;
         },
         'status' => 'new',
+    ];
+});
+
+$factory->define(\App\Discount::class, function (\Faker\Generator $faker) {
+    return [
+        'title' => $faker->text(20),
+        'description' => $faker->text(200),
+        'operation' => $faker->randomElement(\App\Services\DiscountService::ALLOWED_OPERATIONS),
     ];
 });
 

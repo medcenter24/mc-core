@@ -16,8 +16,13 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
 
     $api->post('logout', '\App\Http\Controllers\Api\V1\AuthenticateController@logout');
     $api->get('token', '\App\Http\Controllers\Api\V1\AuthenticateController@getToken');
+    $api->get('user', '\App\Http\Controllers\Api\V1\AuthenticateController@authenticatedUser');
 
-    $api->group(['prefix' => 'director', 'middleware' => ['cors']], function ($api) {
+    $api->group(['prefix' => 'doctor', 'middleware' => ['cors', 'role:doctor']], function ($api) {
+        $api->resource('accidents', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class);
+    });
+
+    $api->group(['prefix' => 'director', 'middleware' => ['cors', 'role:director']], function ($api) {
 
         // Importer
         $api->post('cases/importer', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@upload');

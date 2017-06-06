@@ -136,7 +136,7 @@ $factory->define(\App\DoctorService::class, function (\Faker\Generator $faker) {
 $factory->define(\App\AccidentType::class, function (\Faker\Generator $faker) {
 
     return [
-        'title' => $faker->text(20),
+        'title' => $faker->randomElement(\App\Services\AccidentTypeService::ALLOWED_TYPES),
         'description' => $faker->text(),
     ];
 });
@@ -175,8 +175,12 @@ $factory->define(\App\Accident::class, function (\Faker\Generator $faker) {
         'patient_id' => function () {
             return factory(\App\Patient::class)->create()->id;
         },
-        'accident_type_id' => function () {
-            return factory(\App\AccidentType::class)->create()->id;
+        'accident_type_id' => function () use ($faker) {
+            $type = $faker->randomElement(\App\Services\AccidentTypeService::ALLOWED_TYPES);
+            $accidentType = \App\AccidentType::where('title', $type)->first();
+            return $accidentType->id
+                ? $accidentType->id
+                : factory(\App\AccidentType::class)->create(['title' => $type])->id;
         },
         'accident_status_id' => function () {
             return factory(\App\AccidentStatus::class)->create()->id;

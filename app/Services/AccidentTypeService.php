@@ -8,7 +8,7 @@
 namespace App\Services;
 
 
-class DiscountService
+class AccidentTypeService
 {
-    const ALLOWED_OPERATIONS = ['%', 'EUR'];
+    const ALLOWED_TYPES = ['insurance', 'non-insurance'];
 }

@@ -5,6 +5,8 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
+use App\AccidentType;
+use App\Services\AccidentTypeService;
 use Illuminate\Database\Seeder;
 
 class AccidentTypesTableSeeder extends Seeder
@@ -16,8 +18,12 @@ class AccidentTypesTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\AccidentType::truncate();
-        factory(\App\AccidentType::class)->create(['title' => 'Insurance']);
-        factory(\App\AccidentType::class)->create(['title' => 'Not insurance']);
+        AccidentType::truncate();
+        foreach (AccidentTypeService::ALLOWED_TYPES as $allowedType) {
+            $attr = ['title' => $allowedType];
+            if (!AccidentType::find($attr)->count()) {
+                factory(AccidentType::class)->create($attr);
+            }
+        }
     }
 }

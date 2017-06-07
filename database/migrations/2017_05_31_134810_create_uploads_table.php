@@ -29,6 +29,7 @@ class CreateUploadsTable extends Migration
             $table->morphs('uploadable');
             $table->string('file_name')->default('');
             $table->string('path')->default('');
+            $table->string('storage')->default('')->index();
             $table->timestamps();
             $table->softDeletes();
         });

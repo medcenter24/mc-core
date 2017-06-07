@@ -70,7 +70,7 @@ class CasesImporterController extends ApiController
      */
     public function uploads()
     {
-        $uploadedCases = $this->user()->uploadedCases()->get();
+        $uploadedCases = $this->user()->uploadedMedia()->where('storage', $this->uploaderService->getOption(UploaderService::CONF_FOLDER))->get();
         return $this->response->collection($uploadedCases, new UploadedFileTransformer);
     }
 

@@ -57,4 +57,12 @@ class User extends Authenticatable
     {
         return $this->morphMany(Upload::class, 'uploadable');
     }
+
+    /**
+     * File uploader
+     */
+    public function uploadedMedia()
+    {
+        return $this->morphMany(Upload::class, 'uploadable');
+    }
 }

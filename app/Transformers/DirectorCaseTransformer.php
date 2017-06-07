@@ -9,6 +9,7 @@ namespace App\Transformers;
 
 
 use App\Accident;
+use App\Discount;
 use League\Fractal\TransformerAbstract;
 
 /**
@@ -25,6 +26,9 @@ class DirectorCaseTransformer extends TransformerAbstract
      */
     public function transform (Accident $accident)
     {
-        return [];
+        return [
+            'accident' => (new AccidentTransformer())->transform($accident),
+            'discountType' => (new DiscountTransformer())->transform($accident->discount ? $accident->discount : new Discount())
+        ];
     }
 }

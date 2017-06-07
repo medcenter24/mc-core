@@ -29,7 +29,11 @@ class AccidentsController extends ApiController
 
     public function show($id)
     {
-        $accident = Accident::findOrFail($id);
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+
         return $this->response->item($accident, new AccidentTransformer());
     }
 

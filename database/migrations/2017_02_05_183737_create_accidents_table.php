@@ -27,11 +27,13 @@ class CreateAccidentsTable extends Migration
             $table->unsignedInteger('accident_status_id')->default(0)->index();
             $table->unsignedInteger('assistant_id')->default(0)->index();
             $table->unsignedInteger('form_report_id')->default(0)->index();
+            $table->unsignedInteger('city_id')->default(0)->index();
+            $table->unsignedInteger('discount_id')->default(0)->index();
+            $table->decimal('discount_value', 8, 2)->default(0);
             $table->string('assistant_ref_num')->default('')->index();
             $table->morphs('caseable');
             $table->string('ref_num')->default('')->index();
             $table->string('title')->default('')->index();
-            $table->unsignedInteger('city_id')->default(0)->index();
             $table->string('address')->default('');
             $table->text('contacts')->default('');
             $table->text('symptoms');

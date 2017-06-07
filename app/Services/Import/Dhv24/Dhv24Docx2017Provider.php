@@ -20,6 +20,7 @@ use App\DoctorService;
 use App\Helpers\Arr;
 use App\Helpers\BlankModels;
 use App\Patient;
+use App\Services\AccidentTypeService;
 use app\Services\DocxReader\DocxReaderInterface;
 use App\Services\DocxReader\SimpleDocxReaderService;
 use App\Services\DomDocumentService;
@@ -312,11 +313,11 @@ class Dhv24Docx2017Provider extends DataProvider
      */
     private function setUpDoctorAccidentDefaults()
     {
-        $this->accident = BlankModels::defaultAccident();
-        $this->doctorAccident = BlankModels::defaultDoctorAccident();
+        $this->accident = BlankModels::accident();
+        $this->doctorAccident = BlankModels::doctorAccident();
         $this->doctorAccident->status = DoctorAccident::STATUS_CLOSED;
 
-        $accidentType = AccidentType::firstOrCreate(['title' => 'Insurance Case']);
+        $accidentType = AccidentType::firstOrCreate(['title' => AccidentTypeService::ALLOWED_TYPES[0]]);
         $this->accident->accident_type_id = $accidentType->id;
         $accidentStatus = AccidentStatus::firstOrCreate([
             'title' => 'Done by doctor',
@@ -421,9 +422,12 @@ class Dhv24Docx2017Provider extends DataProvider
             foreach ($row as $key => $col) {
                 $service[$key] = Arr::multiArrayToString($col);
             }
+            $price = $service[1];
+            $price = trim(str_replace(' ', '', $price));
+            $price = floatval($price);
             $mService = DoctorService::firstOrCreate([
                 'title' => $service[0],
-                'price' => $service[1],
+                'price' => $price,
             ]);
 
             $this->doctorAccident->services()->attach($mService);

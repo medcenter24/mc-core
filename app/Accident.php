@@ -72,6 +72,15 @@ class Accident extends AccidentAbstract
     }
 
     /**
+     * Discount which should be used for this accident
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function discount()
+    {
+        return $this->belongsTo(Discount::class);
+    }
+
+    /**
      * Patient from the accident
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

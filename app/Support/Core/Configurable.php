@@ -40,6 +40,7 @@ abstract class Configurable implements ConfigurableInterface
      * Set options
      *
      * @param array $options
+     * @param bool $overwrite
      * @return void
      */
     public function setOptions($options, $overwrite = false) {
@@ -50,7 +51,12 @@ abstract class Configurable implements ConfigurableInterface
                 new \Exception('Options submitted to '.get_called_class().' must be an array or implement toArray');
             }
         }
-        $this->options = $options;
+
+        if (!$overwrite) {
+            $this->options = array_merge($this->getOptions(), $options);
+        } else {
+             $this->options = $options;
+        }
     }
 
     /**

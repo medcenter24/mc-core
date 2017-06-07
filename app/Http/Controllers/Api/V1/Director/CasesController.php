@@ -8,23 +8,33 @@
 namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Accident;
-use App\DoctorAccident;
 use App\Http\Controllers\ApiController;
-use App\Transformers\CasesTransformer;
+use App\Transformers\AccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
+use App\Transformers\DirectorCaseTransformer;
 use App\Transformers\DoctorCaseTransformer;
 use App\Transformers\DoctorServiceTransformer;
-use App\Transformers\ModelTransformer;
 use Illuminate\Http\Request;
 
 class CasesController extends ApiController
 {
+    /**
+     * Load all data that needed by director for the case editing
+     * (Will return big json data)
+     * @param $id - accident id
+     */
+    public function show($id)
+    {
+        $accident = Accident::findOrFail($id);
+        $this->response->item($accident, new DirectorCaseTransformer());
+    }
+
     public function index(Request $request)
     {
         $rows = $request->get('rows', 10);
         $accidents = Accident::orderBy('created_at', 'desc')->paginate($rows, $columns = ['*'], $pageName = 'page', $request->get('page', null)+1);
 
-        return $this->response->paginator($accidents, new CasesTransformer);
+        return $this->response->paginator($accidents, new AccidentTransformer);
     }
 
     public function getDoctorCase($id)

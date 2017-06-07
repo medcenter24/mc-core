@@ -426,7 +426,7 @@ class Dhv24Docx2017Provider extends DataProvider
                 'price' => $service[1],
             ]);
 
-            $this->doctorAccident->serviceable()->attach($mService);
+            $this->doctorAccident->services()->attach($mService);
         }
     }
 

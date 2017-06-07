@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Http\Controllers\ApiController;
 use App\Services\CaseImporterService;
+use App\Services\UploaderService;
 use App\Transformers\UploadedFileTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -18,15 +19,27 @@ class CasesImporterController extends ApiController
     /**
      * @var CaseImporterService
      */
-    private $service;
+    private $importerService;
+
+    /**
+     * @var UploaderService
+     */
+    private $uploaderService;
 
     /**
      * CasesImporterController constructor.
-     * @param CaseImporterService $service
+     * @param CaseImporterService $importerService
+     * @param UploaderService $uploaderService
      */
-    public function __construct(CaseImporterService $service)
+    public function __construct(CaseImporterService $importerService, UploaderService $uploaderService)
     {
-        $this->service = $service;
+        $this->importerService = $importerService;
+
+        $this->uploaderService = $uploaderService;
+        $this->uploaderService->setOptions([
+            UploaderService::CONF_DISK => 'imports',
+            UploaderService::CONF_FOLDER => 'cases',
+        ]);
     }
 
     /**
@@ -42,7 +55,7 @@ class CasesImporterController extends ApiController
         $uploadedFiles = new Collection();
         foreach ($request->allFiles() as $file) {
             foreach ($file as $item) {
-                $uploadedCase = $this->service->upload($item);
+                $uploadedCase = $this->uploaderService->upload($item);
                 $this->user()->uploadedCases()->save($uploadedCase);
                 $uploadedFiles->put($uploadedCase->id, $uploadedCase);
             }
@@ -57,7 +70,8 @@ class CasesImporterController extends ApiController
      */
     public function uploads()
     {
-        return $this->response->collection($this->service->getUploadedCases($this->user()), new UploadedFileTransformer);
+        $uploadedCases = $this->user()->uploadedCases()->get();
+        return $this->response->collection($uploadedCases, new UploadedFileTransformer);
     }
 
     /**
@@ -66,8 +80,14 @@ class CasesImporterController extends ApiController
      */
     public function import($id)
     {
-        $accident = $this->service->import($id);
-        return $this->response->accepted('', ['uploadId' => $id, 'accidentId' => $accident->id]);
+        $path = $this->uploaderService->getPathById($id);
+        $accident = $this->importerService->import($path);
+        $this->uploaderService->delete($id);
+
+        return $this->response->accepted(
+            url('director/cases', [$accident->id]),
+            ['uploadId' => $id, 'accidentId' => $accident->id]
+        );
     }
 
     /**
@@ -77,7 +97,7 @@ class CasesImporterController extends ApiController
      */
     public function destroy ($id)
     {
-        $this->service->delete($id);
+        $this->uploaderService->delete($id);
         return $this->response->noContent();
     }
 }

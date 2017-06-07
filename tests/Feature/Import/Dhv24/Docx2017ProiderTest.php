@@ -170,6 +170,6 @@ class Docx2017ProiderTest extends TestCase
         self::assertEquals('Foster Abigail', $patient->name, 'Patient has correct name');
 
         /** Services */
-        self::assertEquals(22, $doctorAccident->serviceable()->count(), 'Services were loaded');
+        self::assertEquals(22, $doctorAccident->services()->count(), 'Services were loaded');
     }
 }

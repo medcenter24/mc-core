@@ -178,7 +178,7 @@ $factory->define(\App\Accident::class, function (\Faker\Generator $faker) {
         'accident_type_id' => function () use ($faker) {
             $type = $faker->randomElement(\App\Services\AccidentTypeService::ALLOWED_TYPES);
             $accidentType = \App\AccidentType::where('title', $type)->first();
-            return $accidentType->id
+            return $accidentType
                 ? $accidentType->id
                 : factory(\App\AccidentType::class)->create(['title' => $type])->id;
         },

@@ -26,27 +26,16 @@ class BlankModels
             'accident_type_id' => 0,
             'accident_status_id' => 0,
             'assistant_id' => 0,
-            'assistant_ref_num' => 'FakeAssistantRef',
+            'assistant_ref_num' => '',
             'caseable_id' => 0,
             'caseable_type' => '',
-            'ref_num' => 'Fake-import-num',
-            'title' => 'FakeImport',
+            'ref_num' => '',
+            'title' => '',
             'city_id' => 0,
-            'address' => 'FakeAddress',
-            'contacts' => 'FakeContacts',
-            'symptoms' => 'FakeSymptoms',
+            'address' => '',
+            'contacts' => '',
+            'symptoms' => '',
         ]);
-    }
-
-    /**
-     * todo redundant
-     * Accident with default values
-     * @return Accident
-     */
-    public static function defaultAccident()
-    {
-        $accident = self::accident();
-        return $accident;
     }
 
     /**
@@ -58,18 +47,9 @@ class BlankModels
             'doctor_id' => 0,
             'city_id' => 0,
             'status' => DoctorAccident::STATUS_NEW,
-            'recommendation' => 'FakeDiagnose',
-            'investigation' => 'FakeInvestigation',
+            'recommendation' => '',
+            'investigation' => '',
             'accident_status_id' => 0,
         ]);
-    }
-
-    /**
-     * @return DoctorAccident
-     */
-    public static function defaultDoctorAccident()
-    {
-        $doctorAccident = self::doctorAccident();
-        return $doctorAccident;
     }
 }

@@ -204,6 +204,14 @@ $factory->define(\App\Accident::class, function (\Faker\Generator $faker) {
         'address' => $faker->address,
         'contacts' => $faker->company . "\n" . $faker->companyEmail . "\n" . $faker->phoneNumber,
         'symptoms' => $faker->paragraphs(4, true),
+        'discount_id' => function () use ($faker) {
+            $type = $faker->randomElement(\App\Services\DiscountService::ALLOWED_OPERATIONS);
+            $discount = \App\Discount::where('operation', $type)->first();
+            return $discount
+                ? $discount->id
+                : factory(\App\Discount::class)->create()->id;
+        },
+        'discount_value' => $faker->numberBetween(0, 100),
     ];
 });
 

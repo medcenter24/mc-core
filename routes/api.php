@@ -50,5 +50,9 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
 
         $api->get('discounts', '\App\Http\Controllers\Api\V1\Director\DiscountsController@index');
         $api->get('diagnostics', '\App\Http\Controllers\Api\V1\Director\DiagnosticsController@index');
+
+        $api->post('media', '\App\Http\Controllers\Api\V1\Director\MediaController@upload');
+        $api->get('media', '\App\Http\Controllers\Api\V1\Director\MediaController@uploads');
+        $api->delete('media/{id}', '\App\Http\Controllers\Api\V1\Director\MediaController@destroy');
     });
 });

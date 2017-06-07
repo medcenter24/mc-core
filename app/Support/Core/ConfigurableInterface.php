@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Alexander
- * Date: 06.05.2017
- * Time: 23:34
+ * Copyright (c) 2017.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
 namespace App\Support\Core;

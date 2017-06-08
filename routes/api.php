@@ -20,7 +20,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
 
     $api->group(['prefix' => 'doctor', 'middleware' => ['cors', 'role:doctor']], function ($api) {
         $api->resource('accidents', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class);
-        $api->get('me', '\App\Http\Controllers\Api\V1\AuthenticateController@authenticatedUser');
+        $api->get('me', '\App\Http\Controllers\Api\V1\Doctor\ProfileController@me');
     });
 
     $api->group(['prefix' => 'director', 'middleware' => ['cors', 'role:director']], function ($api) {

@@ -32,7 +32,9 @@ class AuthenticateController extends ApiController
             if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json(['error' => 'invalid_credentials'], 401);
             }
+            \Log::info('User logged in', ['email' => $credentials['email']]);
         } catch (JWTException $e) {
+            \Log::warning('Can\'t create token', ['error' => $e->getMessage()]);
             // something went wrong whilst attempting to encode the token
             return response()->json(['error' => 'could_not_create_token'], 500);
         }

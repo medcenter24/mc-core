@@ -50,6 +50,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
+    }
+
     /**
      * If current user could import or create cases, then he can get uploaded cases
      */

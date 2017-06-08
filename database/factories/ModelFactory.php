@@ -30,7 +30,10 @@ $factory->define(\App\Doctor::class, function (\Faker\Generator $faker) {
         'description' => $faker->text(),
         'ref_key' => str_random(3),
         'gender' => $faker->randomElement(['male', 'female', 'none']),
-        'medical_board_num' => $faker->randomDigitNotNull
+        'medical_board_num' => $faker->numberBetween(1000000, 9999999),
+        'city_id' => function () {
+            return factory(\App\City::class)->create()->id;
+        }
     ];
 });
 

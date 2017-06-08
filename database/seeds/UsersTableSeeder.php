@@ -36,12 +36,17 @@ class UsersTableSeeder extends Seeder
 
         $admin->roles()->attach([$loginRoleId, $adminRoleId]);
 
-        $doctor = factory(User::class)->create([
-            'email' => 'doctor@mail.com',
-            'name' => 'Peter',
+        $doctor = factory(\App\Doctor::class)->create([
+            'name' => 'Doctor Aibolit',
+            'user_id' => function() {
+                return factory(User::class)->create([
+                    'email' => 'doctor@mail.com',
+                    'name' => 'Peter',
+                ]);
+            }
         ]);
 
-        $doctor->roles()->attach([$loginRoleId, $doctorRoleId]);
+        $doctor->user->roles()->attach([$loginRoleId, $doctorRoleId]);
 
         $director = factory(User::class)->create([
             'email' => 'director@mail.com',

@@ -19,8 +19,16 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
     $api->get('user', '\App\Http\Controllers\Api\V1\AuthenticateController@authenticatedUser');
 
     $api->group(['prefix' => 'doctor', 'middleware' => ['cors', 'role:doctor']], function ($api) {
+        $api->get('accidents/{id}/patient', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@patient');
+        $api->get('accidents/{id}/status', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@status');
+        $api->get('accidents/{id}/services', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@services');
+        $api->get('accidents/{id}/caseType', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@type');
+        $api->get('accidents/{id}/surveys', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@surveys');
         $api->resource('accidents', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class);
         $api->get('me', '\App\Http\Controllers\Api\V1\Doctor\ProfileController@me');
+        $api->get('services', '\App\Http\Controllers\Api\V1\Doctor\DoctorServicesController@index');
+        $api->get('surveys', '\App\Http\Controllers\Api\V1\Doctor\DiagnosticsController@index');
+        $api->get('caseTypes', '\App\Http\Controllers\Api\V1\Doctor\AccidentTypesController@index');
     });
 
     $api->group(['prefix' => 'director', 'middleware' => ['cors', 'role:director']], function ($api) {

@@ -96,7 +96,7 @@ class Accident extends AccidentAbstract
 
     public function type()
     {
-        return $this->belongsTo(AccidentType::class);
+        return $this->belongsTo(AccidentType::class, 'accident_type_id');
     }
 
     /**

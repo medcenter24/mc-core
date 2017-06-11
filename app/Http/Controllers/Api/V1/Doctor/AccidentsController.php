@@ -8,6 +8,7 @@
 namespace App\Http\Controllers\Api\V1\Doctor;
 
 use App\Accident;
+use App\Diagnostic;
 use App\DoctorAccident;
 use App\Http\Controllers\ApiController;
 use App\Transformers\AccidentTransformer;
@@ -16,6 +17,7 @@ use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DoctorAccidentStatusTransformer;
 use App\Transformers\DoctorServiceTransformer;
+use App\Transformers\DoctorSurveyTransformer;
 use App\Transformers\PatientTransformer;
 use Illuminate\Http\Request;
 
@@ -99,6 +101,64 @@ class AccidentsController extends ApiController
         return $this->response->item($accident->type, new AccidentTypeTransformer());
     }
 
+    public function diagnostics($id)
+    {
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+
+        /** @var \Illuminate\Support\Collection $diagnostics */
+        $diagnostics = $accident->diagnostics;
+        $diagnostics = $diagnostics->merge($accident->caseable->diagnostics);
+
+        return $this->response->collection($diagnostics, new DiagnosticTransformer());
+    }
+
+    public function createDiagnostic($id, Request $request)
+    {
+        \Log::info('Request to create new diagnostic', ['data' => $request->toArray()]);
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+
+        $doctorAccident = $accident->caseable;
+
+        $diagnosticId = $request->get('id', 0);
+        if ($diagnosticId) {
+            $diagnostic = Diagnostic::find($diagnosticId);
+            if (!$diagnostic) {
+                \Log::error('Diagnostic not found');
+                $this->response->errorNotFound();
+            }
+
+            $diagnosticable = $diagnostic->diagnosticable();
+            if (
+                $diagnosticable->diagnosticable_id != $accident->caseable->id
+                || $diagnosticable->diagnosticable_type != DoctorAccident::class
+            ) {
+                \Log::error('Diagnostic can not be updated, user has not permissions');
+                $this->response->errorMethodNotAllowed();
+            }
+
+            $diagnostic->title = $request->get('title', $diagnostic->title);
+            $diagnostic->description = $request->get('decription', $diagnostic->description);
+        } else {
+            $diagnostic = Diagnostic::create([
+                'title' => $request->get('title', ''),
+                'description' => $request->get('description', '')
+            ]);
+            $doctorAccident->diagnostics()->attach($diagnostic);
+        }
+
+        return $this->response->accepted(null, [
+            'id' => $diagnostic->id,
+            'title' => $diagnostic->title,
+            'description' => $diagnostic->description
+        ]);
+    }
+
     public function surveys($id)
     {
         $accident = Accident::find($id);
@@ -106,7 +166,7 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
-        return $this->response->collection($accident->diagnostics, new DiagnosticTransformer());
+        return $this->response->collection($accident->surveys, new DoctorSurveyTransformer());
     }
 
     /**

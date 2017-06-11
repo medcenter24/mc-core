@@ -10,6 +10,8 @@ namespace App\Http\Controllers\Api\V1\Doctor;
 use App\Accident;
 use App\Diagnostic;
 use App\DoctorAccident;
+use App\DoctorService;
+use App\DoctorSurvey;
 use App\Http\Controllers\ApiController;
 use App\Transformers\AccidentTransformer;
 use App\Transformers\AccidentTypeTransformer;
@@ -88,7 +90,56 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
-        return $this->response->collection($accident->services, new DoctorServiceTransformer());
+        /** @var \Illuminate\Support\Collection $services */
+        $services = $accident->services;
+        $services = $services->merge($accident->caseable->services);
+
+        return $this->response->collection($services, new DoctorServiceTransformer());
+    }
+
+    public function saveService($id, Request $request)
+    {
+        \Log::info('Request to create new services', ['data' => $request->toArray()]);
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+
+        $doctorAccident = $accident->caseable;
+
+        $serviceId = $request->get('id', 0);
+        if ($serviceId) {
+            $service = DoctorService::find($serviceId);
+            if (!$service) {
+                \Log::error('Diagnostic not found');
+                $this->response->errorNotFound();
+            }
+
+            $serviceable = $service->serviceable();
+            if (
+                $serviceable->serviceable_id != $doctorAccident->id
+                || $serviceable->serviceable_type != DoctorAccident::class
+            ) {
+                \Log::error('Service can not be updated, user has not permissions');
+                $this->response->errorMethodNotAllowed();
+            }
+
+            $service->title = $request->get('title', $service->title);
+            $service->description = $request->get('decription', $service->description);
+            $service->save();
+        } else {
+            $service = DoctorService::create([
+                'title' => $request->get('title', ''),
+                'description' => $request->get('description', '')
+            ]);
+            $doctorAccident->services()->attach($service);
+        }
+
+        return $this->response->accepted(null, [
+            'id' => $service->id,
+            'title' => $service->title,
+            'description' => $service->description
+        ]);
     }
 
     public function type($id)
@@ -144,6 +195,7 @@ class AccidentsController extends ApiController
 
             $diagnostic->title = $request->get('title', $diagnostic->title);
             $diagnostic->description = $request->get('decription', $diagnostic->description);
+            $diagnostic->save();
         } else {
             $diagnostic = Diagnostic::create([
                 'title' => $request->get('title', ''),
@@ -166,8 +218,55 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
-        return $this->response->collection($accident->surveys, new DoctorSurveyTransformer());
+        return $this->response->collection($accident->caseable->surveys, new DoctorSurveyTransformer());
     }
+
+    public function createSurvey($id, Request $request)
+    {
+        \Log::info('Request to create new survey', ['data' => $request->toArray()]);
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+
+        $doctorAccident = $accident->caseable;
+
+        $surveyId = $request->get('id', 0);
+        if ($surveyId) {
+            $survey = Diagnostic::find($surveyId);
+            if (!$survey) {
+                \Log::error('Diagnostic not found');
+                $this->response->errorNotFound();
+            }
+
+            if (
+                $survey->surveable_id != $doctorAccident->id
+                || $survey->caseable_type != DoctorAccident::class
+            ) {
+                \Log::error('Survey can not be updated, user has not permissions');
+                $this->response->errorMethodNotAllowed();
+            }
+
+            $survey->title = $request->get('title', $survey->title);
+            $survey->description = $request->get('decription', $survey->description);
+            $survey->save();
+        } else {
+            $survey = DoctorSurvey::create([
+                'title' => $request->get('title', ''),
+                'description' => $request->get('description', ''),
+                'created_by' => $this->user()->id,
+                'surveable_id' => $doctorAccident->id,
+                'surveable_type' => DoctorAccident::class
+            ]);
+        }
+
+        return $this->response->accepted(null, [
+            'id' => $survey->id,
+            'title' => $survey->title,
+            'description' => $survey->description
+        ]);
+    }
+
 
     /**
      * Edit form for the accident which should be edited by the doctor

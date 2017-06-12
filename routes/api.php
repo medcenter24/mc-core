@@ -20,6 +20,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
 
     $api->group(['prefix' => 'doctor', 'middleware' => ['cors', 'role:doctor']], function ($api) {
         $api->get('accidents/{id}/patient', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@patient');
+        $api->post('accidents/{id}/upload', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@upload');
         $api->get('accidents/{id}/status', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@status');
         $api->get('accidents/{id}/services', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@services');
         $api->post('accidents/{id}/services', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@saveService');

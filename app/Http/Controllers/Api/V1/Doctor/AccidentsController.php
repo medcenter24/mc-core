@@ -12,6 +12,7 @@ use App\Diagnostic;
 use App\DoctorAccident;
 use App\DoctorService;
 use App\DoctorSurvey;
+use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Transformers\AccidentTransformer;
 use App\Transformers\AccidentTypeTransformer;
@@ -300,5 +301,27 @@ class AccidentsController extends ApiController
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Load documents into the accident
+     * @return \Dingo\Api\Http\Response
+     */
+    public function upload($id)
+    {
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+
+        $document = new Document();
+        $document->addMediaFromRequest('files')
+            ->toMediaCollection('documents');
+
+        $accident->caseable->documents()->attach($document);
+
+        return $this->response->created($document->getFirstMediaUrl(), [
+            'document' => $document->id
+        ]);
     }
 }

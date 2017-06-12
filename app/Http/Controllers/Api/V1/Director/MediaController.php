@@ -47,7 +47,7 @@ class MediaController extends ApiController
         foreach ($request->allFiles() as $file) {
             foreach ($file as $item) {
                 $uploadedCase = $this->service->upload($item);
-                $this->user()->uploadedMedia()->save($uploadedCase);
+                $this->user()->uploads()->save($uploadedCase);
                 $uploadedFiles->put($uploadedCase->id, $uploadedCase);
             }
         }
@@ -61,7 +61,7 @@ class MediaController extends ApiController
      */
     public function uploads()
     {
-        $uploadedCases = $this->user()->uploadedMedia()->where('storage', $this->service->getOption(UploaderService::CONF_FOLDER))->get();
+        $uploadedCases = $this->user()->uploads()->where('storage', $this->service->getOption(UploaderService::CONF_FOLDER))->get();
         return $this->response->collection($uploadedCases, new UploadedFileTransformer);
     }
 

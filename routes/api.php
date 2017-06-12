@@ -36,6 +36,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->get('cases/{id}/hospitalcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getHospitalCase');
         $api->get('cases/{id}/diagnostics', '\App\Http\Controllers\Api\V1\Director\CasesController@getDiagnostics');
         $api->get('cases/{id}/services', '\App\Http\Controllers\Api\V1\Director\CasesController@getServices');
+        $api->get('cases/{id}/uploads', '\App\Http\Controllers\Api\V1\Director\CasesController@getUploads');
 
         $api->resource('cases', \App\Http\Controllers\Api\V1\Director\CasesController::class);
 

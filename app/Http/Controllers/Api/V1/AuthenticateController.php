@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Api\V1;
 
 
 use App\Http\Controllers\ApiController;
+use App\Transformers\UserTransformer;
 use JWTAuth;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -59,8 +60,6 @@ class AuthenticateController extends ApiController
     }
     /**
      * Returns the authenticated user
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function authenticatedUser()
     {
@@ -76,7 +75,9 @@ class AuthenticateController extends ApiController
             return response()->json(['token_absent'], $e->getStatusCode());
         }
         // the token is valid and we have found the user via the sub claim
-        return response()->json(compact('user'));
+        // jwt parse in vue needed correct response
+        // return response()->json(compact('user'));
+        return $this->response->item($user, new UserTransformer());
     }
     /**
      * Refresh the token

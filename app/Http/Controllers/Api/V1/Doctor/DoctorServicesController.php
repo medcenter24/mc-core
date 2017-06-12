@@ -5,7 +5,7 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace App\Http\Controllers\Api\V1\Doctor;
 
 use App\DoctorService;
 use App\Http\Controllers\ApiController;

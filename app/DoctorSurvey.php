@@ -14,6 +14,6 @@ class DoctorSurvey extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'description', 'created_by', 'surveable_id', 'surveable_type'];
     protected $visible = ['title', 'description'];
 }

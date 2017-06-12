@@ -89,6 +89,16 @@ class Accident extends AccidentAbstract
         return $this->belongsTo(Patient::class);
     }
 
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(AccidentType::class, 'accident_type_id');
+    }
+
     /**
      * Accident report stored as a FormReport element (which use Assignment form template)
      */
@@ -121,7 +131,7 @@ class Accident extends AccidentAbstract
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function surveable()
+    public function surveys()
     {
         return $this->morphMany(DoctorSurvey::class, 'surveable');
     }

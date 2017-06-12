@@ -56,6 +56,7 @@ class User extends Authenticatable
     }
 
     /**
+     * todo  why i need this?
      * If current user could import or create cases, then he can get uploaded cases
      */
     public function uploadedCases()
@@ -66,7 +67,7 @@ class User extends Authenticatable
     /**
      * File uploader
      */
-    public function uploadedMedia()
+    public function uploads()
     {
         return $this->morphMany(Upload::class, 'uploadable');
     }

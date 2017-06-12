@@ -34,6 +34,8 @@ class CaseAccidentTransformer extends TransformerAbstract
             'checkpoints' => 'guarantee,checkedLDM,paidLDM',
             'status' => 'new',
             'accident_status' => 'new',
+            'city' => $accident->city->title,
+            'symptoms' => $accident->symptoms,
         ];
     }
 }

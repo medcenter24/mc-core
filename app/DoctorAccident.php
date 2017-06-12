@@ -86,7 +86,7 @@ class DoctorAccident extends AccidentAbstract
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function surveable()
+    public function surveys()
     {
         return $this->morphMany(DoctorSurvey::class, 'surveable');
     }

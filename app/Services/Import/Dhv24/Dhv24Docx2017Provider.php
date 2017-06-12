@@ -513,7 +513,7 @@ class Dhv24Docx2017Provider extends DataProvider
                 $this->accident->symptoms .= (!empty($this->accident->symptoms) ? "\n" : '') . $withoutKey;
                 break;
             case self::INVESTIGATION_ADDITIONAL_SURVEY:
-                $this->doctorAccident->surveable()->create([
+                $this->doctorAccident->surveys()->create([
                     'title' => 'Imported',
                     'description' => $withoutKey
                 ]);

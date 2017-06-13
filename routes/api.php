@@ -20,7 +20,6 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
 
     $api->group(['prefix' => 'doctor', 'middleware' => ['cors', 'role:doctor']], function ($api) {
         $api->get('accidents/{id}/patient', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@patient');
-        $api->post('accidents/{id}/upload', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@upload');
         $api->get('accidents/{id}/status', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@status');
         $api->get('accidents/{id}/services', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@services');
         $api->post('accidents/{id}/services', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@saveService');
@@ -50,7 +49,8 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->get('cases/{id}/hospitalcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getHospitalCase');
         $api->get('cases/{id}/diagnostics', '\App\Http\Controllers\Api\V1\Director\CasesController@getDiagnostics');
         $api->get('cases/{id}/services', '\App\Http\Controllers\Api\V1\Director\CasesController@getServices');
-        $api->get('cases/{id}/uploads', '\App\Http\Controllers\Api\V1\Director\CasesController@getUploads');
+        $api->post('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@createDocuments');
+        $api->get('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
 
         $api->resource('cases', \App\Http\Controllers\Api\V1\Director\CasesController::class);
 

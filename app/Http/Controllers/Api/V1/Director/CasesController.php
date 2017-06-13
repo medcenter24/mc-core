@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Accident;
 use App\Discount;
+use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Services\UploaderService;
 use App\Transformers\AccidentTransformer;
@@ -17,9 +18,11 @@ use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DirectorCaseTransformer;
 use App\Transformers\DoctorCaseTransformer;
 use App\Transformers\DoctorServiceTransformer;
+use App\Transformers\DocumentTransformer;
 use App\Transformers\UploadedFileTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class CasesController extends ApiController
 {
@@ -73,10 +76,42 @@ class CasesController extends ApiController
         return $this->response->collection($accidentServices->merge($doctorAccidentServices), new DoctorServiceTransformer());
     }
 
-    public function getUploads($id, UploaderService $uploaderService)
+    public function documents($id)
     {
-        $uploadedCases = $this->user()->uploads()->where('storage', $uploaderService->getOption(UploaderService::CONF_FOLDER))->get();
-        return $this->response->collection($uploadedCases, new UploadedFileTransformer());
+        $documents = new Collection();
+        $accident = Accident::find($id);
+        if ($accident) {
+            $documents->merge($accident->caseable->documents());
+            $documents->merge($accident->documents());
+        }
+        $documents->merge($this->user()->documents());
+
+        return $this->response->collection($documents, new DocumentTransformer());
+    }
+
+    public function createDocuments($id, Request $request)
+    {
+        $accident = Accident::find($id);
+        $documents = new Collection();
+
+        foreach ($request->allFiles() as $files) {
+            foreach ($files as $file) {
+                /** @var Document $document */
+                $document = Document::create([
+                    'title' => $file->getClientOriginalName()
+                ]);
+                $document->addMedia($file);
+                $documents->push($document);
+
+                if ($accident) {
+                    $accident->documents()->attach($document);
+                } else {
+                    $this->user()->documents()->attach($document);
+                }
+            }
+        }
+
+        return $this->response->collection($documents, new DocumentTransformer());
     }
 
     public function create()

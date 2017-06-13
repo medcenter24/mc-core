@@ -56,19 +56,20 @@ class User extends Authenticatable
     }
 
     /**
-     * todo  why i need this?
-     * If current user could import or create cases, then he can get uploaded cases
-     */
-    public function uploadedCases()
-    {
-        return $this->morphMany(Upload::class, 'uploadable');
-    }
-
-    /**
      * File uploader
      */
     public function uploads()
     {
         return $this->morphMany(Upload::class, 'uploadable');
+    }
+
+    /**
+     * Photos of the documents from the patient
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function documents()
+    {
+        return $this->morphToMany(Document::class, 'documentable');
     }
 }

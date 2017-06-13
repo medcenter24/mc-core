@@ -143,4 +143,14 @@ class Accident extends AccidentAbstract
     {
         return $this->morphTo();
     }
+
+    /**
+     * Photos of the documents from the patient
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function documents()
+    {
+        return $this->morphToMany(Document::class, 'documentable');
+    }
 }

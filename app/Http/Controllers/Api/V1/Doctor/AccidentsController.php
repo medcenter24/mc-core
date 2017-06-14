@@ -21,8 +21,10 @@ use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DoctorAccidentStatusTransformer;
 use App\Transformers\DoctorServiceTransformer;
 use App\Transformers\DoctorSurveyTransformer;
+use App\Transformers\DocumentTransformer;
 use App\Transformers\PatientTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class AccidentsController extends ApiController
 {
@@ -305,9 +307,11 @@ class AccidentsController extends ApiController
 
     /**
      * Load documents into the accident
+     * @param int $id
+     * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function upload($id)
+    public function createDocument($id, Request $request)
     {
         $accident = Accident::find($id);
         if (!$accident) {
@@ -315,13 +319,17 @@ class AccidentsController extends ApiController
         }
 
         $document = new Document();
-        $document->addMediaFromRequest('files')
-            ->toMediaCollection('documents');
+        foreach ($request->allFiles() as $file) {
+            /** @var Document $document */
+            $document = Document::create([
+                'title' => $file->getClientOriginalName()
+            ]);
+            $document->addMedia($file)->toMediaCollection();
 
-        $accident->caseable->documents()->attach($document);
+            $accident->caseable->documents()->attach($document);
+            $accident->patient->documents()->attach($document);
+        }
 
-        return $this->response->created($document->getFirstMediaUrl(), [
-            'document' => $document->id
-        ]);
+        return $this->response->item($document, new DocumentTransformer());
     }
 }

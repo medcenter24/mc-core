@@ -16,4 +16,14 @@ class Patient extends Model
 
     protected $fillable = ['name', 'address', 'phones', 'birthday', 'comment'];
     protected $visible = ['name', 'address', 'phones', 'birthday', 'comment'];
+
+    /**
+     * Photos of the documents from the patient
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function documents()
+    {
+        return $this->morphToMany(Document::class, 'documentable');
+    }
 }

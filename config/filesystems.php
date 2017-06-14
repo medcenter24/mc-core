@@ -66,6 +66,11 @@ return [
         \App\Services\CaseImporterService::DISC_IMPORTS => [
             'driver' => 'local',
             'root' => storage_path( \App\Services\CaseImporterService::DISC_IMPORTS),
+        ],
+
+        'media' => [
+            'driver' => 'local',
+            'root' => public_path( 'media'),
         ]
 
     ],

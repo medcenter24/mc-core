@@ -332,4 +332,15 @@ class AccidentsController extends ApiController
 
         return $this->response->item($document, new DocumentTransformer());
     }
+
+    public function documents ($id)
+    {
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+
+        $documents = $accident->caseable->documents;
+        return $this->response->collection($documents, new DocumentTransformer());
+    }
 }

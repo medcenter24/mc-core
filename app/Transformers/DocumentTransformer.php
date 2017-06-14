@@ -38,7 +38,8 @@ class DocumentTransformer extends TransformerAbstract
             'title' => $document->title,
             'preview' => $document->getFirstMedia()->id ? $document->getFirstMediaUrl() : '',
             'owner' => $owner,
-            'file_name' => $document->getFirstMedia()->id ? $document->getFirstMedia()->file_name : ''
+            'file_name' => $document->getFirstMedia()->id ? $document->getFirstMedia()->file_name : '',
+            'type' => $document->type,
         ];
     }
 }

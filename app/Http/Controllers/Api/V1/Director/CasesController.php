@@ -78,13 +78,14 @@ class CasesController extends ApiController
 
     public function documents($id)
     {
-        $documents = new Collection();
+        // todo recognize why merge doesn't work
+        $documents = $this->user()->documents;
         $accident = Accident::find($id);
         if ($accident) {
-            $documents->merge($accident->caseable->documents());
-            $documents->merge($accident->documents());
+            $accidentDocs = $accident->documents;
+            $documents->merge($accidentDocs);
+            $documents->merge($accident->caseable->documents);
         }
-        $documents->merge($this->user()->documents());
 
         return $this->response->collection($documents, new DocumentTransformer());
     }

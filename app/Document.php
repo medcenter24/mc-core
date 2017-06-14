@@ -27,9 +27,23 @@ class Document extends Model implements HasMedia
     protected $fillable = ['title'];
     protected $visible = ['title'];
 
-    public function documentable()
+    public function patients()
     {
-        return $this->morphTo();
+        return $this->morphedByMany(Patient::class, 'documentable');
     }
 
+    public function doctorAccidents()
+    {
+        return $this->morphedByMany(DoctorAccident::class, 'documentable');
+    }
+
+    public function accidents()
+    {
+        return $this->morphedByMany(Accident::class, 'documentable');
+    }
+
+    public function users()
+    {
+        return $this->morphedByMany(User::class, 'documentable');
+    }
 }

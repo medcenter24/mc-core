@@ -23,22 +23,14 @@ class DocumentTransformer extends TransformerAbstract
      */
     public function transform (Document $document)
     {
-        $owner = '';
-
-        switch ($document->documentable()->documentable_type)
-        {
-            case Patient::class:
-                $owner = 'patient';
-                break;
-            case DoctorAccident::class:
-                $owner = 'doctor';
-                break;
-            case Accident::class:
-                $owner = 'accident';
-                break;
-            case User::class:
-                $owner = 'user';
-                break;
+        if ($document->accidents->count()) {
+            $owner = 'accident';
+        } elseif ($document->doctorAccidents->count()) {
+            $owner = 'doctor';
+        } elseif ($document->users->count()) {
+            $owner = 'user';
+        } else {
+            $owner = 'patient';
         }
 
         return [

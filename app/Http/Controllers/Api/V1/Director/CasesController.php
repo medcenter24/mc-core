@@ -100,11 +100,12 @@ class CasesController extends ApiController
                 $document = Document::create([
                     'title' => $file->getClientOriginalName()
                 ]);
-                $document->addMedia($file);
+                $document->addMedia($file)->toMediaCollection();
                 $documents->push($document);
 
                 if ($accident) {
                     $accident->documents()->attach($document);
+                    $accident->patient->documents()->attach($document);
                 } else {
                     $this->user()->documents()->attach($document);
                 }

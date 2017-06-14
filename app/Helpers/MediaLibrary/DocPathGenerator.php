@@ -5,7 +5,7 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-namespace app\Helpers\MediaLibrary;
+namespace App\Helpers\MediaLibrary;
 
 
 use Spatie\MediaLibrary\Media;

@@ -9,6 +9,8 @@ namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Doctor;
 use App\Http\Controllers\ApiController;
+use App\Http\Requests\Api\StoreDoctor;
+use App\Http\Requests\Api\UpdateDoctor;
 use App\Transformers\DoctorTransformer;
 
 class DoctorsController extends ApiController
@@ -23,5 +25,38 @@ class DoctorsController extends ApiController
     {
         $doctor = Doctor::findOrFail($id);
         return $this->response->item($doctor, new DoctorTransformer());
+    }
+
+    public function store(StoreDoctor $request)
+    {
+        $doctor = Doctor::create([
+            'name' => $request->json('name', ''),
+            'description' => $request->json('description', ''),
+            'ref_key' => $request->json('ref_key', ''),
+        ]);
+        $transformer = new DoctorTransformer();
+        return $this->response->created(null, $transformer->transform($doctor));
+    }
+
+    public function update($id, UpdateDoctor $request)
+    {
+        $doctor = Doctor::findOrFail($id);
+        $doctor->name = $request->json('name', '');
+        $doctor->ref_key = $request->json('ref_key', '');
+        $doctor->user_id = $request->json('user_id', '');
+        $doctor->description = $request->json('description', '');
+        $doctor->save();
+
+        \Log::info('Doctor updated', [$doctor]);
+
+        return $this->response->item($doctor, new DoctorTransformer());
+    }
+
+    public function destroy($id)
+    {
+        $doctor = Doctor::findOrFail($id);
+        \Log::info('Doctor deleted', [$doctor]);
+        $doctor->delete();
+        return $this->response->noContent();
     }
 }

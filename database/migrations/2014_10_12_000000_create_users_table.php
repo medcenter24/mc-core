@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('name')->default('')->index();
             $table->string('email')->default('')->unique();
+            $table->string('phone', 100)->default('');
             $table->string('password')->default('');
             $table->rememberToken();
             $table->timestamps();

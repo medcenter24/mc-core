@@ -291,7 +291,28 @@ class AccidentsController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
+        \Log::info('Request to create new survey', ['data' => $request->toArray()]);
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+
+        $accident->accident_type_id = $request->json('caseType', 1);
+        $accident->caseable->recommendation = $request->json('diagnose', '');
+        $accident->caseable->investigation = $request->json('investigation', '');
+        $accident->save();
+
+        $diagnostics = $request->json('diagnostics', []);
+        $accident->caseable->diagnostics()->detach();
+        $accident->caseable->diagnostics()->attach($diagnostics);
+        $services = $request->json('services', []);
+        $accident->caseable->diagnostics()->detach();
+        $accident->caseable->diagnostics()->attach($services);
+        $surveys = $request->json('surveys', []);
+        $accident->caseable->diagnostics()->detach();
+        $accident->caseable->diagnostics()->attach($surveys);
+
+        return $this->response->noContent();
     }
 
     /**

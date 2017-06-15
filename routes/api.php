@@ -41,6 +41,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
     $api->group(['prefix' => 'director', 'middleware' => ['cors', 'role:director']], function ($api) {
 
         $api->resource('users', \App\Http\Controllers\Api\V1\Director\UsersController::class);
+        $api->resource('categories', \App\Http\Controllers\Api\V1\Director\CategoriesController::class);
 
         // Importer
         $api->post('cases/importer', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@upload');

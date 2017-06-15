@@ -18,4 +18,10 @@ class DoctorsController extends ApiController
         $doctors = Doctor::orderBy('name')->get();
         return $this->response->collection($doctors, new DoctorTransformer());
     }
+
+    public function show($id)
+    {
+        $doctor = Doctor::findOrFail($id);
+        return $this->response->item($doctor, new DoctorTransformer());
+    }
 }

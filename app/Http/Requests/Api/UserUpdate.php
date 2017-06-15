@@ -13,6 +13,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserUpdate extends UserStore
 {
+    private $requireEmailRule = 'required|';
+
     public function validationData()
     {
         $data = parent::validationData();
@@ -21,6 +23,7 @@ class UserUpdate extends UserStore
             $user = User::find($data['id']);
             if (isset($data['email']) && $user->email == $data['email']) {
                 unset($data['email']);
+                $this->requireEmailRule = '';
             }
         }
 
@@ -35,7 +38,7 @@ class UserUpdate extends UserStore
     public function rules()
     {
         return [
-            'email' => 'email|unique:users',
+            'email' => $this->requireEmailRule . 'email|unique:users',
             'name' => 'max:120',
             'phone' => 'max:30',
         ];

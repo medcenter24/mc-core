@@ -21,4 +21,9 @@ class Role extends Model
     const ROLE_DIRECTOR = 'director';
 
     protected $fillable = ['title'];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

@@ -32,7 +32,7 @@ class UpdateDoctor extends FormRequest
         return [
             'name' => 'min:1|max:150',
             'description' => 'min:1|max:255',
-            'ref_key' => 'min:1|max:5',
+            'ref_key' => 'min:1|max:5|unique:doctors',
         ];
     }
 }

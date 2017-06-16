@@ -70,7 +70,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->resource('cities', \App\Http\Controllers\Api\V1\Director\CitiesController::class);
 
         $api->get('discounts', '\App\Http\Controllers\Api\V1\Director\DiscountsController@index');
-        $api->get('diagnostics', '\App\Http\Controllers\Api\V1\Director\DiagnosticsController@index');
+        $api->resource('diagnostics', \App\Http\Controllers\Api\V1\Director\DiagnosticsController::class);
 
         $api->post('media', '\App\Http\Controllers\Api\V1\Director\MediaController@upload');
         $api->get('media', '\App\Http\Controllers\Api\V1\Director\MediaController@uploads');

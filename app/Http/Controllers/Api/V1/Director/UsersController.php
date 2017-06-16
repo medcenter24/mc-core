@@ -7,14 +7,12 @@
 
 namespace App\Http\Controllers\Api\V1\Director;
 
-use App\Doctor;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\UserStore;
 use App\Http\Requests\Api\UserUpdate;
 use App\Role;
 use App\Transformers\UserTransformer;
 use App\User;
-use Illuminate\Http\Request;
 
 class UsersController extends ApiController
 {

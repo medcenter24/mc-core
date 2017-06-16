@@ -48,4 +48,14 @@ class DiagnosticsController extends ApiController
         $transformer = new DiagnosticTransformer();
         return $this->response->created(null, $transformer->transform($diagnostic));
     }
+
+    public function destroy($id)
+    {
+        $diagnostic = Diagnostic::find($id);
+        if (!$diagnostic) {
+            $this->response->errorNotFound();
+        }
+        $diagnostic->delete();
+        return $this->response->noContent();
+    }
 }

@@ -62,7 +62,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->get('accidents/{id}', '\App\Http\Controllers\Api\V1\Director\AccidentsController@show');
         $api->get('accidents', '\App\Http\Controllers\Api\V1\Director\AccidentsController@index');
         $api->get('types', '\App\Http\Controllers\Api\V1\Director\AccidentTypesController@index');
-        $api->get('services', '\App\Http\Controllers\Api\V1\Director\DoctorServicesController@index');
+        $api->resource('services', \App\Http\Controllers\Api\V1\Director\DoctorServicesController::class);
         $api->get('assistants', '\App\Http\Controllers\Api\V1\Director\AssistantsController@index');
 
         $api->get('patients/{id}', '\App\Http\Controllers\Api\V1\Director\PatientsController@show');

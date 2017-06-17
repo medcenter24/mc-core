@@ -39,7 +39,7 @@ class AccidentTransformer extends TransformerAbstract
             'contacts' => $accident->contacts,
             'symptoms' => $accident->symptoms,
             'created_at' => $accident->created_at->format(config('date.actionFormat')),
-            'closed_at' => $accident->closed_at,
+            'closed_at' => $accident->closed_at
         ];
     }
 }

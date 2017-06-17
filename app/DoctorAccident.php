@@ -84,11 +84,11 @@ class DoctorAccident extends AccidentAbstract
      * each doctorAccident is able to has his own survey
      * but by default it could be defined by the director
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function surveys()
     {
-        return $this->morphMany(DoctorSurvey::class, 'surveable');
+        return $this->morphToMany(DoctorSurvey::class, 'doctor_surveable');
     }
 
     /**

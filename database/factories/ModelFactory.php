@@ -136,6 +136,14 @@ $factory->define(\App\DoctorService::class, function (\Faker\Generator $faker) {
     ];
 });
 
+$factory->define(\App\DoctorSurvey::class, function (\Faker\Generator $faker) {
+
+    return [
+        'title' => $faker->text(20),
+        'description' => $faker->text(),
+    ];
+});
+
 $factory->define(\App\AccidentType::class, function (\Faker\Generator $faker) {
 
     return [

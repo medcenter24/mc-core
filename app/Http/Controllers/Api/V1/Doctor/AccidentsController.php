@@ -19,6 +19,7 @@ use App\Transformers\AccidentTypeTransformer;
 use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DoctorAccidentStatusTransformer;
+use App\Transformers\DoctorAccidentTransformer;
 use App\Transformers\DoctorServiceTransformer;
 use App\Transformers\DoctorSurveyTransformer;
 use App\Transformers\DocumentTransformer;
@@ -54,7 +55,7 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
-        return $this->response->item($accident, new AccidentTransformer());
+        return $this->response->item($accident, new DoctorAccidentTransformer());
     }
 
     public function patient($id)
@@ -95,7 +96,11 @@ class AccidentsController extends ApiController
 
         /** @var \Illuminate\Support\Collection $services */
         $services = $accident->services;
-        $services = $services->merge($accident->caseable->services);
+        $services = $services->merge(
+            $accident->caseable->services->each(function (DoctorService $service) {
+                $service->markAsDoctor();
+            })
+        );
 
         return $this->response->collection($services, new DoctorServiceTransformer());
     }
@@ -136,13 +141,11 @@ class AccidentsController extends ApiController
                 'description' => $request->get('description', '')
             ]);
             $doctorAccident->services()->attach($service);
+            $service->markAsDoctor();
         }
 
-        return $this->response->accepted(null, [
-            'id' => $service->id,
-            'title' => $service->title,
-            'description' => $service->description
-        ]);
+        $transformer = new DoctorServiceTransformer();
+        return $this->response->accepted(null, $transformer->transform($service));
     }
 
     public function type($id)
@@ -164,7 +167,10 @@ class AccidentsController extends ApiController
 
         /** @var \Illuminate\Support\Collection $diagnostics */
         $diagnostics = $accident->diagnostics;
-        $diagnostics = $diagnostics->merge($accident->caseable->diagnostics);
+        $diagnostics = $diagnostics->merge(
+            $accident->caseable->diagnostics->each(function (Diagnostic $diagnostic) {
+                $diagnostic->markAsDoctor();
+            }));
 
         return $this->response->collection($diagnostics, new DiagnosticTransformer());
     }
@@ -205,13 +211,11 @@ class AccidentsController extends ApiController
                 'description' => $request->get('description', '')
             ]);
             $doctorAccident->diagnostics()->attach($diagnostic);
+            $diagnostic->markAsDoctor();
         }
 
-        return $this->response->accepted(null, [
-            'id' => $diagnostic->id,
-            'title' => $diagnostic->title,
-            'description' => $diagnostic->description
-        ]);
+        $transformer = new DiagnosticTransformer();
+        return $this->response->accepted(null, $transformer->transform($diagnostic));
     }
 
     public function surveys($id)
@@ -221,7 +225,15 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
-        return $this->response->collection($accident->caseable->surveys, new DoctorSurveyTransformer());
+        /** @var Collection $surveys */
+        $surveys = $accident->surveys;
+        $surveys = $surveys->merge(
+            $accident->caseable->surveys->each(function (DoctorSurvey $survey) {
+                $survey->markAsDoctor();
+            })
+        );
+
+        return $this->response->collection($surveys, new DoctorSurveyTransformer());
     }
 
     public function createSurvey($id, Request $request)
@@ -258,29 +270,15 @@ class AccidentsController extends ApiController
                 'title' => $request->get('title', ''),
                 'description' => $request->get('description', ''),
                 'created_by' => $this->user()->id,
-                'surveable_id' => $doctorAccident->id,
-                'surveable_type' => DoctorAccident::class
             ]);
+            $doctorAccident->surveys()->attach($survey);
+            $survey->markAsDoctor();
         }
 
-        return $this->response->accepted(null, [
-            'id' => $survey->id,
-            'title' => $survey->title,
-            'description' => $survey->description
-        ]);
+        $transformer = new DoctorSurveyTransformer();
+        return $this->response->accepted(null, $transformer->transform($survey));
     }
 
-
-    /**
-     * Edit form for the accident which should be edited by the doctor
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -300,17 +298,18 @@ class AccidentsController extends ApiController
         $accident->accident_type_id = $request->json('caseType', 1);
         $accident->caseable->recommendation = $request->json('diagnose', '');
         $accident->caseable->investigation = $request->json('investigation', '');
+        $accident->caseable->save();
         $accident->save();
 
         $diagnostics = $request->json('diagnostics', []);
         $accident->caseable->diagnostics()->detach();
         $accident->caseable->diagnostics()->attach($diagnostics);
         $services = $request->json('services', []);
-        $accident->caseable->diagnostics()->detach();
-        $accident->caseable->diagnostics()->attach($services);
+        $accident->caseable->services()->detach();
+        $accident->caseable->services()->attach($services);
         $surveys = $request->json('surveys', []);
-        $accident->caseable->diagnostics()->detach();
-        $accident->caseable->diagnostics()->attach($surveys);
+        $accident->caseable->surveys()->detach();
+        $accident->caseable->surveys()->attach($surveys);
 
         return $this->response->noContent();
     }
@@ -323,7 +322,13 @@ class AccidentsController extends ApiController
      */
     public function destroy($id)
     {
-        //
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+        \Log::info('Request to reject accident', ['user' => $this->user()->id, 'accident' => $accident->id]);
+        $accident->status = 'rejected';
+        return $this->response->noContent();
     }
 
     /**
@@ -361,6 +366,8 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
+        // documents could be loaded by director, but I'm not sure that these documents
+        // should be seen by doctors
         $documents = $accident->caseable->documents;
         return $this->response->collection($documents, new DocumentTransformer());
     }

@@ -17,6 +17,7 @@ class AccidentCheckpointsTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('accident_accident_checkpoint')->delete();
         AccidentCheckpoint::truncate();
         factory(AccidentCheckpoint::class, 10)->create();
     }

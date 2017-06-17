@@ -20,6 +20,7 @@ class DoctorServiceTransformer extends TransformerAbstract
             'title' => $service->title,
             'description' => $service->description,
             'price' => $service->price,
+            'type' => $service->isDoctor() ? 'doctor' : ''
         ];
     }
 }

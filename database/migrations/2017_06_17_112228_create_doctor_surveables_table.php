@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDoctorSurveysTable extends Migration
+class CreateDoctorSurveablesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,13 +18,11 @@ class CreateDoctorSurveysTable extends Migration
      */
     public function up()
     {
-        Schema::create('doctor_surveys', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('created_by')->default(0)->index();
-            $table->string('title')->default('')->index();
-            $table->text('description')->default('');
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::create('doctor_surveables', function (Blueprint $table) {
+            $table->unsignedInteger('doctor_survey_id');
+            $table->morphs('doctor_surveable');
+
+            $table->index('doctor_survey_id');
         });
     }
 
@@ -35,6 +33,6 @@ class CreateDoctorSurveysTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('doctor_surveys');
+        Schema::dropIfExists('doctor_surveables');
     }
 }

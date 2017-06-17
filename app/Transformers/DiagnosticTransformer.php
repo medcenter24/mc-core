@@ -20,7 +20,8 @@ class DiagnosticTransformer extends TransformerAbstract
             'title' => $diagnostic->title,
             'description' => $diagnostic->description,
             'diagnostic_category_id' => $diagnostic->diagnostic_category_id,
-            'disease_code' => $diagnostic->disease_code
+            'disease_code' => $diagnostic->disease_code,
+            'type' => $diagnostic->isDoctor() ? 'doctor' : ''
         ];
     }
 }

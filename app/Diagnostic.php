@@ -8,6 +8,7 @@
 namespace App;
 
 
+use App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Diagnostic extends Model
 {
     use SoftDeletes;
+    use DoctorTrait;
 
     protected $fillable = ['title', 'description', 'diagnostic_category_id', 'disease_code'];
     protected $visible = ['title', 'description', 'diagnostic_category_id', 'disease_code'];

@@ -20,8 +20,8 @@ class AccidentStatus extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'caseable_type'];
-    protected $visible  = ['title', 'description', 'caseable_type'];
+    protected $fillable = ['title', 'type'];
+    protected $visible  = ['title', 'type'];
 
     public function accidents()
     {

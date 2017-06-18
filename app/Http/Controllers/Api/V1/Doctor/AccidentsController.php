@@ -14,6 +14,7 @@ use App\DoctorService;
 use App\DoctorSurvey;
 use App\Document;
 use App\Http\Controllers\ApiController;
+use App\Services\AccidentStatusesService;
 use App\Transformers\AccidentTransformer;
 use App\Transformers\AccidentTypeTransformer;
 use App\Transformers\CaseAccidentTransformer;
@@ -37,7 +38,15 @@ class AccidentsController extends ApiController
     public function index(Request $request)
     {
         $rows = $request->get('per_page', 10);
-        $accidents = Accident::orderBy('created_at', 'desc')
+        $accidents = Accident::join('accident_statuses', 'accidents.accident_status_id', '=', 'accident_statuses.id')
+            ->where('accidents.caseable_type', DoctorAccident::class)
+            ->where('accidents.caseable_id', $this->user()->id)
+            ->where('accident_statuses.type', AccidentStatusesService::TYPE_DOCTOR)
+            ->whereIn('accident_statuses.title', [
+                AccidentStatusesService::STATUS_IN_PROGRESS,
+                AccidentStatusesService::STATUS_ASSIGNED
+            ])
+            ->orderBy('accidents.created_at', 'desc')
             ->paginate($rows, $columns = ['*'], $pageName = 'page', $request->get('page', null));
         return $this->response->paginator($accidents, new CaseAccidentTransformer());
     }
@@ -95,12 +104,10 @@ class AccidentsController extends ApiController
         }
 
         /** @var \Illuminate\Support\Collection $services */
-        $services = $accident->services;
-        $services = $services->merge(
-            $accident->caseable->services->each(function (DoctorService $service) {
-                $service->markAsDoctor();
-            })
-        );
+        $services = $accident->caseable->services->each(function (DoctorService $service) {
+            $service->markAsDoctor();
+        });
+        $services = $services->merge($accident->services)->reverse();
 
         return $this->response->collection($services, new DoctorServiceTransformer());
     }
@@ -166,11 +173,10 @@ class AccidentsController extends ApiController
         }
 
         /** @var \Illuminate\Support\Collection $diagnostics */
-        $diagnostics = $accident->diagnostics;
-        $diagnostics = $diagnostics->merge(
-            $accident->caseable->diagnostics->each(function (Diagnostic $diagnostic) {
-                $diagnostic->markAsDoctor();
-            }));
+        $diagnostics = $accident->caseable->diagnostics->each(function (Diagnostic $diagnostic) {
+            $diagnostic->markAsDoctor();
+        });
+        $diagnostics = $diagnostics->merge($accident->diagnostics)->reverse();
 
         return $this->response->collection($diagnostics, new DiagnosticTransformer());
     }
@@ -226,12 +232,10 @@ class AccidentsController extends ApiController
         }
 
         /** @var Collection $surveys */
-        $surveys = $accident->surveys;
-        $surveys = $surveys->merge(
-            $accident->caseable->surveys->each(function (DoctorSurvey $survey) {
-                $survey->markAsDoctor();
-            })
-        );
+        $surveys = $accident->caseable->surveys->each(function (DoctorSurvey $survey) {
+            $survey->markAsDoctor();
+        });
+        $surveys = $surveys->merge($accident->surveys)->reverse();
 
         return $this->response->collection($surveys, new DoctorSurveyTransformer());
     }
@@ -295,12 +299,25 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
+        if (
+            !$accident->status->type == AccidentStatusesService::TYPE_DOCTOR
+            || (
+                !in_array($accident->status->title, [
+                    AccidentStatusesService::STATUS_ASSIGNED,
+                    AccidentStatusesService::STATUS_IN_PROGRESS,
+                ])
+            )) {
+
+            $this->response->errorMethodNotAllowed(trans('You cant\'t change this case'));
+        }
+
         $accident->accident_type_id = $request->json('caseType', 1);
         $accident->caseable->recommendation = $request->json('diagnose', '');
         $accident->caseable->investigation = $request->json('investigation', '');
         $accident->caseable->save();
         $accident->save();
 
+        // exclude saved by director (to not change their color)
         $diagnostics = $request->json('diagnostics', []);
         $accident->caseable->diagnostics()->detach();
         $accident->caseable->diagnostics()->attach($diagnostics);

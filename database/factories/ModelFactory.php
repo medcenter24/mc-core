@@ -154,10 +154,11 @@ $factory->define(\App\AccidentType::class, function (\Faker\Generator $faker) {
 
 $factory->define(\App\AccidentStatus::class, function (\Faker\Generator $faker) {
 
+    $status = $faker->randomElement(\App\Services\AccidentStatusesService::ACCIDENT_STATUSES);
+
     return [
-        'title' => $faker->text(20),
-        'description' => $faker->paragraphs(2, true),
-        'caseable_type' => $faker->text(20),
+        'title' => $status['title'],
+        'type' => $status['type'],
     ];
 });
 
@@ -166,12 +167,8 @@ $factory->define(\App\DoctorAccident::class, function (\Faker\Generator $faker) 
     return [
         'doctor_id' => $faker->numberBetween(1, 10),
         'city_id' => $faker->numberBetween(1, 10),
-        'status' => \App\DoctorAccident::STATUS_NEW,
         'recommendation' => $faker->paragraphs(3, true),
         'investigation' => $faker->paragraphs(3, true),
-        'accident_status_id' => function () {
-            return factory(\App\AccidentStatus::class)->create()->id;
-        },
         'visit_time' => new DateTime(),
     ];
 });
@@ -193,8 +190,14 @@ $factory->define(\App\Accident::class, function (\Faker\Generator $faker) {
                 ? $accidentType->id
                 : factory(\App\AccidentType::class)->create(['title' => $type])->id;
         },
-        'accident_status_id' => function () {
-            return factory(\App\AccidentStatus::class)->create()->id;
+        'accident_status_id' => function () use ($faker) {
+            $status = $faker->randomElement(\App\Services\AccidentStatusesService::ACCIDENT_STATUSES);
+
+            $_status = \App\AccidentStatus::where('title', $status['title'])
+                ->where('type', $status['type'])
+                ->first();
+
+            return $_status && $_status->id ? $_status->id : factory(\App\AccidentStatus::class)->create($status)->id;
         },
         'assistant_id' => function () {
             return factory(\App\Assistant::class)->create()->id;

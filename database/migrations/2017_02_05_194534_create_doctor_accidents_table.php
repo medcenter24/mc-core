@@ -23,16 +23,7 @@ class CreateDoctorAccidentsTable extends Migration
         Schema::create('doctor_accidents', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('doctor_id')->default(0)->index();
-            $table->unsignedInteger('accident_status_id')->default(0)->index();
             $table->unsignedInteger('city_id')->default(0)->index();
-            $table->enum('status', [
-                DoctorAccident::STATUS_NEW,
-                DoctorAccident::STATUS_IN_PROGRESS,
-                DoctorAccident::STATUS_SIGNED,
-                DoctorAccident::STATUS_SENT,
-                DoctorAccident::STATUS_PAID,
-                DoctorAccident::STATUS_CLOSED,
-            ])->index();
             $table->text('recommendation')->default('');
             $table->text('investigation')->default('');
             $table->unsignedInteger('accident_statusable_id')->default(0)->index();

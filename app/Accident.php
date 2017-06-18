@@ -153,4 +153,12 @@ class Accident extends AccidentAbstract
     {
         return $this->morphToMany(Document::class, 'documentable');
     }
+
+    /**
+     * @return
+     */
+    public function status()
+    {
+        return $this->morphTo(AccidentStatus::class);
+    }
 }

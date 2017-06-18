@@ -23,15 +23,8 @@ class DoctorAccident extends AccidentAbstract
         'visit_time',
     ];
 
-    const STATUS_NEW = 'new';
-    const STATUS_IN_PROGRESS = 'in_progress';
-    const STATUS_SIGNED = 'signed';
-    const STATUS_SENT = 'sent';
-    const STATUS_PAID = 'paid';
-    const STATUS_CLOSED = 'closed';
-
-    protected $fillable = ['city_id', 'status', 'doctor_id', 'recommendation', 'accident_status_id', 'investigation', 'visit_time'];
-    protected $visible = ['city_id', 'status', 'doctor_id', 'recommendation', 'accident_status_id', 'investigation', 'visit_time'];
+    protected $fillable = ['city_id', 'doctor_id', 'recommendation', 'investigation', 'visit_time'];
+    protected $visible = ['city_id', 'doctor_id', 'recommendation', 'investigation', 'visit_time'];
 
     public function accident()
     {

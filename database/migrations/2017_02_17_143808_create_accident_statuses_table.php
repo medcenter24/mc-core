@@ -21,8 +21,7 @@ class CreateAccidentStatusesTable extends Migration
         Schema::create('accident_statuses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->default('')->index();
-            $table->text('description')->default('');
-            $table->text('caseable_type')->default('')->index();
+            $table->text('type')->default('');
             $table->timestamps();
             $table->softDeletes();
         });

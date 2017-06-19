@@ -43,7 +43,7 @@ class DoctorsController extends ApiController
         $doctor = Doctor::findOrFail($id);
         $doctor->name = $request->json('name', '');
         $doctor->ref_key = $request->json('ref_key', '');
-        $doctor->user_id = $request->json('user_id', '');
+        $doctor->user_id = (int)$request->json('user_id', 0);
         $doctor->description = $request->json('description', '');
         $doctor->save();
 

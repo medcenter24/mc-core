@@ -40,6 +40,8 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
 
     $api->group(['prefix' => 'director', 'middleware' => ['cors', 'role:director']], function ($api) {
 
+        $api->resource('checkpoints', \App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController::class);
+        $api->resource('statuses', \App\Http\Controllers\Api\V1\Director\AccidentStatusesController::class);
         $api->resource('users', \App\Http\Controllers\Api\V1\Director\UsersController::class);
         $api->resource('categories', \App\Http\Controllers\Api\V1\Director\CategoriesController::class);
 
@@ -61,7 +63,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
 
         $api->get('accidents/{id}', '\App\Http\Controllers\Api\V1\Director\AccidentsController@show');
         $api->get('accidents', '\App\Http\Controllers\Api\V1\Director\AccidentsController@index');
-        $api->get('types', '\App\Http\Controllers\Api\V1\Director\AccidentTypesController@index');
+        $api->resource('types', \App\Http\Controllers\Api\V1\Director\AccidentTypesController::class);
         $api->resource('services', \App\Http\Controllers\Api\V1\Director\DoctorServicesController::class);
         $api->get('assistants', '\App\Http\Controllers\Api\V1\Director\AssistantsController@index');
 
@@ -70,7 +72,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->resource('hospitals', \App\Http\Controllers\Api\V1\Director\HospitalsController::class);
         $api->resource('cities', \App\Http\Controllers\Api\V1\Director\CitiesController::class);
 
-        $api->get('discounts', '\App\Http\Controllers\Api\V1\Director\DiscountsController@index');
+        $api->resource('discounts', \App\Http\Controllers\Api\V1\Director\DiscountsController::class);
         $api->resource('diagnostics', \App\Http\Controllers\Api\V1\Director\DiagnosticsController::class);
 
         $api->post('media', '\App\Http\Controllers\Api\V1\Director\MediaController@upload');

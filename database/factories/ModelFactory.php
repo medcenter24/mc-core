@@ -59,7 +59,7 @@ $factory->define(\App\Assistant::class, function (\Faker\Generator $faker) {
 $factory->define(\App\AccidentCheckpoint::class, function (\Faker\Generator $faker) {
 
     return [
-        'title' => $faker->text(120),
+        'title' => $faker->text(20),
         'description' => $faker->text(),
     ];
 });

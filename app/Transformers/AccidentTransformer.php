@@ -38,7 +38,8 @@ class AccidentTransformer extends TransformerAbstract
             'address' => $accident->address,
             'contacts' => $accident->contacts,
             'symptoms' => $accident->symptoms,
-            'created_at' => $accident->created_at->format(config('date.actionFormat')),
+            // system format needed by the director case editor
+            'created_at' => $accident->created_at->format(config('date.systemFormat')),
             'closed_at' => $accident->closed_at
         ];
     }

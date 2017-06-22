@@ -27,7 +27,7 @@ use Illuminate\Support\Collection;
 class CasesController extends ApiController
 {
     /**
-     * Maybe sometime it would be helpful for optimization, but for now I need a lot of queries
+     * Maybe onetime it would be helpful for optimization, but for now I need a lot of queries
      * Load all data that needed by director for the case editing
      * (Will return big json data)
      * @param $id - accident id
@@ -78,13 +78,11 @@ class CasesController extends ApiController
 
     public function documents($id)
     {
-        // todo recognize why merge doesn't work
         $documents = $this->user()->documents;
         $accident = Accident::find($id);
         if ($accident) {
-            $accidentDocs = $accident->documents;
-            $documents->merge($accidentDocs);
-            $documents->merge($accident->caseable->documents);
+            $documents = $documents->merge($accident->documents);
+            $documents = $documents->merge($accident->caseable->documents);
         }
 
         return $this->response->collection($documents, new DocumentTransformer());

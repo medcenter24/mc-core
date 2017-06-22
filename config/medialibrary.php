@@ -44,8 +44,10 @@ return [
 
     /*
      * The class that contains the strategy for determining a media file's path.
+     *
+     * generator turned off because for now I don't need any optimizations
      */
-    'custom_path_generator_class' => \App\Helpers\MediaLibrary\DocPathGenerator::class,
+    // 'custom_path_generator_class' => \App\Helpers\MediaLibrary\DocPathGenerator::class,
 
     's3' => [
         /*

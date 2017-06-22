@@ -6,5 +6,6 @@
  */
 
 return [
-    'actionFormat' => 'd.m.Y H:i'
+    'actionFormat' => 'd.m.Y H:i:s',
+    'systemFormat' => 'Y-m-d H:i:s',
 ];

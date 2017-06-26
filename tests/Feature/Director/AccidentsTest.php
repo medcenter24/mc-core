@@ -28,7 +28,7 @@ class AccidentsTest extends TestCase
         parent::setUp();
 
         // allow all roles for the test (maybe in the future I'll mock it for work with roles)
-        // but it could be another unit test for testing only rle access
+        // but it could be another unit test for testing only role access
         \Roles::shouldReceive('hasRole')
             ->andReturnUsing(function () {
                 return true;

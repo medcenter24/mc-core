@@ -8,18 +8,23 @@
 namespace Tests\Feature\Api;
 
 
+use App\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 trait JwtHeaders
 {
     /**
      * Return request headers needed to interact with the API.
-     *
-     * @return Array array of headers.
+     * @param User $user
+     * @return array of headers.
      */
-    protected function headers($user = null)
+    protected function headers(User $user = null)
     {
-        $headers = ['Accept' => 'application/json'];
+        $headers = [
+            'Accept' => 'application/x.' . env('API_SUBTYPE') . '.' . env('API_VERSION') .'+json',
+            'Access-Control-Allow-Credentials' => 'true',
+            'Access-Control-Allow-Origin' => 'http://localhost:4200',
+        ];
 
         if (!is_null($user)) {
             $token = JWTAuth::fromUser($user);

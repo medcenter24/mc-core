@@ -104,7 +104,9 @@ class AccidentsTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->patch('/doctor/accidents/' . $accident->id, ['diagnose' => 'Correct diagnose', 'status' => DoctorAccident::STATUS_SENT], ['Accept' => 'application/json']);
+            ->patch('/doctor/accidents/' . $accident->id, [
+                'diagnose' => 'Correct diagnose',
+            ], ['Accept' => 'application/json']);
 
         $response->assertStatus(200);
 
@@ -129,14 +131,14 @@ class AccidentsTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->patch('/doctor/accidents/' . $accident->id, ['status' => DoctorAccident::STATUS_PAID]
+            ->patch('/doctor/accidents/' . $accident->id, ['title' => 'new']
                     , ['Accept' => 'application/json']);
 
         $response->assertStatus(422);
 
         $response = $this
             ->actingAs($user)
-            ->patch('/doctor/accidents/' . $accident->id, ['status' => DoctorAccident::STATUS_CLOSED]
+            ->patch('/doctor/accidents/' . $accident->id, ['title' => 'new']
                 , ['Accept' => 'application/json']);
 
         $response->assertStatus(422);
@@ -144,7 +146,7 @@ class AccidentsTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->patch('/doctor/accidents/' . $accident->id, ['status' => DoctorAccident::STATUS_NEW]
+            ->patch('/doctor/accidents/' . $accident->id, ['title' => 'new']
                 , ['Accept' => 'application/json']);
 
         $response->assertStatus(422);
@@ -152,7 +154,7 @@ class AccidentsTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->patch('/doctor/accidents/' . $accident->id, ['status' => DoctorAccident::STATUS_SIGNED]
+            ->patch('/doctor/accidents/' . $accident->id, ['title' => 'new']
                 , ['Accept' => 'application/json']);
 
         $response->assertStatus(200);
@@ -160,7 +162,7 @@ class AccidentsTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->patch('/doctor/accidents/' . $accident->id, ['status' => DoctorAccident::STATUS_IN_PROGRESS]
+            ->patch('/doctor/accidents/' . $accident->id, ['title' => 'new']
                 , ['Accept' => 'application/json']);
 
         $response->assertStatus(200);

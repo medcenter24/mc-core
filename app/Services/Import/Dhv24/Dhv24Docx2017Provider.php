@@ -20,6 +20,7 @@ use App\DoctorService;
 use App\Helpers\Arr;
 use App\Helpers\BlankModels;
 use App\Patient;
+use App\Services\AccidentStatusesService;
 use App\Services\AccidentTypeService;
 use app\Services\DocxReader\DocxReaderInterface;
 use App\Services\DocxReader\SimpleDocxReaderService;
@@ -314,8 +315,9 @@ class Dhv24Docx2017Provider extends DataProvider
     private function setUpDoctorAccidentDefaults()
     {
         $this->accident = BlankModels::accident();
+        $this->accident->accident_status_id = AccidentStatus::where('title', AccidentStatusesService::STATUS_CLOSED)
+            ->where('type', AccidentStatusesService::TYPE_ACCIDENT)->first();
         $this->doctorAccident = BlankModels::doctorAccident();
-        $this->doctorAccident->status = DoctorAccident::STATUS_CLOSED;
 
         $accidentType = AccidentType::firstOrCreate(['title' => AccidentTypeService::ALLOWED_TYPES[0]]);
         $this->accident->accident_type_id = $accidentType->id;

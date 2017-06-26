@@ -20,6 +20,7 @@ class AccidentStatusesService
     const STATUS_SENT = 'sent';
     const STATUS_PAID = 'paid';
     const STATUS_REJECT = 'reject';
+    const STATUS_CLOSED = 'closed';
 
     /**
      * 1. new
@@ -61,7 +62,11 @@ class AccidentStatusesService
         [
             // doctor rejected the case
             'title' => self::STATUS_REJECT,
-            'type' => self::TYPE_DOCTOR
+            'type' => self::TYPE_DOCTOR,
         ],
+        [
+            'title' => self::STATUS_CLOSED,
+            'type' => self::TYPE_ACCIDENT,
+        ]
     ];
 }

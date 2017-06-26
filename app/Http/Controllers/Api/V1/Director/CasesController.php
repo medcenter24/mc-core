@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Accident;
 use App\Discount;
+use App\DoctorAccident;
 use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Services\UploaderService;
@@ -114,13 +115,21 @@ class CasesController extends ApiController
         return $this->response->collection($documents, new DocumentTransformer());
     }
 
-    public function create()
+    /**
+     * New case accident
+     * @param Request $request
+     */
+    public function store(Request $request)
     {
-
+        $accident = Accident::create($request->json('accident', []));
+        $doctorAccident = DoctorAccident::create($request->json('doctorAccident', []));
+        $accident->caseable->attach($doctorAccident);
     }
 
     public function update($id, Request $request)
     {
+        $this->validation($request);
+
         $accident = Accident::findOrFail($id);
 
         // todo check accident status if it was sent and marked as sent then decline to change it

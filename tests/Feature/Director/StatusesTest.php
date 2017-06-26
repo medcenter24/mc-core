@@ -8,6 +8,7 @@
 namespace Tests\Feature\Director;
 
 use App\AccidentStatus;
+use App\Services\AccidentStatusesService;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -64,8 +65,7 @@ class StatusesTest extends TestCase
     {
         $data = [
             'title' => 'My first Stored Accident status',
-            'description' => 'Anything about stored accident status',
-            'caseable_type' => 'Bind to any of Accidents'
+            'type' => AccidentStatusesService::STATUS_CLOSED
         ];
 
         $response = $this

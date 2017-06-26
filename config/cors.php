@@ -15,8 +15,11 @@ return [
      | to accept any value.
      |
      */
-    'supportsCredentials' => false,
-    'allowedOrigins' => ['*'],
+    'supportsCredentials' => true,
+    // 'allowedOrigins' => ['*'], // importer won't work with *
+    'allowedOrigins' => [env('APP_ENV') == 'production'
+        ? '' // todo paths to the doctor and director sites
+        : 'http://localhost:4200'], // only development environment on the localhost
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
     'exposedHeaders' => [],

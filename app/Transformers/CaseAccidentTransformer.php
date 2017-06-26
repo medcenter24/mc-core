@@ -33,8 +33,7 @@ class CaseAccidentTransformer extends TransformerAbstract
             'created_at' => $accident->created_at->format(config('date.actionFormat')),
             'checkpoints' => 'guarantee,checkedLDM,paidLDM',
             'status' => 'new',
-            'accident_status' => 'new',
-            'city' => $accident->city->title,
+            'city' => $accident->city_id ? $accident->city->title : '',
             'symptoms' => $accident->symptoms,
         ];
     }

@@ -56,7 +56,7 @@ class CasesImporterController extends ApiController
         foreach ($request->allFiles() as $file) {
             foreach ($file as $item) {
                 $uploadedCase = $this->uploaderService->upload($item);
-                $this->user()->uploadedCases()->save($uploadedCase);
+                $this->user()->uploads()->save($uploadedCase);
                 $uploadedFiles->put($uploadedCase->id, $uploadedCase);
             }
         }

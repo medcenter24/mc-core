@@ -46,10 +46,9 @@ class BlankModels
         return factory(DoctorAccident::class)->create([
             'doctor_id' => 0,
             'city_id' => 0,
-            'status' => DoctorAccident::STATUS_NEW,
             'recommendation' => '',
             'investigation' => '',
-            'accident_status_id' => 0,
+            'accident_statusable_id' => 0,
         ]);
     }
 }

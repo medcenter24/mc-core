@@ -10,6 +10,7 @@ namespace Tests\Feature\Api\Director;
 use App\Accident;
 use App\User;
 use Tests\Feature\Api\JwtHeaders;
+use Tests\Feature\Api\LoggedUser;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -19,6 +20,7 @@ class CasesTest extends TestCase
 {
     use DatabaseMigrations;
     use JwtHeaders;
+    use LoggedUser;
 
     /**
      * @test
@@ -29,7 +31,7 @@ class CasesTest extends TestCase
     {
         $user = factory(User::class)->create(['password' => bcrypt('foo')]);
 
-        $response = $this->json('POST', '/api/authenticate', ['email' => $user->email, 'password' => 'foo']);
+        $response = $this->json('POST', '/api/authenticate', ['email' => $user->email, 'password' => 'foo'], $this->headers());
 
         $response->assertStatus(200)->assertJsonStructure(['token']);
     }
@@ -37,7 +39,7 @@ class CasesTest extends TestCase
     public function testIndex()
     {
         factory(Accident::class, 7)->create();
-        $response = $this->get('/api/director/cases');
+        $response = $this->get('/api/director/cases', $this->headers($this->getUser()));
 
         $response->assertStatus(200)->assertJson([
             'data' => [
@@ -58,14 +60,8 @@ class CasesTest extends TestCase
 
     public function testCreate()
     {
-        $user = factory(User::class)->create(['password' => bcrypt('foo')]);
-
-        $caseData = [
-
-        ];
-
-
-        $this->post('/api/director/cases', $caseData, $this->headers($user))->seeStatusCode(201);
+        $response = $this->post('/api/director/cases', $caseData = [], $this->headers($this->getUser()));
+        $response->assertStatus(201);
     }
 
 }

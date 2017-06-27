@@ -12,15 +12,15 @@ use App\Discount;
 use App\DoctorAccident;
 use App\Document;
 use App\Http\Controllers\ApiController;
-use App\Services\UploaderService;
-use App\Transformers\AccidentTransformer;
+use App\Patient;
+use App\Services\ReferralNumberService;
 use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DirectorCaseTransformer;
 use App\Transformers\DoctorCaseTransformer;
 use App\Transformers\DoctorServiceTransformer;
 use App\Transformers\DocumentTransformer;
-use App\Transformers\UploadedFileTransformer;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -51,6 +51,12 @@ class CasesController extends ApiController
     public function getDoctorCase($id)
     {
         $accident = Accident::findOrFail($id);
+        if(!$accident->caseable) {
+            $doctorAccident = DoctorAccident::create();
+            $accident->caseable_id = $doctorAccident->id;
+            $accident->caseable_type = DoctorAccident::class;
+            $accident->save();
+        }
         return $this->response->item($accident->caseable, new DoctorCaseTransformer());
     }
 
@@ -65,16 +71,20 @@ class CasesController extends ApiController
     {
         $accident = Accident::findOrFail($id);
         $accidentDiagnostics = $accident->diagnostics;
-        $doctorAccidentDiagnostics = $accident->caseable->diagnostics;
-        return $this->response->collection($accidentDiagnostics->merge($doctorAccidentDiagnostics), new DiagnosticTransformer());
+        if ($accident->caseable) {
+            $accidentDiagnostics = $accidentDiagnostics->merge($accident->caseable->diagnostics);
+        }
+        return $this->response->collection($accidentDiagnostics, new DiagnosticTransformer());
     }
 
     public function getServices($id)
     {
         $accident = Accident::findOrFail($id);
         $accidentServices = $accident->services;
-        $doctorAccidentServices = $accident->caseable->services;
-        return $this->response->collection($accidentServices->merge($doctorAccidentServices), new DoctorServiceTransformer());
+        if ($accident->caseable) {
+            $accidentServices = $accidentServices->merge($accident->caseable->services);
+        }
+        return $this->response->collection($accidentServices, new DoctorServiceTransformer());
     }
 
     public function documents($id)
@@ -83,7 +93,9 @@ class CasesController extends ApiController
         $accident = Accident::find($id);
         if ($accident) {
             $documents = $documents->merge($accident->documents);
-            $documents = $documents->merge($accident->caseable->documents);
+            if ($accident->caseable) {
+                $documents = $documents->merge($accident->caseable->documents);
+            }
         }
 
         return $this->response->collection($documents, new DocumentTransformer());
@@ -118,24 +130,47 @@ class CasesController extends ApiController
     /**
      * New case accident
      * @param Request $request
+     * @param ReferralNumberService $referralNumberService
+     * @return \Dingo\Api\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, ReferralNumberService $referralNumberService)
     {
         $accident = Accident::create($request->json('accident', []));
         $doctorAccident = DoctorAccident::create($request->json('doctorAccident', []));
-        $accident->caseable->attach($doctorAccident);
+        $accident->caseable_id = $doctorAccident->id;
+        $accident->caseable_type = DoctorAccident::class;
+        $accident->created_by = $this->user()->id;
+        $accident->save();
+
+        $patientData = $request->json('patient', []);
+        if (isset($patientData['id']) && !$patientData['id']) {
+            unset($patientData['id']);
+        }
+        $patient = Patient::firstOrCreate($patientData);
+        $accident->patient_id = $patient->id;
+        $accident->ref_num = $referralNumberService->generate($accident);
+        $accident->save();
+
+        $accident->diagnostics()->attach($request->json('diagnostics', []));
+        $accident->services()->attach($request->json('services', []));
+        $accident->documents()->attach($request->json('documents', []));
+
+        $transformer = new DirectorCaseTransformer();
+        return $this->response->created($accident->id, $transformer->transform($accident));
     }
 
+    /**
+     * @param $id
+     * @param Request $request
+     */
     public function update($id, Request $request)
     {
-        $this->validation($request);
-
         $accident = Accident::findOrFail($id);
 
         // todo check accident status if it was sent and marked as sent then decline to change it
         // if it needed then status for this accident would be reset by the administrator
 
-        $requestedAccident = $request->get('accident', false);
+        $requestedAccident = $request->json('accident', false);
 
         if (!$requestedAccident['id']) {
             \Log::error('Undefined request accident', [
@@ -155,35 +190,58 @@ class CasesController extends ApiController
 
         $accident = $this->setData($accident, $requestedAccident);
         $accident->save();
-        if (!$request->has('doctorAccident')) {
-            $doctorAccident = $this->setData($accident->caseable, $request->get('doctorAccident'));
-            $doctorAccident->save();
+
+        $doctorAccidentData = $request->json('doctorAccident', false);
+        if ($doctorAccidentData) {
+            if (!$accident->caseable) {
+                $doctorAccident = DoctorAccident::create($request->json('doctorAccident', []));
+                $accident->caseable_id = $doctorAccident->id;
+                $accident->caseable_type = DoctorAccident::class;
+                $accident->save();
+            } else {
+                $doctorAccident = $this->setData($accident->caseable, $doctorAccidentData);
+                $doctorAccident->save();
+            }
         }
-        if (!$request->has('patient')) {
-            $patient = $this->setData($accident->patient, $request->get('patient'));
-            $patient->save();
+
+        $patientData = $request->json('patient', false);
+        if ($patientData) {
+            if (!$accident->patient) {
+                $patient = Patient::firstOrCreate($patientData);
+                $accident->patient_id = $patient->id;
+            } else {
+                $patient = $this->setData($accident->patient, $patientData);
+                $patient->save();
+            }
         }
-        if ($request->has('discount')) {
-            $discountData = $request->get('discount');
+
+        $discountData = $request->json('discount', false);
+        if ($discountData) {
             $accident->discount_value = floatval($discountData['value']);
             $discount = Discount::find($discountData['type']['id']);
             $accident->discount_id = $discount->id ?: 1;
             $accident->save();
         }
 
-        // todo
-        // doctor
-        // city
-        // services
-        // diagnostics
-        // files
+        $accident->services()->detach();
+        $accident->services()->attach($request->json('services', []));
+
+        $accident->diagnostics()->detach();
+        $accident->diagnostics()->attach($request->json('diagnostics', []));
+
+        $accident->documents()->detach();
+        $accident->documents()->attach($request->json('documents', []));
     }
 
     private function setData(Model $model, $data)
     {
         foreach ($model->getVisible() as $item) {
             if (isset($data[$item])) {
-                $model->$item = $data[$item];
+                if (in_array($item, $model->getDates())) {
+                    $model->$item = Carbon::parse($data[$item])->format('Y-m-d H:i:s');
+                } else {
+                    $model->$item = $data[$item];
+                }
             }
         }
         return $model;

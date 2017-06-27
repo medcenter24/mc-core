@@ -37,6 +37,8 @@ class Accident extends AccidentAbstract
         'address',
         'contacts',
         'symptoms',
+        'discount_id',
+        'discount_value',
     ];
 
     protected $visible = [
@@ -49,6 +51,8 @@ class Accident extends AccidentAbstract
         'address',
         'contacts',
         'symptoms',
+        'discount_id',
+        'discount_value',
     ];
 
     /**
@@ -78,6 +82,15 @@ class Accident extends AccidentAbstract
     public function discount()
     {
         return $this->belongsTo(Discount::class);
+    }
+
+    /**
+     * Assistant company
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assistant()
+    {
+        return $this->belongsTo(Assistant::class);
     }
 
     /**
@@ -155,7 +168,7 @@ class Accident extends AccidentAbstract
     }
 
     /**
-     * @return
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function status()
     {

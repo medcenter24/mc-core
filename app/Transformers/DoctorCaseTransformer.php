@@ -23,10 +23,8 @@ class DoctorCaseTransformer extends TransformerAbstract
             'doctor_id' => $doctorAccident->doctor_id,
             'city_id' => $doctorAccident->city_id,
             'status' => $doctorAccident->status,
-            // 'diagnose' => implode("\n", $doctorAccident->diagnostics()),
-            'diagnose' => 'something fake',
             'created_at' => $doctorAccident->created_at->format(config('date.actionFormat')),
-            'visit_time' => $doctorAccident->visit_time->format(config('date.actionFormat')),
+            'visit_time' => $doctorAccident->visit_time ? $doctorAccident->visit_time->format(config('date.actionFormat')) : '',
             'recommendation' => $doctorAccident->recommendation,
             'investigation' => $doctorAccident->investigation,
         ];

@@ -47,12 +47,13 @@ class ReferralNumberService
             $ref .= Carbon::now()->format('dmy');
             $ref .= self::SEPARATOR;
             $ref .= $this->getTimesOfDayCode(Carbon::now());
-            $ref .= $accident->caseable ? $accident->caseable->ref_key : 'NA';
+            $ref .= $accident->caseable && $accident->caseable->ref_key
+                ? $accident->caseable->ref_key : 'NA';
 
             // skip duplicates
             $additionalPrefix = 0;
             while ($this->exists($refNum = $ref
-                . ($additionalPrefix ? '' : '_' . ++$additionalPrefix))
+                . ($additionalPrefix ? '^' . ++$additionalPrefix : ''))
             ) { }
         }
 

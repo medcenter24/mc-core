@@ -322,8 +322,8 @@ class Dhv24Docx2017Provider extends DataProvider
         $accidentType = AccidentType::firstOrCreate(['title' => AccidentTypeService::ALLOWED_TYPES[0]]);
         $this->accident->accident_type_id = $accidentType->id;
         $accidentStatus = AccidentStatus::firstOrCreate([
-            'title' => 'Done by doctor',
-            'caseable_type' => DoctorAccident::class
+            'title' => AccidentStatusesService::STATUS_CLOSED,
+            'type' => AccidentStatusesService::TYPE_ACCIDENT
         ]);
         $this->accident->accident_status_id = $accidentStatus->id;
 

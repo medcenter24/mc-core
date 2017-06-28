@@ -48,7 +48,6 @@ class BlankModels
             'city_id' => 0,
             'recommendation' => '',
             'investigation' => '',
-            'accident_statusable_id' => 0,
         ]);
     }
 }

@@ -45,6 +45,8 @@ class Accident extends AccidentAbstract
         'parent_id',
         'accident_type_id',
         'accident_status_id',
+        'assistant_id',
+        'assistant_ref_num',
         'ref_num',
         'title',
         'city_id',

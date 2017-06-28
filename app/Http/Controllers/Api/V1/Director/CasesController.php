@@ -14,6 +14,7 @@ use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Patient;
 use App\Services\ReferralNumberService;
+use App\Transformers\AccidentCheckpointTransformer;
 use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DirectorCaseTransformer;
@@ -87,6 +88,12 @@ class CasesController extends ApiController
         return $this->response->collection($accidentServices, new DoctorServiceTransformer());
     }
 
+    public function getCheckpoints($id)
+    {
+        $accident = Accident::findOrFail($id);
+        return $this->response->collection($accident->checkpoints, new AccidentCheckpointTransformer());
+    }
+
     public function documents($id)
     {
         $documents = $this->user()->documents;
@@ -154,6 +161,7 @@ class CasesController extends ApiController
         $accident->diagnostics()->attach($request->json('diagnostics', []));
         $accident->services()->attach($request->json('services', []));
         $accident->documents()->attach($request->json('documents', []));
+        $accident->checkpoints()->attach($request->json('checkpoints', []));
 
         $transformer = new DirectorCaseTransformer();
         return $this->response->created($accident->id, $transformer->transform($accident));
@@ -231,6 +239,9 @@ class CasesController extends ApiController
 
         $accident->documents()->detach();
         $accident->documents()->attach($request->json('documents', []));
+
+        $accident->checkpoints()->detach();
+        $accident->checkpoints()->attach($request->json('checkpoints', []));
     }
 
     private function setData(Model $model, $data)

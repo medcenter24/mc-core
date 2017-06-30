@@ -17,6 +17,7 @@ use App\Diagnostic;
 use App\Doctor;
 use App\DoctorAccident;
 use App\DoctorService;
+use App\Document;
 use App\Helpers\Arr;
 use App\Helpers\BlankModels;
 use App\Patient;
@@ -207,6 +208,8 @@ class Dhv24Docx2017Provider extends DataProvider
 
         $this->accident->save();
         $this->doctorAccident->save();
+
+        $this->loadDocuments();
 
         return true;
     }
@@ -582,5 +585,35 @@ class Dhv24Docx2017Provider extends DataProvider
 
         $this->accident->patient_id = $this->patient->id;
         return $this->patient;
+    }
+
+    /**
+     * Load documents into the case
+     *
+     * TODO exclude default images which exists on the all of the documents
+     * todo for example: login and signature
+     */
+    private function loadDocuments()
+    {
+        $files = $this->readerService->getImages();
+        foreach ($files as $file) {
+            Log::alert(print_r($file,1));
+            /** @var Document $document */
+            $document = Document::create([
+                'title' => $file['name']
+            ]);
+
+            $fileName = mt_rand(1234,4312).'_import.'.trim($file['ext']);
+            if (\Storage::disk('imports')->exists($fileName)) {
+                Log::error('The same file will be overwritten with the import process', ['name' => $fileName]);
+            }
+
+            \Storage::disk('imports')->put($fileName, $file['imageContent']);
+            $document->addMedia(storage_path('imports'.DIRECTORY_SEPARATOR.$fileName))->toMediaCollection();
+            \Storage::disk('imports')->delete($fileName);
+
+            $this->accident->documents()->attach($document);
+            $this->accident->patient->documents()->attach($document);
+        }
     }
 }

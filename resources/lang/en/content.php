@@ -6,6 +6,8 @@
  */
 
 return [
+    'cases' => 'Cases',
+    'export_form1_desc' => 'Export of the cases by the form 1 which filtered with income parameters',
     'project_name' => 'MyDoctor 24',
     'exit' => 'Exit',
     'added' => 'Added',

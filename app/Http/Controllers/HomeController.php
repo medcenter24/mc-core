@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Export\Form1ExportService;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {

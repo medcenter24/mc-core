@@ -9,6 +9,7 @@ namespace App\Services\Export;
 
 
 use App\Accident;
+use App\DoctorAccident;
 use App\Services\AccidentService;
 use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 
@@ -52,10 +53,14 @@ class Form1ExportService
             $row[trans('content.ref_num')] = $accident->ref_num;
             $row[trans('content.date')] = $accident->created_at->format(config('date.dateFormat'));
             $row[trans('content.time')] = $accident->created_at->format(config('date.timeFormat'));
-            $row[trans('content.city')] = $accident->city_id ? $accident->city->title : trans('content.undefined');
+            $city = $service->getCity($accident);
+            \Log::debug($city->id);
+            $row[trans('content.city')] = $city ? $city->title : trans('content.undefined');
 
             // Doctor case
-            $row[trans('content.doctor')] = $accident->caseable_id ? $accident->caseable->name : trans('content.undefined');
+            if ($accident->caseable instanceof DoctorAccident) {
+                $row[trans('content.doctor')] = $accident->caseable->doctor->name;
+            }
             $row[trans('content.doctor_fee')] = trans('content.not_implemented');
             $row[trans('content.final_doctor_fee')] = trans('content.not_implemented');
 

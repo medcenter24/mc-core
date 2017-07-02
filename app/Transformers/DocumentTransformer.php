@@ -12,6 +12,7 @@ use App\Accident;
 use App\DoctorAccident;
 use App\Document;
 use App\Patient;
+use App\Services\DocumentService;
 use App\User;
 use League\Fractal\TransformerAbstract;
 
@@ -36,9 +37,9 @@ class DocumentTransformer extends TransformerAbstract
         return [
             'id' => $document->id,
             'title' => $document->title,
-            'preview' => $document->getFirstMedia()->id ? $document->getFirstMediaUrl() : '',
             'owner' => $owner,
-            'file_name' => $document->getFirstMedia()->id ? $document->getFirstMedia()->file_name : '',
+            'fileName' => $document->hasMedia(DocumentService::CASES_FOLDERS) ?
+                $document->getFirstMedia(DocumentService::CASES_FOLDERS)->file_name : '',
             'type' => $document->type,
         ];
     }

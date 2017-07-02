@@ -10,6 +10,9 @@ namespace App\Services;
 
 class DocumentService
 {
+    const DISC_IMPORTS = 'documents';
+    const CASES_FOLDERS = 'patients';
+
     const TYPE_PASSPORT = 'passport';
     const TYPE_INSURANCE = 'insurance';
 

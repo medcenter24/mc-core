@@ -83,6 +83,6 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->get('media', '\App\Http\Controllers\Api\V1\Director\MediaController@uploads');
         $api->delete('media/{id}', '\App\Http\Controllers\Api\V1\Director\MediaController@destroy');
 
-        $api->delete('documents/{id}', \App\Http\Controllers\Api\V1\Director\DocumentsController::class . '@destroy');
+        $api->resource('documents', \App\Http\Controllers\Api\V1\Director\DocumentsController::class);
     });
 });

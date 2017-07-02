@@ -23,6 +23,7 @@ use App\Helpers\BlankModels;
 use App\Patient;
 use App\Services\AccidentStatusesService;
 use App\Services\AccidentTypeService;
+use App\Services\DocumentService;
 use app\Services\DocxReader\DocxReaderInterface;
 use App\Services\DocxReader\SimpleDocxReaderService;
 use App\Services\DomDocumentService;
@@ -631,7 +632,8 @@ class Dhv24Docx2017Provider extends DataProvider
             }
 
             \Storage::disk('imports')->put($fileName, $file['imageContent']);
-            $document->addMedia(storage_path('imports'.DIRECTORY_SEPARATOR.$fileName))->toMediaCollection();
+            $document->addMedia(storage_path('imports'.DIRECTORY_SEPARATOR.$fileName))
+                ->toMediaCollection(DocumentService::CASES_FOLDERS, DocumentService::DISC_IMPORTS);
             \Storage::disk('imports')->delete($fileName);
 
             $this->accident->documents()->attach($document);

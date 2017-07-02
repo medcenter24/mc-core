@@ -14,6 +14,7 @@ use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Patient;
 use App\Services\AccidentService;
+use App\Services\DocumentService;
 use App\Services\ReferralNumberService;
 use App\Transformers\AccidentCheckpointTransformer;
 use App\Transformers\CaseAccidentTransformer;
@@ -121,7 +122,7 @@ class CasesController extends ApiController
                 $document = Document::create([
                     'title' => $file->getClientOriginalName()
                 ]);
-                $document->addMedia($file)->toMediaCollection();
+                $document->addMedia($file)->toMediaCollection(DocumentService::CASES_FOLDERS, DocumentService::DISC_IMPORTS);
                 $documents->push($document);
 
                 if ($accident) {

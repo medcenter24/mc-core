@@ -621,6 +621,15 @@ class Dhv24Docx2017Provider extends DataProvider
                 Log::error('The same file will be overwritten with the import process', ['name' => $fileName]);
             }
 
+            $excludeDir = __DIR__ . DIRECTORY_SEPARATOR . 'exclude' . DIRECTORY_SEPARATOR;
+            $excludedFiles = new \FilesystemIterator($excludeDir);
+            /** @var \SplFileInfo $exclude */
+            foreach ($excludedFiles as $exclude) {
+                if (strcmp($file['imageContent'], file_get_contents($exclude->getRealPath())) === 0) {
+                    continue 2;
+                }
+            }
+
             \Storage::disk('imports')->put($fileName, $file['imageContent']);
             $document->addMedia(storage_path('imports'.DIRECTORY_SEPARATOR.$fileName))->toMediaCollection();
             \Storage::disk('imports')->delete($fileName);

@@ -92,4 +92,13 @@ class DoctorAccident extends AccidentAbstract
     {
         return $this->belongsTo(Doctor::class);
     }
+
+    /**
+     * City from the doctor
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
 }

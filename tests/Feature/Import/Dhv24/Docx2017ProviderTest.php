@@ -16,7 +16,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class Docx2017ProiderTest extends TestCase
+class Docx2017ProviderTest extends TestCase
 {
     use DatabaseMigrations;
     use SamplePath;

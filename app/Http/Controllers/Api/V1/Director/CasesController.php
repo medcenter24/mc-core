@@ -13,6 +13,7 @@ use App\DoctorAccident;
 use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Patient;
+use App\Services\AccidentService;
 use App\Services\ReferralNumberService;
 use App\Transformers\AccidentCheckpointTransformer;
 use App\Transformers\CaseAccidentTransformer;
@@ -41,10 +42,11 @@ class CasesController extends ApiController
         return $this->response->item($accident, new DirectorCaseTransformer());
     }
 
-    public function index(Request $request)
+    public function index(Request $request, AccidentService $service)
     {
         $rows = $request->get('rows', 10);
-        $accidents = Accident::orderBy('created_at', 'desc')->paginate($rows, $columns = ['*'], $pageName = 'page', $request->get('page', null)+1);
+        $accidents = $service->getCasesQuery($request->all())
+            ->paginate($rows, $columns = ['*'], $pageName = 'page', $request->get('page', null)+1);
 
         return $this->response->paginator($accidents, new CaseAccidentTransformer());
     }

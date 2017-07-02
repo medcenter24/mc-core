@@ -241,6 +241,7 @@ class Dhv24Docx2017Provider extends DataProvider
         $this->checkTables();
         $this->checkCargoDeCompaniaPacienteDeNacimiento();
         $this->checkReappointment();
+        $this->checkReferralNumber();
     }
 
     /**
@@ -275,6 +276,17 @@ class Dhv24Docx2017Provider extends DataProvider
         $this->throwIfFalse(
             !$this->isReappointment() || $this->getParentAccident(),
             'Child accident could not be loaded before parent accident'
+        );
+    }
+
+    /**
+     * Check that this referral number hasn't been used yet
+     */
+    private function checkReferralNumber()
+    {
+        $this->throwIfFalse(
+            !Accident::where('ref_num', $this->getReferralNumber())->count(),
+            'Referral number has already been used'
         );
     }
 
@@ -381,9 +393,11 @@ class Dhv24Docx2017Provider extends DataProvider
         // name, ref_num, dhv_ref_num
         $caseInfoArray = Arr::collectTableRows($caseInfoTable);
 
-        $this->accident->ref_num = str_replace(' ', '', current($caseInfoArray[self::DHV_REF_NUM]));
+        $this->accident->ref_num = $this->getReferralNumber();
         $this->accident->assistant_ref_num = str_replace(' ', '', current($caseInfoArray[self::ASSISTANCE_REF_NUM]));
-
+        if (mb_strpos($this->accident->assistant_ref_num, ',') !== false) {
+            $this->accident->assistant_ref_num = explode(',', $this->accident->assistant_ref_num)[0];
+        }
         $this->loadPatient(current($caseInfoArray[self::PATIENT_NAME]));
     }
 
@@ -597,7 +611,6 @@ class Dhv24Docx2017Provider extends DataProvider
     {
         $files = $this->readerService->getImages();
         foreach ($files as $file) {
-            Log::alert(print_r($file,1));
             /** @var Document $document */
             $document = Document::create([
                 'title' => $file['name']

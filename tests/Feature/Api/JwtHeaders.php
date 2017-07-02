@@ -23,7 +23,7 @@ trait JwtHeaders
         $headers = [
             'Accept' => 'application/x.' . env('API_SUBTYPE') . '.' . env('API_VERSION') .'+json',
             'Access-Control-Allow-Credentials' => 'true',
-            'Access-Control-Allow-Origin' => 'http://localhost:4200',
+            'Access-Control-Allow-Origin' => env('CORS_ALLOW_ORIGIN', 'http://localhost:4200'),
         ];
 
         if (!is_null($user)) {

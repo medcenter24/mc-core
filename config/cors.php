@@ -17,9 +17,7 @@ return [
      */
     'supportsCredentials' => true,
     // 'allowedOrigins' => ['*'], // importer won't work with *
-    'allowedOrigins' => [env('APP_ENV') == 'production'
-        ? '' // todo paths to the doctor and director sites
-        : 'http://localhost:4200'], // only development environment on the localhost
+    'allowedOrigins' => [env('CORS_ALLOW_ORIGIN', 'http://localhost:4200')], // only development environment on the localhost
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
     'exposedHeaders' => [],

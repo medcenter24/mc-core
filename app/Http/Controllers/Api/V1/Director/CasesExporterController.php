@@ -24,9 +24,9 @@ class CasesExporterController extends ApiController
                 $this->response->errorBadRequest('Undefined form name for the export: '. $form);
         }
 
-        return $service->excel([])->export('xlsx', [
+        return $service->excel($request->all())->export('xlsx', [
             'Access-Control-Allow-Credentials' => true,
-            'Access-Control-Allow-Origin' => 'http://localhost:4200'
+            'Access-Control-Allow-Origin' => env('CORS_ALLOW_ORIGIN'),
         ]);
     }
 }

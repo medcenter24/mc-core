@@ -8,7 +8,6 @@
 namespace App\Http\Requests\Api;
 
 use App\Role;
-use App\User;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserStore extends JsonRequest

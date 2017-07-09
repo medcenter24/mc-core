@@ -17,7 +17,8 @@ return [
      */
     'supportsCredentials' => true,
     // 'allowedOrigins' => ['*'], // importer won't work with *
-    'allowedOrigins' => [env('CORS_ALLOW_ORIGIN', 'http://localhost:4200')], // only development environment on the localhost
+    // FMI I can return needed when it will be required
+    'allowedOrigins' => [env('CORS_ALLOW_ORIGIN_DIRECTOR'), env('CORS_ALLOW_ORIGIN_DOCTOR')],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
     'exposedHeaders' => [],

@@ -11,6 +11,7 @@ use App\Doctor;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\StoreDoctor;
 use App\Http\Requests\Api\UpdateDoctor;
+use App\Transformers\CityTransformer;
 use App\Transformers\DoctorTransformer;
 
 class DoctorsController extends ApiController
@@ -58,5 +59,16 @@ class DoctorsController extends ApiController
         \Log::info('Doctor deleted', [$doctor]);
         $doctor->delete();
         return $this->response->noContent();
+    }
+
+    /**
+     * Covered by doctor
+     * @param $id
+     * @return \Dingo\Api\Http\Response
+     */
+    public function cities($id)
+    {
+        $doctor = Doctor::findOrFail($id);
+        return $this->response->collection($doctor->cities, new CityTransformer());
     }
 }

@@ -25,8 +25,21 @@ class Doctor extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * City where doctor is (leave)
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function city()
     {
         return $this->belongsTo(City::class);
+    }
+
+    /**
+     * Cities which are covered by this doctor
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function cities()
+    {
+        return $this->morphToMany(City::class,'cityable');
     }
 }

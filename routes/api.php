@@ -74,6 +74,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->resource('patients', \App\Http\Controllers\Api\V1\Director\PatientsController::class);
         $api->resource('doctors', \App\Http\Controllers\Api\V1\Director\DoctorsController::class);
         $api->get('doctors/{id}/cities', \App\Http\Controllers\Api\V1\Director\DoctorsController::class . '@cities');
+        $api->put('doctors/{id}/cities', \App\Http\Controllers\Api\V1\Director\DoctorsController::class . '@setCities');
         $api->resource('hospitals', \App\Http\Controllers\Api\V1\Director\HospitalsController::class);
         $api->resource('cities', \App\Http\Controllers\Api\V1\Director\CitiesController::class);
 

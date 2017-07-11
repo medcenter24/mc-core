@@ -15,7 +15,6 @@ use App\DoctorSurvey;
 use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Services\AccidentStatusesService;
-use App\Transformers\AccidentTransformer;
 use App\Transformers\AccidentTypeTransformer;
 use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;

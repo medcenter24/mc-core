@@ -13,6 +13,8 @@ use App\Http\Requests\Api\StoreDoctor;
 use App\Http\Requests\Api\UpdateDoctor;
 use App\Transformers\CityTransformer;
 use App\Transformers\DoctorTransformer;
+use Dingo\Api\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class DoctorsController extends ApiController
 {
@@ -70,5 +72,16 @@ class DoctorsController extends ApiController
     {
         $doctor = Doctor::findOrFail($id);
         return $this->response->collection($doctor->cities, new CityTransformer());
+    }
+
+    public function setCities($id, Request $request)
+    {
+        $doctor = Doctor::findOrFail($id);
+        $doctor->cities()->detach();
+        $cities = $request->json('cities', []);
+        if (count($cities)) {
+            $doctor->cities()->attach($cities);
+        }
+        return $this->response->accepted();
     }
 }

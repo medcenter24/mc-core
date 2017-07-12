@@ -17,4 +17,9 @@ class City extends Model
 
     protected $fillable = ['title'];
     protected $visible = ['title'];
+
+    public function doctors()
+    {
+        return $this->morphedByMany(Doctor::class, 'cityable');
+    }
 }

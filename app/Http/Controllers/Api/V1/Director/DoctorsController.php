@@ -7,13 +7,13 @@
 
 namespace App\Http\Controllers\Api\V1\Director;
 
+use App\City;
 use App\Doctor;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\StoreDoctor;
 use App\Http\Requests\Api\UpdateDoctor;
 use App\Transformers\CityTransformer;
 use App\Transformers\DoctorTransformer;
-use Dingo\Api\Http\FormRequest;
 use Illuminate\Http\Request;
 
 class DoctorsController extends ApiController
@@ -83,5 +83,11 @@ class DoctorsController extends ApiController
             $doctor->cities()->attach($cities);
         }
         return $this->response->accepted();
+    }
+
+    public function getDoctorsByCity($cityId)
+    {
+        $city = City::findOrFail($cityId);
+        return $this->response->collection($city->doctors, new DoctorTransformer());
     }
 }

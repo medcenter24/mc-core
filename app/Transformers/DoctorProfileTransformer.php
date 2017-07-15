@@ -17,10 +17,10 @@ class DoctorProfileTransformer extends TransformerAbstract
     {
         return [
             'name' => $doctor->name,
-            'picture_url' => 'asdf', // $doctor->hasMedia() ? $doctor->getMedia('photo')->first()->getUrl('thumb') : 'plumb',
-            'city' => $doctor->city->title,
-            'phones' => '+375255283638', // $doctor->phones
-            'mbn' => $doctor->medical_board_num
+            'picture_url' => $doctor->hasMedia() ? $doctor->getMedia('photo')->first()->getUrl('thumb') : '',
+            'city' => $doctor->city ? $doctor->city->title : '',
+            'phones' => $doctor->user->phone,
+            'mbn' => $doctor->medical_board_num,
         ];
     }
 }

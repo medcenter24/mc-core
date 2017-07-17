@@ -8,9 +8,11 @@
 namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Accident;
+use App\AccidentStatus;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\StoreAccident;
 use App\Http\Requests\UpdateAccident;
+use App\Services\AccidentStatusesService;
 use App\Transformers\AccidentTransformer;
 
 class AccidentsController extends ApiController
@@ -22,9 +24,15 @@ class AccidentsController extends ApiController
         return $this->response->collection($accidents, new AccidentTransformer());
     }
 
-    public function store(StoreAccident $request)
+    public function store(StoreAccident $request, AccidentStatusesService $statusesService)
     {
-        return Accident::create($request->all());
+        $accident = Accident::create($request->all());
+
+        $statusesService->set($accident, AccidentStatus::findOrCreate([
+            'title' => AccidentStatusesService::STATUS_NEW,
+            'type' => AccidentStatusesService::TYPE_ACCIDENT,
+        ]));
+        return $accident;
     }
 
     public function show($id)
@@ -39,14 +47,14 @@ class AccidentsController extends ApiController
 
     public function update(UpdateAccident $request, $id)
     {
-        /** @var \Eloquent $status */
-        $status = Accident::findOrFail($id);
-        foreach ($status->getVisible() as $item) {
+        /** @var \Eloquent $accident */
+        $accident = Accident::findOrFail($id);
+        foreach ($accident->getVisible() as $item) {
             if ($request->has($item)) {
-                $status->$item = $request->get($item);
+                $accident->$item = $request->get($item);
             }
         }
-        $status->save();
+        $accident->save();
 
         return ['success' => true];
     }
@@ -54,7 +62,6 @@ class AccidentsController extends ApiController
     public function destroy($id)
     {
         Accident::destroy($id);
-
         return ['success' => true];
     }
 }

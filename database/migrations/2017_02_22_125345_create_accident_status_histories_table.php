@@ -20,6 +20,7 @@ class CreateAccidentStatusHistoriesTable extends Migration
     {
         Schema::create('accident_status_histories', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('user_id')->default(0)->index();
             $table->unsignedInteger('status_id')->default(0)->index();
             $table->morphs('historyable');
             $table->text('commentary')->default('');

@@ -5,11 +5,10 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-namespace tests\Unit\Scenario;
+namespace Tests\Unit\Scenario;
 
 use App\AccidentStatus;
 use App\Services\Scenario\DoctorScenarioService;
-use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class DoctorScenarioServiceTest extends TestCase
@@ -54,14 +53,5 @@ class DoctorScenarioServiceTest extends TestCase
         self::assertEquals(7, $this->service->current(), 'Current step has been set to the last one.');
         $this->service->next();
         self::assertEquals(7, $this->service->current(), 'Current step stood on the last step.');
-    }
-
-    public function testEvents()
-    {
-        Event::fake();
-        Event::assertDispatched(OrderShipped::class, function ($e) use ($order) {
-            return $e->order->id === $order->id;
-        });
-        Event::assertNotDispatched(OrderFailedToShip::class);
     }
 }

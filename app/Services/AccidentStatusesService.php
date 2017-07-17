@@ -8,6 +8,10 @@
 namespace App\Services;
 
 
+use App\Accident;
+use App\AccidentStatus;
+use App\Events\AccidentStatusChanged;
+
 class AccidentStatusesService
 {
     const TYPE_ACCIDENT = 'accident';
@@ -69,4 +73,12 @@ class AccidentStatusesService
             'type' => self::TYPE_ACCIDENT,
         ]
     ];
+
+    public function set(Accident $accident, AccidentStatus $status, $comment = '')
+    {
+        $accident->accident_status_id = $status->id;
+        $accident->save();
+
+        event(new AccidentStatusChanged($accident, $comment));
+    }
 }

@@ -20,8 +20,6 @@ class DoctorScenarioService implements ScenarioInterface
      */
     private $step;
 
-    // TODO implement events on the step changed and save everything to the historiable
-    //  todo historiable could be used to show scenarios line with dates when it happened
     public function scenario()
     {
         return [

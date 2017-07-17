@@ -8,12 +8,14 @@
 namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Accident;
+use App\AccidentStatus;
 use App\Discount;
 use App\DoctorAccident;
 use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Patient;
 use App\Services\AccidentService;
+use App\Services\AccidentStatusesService;
 use App\Services\DocumentService;
 use App\Services\ReferralNumberService;
 use App\Transformers\AccidentCheckpointTransformer;
@@ -143,7 +145,7 @@ class CasesController extends ApiController
      * @param ReferralNumberService $referralNumberService
      * @return \Dingo\Api\Http\Response
      */
-    public function store(Request $request, ReferralNumberService $referralNumberService)
+    public function store(Request $request, ReferralNumberService $referralNumberService, AccidentStatusesService $statusesService)
     {
         $accident = Accident::create($request->json('accident', []));
         $doctorAccident = DoctorAccident::create($request->json('doctorAccident', []));
@@ -160,6 +162,11 @@ class CasesController extends ApiController
         $accident->patient_id = $patient->id;
         $accident->ref_num = $referralNumberService->generate($accident);
         $accident->save();
+
+        $statusesService->set($accident, AccidentStatus::firstOrCreate([
+            'title' => AccidentStatusesService::STATUS_NEW,
+            'type' => AccidentStatusesService::TYPE_ACCIDENT,
+        ]));
 
         $accident->diagnostics()->attach($request->json('diagnostics', []));
         $accident->services()->attach($request->json('services', []));

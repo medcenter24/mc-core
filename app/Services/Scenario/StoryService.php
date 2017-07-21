@@ -11,6 +11,7 @@ namespace App\Services\Scenario;
 use App\AccidentStatus;
 use App\AccidentStatusHistory;
 use App\Services\ScenarioInterface;
+use function foo\func;
 use Illuminate\Support\Collection;
 
 /**
@@ -20,6 +21,8 @@ use Illuminate\Support\Collection;
  */
 class StoryService implements ScenarioInterface
 {
+    const STATUS_VISITED = 'visited';
+
     /**
      * @var Collection of the AccidentStatusHistory
      */
@@ -84,31 +87,64 @@ class StoryService implements ScenarioInterface
 
     /**
      * Create story from the history and accepted scenario
+     *         // merging history into the scenario with needed statuses
      * @return Collection
      */
     private function generateStory()
     {
-        $typeBlocked = false;
-        $story = new Collection();
+        $skipper = false;
+        $story = $this->scenario()->scenario();
 
-        foreach ($this->scenario()->scenario() as $step) {
-            $status = '';
+        // mark all steps which were visited by the student as visited
+        /** @var AccidentStatusHistory $passed */
+        foreach ($this->history as $passed) {
+            $id = $story->search(function ($item) use ($passed) {
+                return $passed->accident_status_id == $item['accident_status_id'];
+            });
+            if ($id !== false) {
+                $story->put($id, array_merge($story->get($id), ['status' => self::STATUS_VISITED]));
+                // init skipper if needed
+                $step = $story->get($id);
 
-            if ($this->history->search(function ($_item) use($step) {
-                return $_item->accident_type_id == $step['accident_status_id'];
-            })) {
-                $status = 'visited';
+                // on the conditional scenario step and user has made this step
+                if (mb_strpos($step['mode'], ':') !== false
+                    && $step['status'] == self::STATUS_VISITED) {
+                        list($op, $type) = explode(':', $step['mode']);
+                        $skipper = [
+                            'operation' => $op,
+                            'type' => $type,
+                        ];
+                    }
+                }
             }
 
-            if (mb_strpos($step['mode'], ':') !== false) {
-                list($op, $type) = explode(':', $step['mode']);
-                dd($op, $type);
-            }
 
-            $story->push(['status' => $status], is_array($step) ? $step : $step->toArray());
+        foreach ($story as $key => $step) {
+
+            if (
+                // skip steps by condition from the $skipper
+                // or skip condition which has not been reached
+                ( ($this->skipped($skipper, $step) || mb_strpos($step['mode'], ':') !== false)
+                    && (!isset($step['status']) || $step['status'] != self::STATUS_VISITED))
+            ) {
+                $story->forget($key);
+            }
         }
 
         return $story;
+    }
+
+    private function skipped($skipper, $step)
+    {
+        $skipped = false;
+        if (is_array($skipper)) {
+            if (isset($skipper['operation']) && $skipper['operation'] == 'skip') {
+                if ($step['type'] == $skipper['type']) {
+                    $skipped = true;
+                }
+            }
+        }
+        return $skipped;
     }
 
     public function findStepId($step)

@@ -69,11 +69,45 @@ class StoryServiceTest extends TestCase
         $storyService = new StoryService();
         $story = $storyService->init($history, $doctorScenarioService)->getStory();
         self::assertEquals(6, $story->count(), 'Story contents 6 steps');
-        self::assertEquals('', $story->toJson(), 'Expected story was loaded');
+        self::assertEquals('{"0":{"order":1,"title":"new","type":"accident","accident_status_id":1,"tag":"App\\\\DoctorAccident","mode":"step","status":"visited"},"1":{"order":2,"title":"assigned","type":"doctor","accident_status_id":2,"tag":"App\\\\DoctorAccident","mode":"step","status":"visited"},"2":{"order":3,"title":"in_progress","type":"doctor","accident_status_id":3,"tag":"App\\\\DoctorAccident","mode":"step"},"3":{"order":4,"title":"sent","type":"doctor","accident_status_id":4,"tag":"App\\\\DoctorAccident","mode":"step"},"4":{"order":5,"title":"paid","type":"doctor","accident_status_id":5,"tag":"App\\\\DoctorAccident","mode":"step"},"6":{"order":7,"title":"closed","type":"accident","accident_status_id":7,"tag":"App\\\\DoctorAccident","mode":"step"}}',
+            $story->toJson(), 'Expected story was loaded');
     }
 
+    /**
+     * Add skip on the second step
+     */
     public function testRejectedStory()
     {
+        $doctorScenarioService = new DoctorScenarioService();
+        $doctorScenarioService->setScenario($this->getDoctorScenario());
 
+        $history = new Collection(
+            [
+                factory(AccidentStatusHistory::class)->create([
+                    'accident_status_id' => AccidentStatus::firstOrCreate([
+                        'type' => \AccidentStatusesTableSeeder::TYPE_ACCIDENT,
+                        'title' => \AccidentStatusesTableSeeder::STATUS_NEW,
+                    ])->id
+                ]),
+                factory(AccidentStatusHistory::class)->create([
+                    'accident_status_id' => AccidentStatus::firstOrCreate([
+                        'type' => \AccidentStatusesTableSeeder::TYPE_DOCTOR,
+                        'title' => \AccidentStatusesTableSeeder::STATUS_ASSIGNED,
+                    ])->id
+                ]),
+                factory(AccidentStatusHistory::class)->create([
+                    'accident_status_id' => AccidentStatus::firstOrCreate([
+                        'type' => \AccidentStatusesTableSeeder::TYPE_DOCTOR,
+                        'title' => \AccidentStatusesTableSeeder::STATUS_REJECT,
+                    ])->id
+                ]),
+            ]
+        );
+
+        $storyService = new StoryService();
+        $story = $storyService->init($history, $doctorScenarioService)->getStory();
+        self::assertEquals(4, $story->count(), 'Story contents 6 steps');
+        self::assertEquals('{"0":{"order":1,"title":"new","type":"accident","accident_status_id":1,"tag":"App\\\\DoctorAccident","mode":"step","status":"visited"},"1":{"order":2,"title":"assigned","type":"doctor","accident_status_id":2,"tag":"App\\\\DoctorAccident","mode":"step","status":"visited"},"5":{"order":6,"title":"reject","type":"doctor","mode":"skip:doctor","accident_status_id":6,"tag":"App\\\\DoctorAccident","status":"visited"},"6":{"order":7,"title":"closed","type":"accident","accident_status_id":7,"tag":"App\\\\DoctorAccident","mode":"step"}}',
+            $story->toJson(), 'Expected story was loaded');
     }
 }

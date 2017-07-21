@@ -170,10 +170,10 @@ class Accident extends AccidentAbstract
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function status()
     {
-        return $this->morphTo(AccidentStatus::class);
+        return $this->belongsTo(AccidentStatus::class);
     }
 }

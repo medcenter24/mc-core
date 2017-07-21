@@ -9,8 +9,11 @@ namespace App\Services\Scenario;
 
 
 use App\AccidentStatus;
+use App\DoctorAccident;
 use App\Exceptions\InconsistentDataException;
+use App\Scenario;
 use App\Services\ScenarioInterface;
+use Illuminate\Support\Collection;
 
 class DoctorScenarioService implements ScenarioInterface
 {
@@ -18,61 +21,42 @@ class DoctorScenarioService implements ScenarioInterface
      * Current step
      * @var int
      */
-    private $step;
+    private $stepId;
+
+    /**
+     * @var Collection
+     */
+    private $scenario;
+
+    public function setScenario(Collection $scenario)
+    {
+        $this->scenario = $scenario;
+    }
 
     public function scenario()
     {
-        return [
-            1 => [
-                'title' => 'new',
-                'type'  => 'accident',
-            ],
-            2 => [
-                'title' => 'assigned',
-                'type'  => 'doctor',
-            ],
-            3 => [
-                'title' => 'in_progress',
-                'type'  => 'doctor',
-            ],
-            4 => [
-                'title' => 'sent',
-                'type'  => 'doctor',
-            ],
-            5 => [
-                'title' => 'paid',
-                'type'  => 'doctor',
-            ],
-            6 => [
-                'title' => 'rejected',
-                'type'  => 'doctor',
-                'mode'  => 'alternate', // don't used by scenario but doctor could set this step in any time that he want
-            ],
-            7 => [
-                'title' => 'closed',
-                'type' => 'accident',
-            ],
-        ];
+        if (!$this->scenario) {
+            $this->scenario = Scenario::where('tag', DoctorAccident::class)->orderBy('order')->get();
+        }
+
+        return $this->scenario;
     }
 
-    public function set($step)
+    public function setCurrentStepId($stepId = 0)
     {
-        $this->step = $this->findStep($step);
+        $this->stepId = $this->findStepId($stepId);
     }
 
     public function current()
     {
-        return $this->step;
+        return $this->stepId ?: 1;
     }
 
     public function next()
     {
-        if (!isset($this->step)) {
-            throw new InconsistentDataException('Scenario is not defined.');
-        }
         $count = count($this->scenario());
-        if ($this->step < $count) {
-            $this->step++;
+        if ($this->current() < $count) {
+            $this->setCurrentStepId($this->current()+1);
 
         }
     }
@@ -83,7 +67,7 @@ class DoctorScenarioService implements ScenarioInterface
      * @return int|string
      * @throws InconsistentDataException
      */
-    private function findStep($step)
+    public function findStepId($step)
     {
         if (is_array($step)) {
             if (!isset($step['title']) || !isset($step['type']) ) {
@@ -96,13 +80,17 @@ class DoctorScenarioService implements ScenarioInterface
                     break;
                 }
             }
+
+            if (!$step) {
+                throw new InconsistentDataException('Invalid data for the step selection. Step was not found.');
+            }
         } elseif (is_integer($step)) {
             $count = count($this->scenario());
             if ($step > $count || $step <= 0) {
                 throw new InconsistentDataException('Invalid data for the step selection. Step is not in range.');
             }
         } elseif ($step instanceof AccidentStatus) {
-            return $this->findStep([
+            return $this->findStepId([
                 'title' => $step->title,
                 'type' => $step->type,
             ]);
@@ -111,5 +99,11 @@ class DoctorScenarioService implements ScenarioInterface
         }
 
         return $step;
+    }
+
+    public function getStepData($step)
+    {
+        $stepId = $this->findStepId($step);
+        return $this->scenario()->get($stepId);
     }
 }

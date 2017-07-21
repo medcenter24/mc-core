@@ -9,6 +9,7 @@ namespace Tests\Unit\Scenario;
 
 use App\AccidentStatus;
 use App\Services\Scenario\DoctorScenarioService;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class DoctorScenarioServiceTest extends TestCase
@@ -22,6 +23,7 @@ class DoctorScenarioServiceTest extends TestCase
     {
         parent::setUp();
         $this->service = new DoctorScenarioService();
+        $this->service->setScenario(new Collection(\ScenariosTableSeeder::DOCTOR_SCENARIO));
     }
 
     public function testScenario()

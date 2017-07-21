@@ -154,7 +154,7 @@ $factory->define(\App\AccidentType::class, function (\Faker\Generator $faker) {
 
 $factory->define(\App\AccidentStatus::class, function (\Faker\Generator $faker) {
 
-    $status = $faker->randomElement(\App\Services\AccidentStatusesService::ACCIDENT_STATUSES);
+    $status = $faker->randomElement(AccidentStatusesTableSeeder::ACCIDENT_STATUSES);
 
     return [
         'title' => $status['title'],
@@ -191,7 +191,7 @@ $factory->define(\App\Accident::class, function (\Faker\Generator $faker) {
                 : factory(\App\AccidentType::class)->create(['title' => $type])->id;
         },
         'accident_status_id' => function () use ($faker) {
-            $status = $faker->randomElement(\App\Services\AccidentStatusesService::ACCIDENT_STATUSES);
+            $status = $faker->randomElement(AccidentStatusesTableSeeder::ACCIDENT_STATUSES);
 
             $_status = \App\AccidentStatus::where('title', $status['title'])
                 ->where('type', $status['type'])
@@ -233,6 +233,9 @@ $factory->define(\App\AccidentStatusHistory::class, function (\Faker\Generator $
 
     return [
         'commentary' => $faker->text(20),
+        'accident_status_id' => function () {
+            return factory(\App\AccidentStatus::class)->create()->id;
+        },
         'historyable_id' => function () {
             // could be each of accident Doctor_Accident Accident Hospital_Accident ...
             return factory(\App\Accident::class)->create()->id;
@@ -297,3 +300,13 @@ $factory->define(\App\Discount::class, function (\Faker\Generator $faker) {
     ];
 });
 
+$factory->define(\App\Scenario::class, function (\Faker\Generator $faker) {
+    return [
+        'tag' => $faker->word,
+        'order' => 0,
+        'mode' => ScenariosTableSeeder::DEFAULT_MODE,
+        'accident_status_id' => function () {
+            return factory(\App\AccidentStatus::class)->create()->id;
+        }
+    ];
+});

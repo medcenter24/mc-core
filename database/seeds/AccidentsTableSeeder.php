@@ -58,8 +58,8 @@ class AccidentsTableSeeder extends Seeder
 
 
             $status = [
-                'title' => \App\Services\AccidentStatusesService::STATUS_ASSIGNED,
-                'type' => \App\Services\AccidentStatusesService::TYPE_DOCTOR,
+                'title' => AccidentStatusesTableSeeder::STATUS_ASSIGNED,
+                'type' => AccidentStatusesTableSeeder::TYPE_DOCTOR,
             ];
 
             $_status = \App\AccidentStatus::where('title', $status['title'])

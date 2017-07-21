@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Accident;
 use App\AccidentStatus;
+use App\AccidentStatusHistory;
 use App\Discount;
 use App\DoctorAccident;
 use App\Document;
@@ -18,6 +19,9 @@ use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
 use App\Services\DocumentService;
 use App\Services\ReferralNumberService;
+use App\Services\Scenario\DoctorScenarioService;
+use App\Services\Scenario\StoryService;
+use App\Services\ScenarioInterface;
 use App\Transformers\AccidentCheckpointTransformer;
 use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
@@ -266,5 +270,31 @@ class CasesController extends ApiController
             }
         }
         return $model;
+    }
+
+    /**
+     * Load scenario for the current accident
+     * @param int $id
+     * @param StoryService $storyService
+     */
+    public function story(int $id, StoryService $storyService)
+    {
+        /** @var Accident $accident */
+        $accident = Accident::findOrFail($id);
+        $scenarioService = null;
+        if ($accident->caseable_type == DoctorAccident::class) {
+            $scenarioService = new DoctorScenarioService();
+        }
+
+        if ($scenarioService instanceof ScenarioInterface) {
+
+            $history = $accident->history; // passed steps
+            return $this->response->collection(
+                $storyService->init($history, $scenarioService, $accident->status)->scenario(),
+            new StoryTransformer()
+            );
+        }
+
+        $this->response->errorNotFound('Story has not been found for that accident');
     }
 }

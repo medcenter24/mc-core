@@ -6,6 +6,7 @@
  */
 
 namespace App\Services;
+use App\AccidentStatus;
 
 /**
  * Scenario is a set of the statuses which should be done for the case completion
@@ -23,14 +24,31 @@ interface ScenarioInterface
     public function current();
 
     /**
-     * Next step
+     * Next step Id
      * @return int
      */
     public function next();
 
     /**
      * Current scenario
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     public function scenario();
+
+    /**
+     * @param int
+     */
+    public function setCurrentStepId($step = 0);
+
+    /**
+     * @param int|array|AccidentStatus $step
+     * @return int stepId
+     */
+    public function findStepId($step);
+
+    /**
+     * @param int|array|AccidentStatus $step
+     * @return mixed
+     */
+    public function getStepData($step);
 }

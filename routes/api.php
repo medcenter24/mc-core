@@ -40,6 +40,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
 
     $api->group(['prefix' => 'director', 'middleware' => ['cors', 'role:director']], function ($api) {
 
+        $api->get('scenario/doctor', \App\Http\Controllers\Api\V1\Director\AccidentScenarioController::class . '@doctorScenario');
         $api->resource('checkpoints', \App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController::class);
         $api->resource('statuses', \App\Http\Controllers\Api\V1\Director\AccidentStatusesController::class);
         $api->resource('users', \App\Http\Controllers\Api\V1\Director\UsersController::class);

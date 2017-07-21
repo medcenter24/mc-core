@@ -40,10 +40,10 @@ class AccidentsController extends ApiController
         $accidents = Accident::join('accident_statuses', 'accidents.accident_status_id', '=', 'accident_statuses.id')
             ->where('accidents.caseable_type', DoctorAccident::class)
             ->where('accidents.caseable_id', $this->user()->id)
-            ->where('accident_statuses.type', AccidentStatusesService::TYPE_DOCTOR)
+            ->where('accident_statuses.type', \AccidentStatusesTableSeeder::TYPE_DOCTOR)
             ->whereIn('accident_statuses.title', [
-                AccidentStatusesService::STATUS_IN_PROGRESS,
-                AccidentStatusesService::STATUS_ASSIGNED
+                \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
+                \AccidentStatusesTableSeeder::STATUS_ASSIGNED
             ])
             ->orderBy('accidents.created_at', 'desc')
             ->paginate($rows, $columns = ['*'], $pageName = 'page', $request->get('page', null));
@@ -299,11 +299,11 @@ class AccidentsController extends ApiController
         }
 
         if (
-            !$accident->status->type == AccidentStatusesService::TYPE_DOCTOR
+            !$accident->status->type == \AccidentStatusesTableSeeder::TYPE_DOCTOR
             || (
                 !in_array($accident->status->title, [
-                    AccidentStatusesService::STATUS_ASSIGNED,
-                    AccidentStatusesService::STATUS_IN_PROGRESS,
+                    \AccidentStatusesTableSeeder::STATUS_ASSIGNED,
+                    \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
                 ])
             )) {
 

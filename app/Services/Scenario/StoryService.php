@@ -8,10 +8,9 @@
 namespace App\Services\Scenario;
 
 
-use App\AccidentStatus;
 use App\AccidentStatusHistory;
+use App\Scenario;
 use App\Services\ScenarioInterface;
-use function foo\func;
 use Illuminate\Support\Collection;
 
 /**
@@ -21,7 +20,10 @@ use Illuminate\Support\Collection;
  */
 class StoryService implements ScenarioInterface
 {
+    const OPTION_STATUS = 'status';
+
     const STATUS_VISITED = 'visited';
+    const STATUS_CURRENT = 'current';
 
     /**
      * @var Collection of the AccidentStatusHistory
@@ -39,6 +41,11 @@ class StoryService implements ScenarioInterface
     private $story;
 
     /**
+     * @var int
+     */
+    private $currentStepId;
+
+    /**
      * Initialize story
      * @param Collection $history
      * @param ScenarioInterface $scenario
@@ -48,6 +55,7 @@ class StoryService implements ScenarioInterface
     {
         $this->history = $history;
         $this->scenario = $scenario;
+
         // last from the history will be current for the scenario
         $this->setCurrentStepId($this->history->last()->accidentStatus);
         return $this;
@@ -56,6 +64,7 @@ class StoryService implements ScenarioInterface
     public function setCurrentStepId($step = 0)
     {
         $this->scenario->setCurrentStepId($step);
+        $this->currentStepId = $this->scenario->current();
     }
 
     public function current()
@@ -102,9 +111,9 @@ class StoryService implements ScenarioInterface
                 return $passed->accident_status_id == $item['accident_status_id'];
             });
             if ($id !== false) {
-                $story->put($id, array_merge($story->get($id), ['status' => self::STATUS_VISITED]));
                 // init skipper if needed
                 $step = $story->get($id);
+                $step->status = $this->current() == $id ? self::STATUS_CURRENT : self::STATUS_VISITED;
 
                 // on the conditional scenario step and user has made this step
                 if (mb_strpos($step['mode'], ':') !== false
@@ -125,7 +134,7 @@ class StoryService implements ScenarioInterface
                 // skip steps by condition from the $skipper
                 // or skip condition which has not been reached
                 ( ($this->skipped($skipper, $step) || mb_strpos($step['mode'], ':') !== false)
-                    && (!isset($step['status']) || $step['status'] != self::STATUS_VISITED))
+                    && (!isset($step[self::OPTION_STATUS]) || $step[self::OPTION_STATUS] != self::STATUS_VISITED))
             ) {
                 $story->forget($key);
             }

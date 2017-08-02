@@ -34,7 +34,7 @@ class AccidentStatusHistory
     {
         History::create([
             'user_id' => auth()->user()->id,
-            'status_id' => $event->getAccident()->accident_status_id,
+            'accident_status_id' => $event->getAccident()->accident_status_id,
             'historyable_id' => $event->getAccident()->id,
             'historyable_type' => get_class($event->getAccident()),
             'commentary' => $event->getCommentary(),

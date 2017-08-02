@@ -29,6 +29,7 @@ use App\Transformers\DirectorCaseTransformer;
 use App\Transformers\DoctorCaseTransformer;
 use App\Transformers\DoctorServiceTransformer;
 use App\Transformers\DocumentTransformer;
+use App\Transformers\ScenarioTransformer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -170,7 +171,7 @@ class CasesController extends ApiController
         $statusesService->set($accident, AccidentStatus::firstOrCreate([
             'title' => AccidentStatusesService::STATUS_NEW,
             'type' => AccidentStatusesService::TYPE_ACCIDENT,
-        ]));
+        ]), 'Created by director');
 
         $accident->diagnostics()->attach($request->json('diagnostics', []));
         $accident->services()->attach($request->json('services', []));
@@ -276,6 +277,7 @@ class CasesController extends ApiController
      * Load scenario for the current accident
      * @param int $id
      * @param StoryService $storyService
+     * @return \Dingo\Api\Http\Response
      */
     public function story(int $id, StoryService $storyService)
     {
@@ -287,11 +289,9 @@ class CasesController extends ApiController
         }
 
         if ($scenarioService instanceof ScenarioInterface) {
-
-            $history = $accident->history; // passed steps
             return $this->response->collection(
-                $storyService->init($history, $scenarioService, $accident->status)->scenario(),
-            new StoryTransformer()
+                $storyService->init($accident->history, $scenarioService)->getStory(),
+                new ScenarioTransformer()
             );
         }
 

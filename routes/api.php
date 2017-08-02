@@ -60,6 +60,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->get('cases/{id}/hospitalcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getHospitalCase');
         $api->get('cases/{id}/diagnostics', '\App\Http\Controllers\Api\V1\Director\CasesController@getDiagnostics');
         $api->get('cases/{id}/services', '\App\Http\Controllers\Api\V1\Director\CasesController@getServices');
+        $api->get('cases/{id}/scenario', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@story');
         $api->post('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@createDocuments');
         $api->get('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
         $api->get('cases/{id}/checkpoints', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@getCheckpoints');

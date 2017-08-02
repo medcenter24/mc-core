@@ -44,20 +44,19 @@ class DoctorScenarioService implements ScenarioInterface
 
     public function setCurrentStepId($stepId = 0)
     {
-        $this->stepId = $this->findStepId($stepId);
+        $this->stepId = (int) $this->findStepId($stepId);
     }
 
     public function current()
     {
-        return $this->stepId ?: 1;
+        return $this->stepId;
     }
 
     public function next()
     {
-        $count = count($this->scenario());
-        if ($this->current() < $count) {
-            $this->setCurrentStepId($this->current()+1);
-
+        $step = $this->current() + 1;
+        if ($this->scenario()->has($step)) {
+            $this->setCurrentStepId($step);
         }
     }
 
@@ -74,27 +73,26 @@ class DoctorScenarioService implements ScenarioInterface
                 throw new InconsistentDataException('Invalid data for the step selection. Step was not found.');
             }
 
+            $accidentStatus = AccidentStatus::firstOrCreate([
+                'title' => $step['title'],
+                'type' => $step['type'],
+            ]);
+
+            $step = $this->findStepId($accidentStatus);
+        } elseif (is_integer($step)) {
+            if (!$this->scenario()->has($step)) {
+                \Log::error('Step not found', ['step' => $step, 'scenario' => $this->scenario()]);
+                throw new InconsistentDataException('Invalid data for the step selection. Step is not in range.');
+            }
+        } elseif ($step instanceof AccidentStatus) {
             foreach ($this->scenario() as $key => $value) {
-                if ($step['title'] == $value['title'] && $step['type'] == $value['type']) {
+                if ($value->accident_status_id == $step->id) {
                     $step = $key;
                     break;
                 }
             }
-
-            if (!$step) {
-                throw new InconsistentDataException('Invalid data for the step selection. Step was not found.');
-            }
-        } elseif (is_integer($step)) {
-            $count = count($this->scenario());
-            if ($step > $count || $step <= 0) {
-                throw new InconsistentDataException('Invalid data for the step selection. Step is not in range.');
-            }
-        } elseif ($step instanceof AccidentStatus) {
-            return $this->findStepId([
-                'title' => $step->title,
-                'type' => $step->type,
-            ]);
         } else {
+            \Log::error('Step could not be found', ['step' => $step, 'scenario' => $this->scenario()]);
             throw new InconsistentDataException('Invalid data for the step selection. Format of the step is not defined.');
         }
 

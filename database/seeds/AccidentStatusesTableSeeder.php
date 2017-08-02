@@ -6,21 +6,22 @@
  */
 
 use App\AccidentStatus;
+use App\Services\AccidentStatusesService;
 use Illuminate\Database\Seeder;
 
 class AccidentStatusesTableSeeder extends Seeder
 {
-    const TYPE_ACCIDENT = 'accident';
-    const TYPE_DOCTOR = 'doctor';
-    const TYPE_HOSPITAL = 'hospital';
+    const TYPE_ACCIDENT = AccidentStatusesService::TYPE_ACCIDENT;
+    const TYPE_DOCTOR = AccidentStatusesService::TYPE_DOCTOR;
+    const TYPE_HOSPITAL = AccidentStatusesService::TYPE_HOSPITAL;
 
-    const STATUS_NEW = 'new';
-    const STATUS_ASSIGNED = 'assigned';
-    const STATUS_IN_PROGRESS = 'in_progress';
-    const STATUS_SENT = 'sent';
-    const STATUS_PAID = 'paid';
-    const STATUS_REJECT = 'reject';
-    const STATUS_CLOSED = 'closed';
+    const STATUS_NEW = AccidentStatusesService::STATUS_NEW;
+    const STATUS_ASSIGNED = AccidentStatusesService::STATUS_ASSIGNED;
+    const STATUS_IN_PROGRESS = AccidentStatusesService::STATUS_IN_PROGRESS;
+    const STATUS_SENT = AccidentStatusesService::STATUS_SENT;
+    const STATUS_PAID = AccidentStatusesService::STATUS_PAID;
+    const STATUS_REJECT = AccidentStatusesService::STATUS_REJECT;
+    const STATUS_CLOSED = AccidentStatusesService::STATUS_CLOSED;
 
     /**
      * 1. new

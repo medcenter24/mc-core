@@ -172,7 +172,7 @@ class Accident extends AccidentAbstract
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function status()
+    public function accidentStatus()
     {
         return $this->belongsTo(AccidentStatus::class);
     }

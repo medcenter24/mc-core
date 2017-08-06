@@ -10,7 +10,7 @@ namespace App\Services;
 
 use App\Accident;
 use App\AccidentStatus;
-use App\Events\AccidentStatusChanged;
+use App\Events\AccidentStatusChangedEvent;
 
 class AccidentStatusesService
 {
@@ -32,6 +32,7 @@ class AccidentStatusesService
         $accident->save();
         $accident->refresh();
 
-        event(new AccidentStatusChanged($accident, $comment));
+        \Log::debug('Set new status to accident', ['status_id' => $status->id, 'accident_id' => $accident->id]);
+        event(new AccidentStatusChangedEvent($accident, $comment));
     }
 }

@@ -7,12 +7,12 @@
 
 namespace App\Listeners;
 
-use App\AccidentStatusHistory as History;
-use App\Events\AccidentStatusChanged;
+use App\AccidentStatusHistory;
+use App\Events\AccidentStatusChangedEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AccidentStatusHistory
+class AccidentStatusHistoryListener
 {
     /**
      * Create the event listener.
@@ -27,12 +27,12 @@ class AccidentStatusHistory
     /**
      * Handle the event.
      *
-     * @param  AccidentStatusChanged  $event
+     * @param  AccidentStatusChangedEvent  $event
      * @return void
      */
-    public function handle(AccidentStatusChanged $event)
+    public function handle(AccidentStatusChangedEvent $event)
     {
-        History::create([
+        AccidentStatusHistory::create([
             'user_id' => auth()->user()->id,
             'accident_status_id' => $event->getAccident()->accident_status_id,
             'historyable_id' => $event->getAccident()->id,

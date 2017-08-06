@@ -13,6 +13,8 @@ use App\AccidentStatusHistory;
 use App\Discount;
 use App\DoctorAccident;
 use App\Document;
+use App\Events\AccidentUpdated;
+use App\Events\DoctorAccidentUpdatedEvent;
 use App\Http\Controllers\ApiController;
 use App\Patient;
 use App\Services\AccidentService;
@@ -190,8 +192,14 @@ class CasesController extends ApiController
     {
         $accident = Accident::findOrFail($id);
 
-        // todo check accident status if it was sent and marked as sent then decline to change it
         // if it needed then status for this accident would be reset by the administrator
+        $status = $accident->accidentStatus;
+
+        if (
+            $status->title == AccidentStatusesService::STATUS_CLOSED
+            && $status->type == AccidentStatusesService::TYPE_ACCIDENT) {
+            $this->response->errorForbidden('Already closed');
+        }
 
         $requestedAccident = $request->json('accident', false);
 
@@ -221,9 +229,14 @@ class CasesController extends ApiController
                 $accident->caseable_id = $doctorAccident->id;
                 $accident->caseable_type = DoctorAccident::class;
                 $accident->save();
+
+                event(new DoctorAccidentUpdatedEvent(null, $doctorAccident, 'Created by director'));
             } else {
+                $before = clone $accident->caseable;
                 $doctorAccident = $this->setData($accident->caseable, $doctorAccidentData);
                 $doctorAccident->save();
+
+                event(new DoctorAccidentUpdatedEvent($before, $doctorAccident, 'Updated by director'));
             }
         }
 

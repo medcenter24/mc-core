@@ -8,13 +8,16 @@
 namespace App\Http\Controllers\Api\V1\Doctor;
 
 use App\Accident;
+use App\AccidentStatus;
 use App\Diagnostic;
+use App\Doctor;
 use App\DoctorAccident;
 use App\DoctorService;
 use App\DoctorSurvey;
 use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Services\AccidentStatusesService;
+use App\Services\DoctorsService;
 use App\Transformers\AccidentTypeTransformer;
 use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
@@ -29,6 +32,21 @@ use Illuminate\Support\Collection;
 
 class AccidentsController extends ApiController
 {
+
+    private $doctor;
+
+    protected function getDoctor()
+    {
+        if (!isset($this->doctor)) {
+            $this->doctor = $this->user()->doctor;
+            if (!$this->doctor) {
+                $this->response->errorForbidden('Current user should be a doctor');
+            }
+        }
+
+        return $this->doctor;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -36,17 +54,27 @@ class AccidentsController extends ApiController
      */
     public function index(Request $request)
     {
-        $rows = $request->get('per_page', 10);
-        $accidents = Accident::join('accident_statuses', 'accidents.accident_status_id', '=', 'accident_statuses.id')
+
+        $accidents = Accident::select('accidents.*')
+            ->join('accident_statuses', 'accidents.accident_status_id', '=', 'accident_statuses.id')
             ->where('accidents.caseable_type', DoctorAccident::class)
-            ->where('accidents.caseable_id', $this->user()->id)
+            ->whereIn('accidents.caseable_id', DoctorAccident::where('doctor_id', $this->getDoctor()->id)->pluck('id')->toArray())
             ->where('accident_statuses.type', \AccidentStatusesTableSeeder::TYPE_DOCTOR)
             ->whereIn('accident_statuses.title', [
                 \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
                 \AccidentStatusesTableSeeder::STATUS_ASSIGNED
             ])
             ->orderBy('accidents.created_at', 'desc')
-            ->paginate($rows, $columns = ['*'], $pageName = 'page', $request->get('page', null));
+            ->paginate($request->get('per_page', 10),
+                $columns = ['*'], $pageName = 'page', $request->get('page', null));
+        /*dd($accidents->toSql(),
+            DoctorAccident::class,
+            DoctorAccident::where('doctor_id', $this->getDoctor()->id)->pluck('id')->toArray(),
+            \AccidentStatusesTableSeeder::TYPE_DOCTOR,
+            \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
+            \AccidentStatusesTableSeeder::STATUS_ASSIGNED
+        );*/
+
         return $this->response->paginator($accidents, new CaseAccidentTransformer());
     }
 
@@ -54,13 +82,30 @@ class AccidentsController extends ApiController
      * Closed or accident which were sent which can't be changed
      *
      * @param  int  $id
+     * @param DoctorsService $doctorService
+     *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, DoctorsService $doctorService, AccidentStatusesService $accidentStatusesService)
     {
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
+        }
+
+        if (!$doctorService->hasAccess($this->getDoctor(), $accident)) {
+            $this->response->errorNotFound();
+        }
+
+        if ($accident->accidentStatus->title == AccidentStatusesService::STATUS_ASSIGNED
+            && $accident->accidentStatus->type == AccidentStatusesService::TYPE_DOCTOR) {
+
+            $status = AccidentStatus::firstOrCreate([
+                'title' => AccidentStatusesService::STATUS_IN_PROGRESS,
+                'type' => AccidentStatusesService::TYPE_DOCTOR,
+            ]);
+
+            $accidentStatusesService->set($accident, $status, 'Updated by doctor');
         }
 
         return $this->response->item($accident, new DoctorAccidentTransformer());

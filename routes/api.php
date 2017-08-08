@@ -30,6 +30,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->post('accidents/{id}/surveys', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@createSurvey');
         $api->get('accidents/{id}/diagnostics', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@diagnostics');
         $api->post('accidents/{id}/diagnostics', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@createDiagnostic');
+        $api->patch('accidents/{id}/reject', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class . '@reject');
         $api->resource('accidents', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class);
         $api->get('me', '\App\Http\Controllers\Api\V1\Doctor\ProfileController@me');
         $api->get('services', '\App\Http\Controllers\Api\V1\Doctor\DoctorServicesController@index');

@@ -43,8 +43,9 @@ class DoctorAccidentDoctorAssignmentListener
         $doctorAccident = $event->getDoctorAccident();
 
         \Log::error('test listener', ['prev' => $prev, 'docAcc' => $doctorAccident]);
-        if ( (!$prev && $doctorAccident->doctor_id)
-            || $prev->doctor_id != $doctorAccident->doctor_id
+        if (
+            $doctorAccident->doctor_id &&
+            (!$prev || $prev->doctor_id != $doctorAccident->doctor_id)
         ) {
 
             $accidentStatus = AccidentStatus::firstOrCreate([

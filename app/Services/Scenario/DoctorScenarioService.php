@@ -91,9 +91,11 @@ class DoctorScenarioService implements ScenarioInterface
                     break;
                 }
             }
-        } else {
+        }
+
+        if (!is_integer($step)) {
             \Log::error('Step could not be found', ['step' => $step, 'scenario' => $this->scenario()]);
-            throw new InconsistentDataException('Invalid data for the step selection. Format of the step is not defined.');
+            throw new InconsistentDataException('Invalid data for the step selection. Step is not defined.');
         }
 
         return $step;

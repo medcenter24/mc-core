@@ -191,13 +191,7 @@ $factory->define(\App\Accident::class, function (\Faker\Generator $faker) {
                 : factory(\App\AccidentType::class)->create(['title' => $type])->id;
         },
         'accident_status_id' => function () use ($faker) {
-            $status = $faker->randomElement(AccidentStatusesTableSeeder::ACCIDENT_STATUSES);
-
-            $_status = \App\AccidentStatus::where('title', $status['title'])
-                ->where('type', $status['type'])
-                ->first();
-
-            return $_status && $_status->id ? $_status->id : factory(\App\AccidentStatus::class)->create($status)->id;
+            return getRandomAccidentStatus($faker)->id;
         },
         'assistant_id' => function () {
             return factory(\App\Assistant::class)->create()->id;
@@ -233,8 +227,8 @@ $factory->define(\App\AccidentStatusHistory::class, function (\Faker\Generator $
 
     return [
         'commentary' => $faker->text(20),
-        'accident_status_id' => function () {
-            return factory(\App\AccidentStatus::class)->create()->id;
+        'accident_status_id' => function () use ($faker) {
+            return getRandomAccidentStatus($faker)->id;
         },
         'historyable_id' => function () {
             // could be each of accident Doctor_Accident Accident Hospital_Accident ...
@@ -301,12 +295,28 @@ $factory->define(\App\Discount::class, function (\Faker\Generator $faker) {
 });
 
 $factory->define(\App\Scenario::class, function (\Faker\Generator $faker) {
+
     return [
         'tag' => $faker->word,
         'order' => 0,
         'mode' => ScenariosTableSeeder::DEFAULT_MODE,
-        'accident_status_id' => function () {
-            return factory(\App\AccidentStatus::class)->create()->id;
+        'accident_status_id' => function () use ($faker) {
+            return getRandomAccidentStatus($faker)->id;
         }
     ];
 });
+
+/**
+ * @param \Faker\Generator $faker
+ * @return \App\AccidentStatus
+ */
+function getRandomAccidentStatus(\Faker\Generator $faker)
+{
+    $status = $faker->randomElement(AccidentStatusesTableSeeder::ACCIDENT_STATUSES);
+
+    $_status = \App\AccidentStatus::where('title', $status['title'])
+        ->where('type', $status['type'])
+        ->first();
+
+    return $_status && $_status->id ? $_status : factory(\App\AccidentStatus::class)->create($status);
+}

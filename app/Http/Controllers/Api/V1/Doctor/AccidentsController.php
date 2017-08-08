@@ -18,6 +18,7 @@ use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Services\AccidentStatusesService;
 use App\Services\DoctorsService;
+use App\Transformers\AccidentTransformer;
 use App\Transformers\AccidentTypeTransformer;
 use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
@@ -376,23 +377,6 @@ class AccidentsController extends ApiController
     }
 
     /**
-     * Reject the accident
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $accident = Accident::find($id);
-        if (!$accident) {
-            $this->response->errorNotFound();
-        }
-        \Log::info('Request to reject accident', ['user' => $this->user()->id, 'accident' => $accident->id]);
-        $accident->status = 'rejected';
-        return $this->response->noContent();
-    }
-
-    /**
      * Load documents into the accident
      * @param int $id
      * @param Request $request
@@ -431,5 +415,22 @@ class AccidentsController extends ApiController
         // should be seen by doctors
         $documents = $accident->caseable->documents;
         return $this->response->collection($documents, new DocumentTransformer());
+    }
+
+    public function reject($id, Request $request, AccidentStatusesService $accidentStatusesService)
+    {
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+
+        $status = AccidentStatus::firstOrCreate([
+            'title' => AccidentStatusesService::STATUS_REJECT,
+            'type' => AccidentStatusesService::TYPE_DOCTOR,
+        ]);
+
+        $accidentStatusesService->set($accident, $status, $request->get('comment', 'Updated by doctor without commentary'));
+
+        return $this->response->noContent();
     }
 }

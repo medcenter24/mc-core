@@ -20,10 +20,12 @@ class CreateAccidentStatusesTable extends Migration
     {
         Schema::create('accident_statuses', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title', 50)->default('')->index();
+            $table->string('title', 50)->default('');
             $table->string('type', 50)->default('')->index();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['title', 'type'], 'ik_status');
         });
     }
 

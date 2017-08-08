@@ -150,6 +150,7 @@ class CasesController extends ApiController
      * New case accident
      * @param Request $request
      * @param ReferralNumberService $referralNumberService
+     * @param AccidentStatusesService $statusesService
      * @return \Dingo\Api\Http\Response
      */
     public function store(Request $request, ReferralNumberService $referralNumberService, AccidentStatusesService $statusesService)
@@ -180,6 +181,7 @@ class CasesController extends ApiController
         $accident->documents()->attach($request->json('documents', []));
         $accident->checkpoints()->attach($request->json('checkpoints', []));
 
+        event(new DoctorAccidentUpdatedEvent(null, $doctorAccident, 'Created by director'));
         $transformer = new DirectorCaseTransformer();
         return $this->response->created($accident->id, $transformer->transform($accident));
     }

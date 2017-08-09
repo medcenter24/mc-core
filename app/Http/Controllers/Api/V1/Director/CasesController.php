@@ -303,13 +303,43 @@ class CasesController extends ApiController
             $scenarioService = new DoctorScenarioService();
         }
 
-        if ($scenarioService instanceof ScenarioInterface) {
-            return $this->response->collection(
-                $storyService->init($accident->history, $scenarioService)->getStory(),
-                new ScenarioTransformer()
-            );
+        if ( !($scenarioService instanceof ScenarioInterface) ) {
+            $this->response->errorNotFound('Story has not been found for that accident');
         }
 
-        $this->response->errorNotFound('Story has not been found for that accident');
+        return $this->response->collection(
+            $storyService->init($accident->history, $scenarioService)->getStory(),
+            new ScenarioTransformer()
+        );
+    }
+
+    /**
+     * Set status closed
+     * @param int $id
+     * @param AccidentStatusesService $statusesService
+     * @return \Dingo\Api\Http\Response
+     */
+    public function close(int $id, AccidentStatusesService $statusesService)
+    {
+        $accident = Accident::findOrFail($id);
+
+        $statusesService->set($accident, AccidentStatus::firstOrCreate([
+            'title' => AccidentStatusesService::STATUS_CLOSED,
+            'type' => AccidentStatusesService::TYPE_ACCIDENT,
+        ]), 'Closed by director');
+
+        return $this->response->noContent();
+    }
+
+    /**
+     * Delete accident
+     * @param $id
+     * @return \Dingo\Api\Http\Response
+     */
+    public function destroy($id)
+    {
+        $accident = Accident::findOrFail($id);
+        $accident->delete();
+        return $this->response->noContent();
     }
 }

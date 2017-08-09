@@ -65,6 +65,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->post('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@createDocuments');
         $api->get('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
         $api->get('cases/{id}/checkpoints', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@getCheckpoints');
+        $api->put('cases/{id}/close', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@close');
 
         $api->resource('cases', \App\Http\Controllers\Api\V1\Director\CasesController::class);
 

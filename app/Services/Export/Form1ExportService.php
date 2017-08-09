@@ -48,13 +48,12 @@ class Form1ExportService
             $row = [];
             $row[trans('content.npp')] = $i+1;
             $row[trans('content.patient_name')] = $accident->patient->name;
-            $row[trans('content.assistant')] = $accident->assistant->title;
+            $row[trans('content.assistant')] = $accident->assistant ? $accident->assistant->title : __('content.undefined');
             $row[trans('content.assistant_ref_num')] = $accident->assistant_ref_num;
             $row[trans('content.ref_num')] = $accident->ref_num;
             $row[trans('content.date')] = $accident->created_at->format(config('date.dateFormat'));
             $row[trans('content.time')] = $accident->created_at->format(config('date.timeFormat'));
             $city = $service->getCity($accident);
-            \Log::debug($city->id);
             $row[trans('content.city')] = $city ? $city->title : trans('content.undefined');
 
             // Doctor case

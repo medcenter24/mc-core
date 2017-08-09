@@ -127,9 +127,7 @@ class StoryService implements ScenarioInterface
                 }
             }
 
-
         foreach ($story as $key => $step) {
-
             if (
                 // skip steps by condition from the $skipper
                 // or skip condition which has not been reached
@@ -148,7 +146,7 @@ class StoryService implements ScenarioInterface
         $skipped = false;
         if (is_array($skipper)) {
             if (isset($skipper['operation']) && $skipper['operation'] == 'skip') {
-                if ($step['type'] == $skipper['type']) {
+                if ($step->status != self::STATUS_VISITED && $step->accidentStatus->type == $skipper['type']) {
                     $skipped = true;
                 }
             }

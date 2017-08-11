@@ -126,6 +126,50 @@ class AccidentsController extends ApiController
         return $this->response->item($patient, new PatientTransformer());
     }
 
+    public function updatePatient($id, Request $request, AccidentStatusesService $statusesService)
+    {
+        $accident = Accident::find($id);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+
+        $patient = $accident->patient;
+        if (!$patient) {
+            $this->response->errorNotFound();
+        }
+
+        $changedData = [];
+
+        $newName = $request->get('name','');
+        $newComment = $request->get('comment', '');
+        $newAddress = $request->get('address', '');
+
+        if ($newName != $patient->name) {
+            $changedData['name'] = ['old' => $patient->name, 'new' => $newName];
+            $patient->name = $newName;
+        }
+
+        if ($newComment != $patient->comment) {
+            $changedData['comment'] = ['old' => $accident->symptoms, 'new' => $newComment];
+            $patient->comment = $newComment;
+        }
+
+        if ($newAddress != $patient->address) {
+            $changedData['address'] = ['old' => $patient->address, 'new' => $newAddress];
+            $patient->address = $newAddress;
+        }
+
+        if (count($changedData)) {
+            $statusesService->set($accident, AccidentStatus::firstOrCreate([
+                'title' => AccidentStatusesService::STATUS_ASSIGNED,
+                'type' => AccidentStatusesService::TYPE_DOCTOR,
+            ]), 'Updated by doctor ' . $this->user()->id . ' ' . json_encode($changedData));
+        }
+        $patient->save();
+
+        return $this->response->item($patient, new PatientTransformer());
+    }
+
     public function status($id)
     {
         $accident = Accident::find($id);

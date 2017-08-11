@@ -19,7 +19,8 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
     $api->get('user', '\App\Http\Controllers\Api\V1\AuthenticateController@authenticatedUser');
 
     $api->group(['prefix' => 'doctor', 'middleware' => ['cors', 'role:doctor']], function ($api) {
-        $api->get('accidents/{id}/patient', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@patient');
+        $api->get('accidents/{id}/patient', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class . '@patient');
+        $api->patch('accidents/{id}/patient', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class . '@updatePatient');
         $api->get('accidents/{id}/status', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@status');
         $api->get('accidents/{id}/services', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@services');
         $api->post('accidents/{id}/services', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@saveService');

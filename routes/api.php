@@ -38,6 +38,8 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->get('surveys', '\App\Http\Controllers\Api\V1\Doctor\DoctorSurveysController@index');
         $api->get('diagnostics', '\App\Http\Controllers\Api\V1\Doctor\DiagnosticsController@index');
         $api->get('caseTypes', '\App\Http\Controllers\Api\V1\Doctor\AccidentTypesController@index');
+
+        $api->resource('documents', \App\Http\Controllers\Api\V1\Director\DocumentsController::class);
     });
 
     $api->group(['prefix' => 'director', 'middleware' => ['cors', 'role:director']], function ($api) {

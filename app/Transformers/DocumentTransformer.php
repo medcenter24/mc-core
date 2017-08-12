@@ -13,6 +13,7 @@ use App\DoctorAccident;
 use App\Document;
 use App\Patient;
 use App\Services\DocumentService;
+use App\Services\MediaService;
 use App\User;
 use League\Fractal\TransformerAbstract;
 
@@ -20,6 +21,7 @@ class DocumentTransformer extends TransformerAbstract
 {
     /**
      * @param Document $document
+     * @param MediaService $mediaService
      * @return array
      */
     public function transform (Document $document)
@@ -34,12 +36,22 @@ class DocumentTransformer extends TransformerAbstract
             $owner = 'patient';
         }
 
+        $medias = $document->getMedia(DocumentService::CASES_FOLDERS);
+        \Log::error('', [$medias]);
+        if (!$medias->count()) {
+            \Log::error('Media not found', ['document' => $document]);
+            return [];
+        }
+        $media = $medias->first();
+
+        $p  = $media->getPath('thumb');
+
         return [
             'id' => $document->id,
             'title' => $document->title,
             'owner' => $owner,
-            'fileName' => $document->hasMedia(DocumentService::CASES_FOLDERS) ?
-                $document->getFirstMedia(DocumentService::CASES_FOLDERS)->file_name : '',
+            'fileName' => $media->file_name,
+            'b64thumb' => base64_encode(file_get_contents($media->getPath('thumb'))),
             'type' => $document->type,
         ];
     }

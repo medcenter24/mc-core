@@ -106,41 +106,19 @@ class CasesController extends ApiController
         return $this->response->collection($accident->checkpoints, new AccidentCheckpointTransformer());
     }
 
-    public function documents($id)
+    public function documents($id, DocumentService $documentService)
     {
-        $documents = $this->user()->documents;
-        $accident = Accident::find($id);
-        if ($accident) {
-            $documents = $documents->merge($accident->documents);
-            if ($accident->caseable) {
-                $documents = $documents->merge($accident->caseable->documents);
-            }
-        }
-
-        return $this->response->collection($documents, new DocumentTransformer());
+        $accident = Accident::findOrFail($id);
+        return $this->response->collection($documentService->getDocuments($this->user(), $accident), new DocumentTransformer());
     }
 
-    public function createDocuments($id, Request $request)
+    public function createDocuments($id, Request $request, DocumentService $documentService)
     {
-        $accident = Accident::find($id);
+        $accident = Accident::findOrFail($id);
         $documents = new Collection();
 
         foreach ($request->allFiles() as $files) {
-            foreach ($files as $file) {
-                /** @var Document $document */
-                $document = Document::create([
-                    'title' => $file->getClientOriginalName()
-                ]);
-                $document->addMedia($file)->toMediaCollection(DocumentService::CASES_FOLDERS, DocumentService::DISC_IMPORTS);
-                $documents->push($document);
-
-                if ($accident) {
-                    $accident->documents()->attach($document);
-                    $accident->patient->documents()->attach($document);
-                } else {
-                    $this->user()->documents()->attach($document);
-                }
-            }
+            $documents->merge($documentService->createDocumentsFromFiles($files, $this->user(), $accident));
         }
 
         return $this->response->collection($documents, new DocumentTransformer());

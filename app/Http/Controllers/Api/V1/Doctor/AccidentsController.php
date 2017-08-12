@@ -18,6 +18,7 @@ use App\Document;
 use App\Http\Controllers\ApiController;
 use App\Services\AccidentStatusesService;
 use App\Services\DoctorsService;
+use App\Services\DocumentService;
 use App\Transformers\AccidentTransformer;
 use App\Transformers\AccidentTypeTransformer;
 use App\Transformers\CaseAccidentTransformer;
@@ -424,41 +425,27 @@ class AccidentsController extends ApiController
      * Load documents into the accident
      * @param int $id
      * @param Request $request
+     * @param DocumentService $documentService
      * @return \Dingo\Api\Http\Response
      */
-    public function createDocument($id, Request $request)
+    public function createDocument($id, Request $request, DocumentService $documentService)
     {
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
         }
-
-        $document = new Document();
-        foreach ($request->allFiles() as $file) {
-            /** @var Document $document */
-            $document = Document::create([
-                'title' => $file->getClientOriginalName()
-            ]);
-            $document->addMedia($file)->toMediaCollection();
-
-            $accident->caseable->documents()->attach($document);
-            $accident->patient->documents()->attach($document);
-        }
-
+        $document = $documentService->createDocumentFromFile(current($request->allFiles()), $this->user(), $accident);
         return $this->response->item($document, new DocumentTransformer());
     }
 
-    public function documents ($id)
+    public function documents($id, DocumentService $documentService)
     {
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
         }
 
-        // documents could be loaded by director, but I'm not sure that these documents
-        // should be seen by doctors
-        $documents = $accident->caseable->documents;
-        return $this->response->collection($documents, new DocumentTransformer());
+        return $this->response->collection($documentService->getDocuments($this->user(), $accident), new DocumentTransformer());
     }
 
     public function reject($id, Request $request, AccidentStatusesService $accidentStatusesService)

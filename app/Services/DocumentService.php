@@ -30,7 +30,7 @@ class DocumentService
      * @param Accident $accident
      * @return Document
      */
-    public function createDocumentFromFile($file, User $user, Accident $accident = null)
+    public function createDocumentFromFile($file, User $user)
     {
         /** @var Document $document */
         $document = Document::create([
@@ -39,13 +39,7 @@ class DocumentService
         ]);
         $document->addMedia($file)
             ->toMediaCollection(DocumentService::CASES_FOLDERS, DocumentService::DISC_IMPORTS);
-
-        if ($accident) {
-            $accident->documents()->attach($document);
-            $accident->patient->documents()->attach($document);
-        } else {
-            $user->documents()->attach($document);
-        }
+        $user->documents()->attach($document);
 
         return $document;
     }
@@ -56,11 +50,11 @@ class DocumentService
      * @param Accident|null $accident
      * @return Collection
      */
-    public function createDocumentsFromFiles($files, User $user, Accident $accident = null)
+    public function createDocumentsFromFiles($files, User $user)
     {
         $documents = new Collection();
         foreach ($files as $file) {
-            $document = $this->createDocumentFromFile($file, $user, $accident);
+            $document = $this->createDocumentFromFile($file, $user);
             $documents->push($document);
         }
         return $documents;
@@ -85,6 +79,12 @@ class DocumentService
             }
         }
 
-        return $documents;
+        return $documents->unique('id');
+    }
+
+    public function checkAccess(Document $document, User $user, RoleService $roleService)
+    {
+        return $roleService->hasRole($user, 'director')
+            || ($roleService->hasRole($user, 'doctor') && $document->created_by == $user->id);
     }
 }

@@ -434,7 +434,11 @@ class AccidentsController extends ApiController
         if (!$accident) {
             $this->response->errorNotFound();
         }
-        $document = $documentService->createDocumentFromFile(current($request->allFiles()), $this->user(), $accident);
+        $document = $documentService->createDocumentFromFile(current($request->allFiles()), $this->user());
+        $accident->documents()->attach($document);
+        $accident->patient->documents()->attach($document);
+        $doctorAccident = $accident->caseable;
+        $doctorAccident->documents()->attach($document);
         return $this->response->item($document, new DocumentTransformer());
     }
 

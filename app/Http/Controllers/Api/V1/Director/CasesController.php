@@ -118,7 +118,12 @@ class CasesController extends ApiController
         $documents = new Collection();
 
         foreach ($request->allFiles() as $files) {
-            $documents->merge($documentService->createDocumentsFromFiles($files, $this->user(), $accident));
+            $document = $documentService->createDocumentsFromFiles($files, $this->user());
+            $documents->merge($document);
+            if ($accident) {
+                $accident->documents()->attach($document);
+                $accident->patient->documents()->attach($document);
+            }
         }
 
         return $this->response->collection($documents, new DocumentTransformer());

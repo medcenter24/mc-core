@@ -27,8 +27,8 @@ class Document extends Model implements HasMedia, HasMediaConversions
     use SoftDeletes;
     use HasMediaTrait;
 
-    protected $fillable = ['title'];
-    protected $visible = ['title'];
+    protected $fillable = ['title', 'created_by'];
+    protected $visible = ['title', 'created_by'];
 
     public function registerMediaConversions()
     {

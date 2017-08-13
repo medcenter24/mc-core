@@ -8,28 +8,22 @@
 namespace App\Transformers;
 
 
-use App\Accident;
-use App\DoctorAccident;
 use App\Document;
-use App\Patient;
 use App\Services\DocumentService;
-use App\Services\MediaService;
-use App\User;
 use League\Fractal\TransformerAbstract;
 
 class DocumentTransformer extends TransformerAbstract
 {
     /**
      * @param Document $document
-     * @param MediaService $mediaService
      * @return array
      */
     public function transform (Document $document)
     {
-        if ($document->accidents->count()) {
-            $owner = 'accident';
-        } elseif ($document->doctorAccidents->count()) {
+        if ($document->doctorAccidents->count()) {
             $owner = 'doctor';
+        } elseif ($document->accidents->count()) {
+            $owner = 'accident';
         } elseif ($document->users->count()) {
             $owner = 'user';
         } else {
@@ -43,9 +37,6 @@ class DocumentTransformer extends TransformerAbstract
             return [];
         }
         $media = $medias->first();
-
-        $p  = $media->getPath('thumb');
-
         return [
             'id' => $document->id,
             'title' => $document->title,

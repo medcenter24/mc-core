@@ -390,9 +390,9 @@ class AccidentsController extends ApiController
         }
 
         if (
-            !$accident->status->type == \AccidentStatusesTableSeeder::TYPE_DOCTOR
+            !$accident->accidentStatus->type == \AccidentStatusesTableSeeder::TYPE_DOCTOR
             || (
-                !in_array($accident->status->title, [
+                !in_array($accident->accidentStatus->title, [
                     \AccidentStatusesTableSeeder::STATUS_ASSIGNED,
                     \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
                 ])
@@ -401,9 +401,9 @@ class AccidentsController extends ApiController
             $this->response->errorMethodNotAllowed(trans('You cant\'t change this case'));
         }
 
-        $accident->accident_type_id = $request->json('caseType', 1);
-        $accident->caseable->recommendation = $request->json('diagnose', '');
-        $accident->caseable->investigation = $request->json('investigation', '');
+        $accident->accident_type_id = (int)$request->json('caseType', 1);
+        $accident->caseable->recommendation = (string)$request->json('diagnose', '');
+        $accident->caseable->investigation = (string)$request->json('investigation', '');
         $accident->caseable->save();
         $accident->save();
 

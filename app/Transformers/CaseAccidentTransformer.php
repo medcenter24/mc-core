@@ -9,6 +9,8 @@ namespace App\Transformers;
 
 
 use App\Accident;
+use App\Services\Scenario\DoctorScenarioService;
+use App\Services\Scenario\StoryService;
 use League\Fractal\TransformerAbstract;
 
 /**
@@ -18,6 +20,15 @@ use League\Fractal\TransformerAbstract;
  */
 class CaseAccidentTransformer extends TransformerAbstract
 {
+    private $storyService;
+    private $scenarioService;
+
+    public function __construct()
+    {
+        $this->storyService = new StoryService();
+        $this->scenarioService = new DoctorScenarioService();
+    }
+
     /**
      * @param Accident $accident
      * @return array
@@ -32,7 +43,7 @@ class CaseAccidentTransformer extends TransformerAbstract
             'case_type' => $accident->caseable_type,
             'created_at' => $accident->created_at->format(config('date.actionFormat')),
             'checkpoints' => $accident->checkpoints->count(),
-            'status' => 'new',
+            'status' => $accident->accidentStatus->title,
             'city' => $accident->city_id ? $accident->city->title : '',
             'symptoms' => $accident->symptoms,
         ];

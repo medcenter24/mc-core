@@ -19,6 +19,7 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
     $api->get('user', '\App\Http\Controllers\Api\V1\AuthenticateController@authenticatedUser');
 
     $api->group(['prefix' => 'doctor', 'middleware' => ['cors', 'role:doctor']], function ($api) {
+        $api->post('accidents/send', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class . '@send');
         $api->get('accidents/{id}/patient', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class . '@patient');
         $api->patch('accidents/{id}/patient', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class . '@updatePatient');
         $api->get('accidents/{id}/status', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@status');

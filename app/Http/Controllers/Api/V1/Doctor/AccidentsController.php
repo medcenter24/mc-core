@@ -52,11 +52,11 @@ class AccidentsController extends ApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-
         $accidents = Accident::select('accidents.*')
             ->join('accident_statuses', 'accidents.accident_status_id', '=', 'accident_statuses.id')
             ->where('accidents.caseable_type', DoctorAccident::class)
@@ -383,7 +383,7 @@ class AccidentsController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        \Log::info('Request to create new survey', ['data' => $request->toArray()]);
+        \Log::info('Request to update accident', ['id' => $id, 'data' => $request->toArray()]);
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
@@ -465,6 +465,36 @@ class AccidentsController extends ApiController
         ]);
 
         $accidentStatusesService->set($accident, $status, $request->get('comment', 'Updated by doctor without commentary'));
+
+        return $this->response->noContent();
+    }
+
+    /**
+     * Send cases to the director as completed
+     * @param Request $request
+     * @param AccidentStatusesService $accidentStatusesService
+     */
+    public function send(Request $request, AccidentStatusesService $accidentStatusesService)
+    {
+        $accidents = $request->get('cases', []);
+
+        if (!is_array($accidents) || !count($accidents)) {
+            $this->response->errorBadRequest('Accidents do not provided');
+        }
+
+        foreach ($accidents as $accidentId) {
+            $accident = Accident::find($accidentId);
+            if (!$accident) {
+                \Log::warning('Accident has not been found, so it could not be sent to the doctor',
+                    ['accidentId' => $accidentId, 'userId' => $this->user()->id]);
+                continue;
+            }
+            $status = AccidentStatus::firstOrCreate([
+                'title' => AccidentStatusesService::STATUS_SENT,
+                'type' => AccidentStatusesService::TYPE_DOCTOR,
+            ]);
+            $accidentStatusesService->set($accident, $status, 'Sent by doctor');
+        }
 
         return $this->response->noContent();
     }

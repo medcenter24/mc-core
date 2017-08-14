@@ -69,12 +69,12 @@ class StoryService implements ScenarioInterface
 
     public function current()
     {
-        $this->scenario->current();
+        return $this->scenario->current();
     }
 
     public function next()
     {
-        $this->scenario->next();
+        return $this->scenario->next();
     }
 
     /**

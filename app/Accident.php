@@ -31,6 +31,7 @@ class Accident extends AccidentAbstract
         'assistant_ref_num',
         'caseable_id',
         'caseable_type',
+        'caseable_cost',
         'ref_num',
         'title',
         'city_id',
@@ -39,6 +40,8 @@ class Accident extends AccidentAbstract
         'symptoms',
         'discount_id',
         'discount_value',
+        'fixed_income',
+        'income',
     ];
 
     protected $visible = [
@@ -55,6 +58,9 @@ class Accident extends AccidentAbstract
         'symptoms',
         'discount_id',
         'discount_value',
+        'caseable_cost',
+        'fixed_income',
+        'income',
     ];
 
     /**

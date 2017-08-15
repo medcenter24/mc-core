@@ -9,7 +9,7 @@
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function($api) {
-    $api->post('authenticate', '\App\Http\Controllers\Api\V1\AuthenticateController@authenticate');
+    $api->post('authenticate', \App\Http\Controllers\Api\V1\AuthenticateController::class . '@authenticate');
 });
 
 $api->version('v1', ['middleware' => ['api.auth']], function ($api) {

@@ -40,9 +40,10 @@ class AuthenticateController extends ApiController
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
+        $lang = auth()->user()->lang;
         // all good so return the token
         return response()
-            ->json(compact('token'));
+            ->json(['token' => $token, 'lang' => $lang]);
     }
     /**
      * Log out

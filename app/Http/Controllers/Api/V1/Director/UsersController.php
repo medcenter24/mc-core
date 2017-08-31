@@ -43,6 +43,7 @@ class UsersController extends ApiController
         $user->name = $request->json('name', '');
         $user->email = $request->json('email', '');
         $user->phone = $request->json('phone', '');
+        $user->lang = $request->json('lang', 'en');
         $user->save();
 
         \Log::info('User updated', [$user]);

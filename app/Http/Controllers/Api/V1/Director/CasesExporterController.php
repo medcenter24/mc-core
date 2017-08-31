@@ -26,7 +26,7 @@ class CasesExporterController extends ApiController
 
         return $service->excel($request->all())->export('xlsx', [
             'Access-Control-Allow-Credentials' => true,
-            'Access-Control-Allow-Origin' => env('CORS_ALLOW_ORIGIN'),
+            'Access-Control-Allow-Origin' => env('CORS_ALLOW_ORIGIN_DIRECTOR'),
         ]);
     }
 }

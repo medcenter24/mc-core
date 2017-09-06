@@ -13,6 +13,10 @@ use App\Transformers\DoctorProfileTransformer;
 
 class ProfileController extends ApiController
 {
+    /**
+     * Get information about logged user
+     * @return \Dingo\Api\Http\Response
+     */
     public function me()
     {
         $doctor = $this->user()->doctor;
@@ -25,5 +29,16 @@ class ProfileController extends ApiController
             $this->user()->doctor,
             new DoctorProfileTransformer()
         );
+    }
+
+    /**
+     * Change language for the logged user
+     */
+    public function lang($lang)
+    {
+        $user = $this->user();
+        $user->lang = $lang;
+        $user->save();
+        return $this->response->noContent();
     }
 }

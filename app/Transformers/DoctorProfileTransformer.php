@@ -21,6 +21,7 @@ class DoctorProfileTransformer extends TransformerAbstract
             'city' => $doctor->city ? $doctor->city->title : '',
             'phones' => $doctor->user->phone,
             'mbn' => $doctor->medical_board_num,
+            'lang' => $doctor->user->lang,
         ];
     }
 }

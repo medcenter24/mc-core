@@ -34,13 +34,13 @@ $api->version('v1', ['middleware' => ['api.auth']], function ($api) {
         $api->post('accidents/{id}/diagnostics', '\App\Http\Controllers\Api\V1\Doctor\AccidentsController@createDiagnostic');
         $api->patch('accidents/{id}/reject', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class . '@reject');
         $api->resource('accidents', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class);
-        $api->get('me', '\App\Http\Controllers\Api\V1\Doctor\ProfileController@me');
+        $api->get('me', \App\Http\Controllers\Api\V1\Doctor\ProfileController::class . '@me');
         $api->get('services', '\App\Http\Controllers\Api\V1\Doctor\DoctorServicesController@index');
         $api->get('surveys', '\App\Http\Controllers\Api\V1\Doctor\DoctorSurveysController@index');
         $api->get('diagnostics', '\App\Http\Controllers\Api\V1\Doctor\DiagnosticsController@index');
         $api->get('caseTypes', '\App\Http\Controllers\Api\V1\Doctor\AccidentTypesController@index');
-
         $api->resource('documents', \App\Http\Controllers\Api\V1\Director\DocumentsController::class);
+        $api->get('lang/{lang}', \App\Http\Controllers\Api\V1\Doctor\ProfileController::class . '@lang');
     });
 
     $api->group(['prefix' => 'director', 'middleware' => ['cors', 'role:director']], function ($api) {

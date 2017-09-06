@@ -58,6 +58,7 @@ class UsersController extends ApiController
             'email' => $request->json('email', ''),
             'phone' => $request->json('phone', ''),
             'password' => \Hash::make($request->json('password')),
+            'lang' => $request->json('lang', 'en'),
         ]);
         // director could create only users with doctor role
         $user->roles()->attach(Role::where('title', Role::ROLE_DOCTOR)->get()->first());

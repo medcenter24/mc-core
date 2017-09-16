@@ -69,13 +69,6 @@ class AccidentsController extends ApiController
             ->orderBy('accidents.created_at', 'desc')
             ->paginate($request->get('per_page', 10),
                 $columns = ['*'], $pageName = 'page', $request->get('page', null));
-        /*dd($accidents->toSql(),
-            DoctorAccident::class,
-            DoctorAccident::where('doctor_id', $this->getDoctor()->id)->pluck('id')->toArray(),
-            \AccidentStatusesTableSeeder::TYPE_DOCTOR,
-            \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
-            \AccidentStatusesTableSeeder::STATUS_ASSIGNED
-        );*/
 
         return $this->response->paginator($accidents, new CaseAccidentTransformer());
     }
@@ -473,6 +466,7 @@ class AccidentsController extends ApiController
      * Send cases to the director as completed
      * @param Request $request
      * @param AccidentStatusesService $accidentStatusesService
+     * @return \Dingo\Api\Http\Response
      */
     public function send(Request $request, AccidentStatusesService $accidentStatusesService)
     {

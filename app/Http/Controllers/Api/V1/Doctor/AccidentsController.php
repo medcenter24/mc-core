@@ -57,8 +57,25 @@ class AccidentsController extends ApiController
      */
     public function index(Request $request)
     {
+        $sort = explode('|', $request->get('sort', 'created_at|desc'));
+        switch ($sort[0]) {
+            case 'status':
+                $sort[0] = 'accident_statuses.title';
+                break;
+            case 'city':
+                $sort[0] = 'cities.title';
+                break;
+            case 'ref_num':
+                $sort[0] = 'accidents.ref_num';
+                break;
+            case 'created_at':
+            default:
+                $sort[0] = 'accidents.created_at';
+        }
+
         $accidents = Accident::select('accidents.*')
             ->join('accident_statuses', 'accidents.accident_status_id', '=', 'accident_statuses.id')
+            ->leftJoin('cities', 'accidents.city_id', '=', 'cities.id')
             ->where('accidents.caseable_type', DoctorAccident::class)
             ->whereIn('accidents.caseable_id', DoctorAccident::where('doctor_id', $this->getDoctor()->id)->pluck('id')->toArray())
             ->where('accident_statuses.type', \AccidentStatusesTableSeeder::TYPE_DOCTOR)
@@ -66,7 +83,7 @@ class AccidentsController extends ApiController
                 \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
                 \AccidentStatusesTableSeeder::STATUS_ASSIGNED
             ])
-            ->orderBy('accidents.created_at', 'desc')
+            ->orderBy($sort[0], $sort[1])
             ->paginate($request->get('per_page', 10),
                 $columns = ['*'], $pageName = 'page', $request->get('page', null));
 

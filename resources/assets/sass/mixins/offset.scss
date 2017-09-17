@@ -1,0 +1,15 @@
+@mixin offsets(){
+  $sides: ('top','left','right', 'bottom');
+  $values: (0, 5, 10, 15, 20, 25, 30);
+
+  @each $side in $sides {
+    @each $val in $values {
+      .offset-#{$side}-#{$val} {
+        padding-#{$side}: -#{$val}px;
+      }
+      .offset-#{$side}#{$val} {
+        padding-#{$side}: #{$val}px;
+      }
+    }
+  }
+}

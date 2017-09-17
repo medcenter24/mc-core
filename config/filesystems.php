@@ -63,6 +63,21 @@ return [
             'bucket' => env('AWS_BUCKET'),
         ],
 
+        \App\Services\CaseImporterService::DISC_IMPORTS => [
+            'driver' => 'local',
+            'root' => storage_path( \App\Services\CaseImporterService::DISC_IMPORTS),
+        ],
+
+        \App\Services\DocumentService::DISC_IMPORTS => [
+            'driver' => 'local',
+            'root' => storage_path(\App\Services\DocumentService::DISC_IMPORTS),
+        ],
+
+        'media' => [
+            'driver' => 'local',
+            'root' => public_path( 'media'),
+        ]
+
     ],
 
 ];

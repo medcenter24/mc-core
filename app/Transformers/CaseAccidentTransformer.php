@@ -41,7 +41,7 @@ class CaseAccidentTransformer extends TransformerAbstract
             'repeated' => $accident->parent_id,
             'ref_num' => $accident->ref_num,
             'case_type' => $accident->caseable_type,
-            'created_at' => $accident->created_at->format(config('date.actionFormat')),
+            'created_at' => $accident->created_at->format(config('date.systemFormat')), // formatting should be provided by the gui part ->format(config('date.actionFormat')),
             'checkpoints' => $accident->checkpoints->count(),
             'status' => $accident->accidentStatus->title,
             'city' => $accident->city_id ? $accident->city->title : '',

@@ -1,0 +1,13 @@
+/*!
+ * Copyright (c) 2017.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
+
+@import "variables";
+
+.container {
+  &.white {
+    background: $white;
+  }
+}

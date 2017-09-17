@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Event;
+use App\Events\AccidentStatusChangedEvent;
+use App\Events\DoctorAccidentUpdatedEvent;
+use App\Listeners\AccidentStatusHistoryListener;
+use App\Listeners\DoctorAccidentDoctorAssignmentListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -13,9 +16,12 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\SomeEvent' => [
-            'App\Listeners\EventListener',
+        AccidentStatusChangedEvent::class => [
+            AccidentStatusHistoryListener::class,
         ],
+        DoctorAccidentUpdatedEvent::class => [
+            DoctorAccidentDoctorAssignmentListener::class,
+        ]
     ];
 
     /**

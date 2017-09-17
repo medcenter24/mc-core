@@ -1,8 +1,9 @@
 {
     "name": "mydoctors24/backend-laravel",
-    "description": "Backend for the myDoctrors 24 project, based on Laravel framework",
+    "description": "Backend for the myDoctors 24 project, based on Laravel framework",
     "keywords": ["api", "mydoctors24"],
     "license": "GNU-2",
+    "minimum-stability": "dev",
     "type": "mydoctors24-extension",
     "extra": {
         "mydoctors24-extension-name": "myDoctors24"
@@ -23,7 +24,7 @@
         "spatie/laravel-medialibrary": "^5.0",
         "tymon/jwt-auth": "^0.5.11",
         "maatwebsite/excel": "~2.1.0",
-        "mydoctors24/lib-installer": "dev-master"
+        "mydoctors24/lib-installer": "~0.0.1"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.2",

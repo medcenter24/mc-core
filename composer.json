@@ -1,13 +1,12 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "mydoctors24/backend-laravel",
+    "description": "Backend for the myDoctrors 24 project, based on Laravel framework",
+    "keywords": ["api", "mydoctors24"],
     "license": "MIT",
     "type": "project",
     "require": {
         "php": ">=5.6.4",
         "barryvdh/laravel-cors": "^0.9.2",
-        "barryvdh/laravel-ide-helper": "^2.2",
         "dingo/api": "1.0.x@dev",
         "intervention/image": "^2.3",
         "laravel/framework": "5.4.*",
@@ -17,6 +16,7 @@
         "maatwebsite/excel": "~2.1.0"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.2",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~5.7"

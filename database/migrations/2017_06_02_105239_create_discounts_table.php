@@ -17,7 +17,7 @@ class CreateDiscountsTable extends Migration
             $table->increments('id');
             $table->string('title')->default('');
             $table->text('description')->default('');
-            $table->enum('operation', [\App\Services\DiscountService::ALLOWED_OPERATIONS])->default('-');
+            $table->enum('operation', \App\Services\DiscountService::ALLOWED_OPERATIONS);
             $table->timestamps();
             $table->softDeletes();
         });

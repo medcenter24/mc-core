@@ -123,7 +123,7 @@ $factory->define(\App\Patient::class, function (\Faker\Generator $faker) {
         'address' => $faker->address,
         'phones' => $faker->phoneNumber,
         'birthday' => $faker->date(),
-        'comment' => $faker->paragraphs(2, true),
+        'comment' => $faker->text(200),
     ];
 });
 

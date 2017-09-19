@@ -18,13 +18,14 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AccidentStatusesTableSeeder::class);
         $this->call(ScenariosTableSeeder::class);
+        $this->call(RolesTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
+        $this->call(AccidentTypesTableSeeder::class);
 
         if (env('APP_ENV') != 'production') {
             $this->call(CitiesTableSeeder::class);
             $this->call(DiagnosticsTableSeeder::class);
             $this->call(DocumentsTableSeeder::class);
-            $this->call(RolesTableSeeder::class);
-            $this->call(UsersTableSeeder::class);
             $this->call(DoctorsTableSeeder::class);
             $this->call(DoctorAccidentsTableSeeder::class);
             $this->call(AssistantTableSeeder::class);
@@ -33,7 +34,6 @@ class DatabaseSeeder extends Seeder
             $this->call(FormReportsTableSeeder::class);
             $this->call(PatientsTableSeeder::class);
             $this->call(DoctorServicesTableSeeder::class);
-            $this->call(AccidentTypesTableSeeder::class);
             $this->call(AccidentStatusHistoriesTableSeeder::class);
             $this->call(AccidentsTableSeeder::class);
             $this->call(HospitalsTableSeeder::class);

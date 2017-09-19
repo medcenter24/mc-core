@@ -55,15 +55,15 @@ class ScenariosTableSeeder extends Seeder
      * Run the database seeds.
      *
      * @return void
-     * @throws ErrorException
      */
     public function run()
     {
         if (env('APP_ENV') == 'production' && \App\Scenario::all()->count()) {
-            throw new ErrorException('Production database can not be truncated');
+            return;
         }
-
-        \App\Scenario::truncate();
+        if (env('APP_ENV') != 'production') {
+            \App\Scenario::truncate();
+        }
         foreach (self::DOCTOR_SCENARIO as $step) {
             factory(\App\Scenario::class)->create([
                 'accident_status_id' => \App\AccidentStatus::firstOrCreate([

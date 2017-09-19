@@ -17,11 +17,15 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        Role::truncate();
+        if (env('APP_ENV') == 'production' && \App\Role::all()->count()) {
+            return;
+        }
+        if (env('APP_ENV') == 'production') {
+            Role::truncate();
+        }
 
         foreach ([Role::ROLE_LOGIN, Role::ROLE_ADMIN, Role::ROLE_DOCTOR, Role::ROLE_DIRECTOR] as $roleName) {
-            $role = new Role(['title' => $roleName]);
-            $role->save();
+            Role::firstOrCreate(['title' => $roleName]);
         }
     }
 }

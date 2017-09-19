@@ -16,43 +16,47 @@ class UsersTableSeeder extends Seeder
      * Run the database seeds.
      *
      * @return void
+     * @throws ErrorException
      */
     public function run()
     {
-        User::truncate();
-        DB::table('role_user')->delete();
+        $loginRoleId = Role::firstOrCreate(['title' => Role::ROLE_LOGIN])->id;
+        $adminRoleId = Role::firstOrCreate(['title' => Role::ROLE_ADMIN])->id;
+        $doctorRoleId = Role::firstOrCreate(['title' => Role::ROLE_DOCTOR])->id;
+        $directorRoleId = Role::firstOrCreate(['title' => Role::ROLE_DIRECTOR])->id;
 
-        factory(User::class, 10)->create();
+        if (env('APP_ENV') == 'production' && \App\User::all()->count()) {
+            return;
+        } elseif (env('APP_ENV') != 'production') {
+            User::truncate();
+            DB::table('role_user')->delete();
+            factory(User::class, 10)->create();
 
-        $loginRoleId = Role::where('title', Role::ROLE_LOGIN)->first()->id;
-        $adminRoleId = Role::where('title', Role::ROLE_ADMIN)->first()->id;
-        $doctorRoleId = Role::where('title', Role::ROLE_DOCTOR)->first()->id;
-        $directorRoleId = Role::where('title', Role::ROLE_DIRECTOR)->first()->id;
+            $doctor = factory(\App\Doctor::class)->create([
+                'name' => 'Doctor Aibolit',
+                'user_id' => function() {
+                    return factory(User::class)->create([
+                        'email' => 'doctor@mail.com',
+                        'name' => 'Peter',
+                    ]);
+                }
+            ]);
+
+            $doctor->user->roles()->attach([$loginRoleId, $doctorRoleId]);
+
+            $director = factory(User::class)->create([
+                'email' => 'director@mail.com',
+                'name' => 'Samantha',
+            ]);
+
+            $director->roles()->attach([$loginRoleId, $directorRoleId]);
+        }
 
         $admin = factory(User::class)->create([
-            'email' => 'admin@mail.com',
-            'name' => 'Abigail',
+            'email' => 'zagovorichev@gmail.com',
+            'name' => 'Alexander Zagovorichev',
         ]);
 
         $admin->roles()->attach([$loginRoleId, $adminRoleId]);
-
-        $doctor = factory(\App\Doctor::class)->create([
-            'name' => 'Doctor Aibolit',
-            'user_id' => function() {
-                return factory(User::class)->create([
-                    'email' => 'doctor@mail.com',
-                    'name' => 'Peter',
-                ]);
-            }
-        ]);
-
-        $doctor->user->roles()->attach([$loginRoleId, $doctorRoleId]);
-
-        $director = factory(User::class)->create([
-            'email' => 'director@mail.com',
-            'name' => 'Samantha',
-        ]);
-
-        $director->roles()->attach([$loginRoleId, $directorRoleId]);
     }
 }

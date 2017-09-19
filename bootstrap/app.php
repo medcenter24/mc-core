@@ -16,7 +16,7 @@ $app = new Illuminate\Foundation\Application(
 );
 
 // if it is deployment then file will be above the laravel root
-if (!is_dir(__DIR__.'/../vendor/autoload.php')) {
+if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
     $app->useEnvironmentPath(realpath(__DIR__.'/../../config'));
     $app->loadEnvironmentFrom('.laravel.env');
 }

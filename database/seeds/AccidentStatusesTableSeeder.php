@@ -76,15 +76,15 @@ class AccidentStatusesTableSeeder extends Seeder
      * Run the database seeds.
      *
      * @return void
-     * @throws ErrorException
      */
     public function run()
     {
         if (env('APP_ENV') == 'production' && \App\AccidentStatus::all()->count()) {
-            throw new ErrorException('Production database can not be truncated');
+            return;
         }
-        // but on the dev it can be deleted
-        AccidentStatus::truncate();
+        if (env('APP_ENV') != 'production') {
+            AccidentStatus::truncate();
+        }
         foreach (self::ACCIDENT_STATUSES as $accidentStatus) {
             AccidentStatus::firstOrCreate($accidentStatus);
         }

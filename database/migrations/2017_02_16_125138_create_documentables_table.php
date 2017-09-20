@@ -22,8 +22,8 @@ class CreateDocumentablesTable extends Migration
             $table->integer('document_id',false,true);
             $table->morphs('documentable');
 
-            $table->primary(['document_id', 'documentable_type', 'documentable_id']);
-            $table->index(['documentable_type', 'documentable_id']);
+            $table->primary(['document_id', 'documentable_type', 'documentable_id'], 'ids_dox');
+            $table->index(['documentable_type', 'documentable_id'], 'ids_docs');
         });
     }
 

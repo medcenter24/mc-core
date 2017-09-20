@@ -16,7 +16,7 @@ class CreateDiscountsTable extends Migration
         Schema::create('discounts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->default('');
-            $table->text('description')->default('');
+            $table->text('description');
             $table->enum('operation', \App\Services\DiscountService::ALLOWED_OPERATIONS);
             $table->timestamps();
             $table->softDeletes();

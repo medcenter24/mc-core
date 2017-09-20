@@ -21,7 +21,7 @@ class CreateAccidentTypesTable extends Migration
         Schema::create('accident_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->default('')->unique();
-            $table->text('description')->default('');
+            $table->text('description');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -21,7 +21,7 @@ class CreateAccidentCheckpointsTable extends Migration
         Schema::create('accident_checkpoints', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->default('')->index();
-            $table->text('description')->default('');
+            $table->text('description');
             $table->timestamps();
             $table->softDeletes();
         });

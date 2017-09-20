@@ -22,7 +22,7 @@ class CreateDoctorSurveysTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('created_by')->default(0)->index();
             $table->string('title')->default('')->index();
-            $table->text('description')->default('');
+            $table->text('description');
             $table->timestamps();
             $table->softDeletes();
         });

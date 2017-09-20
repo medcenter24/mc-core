@@ -23,7 +23,7 @@ class CreateFormsTable extends Migration
             $table->string('title')->default('')->index();
             $table->string('description')->default('');
             $table->longText('template');
-            $table->text('variables')->default('');
+            $table->text('variables');
             $table->string('formable_type')->default('')->index();
             $table->timestamps();
             $table->softDeletes();

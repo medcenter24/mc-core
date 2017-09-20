@@ -21,12 +21,12 @@ class CreateHospitalsTable extends Migration
         Schema::create('hospitals', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->default('')->index();
-            $table->text('description')->default('');
             $table->string('ref_key')->default('');
             $table->string('address')->default('');
-            $table->text('phones')->default('');
             $table->timestamps();
             $table->softDeletes();
+            $table->text('phones');
+            $table->text('description');
         });
     }
 

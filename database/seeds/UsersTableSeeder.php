@@ -52,9 +52,10 @@ class UsersTableSeeder extends Seeder
             $director->roles()->attach([$loginRoleId, $directorRoleId]);
         }
 
-        $admin = factory(User::class)->create([
+        $admin = User::firstOrCreate([
             'email' => 'zagovorichev@gmail.com',
             'name' => 'Alexander Zagovorichev',
+            'password' => bcrypt('secret')
         ]);
 
         $admin->roles()->attach([$loginRoleId, $adminRoleId]);

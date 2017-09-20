@@ -41,10 +41,10 @@ class CreateAccidentsTable extends Migration
             $table->string('ref_num')->default('')->index();
             $table->string('title')->default('')->index();
             $table->string('address')->default('');
-            $table->text('contacts')->default('');
-            $table->text('symptoms');
             $table->timestamps();
             $table->softDeletes();
+            $table->text('contacts');
+            $table->text('symptoms');
         });
     }
 

@@ -21,8 +21,6 @@ class CreateDoctorSurveablesTable extends Migration
         Schema::create('doctor_surveables', function (Blueprint $table) {
             $table->unsignedInteger('doctor_survey_id')->index();
             $table->morphs('doctor_surveable', 'ids_doc_surveable');
-
-            $table->index('doctor_survey_id');
         });
     }
 

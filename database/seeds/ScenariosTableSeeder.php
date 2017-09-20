@@ -65,7 +65,7 @@ class ScenariosTableSeeder extends Seeder
             \App\Scenario::truncate();
         }
         foreach (self::DOCTOR_SCENARIO as $step) {
-            factory(\App\Scenario::class)->create([
+            \App\Scenario::findOrCreate([
                 'accident_status_id' => \App\AccidentStatus::firstOrCreate([
                     'title' => $step['title'],
                     'type' => $step['type'],

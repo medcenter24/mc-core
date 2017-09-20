@@ -26,7 +26,7 @@ class CreateUploadsTable extends Migration
     {
         Schema::create('uploads', function (Blueprint $table) {
             $table->increments('id');
-            $table->morphs('uploadable');
+            $table->morphs('uploadable', 'ids_uploadable');
             $table->string('file_name')->default('');
             $table->string('path')->default('');
             $table->string('storage')->default('')->index();

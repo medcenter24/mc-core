@@ -22,7 +22,7 @@ class CreateAccidentStatusHistoriesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id')->default(0)->index();
             $table->unsignedInteger('accident_status_id')->default(0)->index();
-            $table->morphs('historyable');
+            $table->morphs('historyable', 'ids_historyable');
             $table->text('commentary');
             $table->timestamps();
             $table->softDeletes();

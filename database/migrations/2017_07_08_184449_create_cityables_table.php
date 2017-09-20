@@ -19,8 +19,8 @@ class CreateCityablesTable extends Migration
     public function up()
     {
         Schema::create('cityables', function (Blueprint $table) {
-            $table->unsignedInteger('city_id');
-            $table->morphs('cityable');
+            $table->unsignedInteger('city_id')->index();
+            $table->morphs('cityable', 'ids_cityable');
         });
     }
 

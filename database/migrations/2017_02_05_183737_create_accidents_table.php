@@ -37,7 +37,7 @@ class CreateAccidentsTable extends Migration
             // if income is fixed it won't be changed automatically (only hand mode)
             $table->unsignedTinyInteger('fixed_income')->default(0);
             $table->string('assistant_ref_num')->default('')->index();
-            $table->morphs('caseable');
+            $table->morphs('caseable', 'ids_caseable');
             $table->string('ref_num')->default('')->index();
             $table->string('title')->default('')->index();
             $table->string('address')->default('');

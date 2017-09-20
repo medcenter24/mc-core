@@ -22,7 +22,7 @@ class CreateAccidentAccidentCheckpointTable extends Migration
             $table->integer('accident_id', false, true);
             $table->integer('accident_checkpoint_id', false, true);
 
-            $table->primary(['accident_id', 'accident_checkpoint_id'], 'ind_accident_accident_checkpoint');
+            $table->primary(['accident_id', 'accident_checkpoint_id'], 'ind_accident_checkpoint');
             $table->index('accident_checkpoint_id');
         });
     }

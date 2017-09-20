@@ -23,7 +23,7 @@ class CreateAssistantsTable extends Migration
             $table->string('title')->default('')->index();
             $table->string('ref_key')->default('');
             $table->string('email')->default('');
-            $table->text('comment')->default('');
+            $table->text('comment');
             $table->timestamps();
             $table->softDeletes();
         });

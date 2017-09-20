@@ -23,12 +23,12 @@ class CreateDoctorsTable extends Migration
             $table->unsignedInteger('user_id')->default(0)->index();
             $table->unsignedInteger('city_id')->default(0)->index();
             $table->string('name')->default('')->index();
-            $table->text('description')->default('');
             $table->string('ref_key')->default('')->index();
             $table->string('medical_board_num')->default('')->index();
             $table->enum('gender', ['male', 'female', 'none'])->default('none')->index();
             $table->timestamps();
             $table->softDeletes();
+            $table->text('description');
         });
     }
 

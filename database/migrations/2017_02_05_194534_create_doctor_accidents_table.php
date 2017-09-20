@@ -24,11 +24,11 @@ class CreateDoctorAccidentsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('doctor_id')->default(0)->index();
             $table->unsignedInteger('city_id')->default(0)->index();
-            $table->text('recommendation')->default('');
-            $table->text('investigation')->default('');
             $table->timestamp('visit_time')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->text('recommendation');
+            $table->text('investigation');
         });
     }
 

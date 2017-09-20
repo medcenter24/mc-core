@@ -20,7 +20,7 @@ class CreateDocumentablesTable extends Migration
     {
         Schema::create('documentables', function (Blueprint $table) {
             $table->integer('document_id',false,true);
-            $table->morphs('documentable');
+            $table->morphs('documentable', 'ids_documentable');
 
             $table->primary(['document_id', 'documentable_type', 'documentable_id'], 'ids_dox');
             $table->index(['documentable_type', 'documentable_id'], 'ids_docs');

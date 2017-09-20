@@ -20,7 +20,7 @@ class CreateCommentsTable extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->morphs('commentable');
+            $table->morphs('commentable', 'ids_commentable');
             $table->integer('created_by', false, true)->default(0)->index();
             $table->timestamps();
             $table->softDeletes();

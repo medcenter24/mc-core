@@ -20,7 +20,7 @@ class CreateDiagnosticableTable extends Migration
     {
         Schema::create('diagnosticables', function (Blueprint $table) {
             $table->unsignedInteger('diagnostic_id');
-            $table->morphs('diagnosticable');
+            $table->morphs('diagnosticable', 'ids_diagnosticable');
 
             $table->index('diagnostic_id');
         });

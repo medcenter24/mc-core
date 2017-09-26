@@ -21,11 +21,12 @@ class AccidentTypesTableSeeder extends Seeder
         if (env('APP_ENV') == 'production' && AccidentType::all()->count()) {
             return;
         }
-        if (env('APP_ENV') == 'production') {
+        if (env('APP_ENV') != 'production') {
             AccidentType::truncate();
         }
         foreach (AccidentTypeService::ALLOWED_TYPES as $allowedType) {
-            AccidentType::firstOrCreate(['title' => $allowedType]);
+            AccidentType::firstOrCreate(['title' => $allowedType, 'description' => '']);
+            AccidentType::firstOrCreate(['title' => $allowedType, 'description' => '']);
         }
     }
 }

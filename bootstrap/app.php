@@ -11,7 +11,7 @@
 |
 */
 
-$app = new Illuminate\Foundation\Application(
+$app = new \App\Foundation\Application(
     realpath(__DIR__.'/../')
 );
 
@@ -19,6 +19,9 @@ $app = new Illuminate\Foundation\Application(
 if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
     $app->useEnvironmentPath(realpath(__DIR__.'/../../config'));
     $app->loadEnvironmentFrom('.laravel.env');
+
+    // replace storage path if provided
+    $app->useStoragePath( realpath(__DIR__ . '/../../data/laravel') );
 }
 
 /*

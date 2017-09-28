@@ -47,7 +47,7 @@ class Form1ExportService
         foreach ($accidents->get() as $i => $accident) {
             $row = [];
             $row[trans('content.npp')] = $i+1;
-            $row[trans('content.patient_name')] = $accident->patient->name;
+            $row[trans('content.patient_name')] = $accident->patient ? $accident->patient->name : __('content.undefined');
             $row[trans('content.assistant')] = $accident->assistant ? $accident->assistant->title : __('content.undefined');
             $row[trans('content.assistant_ref_num')] = $accident->assistant_ref_num;
             $row[trans('content.ref_num')] = $accident->ref_num;
@@ -58,8 +58,9 @@ class Form1ExportService
 
             // Doctor case
             if ($accident->caseable instanceof DoctorAccident) {
-                $row[trans('content.doctor')] = $accident->caseable->doctor->name;
+                $row[trans('content.doctor')] = $accident->caseable->doctor ? $accident->caseable->doctor->name : trans('content.undefined');
             }
+
             $row[trans('content.doctor_fee')] = trans('content.not_implemented');
             $row[trans('content.final_doctor_fee')] = trans('content.not_implemented');
 

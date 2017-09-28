@@ -14,6 +14,7 @@ use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
+use Spatie\MediaLibrary\Media;
 
 /**
  * Document perform us files which could be used as a documents
@@ -30,7 +31,7 @@ class Document extends Model implements HasMedia, HasMediaConversions
     protected $fillable = ['title', 'created_by'];
     protected $visible = ['title', 'created_by'];
 
-    public function registerMediaConversions()
+    public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('thumb')
             ->sharpen(10)

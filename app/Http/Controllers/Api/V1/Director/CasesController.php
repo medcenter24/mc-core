@@ -36,6 +36,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class CasesController extends ApiController
 {
@@ -138,8 +139,12 @@ class CasesController extends ApiController
      */
     public function store(Request $request, ReferralNumberService $referralNumberService, AccidentStatusesService $statusesService)
     {
-        $accident = Accident::create($request->json('accident', []));
-        $doctorAccident = DoctorAccident::create($request->json('doctorAccident', []));
+        $accident = Accident::create(
+            array_merge(['contacts' => '', 'symptoms' => ''], $request->json('accident', []))
+        );
+        $doctorAccident = DoctorAccident::create(
+            array_merge(['recommendation' => '', 'investigation' => ''], $request->json('doctorAccident', []))
+        );
         $accident->caseable_id = $doctorAccident->id;
         $accident->caseable_type = DoctorAccident::class;
         $accident->created_by = $this->user()->id;
@@ -148,6 +153,9 @@ class CasesController extends ApiController
         $patientData = $request->json('patient', []);
         if (isset($patientData['id']) && !$patientData['id']) {
             unset($patientData['id']);
+        }
+        if (isset($patientData['birthday']) && empty($patientData['birthday'])) {
+            unset($patientData['birthday']);
         }
         $patient = Patient::firstOrCreate($patientData);
         $accident->patient_id = $patient->id;
@@ -210,7 +218,10 @@ class CasesController extends ApiController
         $doctorAccidentData = $request->json('doctorAccident', false);
         if ($doctorAccidentData) {
             if (!$accident->caseable) {
-                $doctorAccident = DoctorAccident::create($request->json('doctorAccident', []));
+                $doctorAccident = DoctorAccident::create(
+                    array_merge(['recommendation' => '', 'investigation' => ''],
+                        $request->json('doctorAccident', []))
+                );
                 $accident->caseable_id = $doctorAccident->id;
                 $accident->caseable_type = DoctorAccident::class;
                 $accident->save();
@@ -231,6 +242,10 @@ class CasesController extends ApiController
                 $patient = Patient::firstOrCreate($patientData);
                 $accident->patient_id = $patient->id;
             } else {
+                if (isset($patientData['birthday']) && empty($patientData['birthday'])) {
+                    DB::update('UPDATE patients SET birthday=NULL WHERE id='.$accident->patient->id);
+                    unset($patientData['birthday']);
+                }
                 $patient = $this->setData($accident->patient, $patientData);
                 $patient->save();
             }
@@ -268,6 +283,7 @@ class CasesController extends ApiController
                 }
             }
         }
+
         return $model;
     }
 

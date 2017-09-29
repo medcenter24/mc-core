@@ -9,11 +9,8 @@ namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Accident;
 use App\AccidentStatus;
-use App\AccidentStatusHistory;
 use App\Discount;
 use App\DoctorAccident;
-use App\Document;
-use App\Events\AccidentUpdated;
 use App\Events\DoctorAccidentUpdatedEvent;
 use App\Http\Controllers\ApiController;
 use App\Patient;
@@ -116,18 +113,18 @@ class CasesController extends ApiController
     public function createDocuments($id, Request $request, DocumentService $documentService)
     {
         $accident = Accident::findOrFail($id);
-        $documents = new Collection();
 
         foreach ($request->allFiles() as $files) {
             $document = $documentService->createDocumentsFromFiles($files, $this->user());
-            $documents->merge($document);
             if ($accident) {
-                $accident->documents()->attach($document);
-                $accident->patient->documents()->attach($document);
+                foreach ($document as $doc) {
+                    $accident->documents()->attach($doc);
+                    $accident->patient->documents()->attach($doc);
+                }
             }
         }
 
-        return $this->response->collection($documents, new DocumentTransformer());
+        return $this->response->collection($documentService->getDocuments($this->user(), $accident), new DocumentTransformer());
     }
 
     /**

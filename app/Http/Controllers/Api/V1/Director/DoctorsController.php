@@ -48,6 +48,7 @@ class DoctorsController extends ApiController
         $doctor->ref_key = $request->json('ref_key', '');
         $doctor->user_id = (int)$request->json('user_id', 0);
         $doctor->description = $request->json('description', '');
+        $doctor->medical_board_num = $request->json('medical_board_num', '');
         $doctor->save();
 
         \Log::info('Doctor updated', [$doctor]);

@@ -8,7 +8,6 @@
 namespace App\Transformers;
 
 
-use App\AccidentType;
 use App\Doctor;
 use League\Fractal\TransformerAbstract;
 
@@ -21,7 +20,8 @@ class DoctorTransformer extends TransformerAbstract
             'name' => $doctor->name,
             'description' => $doctor->description,
             'ref_key' => $doctor->ref_key,
-            'user_id' => $doctor->user_id
+            'user_id' => $doctor->user_id,
+            'medical_board_num' => $doctor->medical_board_num,
         ];
     }
 }

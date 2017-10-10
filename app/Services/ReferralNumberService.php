@@ -8,6 +8,7 @@
 namespace App\Services;
 
 use App\Accident;
+use App\DoctorAccident;
 use Carbon\Carbon;
 
 /**
@@ -42,13 +43,12 @@ class ReferralNumberService
         $refNum = $accident->ref_num;
         if (!$refNum) {
             $ref = $this->getAssistantKey($accident);
-            $ref .= $this->getNumberKey();
+            $ref .= $this->getNumberKey($accident);
             $ref .= self::SEPARATOR;
             $ref .= Carbon::now()->format('dmy');
             $ref .= self::SEPARATOR;
             $ref .= $this->getTimesOfDayCode(Carbon::now());
-            $ref .= $accident->caseable && $accident->caseable->ref_key
-                ? $accident->caseable->ref_key : 'NA';
+            $ref .= $this->getCaseableRefKey($accident->caseable);
 
             // skip duplicates
             $additionalPrefix = 0;
@@ -60,6 +60,18 @@ class ReferralNumberService
         return $refNum;
     }
 
+    private function getCaseableRefKey($caseable = null)
+    {
+        $ref = 'NA';
+        if ($caseable) {
+            if ($caseable instanceof DoctorAccident) {
+                $ref = $caseable->doctor ? $caseable->doctor->ref_key : 'NA';
+            } // hospital accident not implemented yet = elseif ($caseable instanceof )
+        }
+
+        return $ref;
+    }
+
     private function getAssistantKey(Accident $accident)
     {
         return $accident->assistant && $accident->assistant->id ?
@@ -67,10 +79,10 @@ class ReferralNumberService
             : 'NA';
     }
 
-    private function getNumberKey()
+    private function getNumberKey(Accident $accident)
     {
         $startDate = Carbon::now()->format('Y') . '-01-01 00:00:00';
-        $count = Accident::where('created_at', '>=', $startDate)->count();
+        $count = Accident::where('created_at', '>=', $startDate)->where('assistant_id', '=', $accident->assistant_id)->count();
         return sprintf('%04d', $count);
     }
 

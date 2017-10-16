@@ -13,11 +13,35 @@ use App\City;
 
 class AccidentService
 {
+    public function getCountByReferralNum ($ref = '')
+    {
+        return Accident::where('ref_num', $ref)->count();
+    }
+
+    /**
+     * @param $assistanceId
+     * @param $fromDate
+     */
+    public function getCountByAssistance($assistanceId, $fromDate)
+    {
+        return Accident::where('created_at', '>=', $fromDate)
+            ->where('assistant_id', '=', $assistanceId)
+            ->count();
+    }
+
+    /**
+     * @param array $filters
+     * @return mixed
+     */
     public function getCasesQuery(array $filters = [])
     {
         return Accident::orderBy('created_at', 'desc');
     }
 
+    /**
+     * @param Accident $accident
+     * @return City|mixed
+     */
     public function getCity(Accident $accident)
     {
         $city = new City();

@@ -20,9 +20,28 @@ class ReferralNumberService
 {
     const SEPARATOR = '-';
 
+    /**
+     * @var AccidentService
+     */
+    private $accidentService;
+
+    /**
+     * ReferralNumberService constructor.
+     * @param AccidentService $accidentService
+     */
+    public function __construct(AccidentService $accidentService)
+    {
+        $this->accidentService = $accidentService;
+    }
+
+    /**
+     * Check if referral number already exists
+     * @param string $ref
+     * @return bool
+     */
     public function exists($ref = '')
     {
-        return Accident::where('ref_num', $ref)->count() > 0;
+        return $this->accidentService->getCountByReferralNum($ref) > 0;
     }
 
     /**
@@ -82,7 +101,7 @@ class ReferralNumberService
     private function getNumberKey(Accident $accident)
     {
         $startDate = Carbon::now()->format('Y') . '-01-01 00:00:00';
-        $count = Accident::where('created_at', '>=', $startDate)->where('assistant_id', '=', $accident->assistant_id)->count();
+        $count = $this->accidentService->getCountByAssistance($accident->assistant_id, $startDate);
         return sprintf('%04d', $count);
     }
 

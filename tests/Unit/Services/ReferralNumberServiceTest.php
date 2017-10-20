@@ -27,9 +27,7 @@ class ReferralNumberServiceTest extends TestCase
         $accidentService->method('getCountByAssistance')
             ->willReturn(3);
 
-        $this->service = new ReferralNumberService(
-            $accidentService
-        );
+        $this->service = new ReferralNumberService($accidentService);
     }
 
     /**
@@ -47,9 +45,7 @@ class ReferralNumberServiceTest extends TestCase
             'accident_status_id' => 1,
             'assistant_id' => 1,
             'caseable_id' => 1,
-            'form_report_id' => 1, /* factory(FormReport::class)->make([
-                'form_id' => factory(Form::class)->make()
-            ])*/
+            'form_report_id' => 1,
             'city_id' => 1,
             'discount_id' => 1,
         ];

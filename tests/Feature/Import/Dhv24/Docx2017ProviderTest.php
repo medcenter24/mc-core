@@ -9,6 +9,7 @@ namespace Tests\Feature\Import\Dhv24;
 
 use App\Accident;
 use App\DoctorAccident;
+use App\Services\AccidentStatusesService;
 use App\Services\Import\Dhv24\Dhv24Docx2017Provider;
 use Tests\SamplePath;
 use Tests\TestCase;
@@ -55,7 +56,7 @@ class Docx2017ProviderTest extends TestCase
         self::assertEquals(1, $doctorAccident->id, 'Doctor Accident created and stored');
         self::assertEquals(0, $doctorAccident->doctor_id, 'Doctor is not provided');
         self::assertEquals(1, $doctorAccident->city_id, 'City exists');
-        self::assertEquals(DoctorAccident::STATUS_CLOSED, $doctorAccident->status, 'Status is closed');
+        self::assertEquals(AccidentStatusesService::STATUS_CLOSED, $accident->accidentStatus->title, 'Status is closed');
         self::assertNotEquals('FakeDiagnose', $doctorAccident->diagnose);
         self::assertNotEquals('FakeInvestigation', $doctorAccident->investigation);
 
@@ -94,7 +95,7 @@ class Docx2017ProviderTest extends TestCase
         self::assertEquals(1, $doctorAccident->id, 'Doctor Accident created and stored');
         self::assertEquals(1, $doctorAccident->doctor_id, 'Doctor is provided');
         self::assertEquals(1, $doctorAccident->city_id, 'City exists');
-        self::assertEquals(DoctorAccident::STATUS_CLOSED, $doctorAccident->status, 'Status is closed');
+        self::assertEquals(AccidentStatusesService::STATUS_CLOSED, $accident->accidentStatus->title, 'Status is closed');
         self::assertNotEquals('FakeDiagnose', $doctorAccident->diagnose);
         self::assertNotEquals('FakeInvestigation', $doctorAccident->investigation);
 
@@ -128,8 +129,8 @@ class Docx2017ProviderTest extends TestCase
         self::assertEquals(2, $accident->id, 'Accident is stored');
         self::assertEquals($parentAccident->id, $accident->parent_id, 'Parent is matched');
         self::assertEquals(2, $accident->patient_id, 'Patient has been loaded');
-        self::assertEquals(2, $accident->accident_type_id, 'Accident type selected');
-        self::assertEquals(3, $accident->accident_status_id, 'Accident status selected');
+        // self::assertEquals(1, $accident->accident_type_id, 'Accident type selected');
+        // self::assertEquals(2, $accident->accident_status_id, 'Accident status selected');
         self::assertEquals(2, $accident->assistant_id, 'Assistant has been loaded');
         self::assertNotEquals('FakeAssistantRef', $accident->assistant_ref_num, 'Assistant referral number has been parsed');
         self::assertEquals(2, $accident->caseable_id, 'Caseable type is selected');
@@ -147,12 +148,12 @@ class Docx2017ProviderTest extends TestCase
         self::assertEquals(1, $doctorAccident->doctor_id, 'Doctor is provided');
         self::assertEquals(2, $doctorAccident->city_id, 'City exists');
         self::assertEquals('2017-01-01 16:30:00', $doctorAccident->visit_time, 'City exists');
-        self::assertEquals(DoctorAccident::STATUS_CLOSED, $doctorAccident->status, 'Status is closed');
+        self::assertEquals(AccidentStatusesService::STATUS_CLOSED, $accident->accidentStatus->title, 'Status is closed');
         self::assertNotEquals('FakeDiagnose', $doctorAccident->diagnose);
         self::assertNotEquals('FakeInvestigation', $doctorAccident->investigation);
 
         /** Surveable */
-        self::assertEquals(1, $doctorAccident->surveable()->count(), 'Count of the surveable is matched');
+        self::assertEquals(1, $doctorAccident->surveys()->count(), 'Count of the surveable is matched');
 
         /** Diagnostics */
         self::assertEquals(2, $doctorAccident->diagnostics()->count(), 'Count of the diagnostics is matched');

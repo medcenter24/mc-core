@@ -19,6 +19,7 @@ use App\Services\AccidentStatusesService;
 use App\Services\DocumentService;
 use App\Services\ReferralNumberService;
 use App\Services\Scenario\DoctorScenarioService;
+use App\Services\Scenario\ScenarioService;
 use App\Services\Scenario\StoryService;
 use App\Services\ScenarioInterface;
 use App\Transformers\AccidentCheckpointTransformer;
@@ -288,15 +289,17 @@ class CasesController extends ApiController
      * Load scenario for the current accident
      * @param int $id
      * @param StoryService $storyService
+     * @param AccidentStatusesService $accidentStatusesService
+     * @param ScenarioService $scenariosService
      * @return \Dingo\Api\Http\Response
      */
-    public function story(int $id, StoryService $storyService)
+    public function story(int $id, StoryService $storyService, AccidentStatusesService $accidentStatusesService, ScenarioService $scenariosService)
     {
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
         $scenarioService = null;
         if ($accident->caseable_type == DoctorAccident::class) {
-            $scenarioService = new DoctorScenarioService();
+            $scenarioService = new DoctorScenarioService($accidentStatusesService, $scenariosService);
         }
 
         if ( !($scenarioService instanceof ScenarioInterface) ) {

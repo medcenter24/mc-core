@@ -8,7 +8,7 @@
 namespace Tests\Unit\TextParser;
 
 
-use App\Services\Parser\DomHelpers;
+use App\Services\Parser\Helpers\DomTrait;
 
 /**
  *
@@ -17,6 +17,8 @@ use App\Services\Parser\DomHelpers;
  */
 class DomHelpersTest extends TextParser
 {
+    use DomTrait;
+
     public function testParseSimpleBody()
     {
         self::assertEquals([
@@ -108,7 +110,7 @@ class DomHelpersTest extends TextParser
                     ]
                 ]
             ]
-        ], DomHelpers::domToArray($this->getDom(), false, true));
+        ], $this->domToArray($this->getDom(), false, true));
 
     }
 }

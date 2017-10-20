@@ -8,17 +8,20 @@
 namespace App\Services\Parser;
 
 
+use App\Services\Parser\Helpers\DomTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use tests\Unit\TextParser\TextParserException;
 
 class SmartTextParser
 {
 
-    use
+    use DomTrait;
+
     /**
      * Data type table
      */
     const TABLES = 'tables';
+
     /**
      * Data type all other
      */
@@ -57,7 +60,7 @@ class SmartTextParser
 
     private function parse(\DOMNode $node)
     {
-        $array = DomHelper::domToArray($node, false, true);
+        $array = $this->domToArray($node, false, true);
         $result = $this->extractTables($array);
         return $result;
     }

@@ -29,26 +29,3 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
     Route::resource('users', 'Admin\UsersController');
     Route::resource('roles', 'Admin\RolesController');
 });
-
-Route::group(['prefix' => 'doctor', 'middleware' => ['cors', 'auth', 'role:doctor']], function () {
-    Route::get('/accidents', 'Doctor\AccidentsController@index');
-    Route::get('/accidents/{id}', 'Doctor\AccidentsController@show');
-    Route::patch('/accidents/{id}', 'Doctor\AccidentsController@update');
-});
-
-Route::group(['prefix' => 'director', 'middleware' => ['auth', 'role:director']], function () {
-    Route::resource('/statuses', 'Director\StatusesController');
-    Route::resource('/checkpoints', 'Director\CheckpointsController');
-    Route::resource('/types', 'Director\TypesController');
-    Route::resource('/cities', 'Director\CitiesController');
-    Route::resource('/doctors', 'Director\DoctorsController');
-    Route::resource('/diagnostics', 'Director\DiagnosticsController');
-    Route::resource('/diagnostic/categories', 'Director\Diagnostic\CategoriesController');
-    Route::resource('/patients', 'Director\PatientsController');
-    Route::resource('/services', 'Director\ServicesController');
-    Route::resource('/assistants', 'Director\AssistantsController');
-    Route::resource('/forms', 'Director\FormsController');
-    Route::resource('/reports', 'Director\ReportsController');
-    Route::resource('/documents', 'Director\DocumentsController');
-    Route::resource('/accidents', 'Director\AccidentsController');
-});

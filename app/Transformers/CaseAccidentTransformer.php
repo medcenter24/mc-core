@@ -9,7 +9,9 @@ namespace App\Transformers;
 
 
 use App\Accident;
+use App\Services\AccidentStatusesService;
 use App\Services\Scenario\DoctorScenarioService;
+use App\Services\Scenario\ScenarioService;
 use App\Services\Scenario\StoryService;
 use League\Fractal\TransformerAbstract;
 
@@ -26,7 +28,7 @@ class CaseAccidentTransformer extends TransformerAbstract
     public function __construct()
     {
         $this->storyService = new StoryService();
-        $this->scenarioService = new DoctorScenarioService();
+        $this->scenarioService = new DoctorScenarioService(new AccidentStatusesService(), new ScenarioService());
     }
 
     /**

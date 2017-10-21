@@ -57,6 +57,6 @@ class ReferralNumberServiceTest extends TestCase
                 'city_id' => 1,
             ],
         ];
-        self::assertEquals('T0003-' . Carbon::now()->format('dmy') . '-DDOC', $this->service->generate(AccidentFake::make($params, $additionalParams)));
+        self::assertEquals('T0003-' . Carbon::now()->format('dmy') . '-' . $this->service->getTimesOfDayCode(Carbon::now()) . 'DOC', $this->service->generate(AccidentFake::make($params, $additionalParams)));
     }
 }

@@ -187,9 +187,10 @@ class CasesController extends ApiController
         $status = $accident->accidentStatus;
 
         if (
-            $status->title == AccidentStatusesService::STATUS_CLOSED
+            $status
+            && $status->title == AccidentStatusesService::STATUS_CLOSED
             && $status->type == AccidentStatusesService::TYPE_ACCIDENT) {
-            $this->response->errorForbidden('Already closed');
+                $this->response->errorForbidden('Already closed');
         }
 
         $requestedAccident = $request->json('accident', false);
@@ -237,6 +238,10 @@ class CasesController extends ApiController
         $patientData = $request->json('patient', false);
         if ($patientData) {
             if (!$accident->patient) {
+                if (isset($patientData['birthday']) && empty($patientData['birthday'])) {
+                    unset($patientData['birthday']);
+                }
+
                 $patient = Patient::firstOrCreate($patientData);
                 $accident->patient_id = $patient->id;
             } else {

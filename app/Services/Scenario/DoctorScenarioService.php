@@ -100,7 +100,9 @@ class DoctorScenarioService implements ScenarioInterface
             }
         } elseif ($step instanceof AccidentStatus) {
             foreach ($this->scenario() as $key => $value) {
-                if ($value['title'] == $step->title && $value['type'] == $step->type) {
+                // collection used by models
+                $status = $value->accidentStatus;
+                if ($status->title == $step->title && $status->type == $step->type) {
                     $step = $key;
                     break;
                 }

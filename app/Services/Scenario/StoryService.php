@@ -43,7 +43,7 @@ class StoryService implements ScenarioInterface
     /**
      * @var int
      */
-    private $currentStepId;
+    private $currentStepId = 0;
 
     /**
      * Initialize story

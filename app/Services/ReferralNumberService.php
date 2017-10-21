@@ -105,7 +105,7 @@ class ReferralNumberService
         return sprintf('%04d', $count);
     }
 
-    private function getTimesOfDayCode(Carbon $date)
+    public function getTimesOfDayCode(Carbon $date)
     {
         $mark = 'N'; // night
         if (in_array($date->dayOfWeek, [0,6])) {

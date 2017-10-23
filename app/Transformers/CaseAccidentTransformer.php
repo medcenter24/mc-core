@@ -50,6 +50,8 @@ class CaseAccidentTransformer extends TransformerAbstract
             'status' => $accident->accidentStatus ? $accident->accidentStatus->title : '',
             'city' => $accident->city_id ? $accident->city->title : '',
             'symptoms' => $accident->symptoms,
+            'price' => $accident->income,
+            'fee' => $accident->caseable_cost,
         ];
     }
 }

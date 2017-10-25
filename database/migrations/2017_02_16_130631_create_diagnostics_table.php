@@ -20,6 +20,7 @@ class CreateDiagnosticsTable extends Migration
     {
         Schema::create('diagnostics', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('created_by')->default(0)->index();
             $table->unsignedInteger('diagnostic_category_id')->default(0)->index();
             $table->string('title')->default('')->index();
             $table->string('disease_code')->default('')->index();

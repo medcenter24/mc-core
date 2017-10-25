@@ -205,7 +205,9 @@ class AccidentsController extends ApiController
 
         /** @var \Illuminate\Support\Collection $services */
         $services = $accident->caseable->services->each(function (DoctorService $service) {
-            $service->markAsDoctor();
+            if ($service->created_by == $this->user()->id) {
+                $service->markAsDoctor();
+            }
         });
         $services = $services->merge($accident->services)->reverse();
 
@@ -222,11 +224,11 @@ class AccidentsController extends ApiController
 
         $doctorAccident = $accident->caseable;
 
-        $serviceId = $request->get('id', 0);
+        $serviceId = (int)$request->get('id', 0);
         if ($serviceId) {
             $service = DoctorService::find($serviceId);
             if (!$service) {
-                \Log::error('Diagnostic not found');
+                \Log::error('Service not found');
                 $this->response->errorNotFound();
             }
 
@@ -241,11 +243,13 @@ class AccidentsController extends ApiController
 
             $service->title = $request->get('title', $service->title);
             $service->description = $request->get('decription', $service->description);
+            $service->created_by = $this->user()->id;
             $service->save();
         } else {
             $service = DoctorService::create([
                 'title' => $request->get('title', ''),
-                'description' => $request->get('description', '')
+                'description' => $request->get('description', ''),
+                'created_by' => $this->user()->id,
             ]);
             $doctorAccident->services()->attach($service);
             $service->markAsDoctor();
@@ -274,7 +278,9 @@ class AccidentsController extends ApiController
 
         /** @var \Illuminate\Support\Collection $diagnostics */
         $diagnostics = $accident->caseable->diagnostics->each(function (Diagnostic $diagnostic) {
-            $diagnostic->markAsDoctor();
+            if ($diagnostic->created_by == $this->user()->id) {
+                $diagnostic->markAsDoctor();
+            }
         });
         $diagnostics = $diagnostics->merge($accident->diagnostics)->reverse();
 
@@ -310,11 +316,13 @@ class AccidentsController extends ApiController
 
             $diagnostic->title = $request->get('title', $diagnostic->title);
             $diagnostic->description = $request->get('decription', $diagnostic->description);
+            $diagnostic->created_by = $this->user()->id;
             $diagnostic->save();
         } else {
             $diagnostic = Diagnostic::create([
                 'title' => $request->get('title', ''),
-                'description' => $request->get('description', '')
+                'description' => $request->get('description', ''),
+                'created_by' => $this->user()->id,
             ]);
             $doctorAccident->diagnostics()->attach($diagnostic);
             $diagnostic->markAsDoctor();
@@ -333,7 +341,9 @@ class AccidentsController extends ApiController
 
         /** @var Collection $surveys */
         $surveys = $accident->caseable->surveys->each(function (DoctorSurvey $survey) {
-            $survey->markAsDoctor();
+            if ($survey->created_by == $this->user()->id) {
+                $survey->markAsDoctor();
+            }
         });
         $surveys = $surveys->merge($accident->surveys)->reverse();
 
@@ -350,11 +360,11 @@ class AccidentsController extends ApiController
 
         $doctorAccident = $accident->caseable;
 
-        $surveyId = $request->get('id', 0);
+        $surveyId = (int)$request->get('id', 0);
         if ($surveyId) {
             $survey = Diagnostic::find($surveyId);
             if (!$survey) {
-                \Log::error('Diagnostic not found');
+                \Log::error('Survey not found');
                 $this->response->errorNotFound();
             }
 
@@ -368,6 +378,7 @@ class AccidentsController extends ApiController
 
             $survey->title = $request->get('title', $survey->title);
             $survey->description = $request->get('decription', $survey->description);
+            $survey->created_by = $this->user()->id;
             $survey->save();
         } else {
             $survey = DoctorSurvey::create([

@@ -23,6 +23,6 @@ class DoctorService extends Model
     use SoftDeletes;
     use DoctorTrait;
 
-    protected $fillable = ['title', 'description', 'price'];
-    protected $visible = ['title', 'description', 'price'];
+    protected $fillable = ['title', 'description', 'price', 'created_by'];
+    protected $visible = ['title', 'description', 'price', 'created_by'];
 }

@@ -31,6 +31,7 @@ class DiagnosticsController extends ApiController
         $diagnostic->disease_code = $request->json('disease_code', '');
         $diagnostic->description = $request->json('description', '');
         $diagnostic->diagnostic_category_id = $request->json('diagnostic_category_id', 0);
+        $diagnostic->created_by = $this->user()->id;
         $diagnostic->save();
 
         $transformer = new DiagnosticTransformer();
@@ -44,6 +45,7 @@ class DiagnosticsController extends ApiController
             'disease_code' => $request->json('disease_code', ''),
             'description' => $request->json('description', ''),
             'category_id' => $request->json('diagnostic_category_id', 0),
+            'created_by' => $this->user()->id,
         ]);
         $transformer = new DiagnosticTransformer();
         return $this->response->created(null, $transformer->transform($diagnostic));

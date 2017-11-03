@@ -12,6 +12,7 @@ use App\AccidentStatus;
 use App\DoctorAccident;
 use App\Exceptions\InconsistentDataException;
 use App\Scenario;
+use App\Services\AccidentStatusesService;
 use App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;
 
@@ -28,6 +29,22 @@ class DoctorScenarioService implements ScenarioInterface
      */
     private $scenario;
 
+    /**
+     * @var AccidentStatusesService
+     */
+    private $accidentStatusesService;
+
+    /**
+     * @var ScenarioService
+     */
+    private $scenarioService;
+
+    public function __construct(AccidentStatusesService $accidentStatusesService, ScenarioService $scenarioService)
+    {
+        $this->accidentStatusesService = $accidentStatusesService;
+        $this->scenarioService = $scenarioService;
+    }
+
     public function setScenario(Collection $scenario)
     {
         $this->scenario = $scenario;
@@ -36,7 +53,7 @@ class DoctorScenarioService implements ScenarioInterface
     public function scenario()
     {
         if (!$this->scenario) {
-            $this->scenario = Scenario::where('tag', DoctorAccident::class)->orderBy('order')->get();
+            $this->scenario = $this->scenarioService->getScenarioByTag(DoctorAccident::class);
         }
 
         return $this->scenario;
@@ -73,12 +90,9 @@ class DoctorScenarioService implements ScenarioInterface
                 throw new InconsistentDataException('Invalid data for the step selection. Step was not found.');
             }
 
-            $accidentStatus = AccidentStatus::firstOrCreate([
-                'title' => $step['title'],
-                'type' => $step['type'],
-            ]);
-
+            $accidentStatus = $this->accidentStatusesService->firstOrFail($step);
             $step = $this->findStepId($accidentStatus);
+
         } elseif (is_integer($step)) {
             if (!$this->scenario()->has($step)) {
                 \Log::error('Step not found', ['step' => $step, 'scenario' => $this->scenario()]);
@@ -86,7 +100,9 @@ class DoctorScenarioService implements ScenarioInterface
             }
         } elseif ($step instanceof AccidentStatus) {
             foreach ($this->scenario() as $key => $value) {
-                if ($value->accident_status_id == $step->id) {
+                // collection used by models
+                $status = $value->accidentStatus;
+                if ($status->title == $step->title && $status->type == $step->type) {
                     $step = $key;
                     break;
                 }
@@ -94,7 +110,7 @@ class DoctorScenarioService implements ScenarioInterface
         }
 
         if (!is_integer($step)) {
-            \Log::error('Step could not be found', ['step' => $step, 'scenario' => $this->scenario()]);
+            \Log::error('Step can not be found', ['step' => $step, 'scenario' => $this->scenario()]);
             throw new InconsistentDataException('Invalid data for the step selection. Step is not defined.');
         }
 

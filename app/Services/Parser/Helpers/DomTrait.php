@@ -10,7 +10,7 @@ namespace App\Services\Parser\Helpers;
 
 trait DomTrait
 {
-    public function domToArray(\DOMNode $root)
+    public function domToArray(\DOMNode $root, $withAttributes = true, $stripText = false)
     {
         $result = [];
 

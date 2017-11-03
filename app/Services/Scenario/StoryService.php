@@ -43,7 +43,7 @@ class StoryService implements ScenarioInterface
     /**
      * @var int
      */
-    private $currentStepId;
+    private $currentStepId = 0;
 
     /**
      * Initialize story
@@ -57,7 +57,9 @@ class StoryService implements ScenarioInterface
         $this->scenario = $scenario;
 
         // last from the history will be current for the scenario
-        $this->setCurrentStepId($this->history->last()->accidentStatus);
+        if ($this->history->count()) {
+            $this->setCurrentStepId($this->history->last()->accidentStatus);
+        }
         return $this;
     }
 

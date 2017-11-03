@@ -30,6 +30,7 @@ class DoctorServicesController extends ApiController
         $doctorService->title= $request->json('title', '');
         $doctorService->description = $request->json('description', '');
         $doctorService->price = $request->json('price', 0);
+        $doctorService->created_by = $this->user()->id;
         $doctorService->save();
 
         $transformer = new DoctorServiceTransformer();
@@ -42,6 +43,7 @@ class DoctorServicesController extends ApiController
             'title' => $request->json('title', ''),
             'description' => $request->json('description', ''),
             'price' => $request->json('price', 0),
+            'created_by' => $this->user()->id,
         ]);
         $transformer = new DoctorServiceTransformer();
         return $this->response->created(null, $transformer->transform($doctorService));

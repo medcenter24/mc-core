@@ -11,6 +11,7 @@ namespace App\Services;
 use App\Accident;
 use App\AccidentStatus;
 use App\Events\AccidentStatusChangedEvent;
+use App\Exceptions\InconsistentDataException;
 
 class AccidentStatusesService
 {
@@ -26,6 +27,12 @@ class AccidentStatusesService
     const STATUS_REJECT = 'reject';
     const STATUS_CLOSED = 'closed';
 
+    /**
+     * Set new status to accident
+     * @param Accident $accident
+     * @param AccidentStatus $status
+     * @param string $comment
+     */
     public function set(Accident $accident, AccidentStatus $status, $comment = '')
     {
         $accident->accident_status_id = $status->id;
@@ -34,5 +41,19 @@ class AccidentStatusesService
 
         \Log::debug('Set new status to accident', ['status_id' => $status->id, 'accident_id' => $accident->id]);
         event(new AccidentStatusChangedEvent($accident, $comment));
+    }
+
+    /**
+     * @param array $params
+     * @throws InconsistentDataException
+     * @return AccidentStatus
+     */
+    public function firstOrFail(array $params = [])
+    {
+        if (!count($params)) {
+            throw new InconsistentDataException('Parameters should been provided');
+        }
+
+        return AccidentStatus::firstOrFail($params);
     }
 }

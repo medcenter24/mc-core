@@ -335,7 +335,11 @@ class Dhv24Docx2017Provider extends DataProvider
             ->where('type', AccidentStatusesService::TYPE_ACCIDENT)->first();
         $this->doctorAccident = BlankModels::doctorAccident();
 
-        $accidentType = AccidentType::firstOrCreate(['title' => AccidentTypeService::ALLOWED_TYPES[0]]);
+        // TODO Here should'nt be used direct model call I need to implement service providers!!!
+        $accidentType = AccidentType::where('title', AccidentTypeService::ALLOWED_TYPES[0])->first();
+        if (!$accidentType) {
+            $accidentType = AccidentType::firstOrCreate(['title' => AccidentTypeService::ALLOWED_TYPES[0], 'description' => '']);
+        }
         $this->accident->accident_type_id = $accidentType->id;
         $accidentStatus = AccidentStatus::firstOrCreate([
             'title' => AccidentStatusesService::STATUS_CLOSED,
@@ -423,7 +427,8 @@ class Dhv24Docx2017Provider extends DataProvider
             $doctor = Doctor::firstOrCreate([
                 'name' => $name,
                 'gender' => $gender == 'Dra' ? 'female' : ($gender == 'Dr' ? 'male' : 'none'),
-                'medical_board_num' => $medical_board_num
+                'medical_board_num' => $medical_board_num,
+                'description' => '',
             ]);
 
             $this->doctorAccident->doctor_id = $doctor->id;
@@ -448,6 +453,7 @@ class Dhv24Docx2017Provider extends DataProvider
             $mService = DoctorService::firstOrCreate([
                 'title' => $service[0],
                 'price' => $price,
+                'description' => '',
             ]);
 
             $this->doctorAccident->services()->attach($mService);
@@ -489,6 +495,7 @@ class Dhv24Docx2017Provider extends DataProvider
                 $diagnose = Diagnostic::firstOrCreate([
                     'title' => trim(mb_substr($diagnoseStr, 0, $commaPos)),
                     'disease_code' => str_replace(' ', '', mb_substr($diagnoseStr, $commaPos+1)),
+                    'description' => '',
                 ]);
 
                 $this->doctorAccident->diagnostics()->attach($diagnose);
@@ -632,7 +639,8 @@ class Dhv24Docx2017Provider extends DataProvider
             }
 
             \Storage::disk('imports')->put($fileName, $file['imageContent']);
-            $document->addMedia(storage_path('imports'.DIRECTORY_SEPARATOR.$fileName))
+            $document
+                ->addMedia(storage_path('imports'.DIRECTORY_SEPARATOR.$fileName))
                 ->toMediaCollection(DocumentService::CASES_FOLDERS, DocumentService::DISC_IMPORTS);
             \Storage::disk('imports')->delete($fileName);
 

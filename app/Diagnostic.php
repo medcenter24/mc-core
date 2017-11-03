@@ -23,7 +23,7 @@ class Diagnostic extends Model
     use SoftDeletes;
     use DoctorTrait;
 
-    protected $fillable = ['title', 'description', 'diagnostic_category_id', 'disease_code'];
+    protected $fillable = ['title', 'description', 'diagnostic_category_id', 'disease_code', 'created_by'];
     protected $visible = ['title', 'description', 'diagnostic_category_id', 'disease_code'];
 
     public function category()

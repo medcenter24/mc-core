@@ -41,6 +41,7 @@ class CreateAccidentsTable extends Migration
             $table->string('ref_num')->default('')->index();
             $table->string('title')->default('')->index();
             $table->string('address')->default('');
+            $table->timestamp('handling_time')->nullable()->index();
             $table->timestamps();
             $table->softDeletes();
             $table->text('contacts');

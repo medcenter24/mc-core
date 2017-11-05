@@ -18,7 +18,8 @@ class Accident extends AccidentAbstract
     protected $dates = [
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'handling_time',
     ];
 
     protected $fillable = [
@@ -42,6 +43,7 @@ class Accident extends AccidentAbstract
         'discount_value',
         'fixed_income',
         'income',
+        'handling_time',
     ];
 
     protected $visible = [
@@ -61,6 +63,7 @@ class Accident extends AccidentAbstract
         'caseable_cost',
         'fixed_income',
         'income',
+        'handling_time',
     ];
 
     /**

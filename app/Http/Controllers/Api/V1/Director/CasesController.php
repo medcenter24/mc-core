@@ -138,7 +138,7 @@ class CasesController extends ApiController
     public function store(Request $request, ReferralNumberService $referralNumberService, AccidentStatusesService $statusesService)
     {
         $accident = Accident::create(
-            array_merge(['contacts' => '', 'symptoms' => ''], $request->json('accident', []))
+            array_merge(['contacts' => '', 'symptoms' => '', 'handling_time' => time()], $request->json('accident', []))
         );
         $doctorAccident = DoctorAccident::create(
             array_merge(['recommendation' => '', 'investigation' => ''], $request->json('doctorAccident', []))
@@ -200,7 +200,15 @@ class CasesController extends ApiController
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
             ]);
-            $this->response->errorBadRequest(trans('Accident data should be provided in the request data'));
+            $this->response->errorBadRequest('Accident data should be provided in the request data');
+        }
+
+        if (!$requestedAccident['id']) {
+            \Log::error('Undefined handling time', [
+                'accidentId' => $id,
+                'requestedAccident' => $requestedAccident
+            ]);
+            $this->response->errorBadRequest('Handling time should be provided');
         }
 
         if ($accident->id != $requestedAccident['id']) {
@@ -208,7 +216,7 @@ class CasesController extends ApiController
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
             ]);
-            $this->response->errorBadRequest(trans('Requested accident did not match to updated one'));
+            $this->response->errorBadRequest('Requested accident did not match to updated one');
         }
 
         $accident = $this->setData($accident, $requestedAccident);

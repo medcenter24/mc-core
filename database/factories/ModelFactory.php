@@ -220,6 +220,7 @@ $factory->define(\App\Accident::class, function (\Faker\Generator $faker) {
                 : factory(\App\Discount::class)->create()->id;
         },
         'discount_value' => $faker->numberBetween(0, 100),
+        'handling_time' => $faker->dateTime(),
     ];
 });
 

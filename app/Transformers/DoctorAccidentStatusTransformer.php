@@ -17,7 +17,7 @@ class DoctorAccidentStatusTransformer extends TransformerAbstract
     {
         return [
             'id' => $doctorAccident->id,
-            'status' => $doctorAccident->status
+            'status' => $doctorAccident->accident->parent_id ? 'old' : 'new'
         ];
     }
 }

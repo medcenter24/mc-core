@@ -25,4 +25,9 @@ class DoctorService extends Model
 
     protected $fillable = ['title', 'description', 'price', 'created_by'];
     protected $visible = ['title', 'description', 'price', 'created_by'];
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

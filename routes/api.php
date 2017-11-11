@@ -12,10 +12,10 @@ $api->version('v1', function($api) {
     $api->post('authenticate', \App\Http\Controllers\Api\V1\AuthenticateController::class . '@authenticate');
 });
 
-$api->version('v1', ['middleware' => ['api.auth']], function ($api) {
+$api->version('v1', ['middleware' => ['api']], function ($api) {
 
     $api->post('logout', '\App\Http\Controllers\Api\V1\AuthenticateController@logout');
-    $api->get('token', '\App\Http\Controllers\Api\V1\AuthenticateController@getToken');
+    $api->get('token', \App\Http\Controllers\Api\V1\AuthenticateController::class . '@getToken');
     $api->get('user', \App\Http\Controllers\Api\V1\AuthenticateController::class . '@authenticatedUser');
 
     $api->group(['prefix' => 'doctor', 'middleware' => ['cors', 'role:doctor']], function ($api) {

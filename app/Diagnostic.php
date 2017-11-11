@@ -35,4 +35,9 @@ class Diagnostic extends Model
     {
         return $this->morphedByMany(DoctorAccident::class, 'diagnosticable');
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

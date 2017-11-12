@@ -181,6 +181,11 @@ class AccidentsController extends ApiController
         return $this->response->item($patient, new PatientTransformer());
     }
 
+    /**
+     * Get case status (new/old)
+     * @param $id
+     * @return \Dingo\Api\Http\Response
+     */
     public function status($id)
     {
         $accident = Accident::find($id);

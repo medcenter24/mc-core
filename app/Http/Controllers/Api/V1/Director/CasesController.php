@@ -9,8 +9,10 @@ namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Accident;
 use App\AccidentStatus;
+use App\Diagnostic;
 use App\Discount;
 use App\DoctorAccident;
+use App\DoctorService;
 use App\Events\DoctorAccidentUpdatedEvent;
 use App\Http\Controllers\ApiController;
 use App\Patient;
@@ -18,6 +20,7 @@ use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
 use App\Services\DocumentService;
 use App\Services\ReferralNumberService;
+use App\Services\RoleService;
 use App\Services\Scenario\DoctorScenarioService;
 use App\Services\Scenario\ScenarioService;
 use App\Services\Scenario\StoryService;
@@ -33,7 +36,6 @@ use App\Transformers\ScenarioTransformer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class CasesController extends ApiController
@@ -79,23 +81,33 @@ class CasesController extends ApiController
         $this->response->errorMethodNotAllowed('Not implemented, yet');
     }
 
-    public function getDiagnostics($id)
+    public function getDiagnostics($id, RoleService $roleService)
     {
         $accident = Accident::findOrFail($id);
         $accidentDiagnostics = $accident->diagnostics;
         if ($accident->caseable) {
             $accidentDiagnostics = $accidentDiagnostics->merge($accident->caseable->diagnostics);
         }
+        $accidentDiagnostics->each(function (Diagnostic $diagnostic) use ($roleService) {
+            if ($diagnostic->created_by && $roleService->hasRole($diagnostic->creator, 'doctor')) {
+                $diagnostic->markAsDoctor();
+            }
+        });
         return $this->response->collection($accidentDiagnostics, new DiagnosticTransformer());
     }
 
-    public function getServices($id)
+    public function getServices($id, RoleService $roleService)
     {
         $accident = Accident::findOrFail($id);
         $accidentServices = $accident->services;
         if ($accident->caseable) {
             $accidentServices = $accidentServices->merge($accident->caseable->services);
         }
+        $accidentServices->each(function (DoctorService $doctorService) use ($roleService) {
+            if ($doctorService->created_by && $roleService->hasRole($doctorService->creator, 'doctor')) {
+                $doctorService->markAsDoctor();
+            }
+        });
         return $this->response->collection($accidentServices, new DoctorServiceTransformer());
     }
 
@@ -270,11 +282,33 @@ class CasesController extends ApiController
             $accident->save();
         }
 
+        // Services ==========================
+        $services = $request->json('services', []);
+        $docServices = [];
+        foreach ($accident->caseable->services() as $service) {
+            if ( in_array($service->id, $services) ) {
+                $docServices[] = $services->id;
+            }
+        }
+        $accidentServices = array_diff($services, $docServices);
+        $accident->caseable->services()->detach();
+        $accident->caseable->services()->attach($docServices);
         $accident->services()->detach();
-        $accident->services()->attach($request->json('services', []));
+        $accident->services()->attach($accidentServices);
 
+        // Diagnostics ======================
+        $diagnostics = $request->json('diagnostics', []);
+        $docDiagnostics = [];
+        foreach ($accident->caseable->diagnostics() as $diagnostic) {
+            if ( in_array($diagnostic->id, $diagnostics) ) {
+                $docDiagnostics[] = $diagnostic->id;
+            }
+        }
+        $accidentDiagnostics = array_diff($diagnostics, $docDiagnostics);
+        $accident->caseable->diagnostics()->detach();
+        $accident->caseable->diagnostics()->attach($docDiagnostics);
         $accident->diagnostics()->detach();
-        $accident->diagnostics()->attach($request->json('diagnostics', []));
+        $accident->diagnostics()->attach($accidentDiagnostics);
 
         $accident->documents()->detach();
         $accident->documents()->attach($request->json('documents', []));

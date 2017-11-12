@@ -10,10 +10,9 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\ApiController;
 use App\Transformers\UserTransformer;
-use JWTAuth;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Exceptions\JWTException;
-
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 
 class AuthenticateController extends ApiController
 {
@@ -27,58 +26,32 @@ class AuthenticateController extends ApiController
     public function authenticate(Request $request)
     {
         // grab credentials from the request
-        $credentials = json_decode($request->getContent(), true);
-        try {
+        $credentials = collect(json_decode($request->getContent(), true));
             // attempt to verify the credentials and create a token for the user
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
+            if ($token = $this->guard()->attempt($credentials->only('email', 'password')->toArray())) {
+                \Log::info('User logged in', ['email' => $credentials->get('email')]);
+                return $this->respondWithToken($token);
             }
-            \Log::info('User logged in', ['email' => $credentials['email']]);
-        } catch (JWTException $e) {
-            \Log::warning('Can\'t create token', ['error' => $e->getMessage()]);
-            // something went wrong whilst attempting to encode the token
-            return response()->json(['error' => 'could_not_create_token'], 500);
-        }
 
-        $lang = auth()->user()->lang;
-        // all good so return the token
-        return response()
-            ->json(['token' => $token, 'lang' => $lang]);
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
+
     /**
      * Log out
      * Invalidate the token, so user cannot use it anymore
      * They have to relogin to get a new token
-     *
-     * @param Request $request
      */
-    public function logout(Request $request)
+    public function logout()
     {
-        $this->validate($request, [
-            'token' => 'required'
-        ]);
-        JWTAuth::invalidate($request->input('token'));
+        $this->guard()->logout();
+        return response()->json(['message' => 'Successfully logged out']);
     }
     /**
      * Returns the authenticated user
      */
     public function authenticatedUser()
     {
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['user_not_found'], 404);
-            }
-        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-            return response()->json(['token_expired'], $e->getStatusCode());
-        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return response()->json(['token_invalid'], $e->getStatusCode());
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return response()->json(['token_absent'], $e->getStatusCode());
-        }
-        // the token is valid and we have found the user via the sub claim
-        // jwt parse in vue needed correct response
-        // return response()->json(compact('user'));
-        return $this->response->item($user, new UserTransformer());
+        return $this->response->item($this->guard()->user(), new UserTransformer());
     }
     /**
      * Refresh the token
@@ -87,15 +60,37 @@ class AuthenticateController extends ApiController
      */
     public function getToken()
     {
-        $token = JWTAuth::getToken();
-        if (!$token) {
-            return $this->response->errorMethodNotAllowed('Token not provided');
+         try {
+            return $this->respondWithToken($this->guard()->refresh());
+        } catch (TokenBlacklistedException $e) {
+            return response()->json(['error' => 'Invalid token'], 402);
         }
-        try {
-            $refreshedToken = JWTAuth::refresh($token);
-        } catch (JWTException $e) {
-            return $this->response->errorInternal('Not able to refresh Token');
-        }
-        return $this->response->withArray(['token' => $refreshedToken]);
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $this->guard()->factory()->getTTL() * 60,
+            'lang' => $this->guard()->user()->lang,
+        ]);
+    }
+
+    /**
+     * Get the guard to be used during authentication.
+     *
+     * @return \Illuminate\Contracts\Auth\Guard
+     */
+    public function guard()
+    {
+        return Auth::guard();
     }
 }

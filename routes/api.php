@@ -64,7 +64,8 @@ $api->version('v1', ['middleware' => ['api']], function ($api) {
         $api->get('cases/{id}/doctorcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getDoctorCase');
         $api->get('cases/{id}/hospitalcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getHospitalCase');
         $api->get('cases/{id}/diagnostics', '\App\Http\Controllers\Api\V1\Director\CasesController@getDiagnostics');
-        $api->get('cases/{id}/services', '\App\Http\Controllers\Api\V1\Director\CasesController@getServices');
+        $api->get('cases/{id}/services', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@getServices');
+        $api->get('cases/{id}/surveys', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@getSurveys');
         $api->get('cases/{id}/scenario', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@story');
         $api->post('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@createDocuments');
         $api->get('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
@@ -77,6 +78,7 @@ $api->version('v1', ['middleware' => ['api']], function ($api) {
         $api->get('accidents', '\App\Http\Controllers\Api\V1\Director\AccidentsController@index');
         $api->resource('types', \App\Http\Controllers\Api\V1\Director\AccidentTypesController::class);
         $api->resource('services', \App\Http\Controllers\Api\V1\Director\DoctorServicesController::class);
+        $api->resource('surveys', \App\Http\Controllers\Api\V1\Director\SurveysController::class);
         $api->resource('assistants', \App\Http\Controllers\Api\V1\Director\AssistantsController::class);
 
         $api->resource('patients', \App\Http\Controllers\Api\V1\Director\PatientsController::class);

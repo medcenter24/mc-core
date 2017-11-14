@@ -13,6 +13,7 @@ use App\Diagnostic;
 use App\Discount;
 use App\DoctorAccident;
 use App\DoctorService;
+use App\DoctorSurvey;
 use App\Events\DoctorAccidentUpdatedEvent;
 use App\Http\Controllers\ApiController;
 use App\Patient;
@@ -31,6 +32,7 @@ use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DirectorCaseTransformer;
 use App\Transformers\DoctorCaseTransformer;
 use App\Transformers\DoctorServiceTransformer;
+use App\Transformers\DoctorSurveyTransformer;
 use App\Transformers\DocumentTransformer;
 use App\Transformers\ScenarioTransformer;
 use Carbon\Carbon;
@@ -111,6 +113,21 @@ class CasesController extends ApiController
         return $this->response->collection($accidentServices, new DoctorServiceTransformer());
     }
 
+    public function getSurveys($id, RoleService $roleService)
+    {
+        $accident = Accident::findOrFail($id);
+        $accidentSurveys = $accident->surveys;
+        if ($accident->caseable) {
+            $accidentSurveys = $accidentSurveys->merge($accident->caseable->surveys);
+        }
+        $accidentSurveys->each(function (DoctorSurvey $doctorSurvey) use ($roleService) {
+            if ($doctorSurvey->created_by && $roleService->hasRole($doctorSurvey->creator, 'doctor')) {
+                $doctorSurvey->markAsDoctor();
+            }
+        });
+        return $this->response->collection($accidentSurveys, new DoctorSurveyTransformer());
+    }
+
     public function getCheckpoints($id)
     {
         $accident = Accident::findOrFail($id);
@@ -179,6 +196,7 @@ class CasesController extends ApiController
 
         $accident->diagnostics()->attach($request->json('diagnostics', []));
         $accident->services()->attach($request->json('services', []));
+        $accident->surveys()->attach($request->json('surveys', []));
         $accident->documents()->attach($request->json('documents', []));
         $accident->checkpoints()->attach($request->json('checkpoints', []));
 
@@ -295,6 +313,20 @@ class CasesController extends ApiController
         $accident->caseable->services()->attach($docServices);
         $accident->services()->detach();
         $accident->services()->attach($accidentServices);
+
+        // Surveys ==========================
+        $surveys = $request->json('surveys', []);
+        $docSurveys = [];
+        foreach ($accident->caseable->surveys() as $survey) {
+            if ( in_array($survey->id, $surveys) ) {
+                $docSurveys[] = $surveys->id;
+            }
+        }
+        $accidentSurveys = array_diff($surveys, $docSurveys);
+        $accident->caseable->surveys()->detach();
+        $accident->caseable->surveys()->attach($docSurveys);
+        $accident->surveys()->detach();
+        $accident->surveys()->attach($accidentSurveys);
 
         // Diagnostics ======================
         $diagnostics = $request->json('diagnostics', []);

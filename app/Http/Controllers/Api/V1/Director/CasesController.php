@@ -273,23 +273,11 @@ class CasesController extends ApiController
             }
         }
 
-        $patientData = $request->json('patient', false);
-        if ($patientData) {
-            if (!$accident->patient) {
-                if (isset($patientData['birthday']) && empty($patientData['birthday'])) {
-                    unset($patientData['birthday']);
-                }
-
-                $patient = Patient::firstOrCreate($patientData);
-                $accident->patient_id = $patient->id;
-            } else {
-                if (isset($patientData['birthday']) && empty($patientData['birthday'])) {
-                    DB::update('UPDATE patients SET birthday=NULL WHERE id='.$accident->patient->id);
-                    unset($patientData['birthday']);
-                }
-                $patient = $this->setData($accident->patient, $patientData);
-                $patient->save();
-            }
+        $patientId = $request->json('patientId', false);
+        if ($patientId) {
+            // check that patient exists
+            $patient = Patient::findOrFail($patientId);
+            $accident->patient_id = $patient->id;
         }
 
         $discountData = $request->json('discount', false);

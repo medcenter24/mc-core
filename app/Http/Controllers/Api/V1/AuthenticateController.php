@@ -61,9 +61,10 @@ class AuthenticateController extends ApiController
     public function getToken()
     {
          try {
-            return $this->respondWithToken($this->guard()->refresh());
+             return $this->respondWithToken($this->guard()->refresh());
         } catch (TokenBlacklistedException $e) {
-            return response()->json(['error' => 'Invalid token'], 402);
+             \Log::debug('Token can not be updated for user', [$this->guard()->user()]);
+             return response()->json(['error' => 'Invalid token'], 401);
         }
     }
 

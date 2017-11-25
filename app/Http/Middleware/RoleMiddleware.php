@@ -22,11 +22,15 @@ class RoleMiddleware
      */
     public function handle($request, Closure $next, $role)
     {
+        if (!auth()->user()) {
+            return response('Unauthorized', 401);
+        }
+
         if (!\Roles::hasRole(auth()->user(), $role)) {
-            if ($request->ajax()) {
-                return response(trans('content.403'), 403);
+            if ( $request->ajax() ) {
+                return response('Access denied', 403);
             } else {
-                abort(403, trans('content.403'));
+                abort(403, trans('Access denied'));
             }
         }
 

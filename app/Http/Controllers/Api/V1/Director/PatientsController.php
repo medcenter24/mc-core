@@ -30,28 +30,38 @@ class PatientsController extends ApiController
 
     public function store(PatientRequest $request)
     {
-        $patient = Patient::create([
-            'name' => $request->json('name', ''),
-            'address' => $request->json('address', ''),
-            'phones' => $request->json('phones', ''),
-            'birthday' => $request->json('birthday', ''),
-            'comment' => $request->json('comment', ''),
-        ]);
+        $patient = Patient::create($this->getJsonData($request));
         $transformer = new PatientTransformer();
         return $this->response->created(null, $transformer->transform($patient));
     }
 
     public function update($id, PatientRequest $request)
     {
+        $data = $this->getJsonData($request);
         $patient = Patient::findOrFail($id);
-        $patient->name = $request->json('name', '');
-        $patient->address = $request->json('address', '');
-        $patient->phones = $request->json('phones', '');
-        $patient->birthday = $request->json('birthday', '');
-        $patient->comment = $request->json('comment', '');
+        $patient->name = $data['name'];
+        $patient->address = $data['address'];
+        $patient->phones = $data['phones'];
+        $patient->birthday = isset($data['birthday']) ? $data['birthday'] : null;
+        $patient->comment = $data['comment'];
         $patient->save();
         \Log::info('Patient updated', [$patient, $this->user()]);
         $this->response->item($patient, new PatientTransformer());
+    }
+
+    private function getJsonData(PatientRequest $request) {
+        $data = [
+            'name' => $request->json('name', ''),
+            'address' => $request->json('address', ''),
+            'phones' => $request->json('phones', ''),
+            'comment' => $request->json('comment', ''),
+        ];
+        $birthday = $request->json('birthday', false);
+        if ($birthday && !empty($birthday)) {
+            $data['birthday'] = date('Y-m-d', strtotime($birthday));
+        }
+
+        return $data;
     }
 
     public function destroy($id)

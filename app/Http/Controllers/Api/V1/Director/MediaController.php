@@ -11,12 +11,15 @@ namespace App\Http\Controllers\Api\V1\Director;
 use App\Http\Controllers\ApiController;
 use App\Services\UploaderService;
 use App\Transformers\UploadedFileTransformer;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 
 
 /**
- * User media uploader
+ * Uploader
+ * It is more like a Uploader at all (not just a media)
+ * to upload medias, please use Media library
  *
  * Class MediaController
  * @package App\Http\Controllers\Api\V1\Director
@@ -45,8 +48,16 @@ class MediaController extends ApiController
 
         $uploadedFiles = new Collection();
         foreach ($request->allFiles() as $file) {
-            foreach ($file as $item) {
-                $uploadedCase = $this->service->upload($item);
+            $uploadedCase = null;
+            if ($file instanceof UploadedFile) {
+                $uploadedCase = $this->service->upload($file);
+            } elseif (count($file)) {
+                foreach ($file as $item) {
+                    $uploadedCase = $this->service->upload($item);
+                }
+            }
+
+            if ($uploadedCase) {
                 $this->user()->uploads()->save($uploadedCase);
                 $uploadedFiles->put($uploadedCase->id, $uploadedCase);
             }

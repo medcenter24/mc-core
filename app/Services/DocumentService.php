@@ -27,8 +27,8 @@ class DocumentService
     /**
      * @param $file
      * @param User $user
-     * @param Accident $accident
      * @return Document
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded
      */
     public function createDocumentFromFile($file, User $user)
     {
@@ -47,8 +47,8 @@ class DocumentService
     /**
      * @param $files
      * @param User $user
-     * @param Accident|null $accident
      * @return Collection
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded
      */
     public function createDocumentsFromFiles($files, User $user)
     {
@@ -82,6 +82,12 @@ class DocumentService
         return $documents->unique('id');
     }
 
+    /**
+     * @param Document $document
+     * @param User $user
+     * @param RoleService $roleService
+     * @return bool
+     */
     public function checkAccess(Document $document, User $user, RoleService $roleService)
     {
         return $roleService->hasRole($user, 'director')

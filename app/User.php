@@ -8,15 +8,22 @@
 namespace App;
 
 
+use App\Services\LogoService;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
+use Spatie\MediaLibrary\Media;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConversions
 {
     use Notifiable;
     use SoftDeletes;
+    use HasMediaTrait;
 
     /**
      * The attributes that should be mutated to dates.
@@ -38,6 +45,21 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = ['password', 'remember_token',];
+
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('thumb_45')
+            ->sharpen(10)
+            ->quality(50)
+            ->fit(Manipulations::FIT_CROP, 45, 45)
+            ->performOnCollections(LogoService::FOLDER);
+
+        $this->addMediaConversion('thumb_200')
+            ->sharpen(10)
+            ->quality(60)
+            ->fit(Manipulations::FIT_CROP, 200, 200)
+            ->performOnCollections(LogoService::FOLDER);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

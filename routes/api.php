@@ -49,6 +49,8 @@ $api->version('v1', ['middleware' => ['api']], function ($api) {
         $api->resource('checkpoints', \App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController::class);
         $api->resource('statuses', \App\Http\Controllers\Api\V1\Director\AccidentStatusesController::class);
         $api->resource('users', \App\Http\Controllers\Api\V1\Director\UsersController::class);
+        $api->post('users/{id}/photo', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@updatePhoto');
+        $api->delete('users/{id}/photo', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@deletePhoto');
         $api->resource('categories', \App\Http\Controllers\Api\V1\Director\CategoriesController::class);
 
         // Exporter

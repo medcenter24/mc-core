@@ -143,17 +143,19 @@ class CasesController extends ApiController
     {
         $accident = Accident::findOrFail($id);
 
+        $created = collect([]);
         foreach ($request->allFiles() as $files) {
             $document = $documentService->createDocumentsFromFiles($files, $this->user());
-            if ($accident) {
-                foreach ($document as $doc) {
-                    $accident->documents()->attach($doc);
+            foreach ($document as $doc) {
+                $accident->documents()->attach($doc);
+                if ($accident->patient) {
                     $accident->patient->documents()->attach($doc);
                 }
+                $created->push($doc);
             }
         }
 
-        return $this->response->collection($documentService->getDocuments($this->user(), $accident), new DocumentTransformer());
+        return $this->response->collection($created, new DocumentTransformer());
     }
 
     /**

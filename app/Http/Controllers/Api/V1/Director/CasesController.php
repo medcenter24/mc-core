@@ -165,27 +165,26 @@ class CasesController extends ApiController
      */
     public function store(Request $request, ReferralNumberService $referralNumberService, AccidentStatusesService $statusesService)
     {
-        $accident = Accident::create(
-            array_merge(['contacts' => '', 'symptoms' => '', 'handling_time' => time()], $request->json('accident', []))
-        );
-        $doctorAccident = DoctorAccident::create(
-            array_merge(['recommendation' => '', 'investigation' => ''], $request->json('doctorAccident', []))
-        );
+        $accidentData = $request->json('accident', []);
+        if (!isset($accidentData['handling_time']) || !$accidentData['handling_time']) {
+            $accidentData['handling_time'] = NULL;
+        }
+        $accidentData = array_merge(['contacts' => '', 'symptoms' => ''], $accidentData);
+        $accident = Accident::create($accidentData);
+
+        $doctorAccidentData = $request->json('doctorAccident', []);
+        if (!isset($doctorAccidentData['visit_time']) || !$doctorAccidentData['visit_time']) {
+            $doctorAccidentData['visit_time'] = NULL;
+        }
+        $doctorAccidentData = array_merge(['recommendation' => '', 'investigation' => ''], $doctorAccidentData);
+        $doctorAccident = DoctorAccident::create($doctorAccidentData);
+
         $accident->caseable_id = $doctorAccident->id;
         $accident->caseable_type = DoctorAccident::class;
         $accident->created_by = $this->user()->id;
-        $accident->save();
-
-        $patientData = $request->json('patient', []);
-        if (isset($patientData['id']) && !$patientData['id']) {
-            unset($patientData['id']);
+        if (empty($accident->ref_num)) {
+            $accident->ref_num = $referralNumberService->generate($accident);
         }
-        if (isset($patientData['birthday']) && empty($patientData['birthday'])) {
-            unset($patientData['birthday']);
-        }
-        $patient = Patient::firstOrCreate($patientData);
-        $accident->patient_id = $patient->id;
-        $accident->ref_num = $referralNumberService->generate($accident);
         $accident->save();
 
         $statusesService->set($accident, AccidentStatus::firstOrCreate([

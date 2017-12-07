@@ -73,6 +73,11 @@ return [
             'root' => storage_path(\App\Services\DocumentService::DISC_IMPORTS),
         ],
 
+        \App\Services\LogoService::DISC => [
+            'driver' => 'local',
+            'root' => public_path(\App\Services\LogoService::FOLDER)
+        ],
+
         'media' => [
             'driver' => 'local',
             'root' => public_path( 'media'),

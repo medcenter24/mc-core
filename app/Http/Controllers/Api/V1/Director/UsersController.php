@@ -11,6 +11,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\UserStore;
 use App\Http\Requests\Api\UserUpdate;
 use App\Role;
+use App\Services\LogoService;
 use App\Transformers\UserTransformer;
 use App\User;
 
@@ -65,4 +66,27 @@ class UsersController extends ApiController
         $transformer = new UserTransformer();
         return $this->response->created(null, $transformer->transform($user));
     }
+
+    public function updatePhoto($id)
+    {
+        /** @var User $user */
+        $user = User::findOrFail($id);
+        $user->clearMediaCollection(LogoService::FOLDER);
+        $user->addMediaFromRequest('file')
+            ->toMediaCollection(LogoService::FOLDER, LogoService::DISC);
+        return $this->response->created(asset($user->getFirstMediaUrl(LogoService::FOLDER, 'thumb_200')),
+            [
+                'thumb200' => asset($user->getFirstMediaUrl(LogoService::FOLDER, 'thumb_200')),
+                'thumb45' => asset($user->getFirstMediaUrl(LogoService::FOLDER, 'thumb_45')),
+                'original' => asset($user->getFirstMediaUrl(LogoService::FOLDER)),
+            ]);
+    }
+
+    public function deletePhoto($id)
+    {
+        $user = User::findOrFail($id);
+        $user->clearMediaCollection(LogoService::FOLDER);
+        return $this->response->noContent();
+    }
+
 }

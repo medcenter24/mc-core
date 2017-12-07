@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Api\V1;
 
 
 use App\Http\Controllers\ApiController;
+use App\Services\LogoService;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -82,6 +83,8 @@ class AuthenticateController extends ApiController
             'token_type' => 'bearer',
             'expires_in' => $this->guard()->factory()->getTTL() * 60,
             'lang' => $this->guard()->user()->lang,
+            'thumb' => $this->guard()->user()->hasMedia(LogoService::FOLDER)
+                ? asset($this->guard()->user()->getFirstMediaUrl(LogoService::FOLDER, 'thumb_45')) : ''
         ]);
     }
 

@@ -231,7 +231,7 @@ class CasesController extends ApiController
             $this->response->errorBadRequest('Accident data should be provided in the request data');
         }
 
-        if (!$requestedAccident['id']) {
+        if (!$requestedAccident['handling_time']) {
             \Log::error('Undefined handling time', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
@@ -269,13 +269,6 @@ class CasesController extends ApiController
 
                 event(new DoctorAccidentUpdatedEvent($before, $doctorAccident, 'Updated by director'));
             }
-        }
-
-        $patientId = $request->json('patientId', false);
-        if ($patientId) {
-            // check that patient exists
-            $patient = Patient::findOrFail($patientId);
-            $accident->patient_id = $patient->id;
         }
 
         $discountData = $request->json('discount', false);

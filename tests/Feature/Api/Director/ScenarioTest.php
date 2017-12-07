@@ -7,8 +7,6 @@
 
 namespace Tests\Feature\Api\Director;
 
-use App\Accident;
-use App\Scenario;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\Feature\Api\JwtHeaders;
 use Tests\Feature\Api\LoggedUser;

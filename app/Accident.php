@@ -48,6 +48,7 @@ class Accident extends AccidentAbstract
 
     protected $visible = [
         'parent_id',
+        'patient_id',
         'accident_type_id',
         'accident_status_id',
         'assistant_id',

@@ -50,9 +50,9 @@ class ReferralNumberService
      * G - Referral prefix of the assistance (Global voyager assistance)
      * 0001 - number in order (from the begin of this year)
      * 010117 - date
-     * DFA -
-     *     D - Day/Night/Weekend
+     * FAD -
      *     FA - Doctor initials = Doctor referral prefix (Foster Abigail) / Hospital referral prefix (SP - Sant Paolo Hospital)
+     *     D - Day/Night/Weekend
      *
      * @param Accident $accident
      * @return string
@@ -66,8 +66,8 @@ class ReferralNumberService
             $ref .= self::SEPARATOR;
             $ref .= Carbon::now()->format('dmy');
             $ref .= self::SEPARATOR;
-            $ref .= $this->getTimesOfDayCode(Carbon::now());
             $ref .= $this->getCaseableRefKey($accident->caseable);
+            $ref .= $this->getTimesOfDayCode(Carbon::now());
 
             // skip duplicates
             $additionalPrefix = 0;

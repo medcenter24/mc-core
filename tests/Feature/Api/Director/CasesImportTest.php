@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Api\JwtHeaders;
 use Tests\Feature\Api\LoggedUser;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class CasesImportTest extends TestCase
 {

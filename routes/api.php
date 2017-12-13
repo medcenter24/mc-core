@@ -12,7 +12,7 @@ $api->version('v1', function($api) {
     $api->post('authenticate', \App\Http\Controllers\Api\V1\AuthenticateController::class . '@authenticate');
 });
 
-$api->version('v1', ['middleware' => ['api']], function ($api) {
+$api->version('v1', ['middleware' => ['auth:api']], function ($api) {
 
     $api->post('logout', '\App\Http\Controllers\Api\V1\AuthenticateController@logout');
     $api->get('token', \App\Http\Controllers\Api\V1\AuthenticateController::class . '@getToken');

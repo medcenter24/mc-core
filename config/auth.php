@@ -19,6 +19,8 @@ return [
     */
 
     'defaults' => [
+        // if you make 'api' guard then all application will work in the API mode
+        // that means that there won't be admin panel
         'guard' => 'web',
         'passwords' => 'users',
     ],

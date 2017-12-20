@@ -136,7 +136,7 @@ class CasesController extends ApiController
     public function documents($id, DocumentService $documentService)
     {
         $accident = Accident::findOrFail($id);
-        return $this->response->collection($documentService->getDocuments($this->user(), $accident), new DocumentTransformer());
+        return $this->response->collection($documentService->getDocuments($this->user(), $accident, 'accident'), new DocumentTransformer());
     }
 
     public function createDocuments($id, Request $request, DocumentService $documentService)
@@ -181,6 +181,22 @@ class CasesController extends ApiController
         $doctorAccidentData = array_merge(['recommendation' => '', 'investigation' => ''], $doctorAccidentData);
         $doctorAccident = DoctorAccident::create($doctorAccidentData);
 
+        $patientData = $request->json('patient', []);
+        if (!$patientData['birthday']) {
+            $patientData['birthday'] = null;
+        }
+
+        $patient = null;
+        if (!$patientData['id']) {
+            if ($patientData['name']) {
+                $patient = Patient::create($patientData);
+            }
+        } else {
+            $patient = Patient::findOrFail($patientData['id']);
+        }
+        $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
+
+        $accident->patient_id = $patient->id;
         $accident->caseable_id = $doctorAccident->id;
         $accident->caseable_type = DoctorAccident::class;
         $accident->created_by = $this->user()->id;
@@ -249,6 +265,21 @@ class CasesController extends ApiController
             $this->response->errorBadRequest('Requested accident did not match to updated one');
         }
 
+        $patientData = $request->json('patient', []);
+        if (!$patientData['birthday']) {
+            $patientData['birthday'] = null;
+        }
+
+        $patient = null;
+        if (!$patientData['id']) {
+            if ($patientData['name']) {
+                $patient = Patient::create($patientData);
+            }
+        } else {
+            $patient = Patient::findOrFail($patientData['id']);
+        }
+
+        $requestedAccident['patient_id'] = $patient && $patient->id ? $patient->id : 0;
         $accident = $this->setData($accident, $requestedAccident);
         $accident->save();
 
@@ -285,7 +316,7 @@ class CasesController extends ApiController
         $services = $request->json('services', []);
         $docServices = [];
         foreach ($accident->caseable->services() as $service) {
-            if ( in_array($service->id, $services) ) {
+            if ($service && in_array($service->id, $services) ) {
                 $docServices[] = $services->id;
             }
         }
@@ -299,7 +330,7 @@ class CasesController extends ApiController
         $surveys = $request->json('surveys', []);
         $docSurveys = [];
         foreach ($accident->caseable->surveys() as $survey) {
-            if ( in_array($survey->id, $surveys) ) {
+            if ($survey && in_array($survey->id, $surveys) ) {
                 $docSurveys[] = $surveys->id;
             }
         }
@@ -313,7 +344,7 @@ class CasesController extends ApiController
         $diagnostics = $request->json('diagnostics', []);
         $docDiagnostics = [];
         foreach ($accident->caseable->diagnostics() as $diagnostic) {
-            if ( in_array($diagnostic->id, $diagnostics) ) {
+            if ($diagnostic && in_array($diagnostic->id, $diagnostics) ) {
                 $docDiagnostics[] = $diagnostic->id;
             }
         }

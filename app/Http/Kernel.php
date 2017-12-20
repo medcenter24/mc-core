@@ -45,7 +45,8 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
+            // fixed 429 too many requests (disabled throttle)
+            // 'throttle:800,1',
             'bindings',
         ],
     ];

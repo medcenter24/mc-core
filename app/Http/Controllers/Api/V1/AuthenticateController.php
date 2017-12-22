@@ -18,6 +18,16 @@ use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 class AuthenticateController extends ApiController
 {
     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['authenticate']]);
+    }
+
+    /**
      *  API Login, on success return JWT Auth token
      *
      * @param \Illuminate\Http\Request $request
@@ -28,11 +38,12 @@ class AuthenticateController extends ApiController
     {
         // grab credentials from the request
         $credentials = collect(json_decode($request->getContent(), true));
-            // attempt to verify the credentials and create a token for the user
-            if ($token = $this->guard()->attempt($credentials->only('email', 'password')->toArray())) {
-                \Log::info('User logged in', ['email' => $credentials->get('email')]);
-                return $this->respondWithToken($token);
-            }
+
+        // attempt to verify the credentials and create a token for the user
+        if ($token = $this->guard()->attempt($credentials->only('email', 'password')->toArray())) {
+            \Log::info('User logged in', ['email' => $credentials->get('email')]);
+            return $this->respondWithToken($token);
+        }
 
         return response()->json(['error' => 'Unauthorized'], 401);
     }
@@ -95,6 +106,6 @@ class AuthenticateController extends ApiController
      */
     public function guard()
     {
-        return Auth::guard();
+        return Auth::guard('api');
     }
 }

@@ -63,16 +63,17 @@ class DocumentService
     /**
      * @param User|null $user
      * @param Accident|null $accident
+     * @param string $type - all, user or accident
      * @return Collection
      */
-    public function getDocuments(User $user = null, Accident $accident = null)
+    public function getDocuments(User $user = null, Accident $accident = null, $type = 'all')
     {
         $documents = new Collection();
-        if ($user) {
+        if ($user && ($type == 'all' || $type == 'user')) {
             $documents = $documents->merge($user->documents);
         }
 
-        if ($accident) {
+        if ($accident && ($type == 'all' || $type == 'accident')) {
             $documents = $documents->merge($accident->documents);
             if ($accident->caseable) {
                 $documents = $documents->merge($accident->caseable->documents);

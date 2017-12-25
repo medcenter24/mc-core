@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('company_id')->default(0)->index();
             $table->string('name')->default('')->index();
             $table->string('email')->default('')->unique();
             $table->string('phone', 100)->default('');

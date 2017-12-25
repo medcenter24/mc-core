@@ -8,8 +8,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 
+use App\Company;
 use App\Http\Controllers\ApiController;
 use App\Services\LogoService;
+use App\Transformers\CompanyTransformer;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +27,20 @@ class AuthenticateController extends ApiController
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['authenticate']]);
+    }
+
+    /**
+     * Get current Company (by authenticated user)
+     */
+    public function getCompany()
+    {
+        $company = $this->user()->company;
+        if (!$company) {
+            $company = Company::create(['title' => '']);
+            $this->user()->company_id = $company->id;
+            $this->user()->save();
+        }
+        return $this->response->item($company, new CompanyTransformer());
     }
 
     /**

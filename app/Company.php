@@ -34,7 +34,7 @@ class Company extends Model implements HasMedia, HasMediaConversions
             ->fit(Manipulations::FIT_CROP, 250, 250)
             ->performOnCollections(LogoService::FOLDER);
 
-        $this->addMediaConversion('thumb_250')
+        $this->addMediaConversion('thumb_300x100')
             ->sharpen(10)
             ->quality(80)
             ->fit(Manipulations::FIT_CROP, 300, 100)

@@ -78,6 +78,11 @@ return [
             'root' => public_path(\App\Services\LogoService::FOLDER)
         ],
 
+        \App\Services\SignatureService::DISC => [
+            'driver' => 'local',
+            'root' => \App\Services\SignatureService::FOLDER,
+        ],
+
         'media' => [
             'driver' => 'local',
             'root' => public_path( 'media'),

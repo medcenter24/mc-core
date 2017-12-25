@@ -11,5 +11,5 @@ namespace App\Services;
 class SignatureService
 {
     const DISC = 'signature';
-    const FOLDER = 'media';
+    const FOLDER = 'signature';
 }

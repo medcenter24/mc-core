@@ -432,4 +432,9 @@ class CasesController extends ApiController
         $accident->delete();
         return $this->response->noContent();
     }
+
+    public function reportHtml($id)
+    {
+
+    }
 }

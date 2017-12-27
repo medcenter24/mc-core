@@ -28,4 +28,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
     Route::get('/', 'Admin\MainController@index');
     Route::resource('users', 'Admin\UsersController');
     Route::resource('roles', 'Admin\RolesController');
+    Route::group(['prefix' => 'preview'], function() {
+        Route::get('caseReport', 'Admin\PreviewController@caseReport');
+    });
+    Route::get('cases', 'Admin\CasesController@search');
+    Route::get('cases/report', 'Admin\CasesController@report');
 });

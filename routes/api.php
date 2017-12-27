@@ -83,6 +83,7 @@ $api->group([
                 $api->get('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
                 $api->get('cases/{id}/checkpoints', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@getCheckpoints');
                 $api->put('cases/{id}/close', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@close');
+                $api->get('cases/{id}/reportHtml', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@reportHtml');
 
                 $api->resource('cases', \App\Http\Controllers\Api\V1\Director\CasesController::class);
 

@@ -1,4 +1,4 @@
-<table style="font-size: 10px;">
+<table style="font-size: 10px; -webkit-print-color-adjust: exact;">
     <tr>
         @if ($report->hasFloatingLine())
             <!-- Left floating line -->
@@ -11,12 +11,14 @@
                     {{ $report->floatingLine() }}
                 </td>
         @endif
-        <td>
+        <td valign="top">
             <!-- Header with logo and company info -->
             <table>
                 <tr>
                     <td>
-                        <img src="{{ $report->companyLogoUrl() }}" alt="{{ strip_tags($report->companyTitle()) }}">
+                        <img src="{{ $report->companyLogoUrl() }}"
+                             height="100"
+                             alt="{{ strip_tags($report->companyTitle()) }}">
                     </td>
                     <td>
                         <table>
@@ -144,7 +146,7 @@
                 </table>
             @endif
 
-        <!-- Diagnostico -->
+        <!-- Diagnostics -->
             <table style="width: 100%;">
                 <tr>
                     <td align="left">
@@ -175,6 +177,114 @@
                     </tr>
                 </table>
             @endif
+
+        <!-- Services -->
+            <table style="background-color: #dbe5f1; width: 100%; margin-bottom: 5px;">
+                <tr>
+                    <td style="font-size: 9px;">
+                        <b><i>{{ $report->serviceTitle() }}</i></b>
+                    </td>
+                    <td style="font-size: 10px;">
+                        <b>{{ $report->serviceDescription() }}</b>
+                    </td>
+                </tr>
+                @foreach($report->services() as $service)
+                    <tr style="font-size: 11px;">
+                        <td>
+                            <b>{{ $service->title }}</b>
+                        </td>
+                        <td>
+                            <b>{{ $service->price }}</b>
+                        </td>
+                    </tr>
+                @endforeach
+            </table>
+
+            <table style="background-color: #dbe5f1; width: 100%; margin-bottom: 5px;">
+                <tr>
+                    <td style="font-size: 8px">
+                        <b><i>{{ $report->serviceFooterDescription() }}</i></b>
+                    </td>
+                    <td style="font-size: 9px">
+                        <b>{{ $report->serviceFooterTitle() }}</b>
+                    </td>
+                    <td style="font-size: 12px">
+                        <b>{{ $report->totalAmount() }}</b>
+                    </td>
+                </tr>
+            </table>
+
+        <!-- Date and Location -->
+            <table style="background-color: #dbe5f1; width: 100%;">
+                <tr>
+                    <td style="font-size: 9px; white-space: nowrap;">
+                        <b><i>{!! $report->visitInfoTitle() !!}</i></b>
+                    </td>
+                    <td style="font-size: 7px; width: 90%;" valign="top">
+                        [{{ $report->visitTime() }}]
+                    </td>
+                    <td valign="top" style="font-size: 10px; color: #365f91; text-transform: uppercase; white-space: nowrap">
+                        <b>{{ $report->visitDate() }}, {{ $report->city() }}</b>
+                    </td>
+                </tr>
+            </table>
+
+        <!-- Footer -->
+            <table style="width: 100%">
+                <tr>
+                    <!-- Bank -->
+                    <td>
+                        <table style="font-size: 8px">
+                            <tr>
+                                <td colspan="2">
+                                    <b>{{ $report->bankTitle() }}</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {{ $report->bankAddress() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {{ $report->bankDetailsLabel() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{ $report->bankHolderLabel() }}
+                                </td>
+                                <td style="font-size: 10px">
+                                    <b>{{ $report->bankHolder() }}</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{ $report->bankIbanLabel() }}
+                                </td>
+                                <td style="font-size: 10px">
+                                    <b>{{ $report->bankIban() }}</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{ $report->bankSwiftLabel() }}
+                                </td>
+                                <td style="font-size: 10px">
+                                    <b>{{ $report->bankSwift() }}</b>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <!-- Stamp -->
+                    <td>
+                        <img src="data:image/png;base64,{{ $report->stampUrl() }}"
+                             height="100"
+                             alt="{{ strip_tags($report->companyTitle()) }}">
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>

@@ -12,6 +12,8 @@ use App\Accident;
 use App\Http\Controllers\AdminController;
 use App\Services\CaseServices\CaseReportService;
 use Illuminate\Http\Request;
+use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 
 class CasesController extends AdminController
 {
@@ -41,5 +43,15 @@ class CasesController extends AdminController
         }
 
         return $service->generate($accident)->toHtml();
+    }
+
+    public function downloadPdf(Request $request, CaseReportService $service)
+    {
+        $accident = Accident::where('ref_num', $request->input('ref', false))->first();
+        if (!$accident) {
+            abort(404);
+        }
+
+        return response()->download($service->generate($accident)->getPdfPath());
     }
 }

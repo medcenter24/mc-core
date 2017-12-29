@@ -1,4 +1,4 @@
-<table style="font-size: 10px; -webkit-print-color-adjust: exact;">
+<table style="font-family: Arial, Verdana, Tahoma; font-size: 10px; -webkit-print-color-adjust: exact;">
     <tr>
         @if ($report->hasFloatingLine())
             <!-- Left floating line -->
@@ -7,7 +7,6 @@
                     writing-mode: tb-lr;
                     writing-mode: vertical-lr;
                     min-height: 800px">
-
                     {{ $report->floatingLine() }}
                 </td>
         @endif

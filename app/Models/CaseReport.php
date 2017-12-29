@@ -28,6 +28,11 @@ class CaseReport
         $this->accident = $accident;
     }
 
+    public function uniqueIdentifier()
+    {
+        return $this->accident->ref_num . '_' . $this->accident->updated_at->format('Ymd_His');
+    }
+
     public function getCustomer()
     {
         return env('customer', 'default');

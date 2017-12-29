@@ -80,7 +80,12 @@ return [
 
         \App\Services\SignatureService::DISC => [
             'driver' => 'local',
-            'root' => \App\Services\SignatureService::FOLDER,
+            'root' => storage_path(\App\Services\SignatureService::FOLDER),
+        ],
+
+        \App\Services\CaseServices\CaseReportService::PDF_DISK => [
+            'driver' => 'local',
+            'root' => storage_path(\App\Services\CaseServices\CaseReportService::PDF_FOLDER),
         ],
 
         'media' => [

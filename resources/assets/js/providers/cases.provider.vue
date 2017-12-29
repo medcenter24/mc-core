@@ -6,12 +6,26 @@
 
 <script>
     import Vue from 'vue'
+
     export default {
+        getUrl (src) {
+            return '/admin/cases' + (src && src.length ? '/' + src : '');
+        },
         search (options) {
-            return Vue.axios.get('/admin/cases', options)
+            return Vue.axios.get(this.getUrl(), options)
         },
         getReportHtml (refNum) {
-            return Vue.axios.get('/admin/cases/report', {params: {ref: refNum}});
+            return Vue.axios.get(this.getUrl('report'), {params: {ref: refNum}});
+        },
+        downloadPdf (refNum) {
+            return Vue.axios.get(this.getUrl('pdf'), {params: {ref: refNum}, responseType: 'arraybuffer'})
+                .then(response => {
+                    let blob = new Blob([response.data], { type:   'application/pdf' } );
+                    let link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'report_' + refNum + '.pdf';
+                    link.click();
+                });
         }
     }
 </script>

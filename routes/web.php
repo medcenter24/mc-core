@@ -33,4 +33,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
     });
     Route::get('cases', 'Admin\CasesController@search');
     Route::get('cases/report', 'Admin\CasesController@report');
+    Route::get('cases/pdf', 'Admin\CasesController@downloadPdf');
 });

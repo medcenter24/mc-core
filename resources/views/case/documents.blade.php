@@ -1,19 +1,11 @@
 <table>
     <!-- Insurance -->
-    <tr>
-        <td>
-            @foreach($report->insurance() as $insurance)
-
-            @endforeach
-        </td>
-    </tr>
-
     <!-- Passport -->
+    @foreach($report->b64Docs() as $b64)
     <tr>
         <td>
-            @foreach($report->passport() as $k => $insurance)
-                <img src="data:image/jpeg;base64, {{ $insurance }}" alt="">
-            @endforeach
+            <img src="data:image/jpeg;base64, {{ $b64 }}" alt="Document">
         </td>
     </tr>
+    @endforeach
 </table>

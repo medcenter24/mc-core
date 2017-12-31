@@ -73,10 +73,11 @@ class CaseReportService
             $mpdf->showWatermarkText = true;
             $mpdf->watermark_font = 'DejaVuSansCondensed';
             $mpdf->watermarkTextAlpha = 0.1;*/
-            $mpdf->AddPage();
 
-            $mpdf->WriteHTML($this->documentsHtml());
-
+            if ($this->report->hasDocuments()) {
+                $mpdf->AddPage();
+                $mpdf->WriteHTML($this->htmlDocuments());
+            }
             $mpdf->SetDisplayMode('fullpage');
 
             $mpdf->Output(\Storage::disk(self::PDF_DISK)->path($this->getUniquePdfFileName()), Destination::FILE);

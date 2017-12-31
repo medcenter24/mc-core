@@ -94,4 +94,23 @@ class DocumentService
         return $roleService->hasRole($user, 'director')
             || ($roleService->hasRole($user, 'doctor') && $document->created_by == $user->id);
     }
+
+    /**
+     * Load docs from accident
+     * @param Accident $accident
+     * @param string $type
+     * @return Collection
+     */
+    public function getAccidentDocuments(Accident $accident, $type = '')
+    {
+        $res = new Collection();
+        if ($accident->caseable && $accident->caseable->documents) {
+            $query = $accident->caseable->documents();
+            if ($type) {
+                $query->where('type', $type);
+            }
+            $res = $query->get();
+        }
+        return $res;
+    }
 }

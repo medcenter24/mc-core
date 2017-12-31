@@ -295,7 +295,7 @@
 
                     <!-- Stamp -->
                     <td>
-                        <img src="data:image/jpeg;base64, {{ $report->stampUrl() }}"
+                        <img src="data:image/jpeg;base64, {{ $report->stampB64() }}"
                              height="100"
                              alt="{{ strip_tags($report->companyTitle()) }}">
                     </td>

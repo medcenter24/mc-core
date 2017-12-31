@@ -88,10 +88,10 @@ class CaseReportService
 
     public function getPdfPath()
     {
-        /*$fileName = $this->getUniquePdfFileName();
-        if (!\Storage::disk(self::PDF_DISK)->exists($fileName)) {*/
+        $fileName = $this->getUniquePdfFileName();
+        if (!\Storage::disk(self::PDF_DISK)->exists($fileName)) {
             $this->toPdf();
-        // }
+        }
 
         return \Storage::disk(self::PDF_DISK)->path($this->getUniquePdfFileName());
     }

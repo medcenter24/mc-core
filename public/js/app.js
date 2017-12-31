@@ -44846,7 +44846,7 @@ exports = module.exports = __webpack_require__(2)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -44859,6 +44859,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__providers_cases_provider__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__providers_cases_provider___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__providers_cases_provider__);
+//
 //
 //
 //
@@ -44901,13 +44902,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         reportPrint: function reportPrint() {
-            var WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+            var newWin = window.frames["printf"];
+            newWin.document.write('<body onload="window.print()">' + this.reportPage + '</body>');
+            newWin.document.close();
+
+            /*let WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
             WinPrint.document.write(this.reportPage);
             WinPrint.document.close();
             WinPrint.focus();
             WinPrint.print();
             WinPrint.close();
-            window.focus();
+            window.focus();*/
         },
         reportPdf: function reportPdf() {
             __WEBPACK_IMPORTED_MODULE_0__providers_cases_provider___default.a.downloadPdf(this.refNum);
@@ -44942,6 +44947,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "preview-content",
     domProps: {
       "innerHTML": _vm._s(_vm.reportPage)
+    }
+  }), _vm._v(" "), _c('iframe', {
+    staticStyle: {
+      "display": "none"
+    },
+    attrs: {
+      "id": "printf",
+      "name": "printf"
     }
   })])
 },staticRenderFns: []}

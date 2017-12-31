@@ -1,14 +1,28 @@
-<table style="font-family: Arial, Verdana, Tahoma; font-size: 10px; -webkit-print-color-adjust: exact;">
+<table style="font-family: 'Arial Rounded MT Bold', Arial, Verdana, sans-serif;
+    font-size: 10px;
+    -webkit-print-color-adjust: exact;">
     <tr>
         @if ($report->hasFloatingLine())
-            <!-- Left floating line -->
-                <td style="display: flex;
-                    transform: rotate(-180deg);
-                    writing-mode: tb-lr;
-                    writing-mode: vertical-lr;
-                    min-height: 800px">
-                    {{ $report->floatingLine() }}
-                </td>
+            <td>
+                <table>
+                    <tr><td height="0"></td></tr>
+                    <tr>
+                        <!-- Left floating line -->
+                        <td style="display: flex;
+                        transform: rotate(-180deg);
+                        writing-mode: tb-lr;
+                        writing-mode: vertical-lr;
+                        font-size: 7px;
+                        padding-top: 230px;
+                        padding-right: 10px;;
+                        min-height: 800px;
+                        "
+                            text-rotate="90">
+                            {{ $report->floatingLine() }}
+                        </td>
+                    </tr>
+                </table>
+            </td>
         @endif
         <td valign="top">
             <!-- Header with logo and company info -->
@@ -19,10 +33,10 @@
                              height="100"
                              alt="{{ strip_tags($report->companyTitle()) }}">
                     </td>
-                    <td>
+                    <td style="padding-left: 10px">
                         <table>
                             <tr>
-                                <td style="font-size: 14px;">
+                                <td style="color: #333333;">
                                     {!! $report->companyDescription() !!}
                                 </td>
                             </tr>
@@ -32,16 +46,17 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    {!! $report->companyContacts() !!}
+                                <td style="font-size: 12px;color: #4b4b4b;">
+                                    <b><i>{!! $report->companyContacts() !!}</i></b>
                                 </td>
                             </tr>
                         </table>
                     </td>
                 </tr>
             </table>
+
             <!-- Company Info -->
-            <table style="font-size: 7px">
+            <table style="font-size: 9px; padding-left: 10px;">
                 <tr>
                     <td>
                         <i>{{ $report->companyInfo() }}</i>
@@ -50,7 +65,7 @@
             </table>
 
             <!-- Title -->
-            <table style="font-size: 12px; width: 100%;">
+            <table style="font-size: 16px; width: 100%;text-align: center;color: #4b4b4b;">
                 <tr>
                     <td align="center">
                         <b>{{ $report->title() }}</b>
@@ -59,15 +74,16 @@
             </table>
 
             <!-- Assistance -->
-            <table style="width: 100%;background-color: #dbe5f1;">
+            <table style="width: 100%;background-color: #dbe5f1;margin-bottom: 5px;">
                 <tr>
-                    <td style="font-size: 8px">
+                    <td style="font-size: 10px">
                         <i>{{ $report->assistantLabel() }}</i>
                     </td>
                 </tr>
                 <tr>
-                    <td style="color: #365f91;font-size: 12px;">
-                        <b>{{ $report->assistantTitle() }}</b>
+                    <td style="color: #365f91;font-size: 16px;">
+                        <b><i>{{ $report->assistantTitle() }}</i></b>
+                        <i style="font-size: 12px;">{{ $report->assistantAddress() }}</i>
                     </td>
                 </tr>
             </table>
@@ -86,16 +102,16 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="font-size: 12px;">
+                    <td style="font-size: 16px;">
                         <b>{{ $report->patientName() }}</b>
                         @if ($report->patientHasBirthDate())
                             <b>, {{ $report->patientBirthday() }}</b>
                         @endif
                     </td>
-                    <td style="font-size: 10px;">
+                    <td style="font-size: 14px;">
                         {{ $report->assistantRefNum() }}
                     </td>
-                    <td style="font-size: 10px; color: #365f91">
+                    <td style="font-size: 14px; color: #365f91">
                         {{ $report->refNum() }}
                     </td>
                 </tr>
@@ -104,8 +120,8 @@
             <!-- Symptoms -->
             <table>
                 <tr>
-                    <td style="font-size: 10px;">
-                        <b style="font-size: 9px;"><i>{{ $report->symptomsLabel() }}</i></b>
+                    <td style="font-size: 12px;">
+                        <b><i>{{ $report->symptomsLabel() }}</i></b>
                         {{ $report->symptoms() }}
                     </td>
                 </tr>
@@ -114,8 +130,8 @@
             <!-- Surveys -->
             <table>
                 <tr>
-                    <td style="font-size: 10px;">
-                        <b style="font-size: 9px;"><i>{{ $report->surveysLabel() }}</i></b>
+                    <td style="font-size: 12px;">
+                        <b><i>{{ $report->surveysLabel() }}</i></b>
                         {{ $report->surveys() }}
                     </td>
                 </tr>
@@ -125,8 +141,8 @@
             @if ($report->hasInvestigation())
                 <table>
                     <tr>
-                        <td style="font-size: 10px;">
-                            <b style="font-size: 9px;"><i>{{ $report->investigationLabel() }}</i></b>
+                        <td style="font-size: 12px;">
+                            <b><i>{{ $report->investigationLabel() }}</i></b>
                             {{ $report->investigation() }}
                         </td>
                     </tr>
@@ -137,8 +153,8 @@
             @if ($report->hasDiagnose())
                 <table>
                     <tr>
-                        <td style="font-size: 10px;">
-                            <b style="font-size: 9px;"><i>{{ $report->diagnoseLabel() }}</i></b>
+                        <td style="font-size: 12px;">
+                            <b><i>{{ $report->diagnoseLabel() }}</i></b>
                             {{ $report->diagnose() }}
                         </td>
                     </tr>
@@ -149,26 +165,26 @@
             <table style="width: 100%;">
                 <tr>
                     <td align="left">
-                        {{ $report->diagnosticTitle() }}
+                        <b style="font-size: 12px">{{ $report->diagnosticTitle() }}</b>
                     </td>
                     <td align="right">
-                        {{ $report->diagnosticDescription() }}
+                        <b><i>{{ $report->diagnosticDescription() }}</i></b>
                     </td>
                 </tr>
             </table>
-            <table style="font-size: 10px; background-color: #dbe5f1; color: #365f91; width: 100%; text-transform: uppercase;">
+            <table style="font-size: 14px; background-color: #dbe5f1; color: #365f91; width: 100%; text-transform: uppercase;">
                 @foreach($report->diagnostics() as $diagnostic)
-                <tr>
-                    <td>
-                        {{ $diagnostic->title }}, {{ $diagnostic->disease_code }}
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            <b>{{ $diagnostic->title }}, {{ $diagnostic->disease_code }}</b>
+                        </td>
+                    </tr>
                 @endforeach
             </table>
 
-        <!-- Doctor -->
+            <!-- Doctor -->
             @if ($report->hasDoctor())
-                <table style="font-size: 9px; width: 100%">
+                <table style="font-size: 12px; width: 100%">
                     <tr>
                         <td align="right">
                             <b>{{ $report->doctorName() }}, {{ $report->doctorBoardNumSeparator() }} {{ $report->doctorBoardNum() }}</b>
@@ -180,60 +196,61 @@
         <!-- Services -->
             <table style="background-color: #dbe5f1; width: 100%; margin-bottom: 5px;">
                 <tr>
-                    <td style="font-size: 9px;">
+                    <td style="font-size: 12px;">
                         <b><i>{{ $report->serviceTitle() }}</i></b>
                     </td>
-                    <td style="font-size: 10px;">
+                    <td style="font-size: 12px;">
                         <b>{{ $report->serviceDescription() }}</b>
                     </td>
                 </tr>
                 @foreach($report->services() as $service)
-                    <tr style="font-size: 11px;">
-                        <td>
+                    <tr>
+                        <td style="font-size: 14px;">
                             <b>{{ $service->title }}</b>
                         </td>
-                        <td>
+                        <td style="font-size: 14px;">
                             <b>{{ $service->price }}</b>
                         </td>
                     </tr>
                 @endforeach
             </table>
 
+            <!-- Total -->
             <table style="background-color: #dbe5f1; width: 100%; margin-bottom: 5px;">
                 <tr>
-                    <td style="font-size: 8px">
-                        <b><i>{{ $report->serviceFooterDescription() }}</i></b>
-                    </td>
-                    <td style="font-size: 9px">
-                        <b>{{ $report->serviceFooterTitle() }}</b>
+                    <td style="font-size: 10px">
+                        <i>{{ $report->serviceFooterDescription() }}</i>
                     </td>
                     <td style="font-size: 12px">
-                        <b>{{ $report->totalAmount() }}</b>
+                        <b>{{ $report->serviceFooterTitle() }}</b>
+                    </td>
+                    <td style="font-size: 14px">
+                        <b>{{ $report->totalAmount() }} {{ $report->currency() }}</b>
                     </td>
                 </tr>
             </table>
 
-        <!-- Date and Location -->
-            <table style="background-color: #dbe5f1; width: 100%;">
+            <!-- Date and Location -->
+            <table style="background-color: #dbe5f1; width: 100%;margin-bottom: 5px">
                 <tr>
-                    <td style="font-size: 9px; white-space: nowrap;">
-                        <b><i>{!! $report->visitInfoTitle() !!}</i></b>
+                    <td style="font-size: 12px;">
+                        <b><i>{{ $report->visitInfoTitle() }}</i></b>
+                        <span style="font-size: 10px">[{{ $report->visitTime() }}]</span><br>
+                        <b><i>{{ $report->visitInfoPlace() }}</i></b>
+                        <span style="font-size: 10px">[{{ $report->visitCountry() }}]</span>
                     </td>
-                    <td style="font-size: 7px; width: 90%;" valign="top">
-                        [{{ $report->visitTime() }}]
-                    </td>
-                    <td valign="top" style="font-size: 10px; color: #365f91; text-transform: uppercase; white-space: nowrap">
+                    <td valign="bottom" align="right" style="font-size: 14px; color: #364e80; text-transform: uppercase;">
                         <b>{{ $report->visitDate() }}, {{ $report->city() }}</b>
                     </td>
                 </tr>
             </table>
 
-        <!-- Footer -->
-            <table style="width: 100%">
+            <!-- Footer -->
+            <table style="width: 100%;font-size: 8px">
                 <tr>
                     <!-- Bank -->
                     <td>
-                        <table style="font-size: 8px">
+                        <table style="font-size: 10px">
                             <tr>
                                 <td colspan="2">
                                     <b>{{ $report->bankTitle() }}</b>
@@ -278,12 +295,13 @@
 
                     <!-- Stamp -->
                     <td>
-                        <img src="data:image/png;base64,{{ $report->stampUrl() }}"
+                        <img src="data:image/jpeg;base64, {{ $report->stampUrl() }}"
                              height="100"
                              alt="{{ strip_tags($report->companyTitle()) }}">
                     </td>
                 </tr>
             </table>
+
         </td>
     </tr>
 </table>

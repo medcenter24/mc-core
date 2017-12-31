@@ -12,9 +12,11 @@ use App\Accident;
 use App\Company;
 use App\Diagnostic;
 use App\DoctorAccident;
+use App\Services\DocumentService;
 use App\Services\LogoService;
 use App\Services\SignatureService;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class CaseReport
 {
@@ -507,11 +509,26 @@ class CaseReport
         return $this->getProperty('bank_swift');
     }
 
-    public function stampUrl()
+    public function stampB64()
     {
         // todo assignment should has company, implementation of it in the future
         return Company::first()->hasMedia(SignatureService::FOLDER)
             ? base64_encode(file_get_contents(Company::first()->getFirstMediaPath(SignatureService::FOLDER, 'thumb_300x100')))
             : '';
+    }
+
+    /**
+     * @return Collection
+     */
+    public function b64Docs()
+    {
+        $documentService = new DocumentService();
+        return $documentService->getAccidentDocuments($this->accident, DocumentService::TYPE_INSURANCE)
+            ->merge($documentService->getAccidentDocuments($this->accident, DocumentService::TYPE_PASSPORT));
+    }
+
+    public function hasDocuments()
+    {
+        return $this->accident->documents->count();
     }
 }

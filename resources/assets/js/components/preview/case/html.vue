@@ -13,6 +13,7 @@
             </div>
         </div>
         <div class="preview-content" v-html="reportPage"></div>
+        <iframe id="printf" name="printf" style="display: none;"></iframe>
     </div>
 </template>
 
@@ -36,13 +37,17 @@
                     .catch(err => console.error(err));
             },
             reportPrint() {
-                let WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+                let newWin = window.frames["printf"];
+                newWin.document.write('<body onload="window.print()">' + this.reportPage + '</body>');
+                newWin.document.close();
+
+                /*let WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
                 WinPrint.document.write(this.reportPage);
                 WinPrint.document.close();
                 WinPrint.focus();
                 WinPrint.print();
                 WinPrint.close();
-                window.focus();
+                window.focus();*/
             },
             reportPdf() {
                 CasesProvider.downloadPdf(this.refNum);

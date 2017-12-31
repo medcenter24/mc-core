@@ -118,6 +118,14 @@ class CaseReport
     /**
      * @return string
      */
+    public function assistantAddress()
+    {
+        return $this->accident->assistant ? $this->accident->assistant->comment : '';
+    }
+
+    /**
+     * @return string
+     */
     public function patientLabel()
     {
         return $this->getProperty('patient_label');
@@ -160,7 +168,15 @@ class CaseReport
      */
     public function patientBirthday()
     {
-        return $this->patientHasBirthDate() ? $this->accident->patient->birthday : '';
+        return $this->patientHasBirthDate() ? Carbon::createFromFormat('Y-m-d', $this->accident->patient->birthday)->format(config('date.dateFormat')) : '';
+    }
+
+    /**
+     * @return string
+     */
+    public function currency()
+    {
+        return $this->getProperty('currency');
     }
 
     /**
@@ -372,11 +388,27 @@ class CaseReport
     }
 
     /**
-     * @return string HTML
+     * @return string
      */
     public function visitInfoTitle()
     {
         return $this->getProperty('visit_info_title');
+    }
+
+    /**
+     * @return string
+     */
+    public function visitInfoPlace()
+    {
+        return $this->getProperty('visit_info_place');
+    }
+
+    /**
+     * @return string
+     */
+    public function visitCountry()
+    {
+        return $this->getProperty('visit_country');
     }
 
     /**

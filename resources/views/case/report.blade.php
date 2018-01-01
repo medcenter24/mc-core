@@ -1,3 +1,14 @@
+<style>
+    .floating-line {
+        padding-top: 230px;
+    }
+    @media print {
+        .floating-line {
+            padding-top: 0;
+        }
+    }
+</style>
+
 <table style="font-family: 'Arial Rounded MT Bold', Arial, Verdana, sans-serif;
     font-size: 10px;
     -webkit-print-color-adjust: exact;">
@@ -13,10 +24,10 @@
                         writing-mode: tb-lr;
                         writing-mode: vertical-lr;
                         font-size: 7px;
-                        padding-top: 230px;
-                        padding-right: 10px;;
+                        padding-right: 10px;
                         min-height: 800px;
                         "
+                            class="floating-line"
                             text-rotate="90">
                             {{ $report->floatingLine() }}
                         </td>

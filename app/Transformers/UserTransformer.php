@@ -8,6 +8,7 @@
 namespace App\Transformers;
 
 
+use App\Helpers\MediaHelper;
 use App\Services\LogoService;
 use App\User;
 use League\Fractal\TransformerAbstract;
@@ -23,9 +24,9 @@ class UserTransformer extends TransformerAbstract
             'phone' => $user->phone,
             'lang' => $user->lang,
             'thumb_200' => $user->hasMedia(LogoService::FOLDER)
-                ? asset($user->getFirstMediaUrl(LogoService::FOLDER, 'thumb_200')) : '',
+                ? MediaHelper::b64($user, LogoService::FOLDER, User::THUMB_200) : '',
             'thumb_45' => $user->hasMedia(LogoService::FOLDER)
-                ? asset($user->getFirstMediaUrl(LogoService::FOLDER, 'thumb_45')) : '',
+                ? MediaHelper::b64($user, LogoService::FOLDER, User::THUMB_45) : '',
         ];
     }
 }

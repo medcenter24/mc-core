@@ -29,7 +29,7 @@ class UsersControllerTest extends TestCase
 
         $response = $this->json('OPTIONS', '/api/director/users/' . $user->id . '/photo', [], $this->headers($user));
         $response->assertStatus(200)
-            ->assertHeader('Allow', 'GET,HEAD,POST,DELETE');
+            ->assertHeader('Allow', 'POST,DELETE');
     }
 
     public function testUpdatePhoto()
@@ -42,6 +42,6 @@ class UsersControllerTest extends TestCase
             , $this->headers($this->getUser())
         );
 
-        $response->assertStatus(202);
+        $response->assertStatus(200);
     }
 }

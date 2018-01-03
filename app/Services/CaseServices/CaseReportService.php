@@ -34,11 +34,7 @@ class CaseReportService
     public function toHtml() {
         // todo make it works through accident->formReport component to store all the datas in the storage
         // I prefer to implement it as a new driver/option to the view which maybe easiest?
-        return view('case.report', ['report' => $this->report]);
-    }
-
-    public function htmlDocuments() {
-        return view('case.documents', ['report' => $this->report]);
+        return view('case.report', ['report' => $this->report])->render();
     }
 
     public function toPdf()
@@ -74,10 +70,10 @@ class CaseReportService
             $mpdf->watermark_font = 'DejaVuSansCondensed';
             $mpdf->watermarkTextAlpha = 0.1;*/
 
-            if ($this->report->hasDocuments()) {
+            /*if ($this->report->hasDocuments()) {
                 $mpdf->AddPage();
                 $mpdf->WriteHTML($this->htmlDocuments());
-            }
+            }*/
             $mpdf->SetDisplayMode('fullpage');
 
             $mpdf->Output(\Storage::disk(self::PDF_DISK)->path($this->getUniquePdfFileName()), Destination::FILE);
@@ -88,8 +84,7 @@ class CaseReportService
 
     public function getPdfPath()
     {
-        $fileName = $this->getUniquePdfFileName();
-        if (!\Storage::disk(self::PDF_DISK)->exists($fileName)) {
+        if (!\Storage::disk(self::PDF_DISK)->exists($this->getUniquePdfFileName())) {
             $this->toPdf();
         }
 

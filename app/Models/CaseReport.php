@@ -58,7 +58,7 @@ class CaseReport
     public function companyLogoUrl()
     {
         // todo assignment should has company, implementation of it in the future
-        return Company::first()->getFirstMediaUrl(LogoService::FOLDER, 'thumb_250');
+        return asset(Company::first()->getFirstMediaUrl(LogoService::FOLDER, 'thumb_250'));
     }
 
     /**
@@ -522,9 +522,16 @@ class CaseReport
      */
     public function b64Docs()
     {
+        $docs = collect([]);
         $documentService = new DocumentService();
-        return $documentService->getAccidentDocuments($this->accident, DocumentService::TYPE_INSURANCE)
-            ->merge($documentService->getAccidentDocuments($this->accident, DocumentService::TYPE_PASSPORT));
+        foreach ($documentService->getOrderedAccidentDocuments($this->accident) as $document) {
+            $medias = $document->getMedia(DocumentService::CASES_FOLDERS);
+            $docs->push([
+                'title' => $document->title,
+                'b64' => base64_encode(file_get_contents($medias->first()->getPath('pic'))),
+            ]);
+        }
+        return $docs;
     }
 
     public function hasDocuments()

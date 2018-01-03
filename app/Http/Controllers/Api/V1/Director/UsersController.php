@@ -14,6 +14,7 @@ use App\Role;
 use App\Services\LogoService;
 use App\Transformers\UserTransformer;
 use App\User;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded;
 
 class UsersController extends ApiController
 {
@@ -72,14 +73,20 @@ class UsersController extends ApiController
         /** @var User $user */
         $user = User::findOrFail($id);
         $user->clearMediaCollection(LogoService::FOLDER);
-        $user->addMediaFromRequest('file')
-            ->toMediaCollection(LogoService::FOLDER, LogoService::DISC);
-        return $this->response->created(asset($user->getFirstMediaUrl(LogoService::FOLDER, 'thumb_200')),
-            [
-                'thumb200' => asset($user->getFirstMediaUrl(LogoService::FOLDER, 'thumb_200')),
-                'thumb45' => asset($user->getFirstMediaUrl(LogoService::FOLDER, 'thumb_45')),
-                'original' => asset($user->getFirstMediaUrl(LogoService::FOLDER)),
-            ]);
+        try {
+            $user->addMediaFromRequest('file')
+                ->toMediaCollection(LogoService::FOLDER, LogoService::DISC);
+        } catch (FileCannotBeAdded $e) {
+            if (stripos($e->getMessage(), 'unlink(') === false) {
+                $this->response->error($e->getMessage(), 500);
+            }
+        } catch (\ErrorException $e) {
+            if (stripos($e->getMessage(), 'unlink(') === false) {
+                $this->response->error($e->getMessage(), 500);
+            }
+        }
+
+        return $this->response->item($user, new UserTransformer());
     }
 
     public function deletePhoto($id)

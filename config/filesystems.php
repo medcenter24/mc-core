@@ -75,7 +75,7 @@ return [
 
         \App\Services\LogoService::DISC => [
             'driver' => 'local',
-            'root' => public_path(\App\Services\LogoService::FOLDER)
+            'root' => storage_path(\App\Services\LogoService::FOLDER)
         ],
 
         \App\Services\SignatureService::DISC => [
@@ -88,10 +88,12 @@ return [
             'root' => storage_path(\App\Services\CaseServices\CaseReportService::PDF_FOLDER),
         ],
 
-        'media' => [
+        /*
+         * @deprecated We can't store in the public path files! everything should be stored in the storage folder
+         * 'media' => [
             'driver' => 'local',
             'root' => public_path( 'media'),
-        ]
+        ]*/
 
     ],
 

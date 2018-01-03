@@ -30,7 +30,6 @@ use App\Services\DomDocumentService;
 use App\Services\ExtractTableFromArrayService;
 use App\Services\Import\DataProvider;
 use App\Services\Import\ImporterException;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class Dhv24Docx2017Provider extends DataProvider

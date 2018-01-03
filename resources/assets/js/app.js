@@ -29,6 +29,12 @@ Vue.component(
   require('./components/passport/PersonalAccessTokens.vue')
 );
 
+Vue.component(
+    'case-report-preview',
+    require('./components/preview/case/report')
+);
+
+
 const app = new Vue({
   el: '#app'
 });

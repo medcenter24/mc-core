@@ -78,6 +78,16 @@ return [
             'root' => public_path(\App\Services\LogoService::FOLDER)
         ],
 
+        \App\Services\SignatureService::DISC => [
+            'driver' => 'local',
+            'root' => storage_path(\App\Services\SignatureService::FOLDER),
+        ],
+
+        \App\Services\CaseServices\CaseReportService::PDF_DISK => [
+            'driver' => 'local',
+            'root' => storage_path(\App\Services\CaseServices\CaseReportService::PDF_FOLDER),
+        ],
+
         'media' => [
             'driver' => 'local',
             'root' => public_path( 'media'),

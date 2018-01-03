@@ -8,9 +8,7 @@
 namespace App\Transformers;
 
 
-use App\Accident;
 use App\Patient;
-use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 
 class PatientTransformer extends TransformerAbstract

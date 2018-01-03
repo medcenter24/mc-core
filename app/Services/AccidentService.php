@@ -21,6 +21,7 @@ class AccidentService
     /**
      * @param $assistanceId
      * @param $fromDate
+     * @return int
      */
     public function getCountByAssistance($assistanceId, $fromDate)
     {

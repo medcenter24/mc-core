@@ -19,6 +19,7 @@ use App\Http\Controllers\ApiController;
 use App\Patient;
 use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
+use App\Services\CaseServices\CaseReportService;
 use App\Services\DocumentService;
 use App\Services\ReferralNumberService;
 use App\Services\RoleService;
@@ -433,8 +434,21 @@ class CasesController extends ApiController
         return $this->response->noContent();
     }
 
-    public function reportHtml($id)
+    public function reportHtml($id, CaseReportService $service)
     {
+        $accident = Accident::find($id);
+        if (!$accident) {
+            abort(404);
+        }
+        return response()->json(['data' => $service->generate($accident)->toHtml()]);
+    }
 
+    public function downloadPdf($id, CaseReportService $service)
+    {
+        $accident = Accident::find($id);
+        if (!$accident) {
+            abort(404);
+        }
+        return response()->download($service->generate($accident)->getPdfPath());
     }
 }

@@ -105,12 +105,23 @@ class DocumentService
     {
         $res = new Collection();
         if ($accident->caseable && $accident->caseable->documents) {
-            $query = $accident->caseable->documents();
+            $query = $accident->documents()->orderBy('created_at');
             if ($type) {
                 $query->where('type', $type);
             }
             $res = $query->get();
         }
         return $res;
+    }
+
+    /**
+     * insurances first then passports
+     * @param Accident $accident
+     * @return Collection
+     */
+    public function getOrderedAccidentDocuments(Accident $accident)
+    {
+        return $this->getAccidentDocuments($accident, DocumentService::TYPE_INSURANCE)
+            ->merge($this->getAccidentDocuments($accident, DocumentService::TYPE_PASSPORT));
     }
 }

@@ -31,7 +31,6 @@ class DocumentTransformer extends TransformerAbstract
         }
 
         $medias = $document->getMedia(DocumentService::CASES_FOLDERS);
-        \Log::error('', [$medias]);
         if (!$medias->count()) {
             \Log::error('Media not found', ['document' => $document]);
             return [];

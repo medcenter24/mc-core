@@ -56,11 +56,7 @@ class CompaniesController extends ApiController
         $company->clearMediaCollection(LogoService::FOLDER);
         $company->addMediaFromRequest('file')
             ->toMediaCollection(LogoService::FOLDER, LogoService::DISC);
-        return $this->response->created(asset($company->getFirstMediaUrl(LogoService::FOLDER, 'thumb_250')),
-            [
-                'thumb250' => asset($company->getFirstMediaUrl(LogoService::FOLDER, 'thumb_250')),
-                'original' => asset($company->getFirstMediaUrl(LogoService::FOLDER)),
-            ]);
+        return $this->response->item($company, new CompanyTransformer());
     }
 
     public function uploadSign($id)
@@ -69,9 +65,6 @@ class CompaniesController extends ApiController
         $company->clearMediaCollection(SignatureService::FOLDER);
         $company->addMediaFromRequest('file')
             ->toMediaCollection(SignatureService::FOLDER, SignatureService::DISC);
-        return $this->response->created('/forbidden',
-            [
-                'signature' => base64_encode(file_get_contents($company->getFirstMedia(SignatureService::FOLDER)->getPath('thumb_300x100'))),
-            ]);
+        return $this->response->item($company, new CompanyTransformer());
     }
 }

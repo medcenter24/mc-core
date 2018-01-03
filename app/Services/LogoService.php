@@ -13,7 +13,7 @@ use App\User;
 class LogoService
 {
     const DISC = 'logo';
-    const FOLDER = 'media';
+    const FOLDER = 'logo';
 
     public function setLogo(User $user, $file)
     {

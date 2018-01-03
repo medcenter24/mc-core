@@ -25,6 +25,9 @@ class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConv
     use SoftDeletes;
     use HasMediaTrait;
 
+    const THUMB_200 = 'thumb_200';
+    const THUMB_45 = 'thumb_45';
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -48,13 +51,13 @@ class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConv
 
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('thumb_45')
+        $this->addMediaConversion(self::THUMB_45)
             ->sharpen(10)
             ->quality(50)
             ->fit(Manipulations::FIT_CROP, 45, 45)
             ->performOnCollections(LogoService::FOLDER);
 
-        $this->addMediaConversion('thumb_200')
+        $this->addMediaConversion(self::THUMB_200)
             ->sharpen(10)
             ->quality(60)
             ->fit(Manipulations::FIT_CROP, 200, 200)

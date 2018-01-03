@@ -6,6 +6,9 @@
         .floating-line {
             padding-top: 0;
         }
+        .report-data {
+            page-break-after: always;
+        }
     }
 </style>
 
@@ -312,7 +315,21 @@
                     </td>
                 </tr>
             </table>
-
         </td>
     </tr>
 </table>
+
+@if ($report->hasDocuments())
+    <div class="report-data"></div>
+    <table>
+        <!-- Insurance -->
+        <!-- Passport -->
+        @foreach($report->b64Docs() as $doc)
+            <tr>
+                <td>
+                    <img src="data:image/jpg;base64, {{ $doc['b64'] }}" alt="{{ $doc['title'] }}">
+                </td>
+            </tr>
+        @endforeach
+    </table>
+@endif

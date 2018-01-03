@@ -12,11 +12,14 @@ use App\Accident;
 use App\Company;
 use App\Diagnostic;
 use App\DoctorAccident;
+use App\Document;
+use App\Helpers\MediaHelper;
 use App\Services\DocumentService;
 use App\Services\LogoService;
 use App\Services\SignatureService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Spatie\MediaLibrary\Media;
 
 class CaseReport
 {
@@ -55,10 +58,14 @@ class CaseReport
         return true;
     }
 
-    public function companyLogoUrl()
+    /**
+     * @return string
+     * @throws \ErrorException
+     */
+    public function companyLogoB64()
     {
         // todo assignment should has company, implementation of it in the future
-        return asset(Company::first()->getFirstMediaUrl(LogoService::FOLDER, 'thumb_250'));
+        return MediaHelper::b64(Company::first(), LogoService::FOLDER, Company::THUMB_250);
     }
 
     /**
@@ -513,27 +520,30 @@ class CaseReport
     {
         // todo assignment should has company, implementation of it in the future
         return Company::first()->hasMedia(SignatureService::FOLDER)
-            ? base64_encode(file_get_contents(Company::first()->getFirstMediaPath(SignatureService::FOLDER, 'thumb_300x100')))
+            ? MediaHelper::b64(Company::first(), SignatureService::FOLDER, Company::THUMB_300X100)
             : '';
     }
 
     /**
      * @return Collection
+     * @throws \ErrorException
      */
     public function b64Docs()
     {
         $docs = collect([]);
         $documentService = new DocumentService();
         foreach ($documentService->getOrderedAccidentDocuments($this->accident) as $document) {
-            $medias = $document->getMedia(DocumentService::CASES_FOLDERS);
             $docs->push([
                 'title' => $document->title,
-                'b64' => base64_encode(file_get_contents($medias->first()->getPath('pic'))),
+                'b64' => MediaHelper::b64($document, DocumentService::CASES_FOLDERS, Document::PIC),
             ]);
         }
         return $docs;
     }
 
+    /**
+     * @return mixed
+     */
     public function hasDocuments()
     {
         return $this->accident->documents->count();

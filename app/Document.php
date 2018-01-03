@@ -37,7 +37,12 @@ class Document extends Model implements HasMedia, HasMediaConversions
             ->sharpen(10)
             ->quality(50)
             ->fit(Manipulations::FIT_CROP, 368, 232)
-            ->performOnCollections(DocumentService::CASES_FOLDERS);;
+            ->performOnCollections(DocumentService::CASES_FOLDERS);
+
+        $this->addMediaConversion('pic')
+            ->sharpen(10)
+            ->quality(70)
+            ->performOnCollections(DocumentService::CASES_FOLDERS);
     }
 
     public function patients()

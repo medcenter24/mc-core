@@ -32,6 +32,15 @@ class Menu extends AbstractMenu
                 'role' => 'admin'
             ],
             '2' => [
+                'name' => trans('content.preview'),
+                'submenu' => [
+                    '10' => [
+                        'name' => trans('content.case_report'),
+                        'slug' => 'admin/preview/caseReport',
+                    ]
+                ],
+            ],
+            '3' => [
                 'name' => trans('content.translate'),
                 'slug' => 'admin/translation',
             ],

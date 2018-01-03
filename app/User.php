@@ -74,6 +74,11 @@ class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConv
         return $this->hasOne(Doctor::class);
     }
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     /**
      * File uploader
      */

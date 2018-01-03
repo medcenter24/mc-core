@@ -183,21 +183,19 @@ class CasesController extends ApiController
         $doctorAccident = DoctorAccident::create($doctorAccidentData);
 
         $patientData = $request->json('patient', []);
-        if (!$patientData['birthday']) {
+        if (!isset($patientData['birthday']) || !$patientData['birthday']) {
             $patientData['birthday'] = null;
         }
 
         $patient = null;
-        if (!$patientData['id']) {
-            if ($patientData['name']) {
+        if (!isset($patientData['id']) || !$patientData['id']) {
+            if (isset($patientData['name']) && $patientData['name']) {
                 $patient = Patient::create($patientData);
             }
         } else {
             $patient = Patient::findOrFail($patientData['id']);
         }
         $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
-
-        $accident->patient_id = $patient->id;
         $accident->caseable_id = $doctorAccident->id;
         $accident->caseable_type = DoctorAccident::class;
         $accident->created_by = $this->user()->id;

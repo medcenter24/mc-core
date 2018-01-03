@@ -9,10 +9,12 @@ namespace App\Http\Controllers\Api\V1;
 
 
 use App\Company;
+use App\Helpers\MediaHelper;
 use App\Http\Controllers\ApiController;
 use App\Services\LogoService;
 use App\Transformers\CompanyTransformer;
 use App\Transformers\UserTransformer;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
@@ -98,10 +100,9 @@ class AuthenticateController extends ApiController
 
     /**
      * Get the token array structure.
-     *
-     * @param  string $token
-     *
+     * @param $token
      * @return \Illuminate\Http\JsonResponse
+     * @throws \ErrorException
      */
     protected function respondWithToken($token)
     {
@@ -111,7 +112,7 @@ class AuthenticateController extends ApiController
             'expires_in' => $this->guard()->factory()->getTTL() * 60,
             'lang' => $this->guard()->user()->lang,
             'thumb' => $this->guard()->user()->hasMedia(LogoService::FOLDER)
-                ? asset($this->guard()->user()->getFirstMediaUrl(LogoService::FOLDER, 'thumb_45')) : ''
+                ? MediaHelper::b64($this->guard()->user(), LogoService::FOLDER, User::THUMB_45) : ''
         ]);
     }
 

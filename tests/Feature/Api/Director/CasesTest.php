@@ -31,9 +31,9 @@ class CasesTest extends TestCase
     {
         $user = factory(User::class)->create(['password' => bcrypt('foo')]);
 
-        $response = $this->json('POST', '/api/authenticate', ['email' => $user->email, 'password' => 'foo'], $this->headers());
+        $response = $this->json('POST', '/api/authenticate', ['email' => $user->email, 'password' => 'foo'], $this->headers($user));
 
-        $response->assertStatus(200)->assertJsonStructure(['token']);
+        $response->assertStatus(200)->assertJsonStructure(['token_type']);
     }
 
     public function testIndex()

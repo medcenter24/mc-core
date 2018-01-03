@@ -43,7 +43,7 @@
             <table>
                 <tr>
                     <td>
-                        <img src="{{ $report->companyLogoUrl() }}"
+                        <img src="data:image/jpg;base64, {{ $report->companyLogoB64() }}"
                              height="100"
                              alt="{{ strip_tags($report->companyTitle()) }}">
                     </td>

@@ -28,18 +28,25 @@ class Document extends Model implements HasMedia, HasMediaConversions
     use SoftDeletes;
     use HasMediaTrait;
 
+    const THUMB = 'thumb';
+    const PIC = 'pic';
+
     protected $fillable = ['title', 'created_by'];
     protected $visible = ['title', 'created_by'];
 
+    /**
+     * @param Media|null $media
+     * @throws \Spatie\Image\Exceptions\InvalidManipulation
+     */
     public function registerMediaConversions(Media $media = null)
     {
-        $this->addMediaConversion('thumb')
+        $this->addMediaConversion(self::THUMB)
             ->sharpen(10)
             ->quality(50)
             ->fit(Manipulations::FIT_CROP, 368, 232)
             ->performOnCollections(DocumentService::CASES_FOLDERS);
 
-        $this->addMediaConversion('pic')
+        $this->addMediaConversion(self::PIC)
             ->sharpen(10)
             ->quality(70)
             ->performOnCollections(DocumentService::CASES_FOLDERS);

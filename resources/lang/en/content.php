@@ -47,4 +47,7 @@ return [
     'translate' => 'Translate',
     'delete' => 'Delete',
     'view' => 'View',
+    'logout' => 'Logout',
+    'preview' => 'Preview',
+    'case_report' => 'Case Report',
 ];

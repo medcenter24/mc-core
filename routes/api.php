@@ -23,6 +23,7 @@ $api->group([
             $api->post('logout', '\App\Http\Controllers\Api\V1\AuthenticateController@logout');
             $api->get('token', \App\Http\Controllers\Api\V1\AuthenticateController::class . '@getToken');
             $api->get('user', \App\Http\Controllers\Api\V1\AuthenticateController::class . '@authenticatedUser');
+            $api->get('user/company', \App\Http\Controllers\Api\V1\AuthenticateController::class . '@getCompany');
 
             $api->group(['prefix' => 'doctor', 'middleware' => ['role:doctor']], function ($api) {
                 $api->post('accidents/send', \App\Http\Controllers\Api\V1\Doctor\AccidentsController::class . '@send');
@@ -57,6 +58,10 @@ $api->group([
                 $api->post('users/{id}/photo', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@updatePhoto');
                 $api->delete('users/{id}/photo', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@deletePhoto');
                 $api->resource('categories', \App\Http\Controllers\Api\V1\Director\CategoriesController::class);
+                // $api->resource('companies', \App\Http\Controllers\Api\V1\Director\CompaniesController::class);
+                $api->put('companies/{id}', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@update');
+                $api->post('companies/{id}/logo', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@uploadLogo');
+                $api->post('companies/{id}/sign', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@uploadSign');
 
                 // Exporter
                 $api->post('export/{form}', \App\Http\Controllers\Api\V1\Director\CasesExporterController::class . '@export');
@@ -78,6 +83,8 @@ $api->group([
                 $api->get('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
                 $api->get('cases/{id}/checkpoints', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@getCheckpoints');
                 $api->put('cases/{id}/close', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@close');
+                $api->get('cases/{id}/reportHtml', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@reportHtml');
+                $api->get('cases/{id}/downloadPdf', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@downloadPdf');
 
                 $api->resource('cases', \App\Http\Controllers\Api\V1\Director\CasesController::class);
 

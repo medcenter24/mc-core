@@ -40,7 +40,7 @@ class CaseReport
 
     public function getCustomer()
     {
-        return env('CUSTOMER', 'default');
+        return env('customer', 'default');
     }
 
     public function getProperty($property)

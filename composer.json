@@ -25,11 +25,11 @@
         "mpdf/mpdf": "dev-master",
         "mydoctors24/lib-installer": "~0.0.1",
         "spatie/laravel-medialibrary": "^6.6.3",
-        "tymon/jwt-auth": "^1.0.0-rc.1"
+        "tymon/jwt-auth": "^1.0.0-rc.1",
+        "fzaninotto/faker": "~1.7"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.4",
-        "fzaninotto/faker": "~1.7",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~6.0"
     },

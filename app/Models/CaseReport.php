@@ -59,13 +59,30 @@ class CaseReport
     }
 
     /**
+     * @return mixed
+     */
+    public function getCompany()
+    {
+        $company = Company::first();
+        if (!$company) {
+            $company = Company::create([
+                'title' => 'Medical Company'
+            ]);
+        }
+        return $company;
+    }
+
+    /**
      * @return string
-     * @throws \ErrorException
      */
     public function companyLogoB64()
     {
         // todo assignment should has company, implementation of it in the future
-        return MediaHelper::b64(Company::first(), LogoService::FOLDER, Company::THUMB_250);
+        try {
+            return MediaHelper::b64($this->getCompany(), LogoService::FOLDER, Company::THUMB_250);
+        } catch (\ErrorException $e) {
+            return MediaHelper::getB64Gag();
+        }
     }
 
     /**
@@ -421,11 +438,19 @@ class CaseReport
     }
 
     /**
+     * @return bool
+     */
+    public function hasVisitTime()
+    {
+        return $this->isDoctorAccident() && $this->accident->caseable->visit_time;
+    }
+
+    /**
      * @return string
      */
     public function visitTime()
     {
-        return $this->isDoctorAccident() ? $this->accident->caseable->visit_time->format('H:i') : '';
+        return $this->hasVisitTime() ? $this->accident->caseable->visit_time->format('H:i') : '';
     }
 
     /**
@@ -433,7 +458,7 @@ class CaseReport
      */
     public function visitDate()
     {
-        return $this->isDoctorAccident() ? $this->accident->caseable->visit_time->format('d.m.Y') : '';
+        return $this->hasVisitTime() ? $this->accident->caseable->visit_time->format('d.m.Y') : '';
     }
 
     /**
@@ -516,12 +541,17 @@ class CaseReport
         return $this->getProperty('bank_swift');
     }
 
+    /**
+     * @return string
+     */
     public function stampB64()
     {
         // todo assignment should has company, implementation of it in the future
-        return Company::first()->hasMedia(SignatureService::FOLDER)
-            ? MediaHelper::b64(Company::first(), SignatureService::FOLDER, Company::THUMB_300X100)
-            : '';
+        try {
+            return MediaHelper::b64($this->getCompany(), SignatureService::FOLDER, Company::THUMB_300X100);
+        } catch (\ErrorException $e) {
+            return MediaHelper::getB64Gag();
+        }
     }
 
     /**

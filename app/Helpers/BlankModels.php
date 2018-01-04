@@ -49,7 +49,6 @@ class BlankModels
             'city_id' => 0,
             'recommendation' => '',
             'investigation' => '',
-            'visit_time' => '',
         ]);
     }
 }

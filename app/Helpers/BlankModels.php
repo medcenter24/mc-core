@@ -19,7 +19,7 @@ class BlankModels
      */
     public static function accident()
     {
-        return factory(Accident::class)->create([
+        return Accident::create([
             'created_by' => 0,
             'parent_id' => 0,
             'patient_id' => 0,
@@ -29,6 +29,7 @@ class BlankModels
             'assistant_ref_num' => '',
             'caseable_id' => 0,
             'caseable_type' => '',
+            'caseable_cost' => 0,
             'ref_num' => '',
             'title' => '',
             'city_id' => 0,
@@ -43,11 +44,12 @@ class BlankModels
      */
     public static function doctorAccident()
     {
-        return factory(DoctorAccident::class)->create([
+        return DoctorAccident::create([
             'doctor_id' => 0,
             'city_id' => 0,
             'recommendation' => '',
             'investigation' => '',
+            'visit_time' => '',
         ]);
     }
 }

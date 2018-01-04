@@ -41,6 +41,7 @@ class CaseReportService
     {
         try {
             $mpdf = new Mpdf([
+                'tempDir' => storage_path('tmp'),
                 'debug' => true,
                 'useSubstitutions' => false,
                 'simpleTables' => true,

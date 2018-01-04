@@ -34,6 +34,10 @@ class AuthorizationTest extends TestCase
 
     public function testAuthorization()
     {
+        \Roles::shouldReceive('hasRole')
+            ->andReturnUsing(function () {
+                return true;
+            });
         $mail = 'mail@example.com';
         $passwd = 'secure';
         $this->user = factory(User::class)->create([

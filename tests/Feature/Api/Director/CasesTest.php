@@ -29,6 +29,10 @@ class CasesTest extends TestCase
      */
     public function it_authenticate_a_user()
     {
+        \Roles::shouldReceive('hasRole')
+            ->andReturnUsing(function () {
+                return true;
+            });
         $user = factory(User::class)->create(['password' => bcrypt('foo')]);
 
         $response = $this->json('POST', '/api/authenticate', ['email' => $user->email, 'password' => 'foo'], $this->headers($user));

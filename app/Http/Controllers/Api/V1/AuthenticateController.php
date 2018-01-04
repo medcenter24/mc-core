@@ -12,6 +12,7 @@ use App\Company;
 use App\Helpers\MediaHelper;
 use App\Http\Controllers\ApiController;
 use App\Services\LogoService;
+use App\Services\RoleService;
 use App\Transformers\CompanyTransformer;
 use App\Transformers\UserTransformer;
 use App\User;
@@ -48,11 +49,11 @@ class AuthenticateController extends ApiController
     /**
      *  API Login, on success return JWT Auth token
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     * @throws \ErrorException
      */
-    public function authenticate(Request $request)
+    public function authenticate(Request $request, RoleService $roleService)
     {
         // grab credentials from the request
         $credentials = collect(json_decode($request->getContent(), true));
@@ -60,7 +61,23 @@ class AuthenticateController extends ApiController
         // attempt to verify the credentials and create a token for the user
         if ($token = $this->guard()->attempt($credentials->only('email', 'password')->toArray())) {
             \Log::info('User logged in', ['email' => $credentials->get('email')]);
-            return $this->respondWithToken($token);
+
+            // check roles for the allowed origin
+            $hasAccess = false;
+            switch ($request->header('Origin')) {
+                case env('CORS_ALLOW_ORIGIN_DIRECTOR'):
+                    $hasAccess = $roleService->hasRole($this->guard()->user(), RoleService::DIRECTOR_ROLE);
+                    break;
+                case env('CORS_ALLOW_ORIGIN_DOCTOR'):
+                    $hasAccess = $roleService->hasRole($this->guard()->user(), RoleService::DOCTOR_ROLE);
+                    break;
+            }
+
+            if ($hasAccess) {
+                return $this->respondWithToken($token);
+            } else {
+                \Log::warning('User does not have required access role', ['email' => $credentials->get('email')]);
+            }
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);
@@ -86,7 +103,8 @@ class AuthenticateController extends ApiController
     /**
      * Refresh the token
      *
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \ErrorException
      */
     public function getToken()
     {

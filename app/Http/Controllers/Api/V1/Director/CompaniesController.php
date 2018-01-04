@@ -67,4 +67,18 @@ class CompaniesController extends ApiController
             ->toMediaCollection(SignatureService::FOLDER, SignatureService::DISC);
         return $this->response->item($company, new CompanyTransformer());
     }
+
+    public function deleteLogo($id)
+    {
+        $company = Company::findOrFail($id);
+        $company->clearMediaCollection(LogoService::FOLDER);
+        return $this->response->noContent();
+    }
+
+    public function deleteSign($id)
+    {
+        $company = Company::findOrFail($id);
+        $company->clearMediaCollection(SignatureService::FOLDER);
+        return $this->response->noContent();
+    }
 }

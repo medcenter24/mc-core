@@ -62,6 +62,8 @@ $api->group([
                 $api->put('companies/{id}', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@update');
                 $api->post('companies/{id}/logo', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@uploadLogo');
                 $api->post('companies/{id}/sign', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@uploadSign');
+                $api->delete('companies/{id}/logo', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@deleteLogo');
+                $api->delete('companies/{id}/sign', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@deleteSign');
 
                 // Exporter
                 $api->post('export/{form}', \App\Http\Controllers\Api\V1\Director\CasesExporterController::class . '@export');

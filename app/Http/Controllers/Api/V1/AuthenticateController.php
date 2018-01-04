@@ -53,7 +53,7 @@ class AuthenticateController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws \ErrorException
      */
-    public function authenticate(Request $request, RoleService $roleService)
+    public function authenticate(Request $request)
     {
         // grab credentials from the request
         $credentials = collect(json_decode($request->getContent(), true));
@@ -66,10 +66,10 @@ class AuthenticateController extends ApiController
             $hasAccess = false;
             switch ($request->header('Origin')) {
                 case env('CORS_ALLOW_ORIGIN_DIRECTOR'):
-                    $hasAccess = $roleService->hasRole($this->guard()->user(), RoleService::DIRECTOR_ROLE);
+                    $hasAccess = \Roles::hasRole($this->guard()->user(), RoleService::DIRECTOR_ROLE);
                     break;
                 case env('CORS_ALLOW_ORIGIN_DOCTOR'):
-                    $hasAccess = $roleService->hasRole($this->guard()->user(), RoleService::DOCTOR_ROLE);
+                    $hasAccess = \Roles::hasRole($this->guard()->user(), RoleService::DOCTOR_ROLE);
                     break;
             }
 

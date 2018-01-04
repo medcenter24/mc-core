@@ -29,4 +29,13 @@ class MediaHelper
         $path = $model->getFirstMediaPath($collectionName, $thumbName);
         return file_exists($path) ? base64_encode(file_get_contents($path)) : 'noContent';
     }
+
+    /**
+     *
+     * @return string
+     */
+    public static function getB64Gag()
+    {
+        return base64_encode(file_get_contents(resource_path('assets/img/no_image_available.jpg')));
+    }
 }

@@ -50,4 +50,5 @@ return [
     'logout' => 'Logout',
     'preview' => 'Preview',
     'case_report' => 'Case Report',
+    'case_history' => 'Case History',
 ];

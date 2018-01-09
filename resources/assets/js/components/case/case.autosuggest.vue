@@ -1,32 +1,22 @@
 <!--
-  - Copyright (c) 2017.
+  - Copyright (c) 2018.
   -
   - @author Alexander Zagovorichev <zagovorichev@gmail.com>
   -->
 
 <template>
-    <div class="case-report-container">
-        <div class="container white">
-            <div class="row">
-                <div class="col-sm-6">
-                    <vue-autosuggest
-                            :suggestions="filteredOptions"
-                            :onSelected="clickHandler"
-                            :inputProps="inputProps"
-                            :limit="limit"
-                    />
-                </div>
-                <div class="col-sm-6">
-                    <pre v-if="selected">You have selected: '{{selected}}'</pre>
-                </div>
+    <div class="case-autosuggest-component">
+        <div class="row">
+            <div class="col-sm-6">
+                <vue-autosuggest
+                        :suggestions="filteredOptions"
+                        :onSelected="clickHandler"
+                        :inputProps="inputProps"
+                        :limit="limit"
+                />
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <case-report-html
-                            ref="caseReportHtml"
-                            :refNum="selected"
-                    ></case-report-html>
-                </div>
+            <div class="col-sm-6">
+                <pre v-if="selected">You have selected: '{{selected}}'</pre>
             </div>
         </div>
     </div>
@@ -34,13 +24,11 @@
 
 <script>
     import { VueAutosuggest } from 'vue-autosuggest'
-    import CasesProvider from '../../../providers/cases.provider'
-    import CaseReportHtml from './html'
+    import CasesProvider from '../../providers/cases.provider'
 
     export default {
-        name: "case-report-preview",
+        name: "case-autosuggest",
         components: {
-            CaseReportHtml,
             VueAutosuggest
         },
         data() {
@@ -61,8 +49,7 @@
         methods: {
             clickHandler(option) {
                 this.selected = option.item;
-                // console.log(this.$refs.caseReportHtml)
-                this.$refs.caseReportHtml.loadReport(this.selected);
+                this.$emit('select', this.selected);
             },
             onInputChange(text) {
                 if (text === '' || text === undefined) {

@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) 2017.
+  - Copyright (c) 2018.
   -
   - @author Alexander Zagovorichev <zagovorichev@gmail.com>
   -->
@@ -21,7 +21,7 @@
     import CasesProvider from '../../../providers/cases.provider'
 
     export default {
-        name: "case-report-html",
+        name: "case-report-content",
         data (){
             return {
                 reportPage: '',

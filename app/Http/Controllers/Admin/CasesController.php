@@ -54,4 +54,12 @@ class CasesController extends AdminController
 
         return response()->download($service->generate($accident)->getPdfPath());
     }
+
+    public function history(int $id)
+    {
+        /** @var Accident $accident */
+        $accident = Accident::findOrFail($id);
+
+        return response()->json($accident->history);
+    }
 }

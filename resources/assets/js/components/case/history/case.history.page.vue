@@ -10,9 +10,13 @@
             <case-autosuggest
                 v-on:select="onCaseSelected"
             ></case-autosuggest>
-            <div class="row">
+            <div class="row" v-if="history.length">
                 <div class="col-sm-12">
-
+                    <pre>
+                        <code>
+                            <div class="preview-content" v-html="history"></div>
+                        </code>
+                    </pre>
                 </div>
             </div>
         </div>
@@ -20,6 +24,7 @@
 </template>
 
 <script>
+    import CasesProvider from "../../../providers/cases.provider"
     import CaseAutosuggest from "../case.autosuggest";
 
     export default {
@@ -29,12 +34,15 @@
         },
         data() {
             return {
-                selected: '',
+                history: '',
             }
         },
         methods: {
-            onCaseSelected (event) {
-                console.log(event);
+            onCaseSelected (refNum) {
+                CasesProvider
+                    .getHistory(refNum)
+                    .then(response => this.history = JSON.stringify(response.data, null, '   |'))
+                    .catch(err => console.error(err));
             }
         }
     }

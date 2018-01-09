@@ -26,6 +26,9 @@
                     link.download = 'report_' + refNum + '.pdf';
                     link.click();
                 });
+        },
+        getHistory (refNum) {
+            return Vue.axios.get(this.getUrl('history'), {params: {ref: refNum}});
         }
     }
 </script>

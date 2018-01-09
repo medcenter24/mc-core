@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Accident;
 use App\Http\Controllers\AdminController;
+use App\Services\CaseServices\CaseHistoryService;
 use App\Services\CaseServices\CaseReportService;
 use Illuminate\Http\Request;
 use Mpdf\Mpdf;
@@ -28,6 +29,7 @@ class CasesController extends AdminController
             ->orderBy('ref_num')
             ->limit($limit)
             ->offset($offset)
+            ->withTrashed()
             ->get(['ref_num']) as $row) {
             $cases[] = $row['ref_num'];
         }
@@ -55,11 +57,14 @@ class CasesController extends AdminController
         return response()->download($service->generate($accident)->getPdfPath());
     }
 
-    public function history(int $id)
+    public function history(Request $request, CaseHistoryService $service)
     {
         /** @var Accident $accident */
-        $accident = Accident::findOrFail($id);
+        $accident = Accident::where('ref_num', $request->input('ref', false))->first();
+        if (!$accident) {
+            abort(404);
+        }
 
-        return response()->json($accident->history);
+        return response()->json($service->generate($accident)->toArray());
     }
 }

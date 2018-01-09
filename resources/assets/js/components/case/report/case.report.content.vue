@@ -12,7 +12,11 @@
                 <button v-on:click="reportPdf()">PDF</button>
             </div>
         </div>
-        <div class="preview-content" v-html="reportPage"></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="preview-content" v-html="reportPage"></div>
+            </div>
+        </div>
         <iframe id="printf" name="printf" style="display: none;"></iframe>
     </div>
 </template>

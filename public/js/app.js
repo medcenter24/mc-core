@@ -44720,6 +44720,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             link.download = 'report_' + refNum + '.pdf';
             link.click();
         });
+    },
+    getHistory: function getHistory(refNum) {
+        return __WEBPACK_IMPORTED_MODULE_0_vue___default.a.axios.get(this.getUrl('history'), { params: { ref: refNum } });
     }
 });
 
@@ -44802,7 +44805,7 @@ exports = module.exports = __webpack_require__(2)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -44815,6 +44818,10 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__providers_cases_provider__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__providers_cases_provider___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__providers_cases_provider__);
+//
+//
+//
+//
 //
 //
 //
@@ -44900,11 +44907,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_vm._v("PDF")])])]) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-12"
+  }, [_c('div', {
     staticClass: "preview-content",
     domProps: {
       "innerHTML": _vm._s(_vm.reportPage)
     }
-  }), _vm._v(" "), _c('iframe', {
+  })])]), _vm._v(" "), _c('iframe', {
     staticStyle: {
       "display": "none"
     },
@@ -45030,7 +45041,7 @@ exports = module.exports = __webpack_require__(2)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -45041,8 +45052,10 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__case_autosuggest__ = __webpack_require__(75);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__case_autosuggest___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__case_autosuggest__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__providers_cases_provider__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__providers_cases_provider___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__providers_cases_provider__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__case_autosuggest__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__case_autosuggest___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__case_autosuggest__);
 //
 //
 //
@@ -45064,23 +45077,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "case-history-page",
     components: {
-        CaseAutosuggest: __WEBPACK_IMPORTED_MODULE_0__case_autosuggest___default.a
+        CaseAutosuggest: __WEBPACK_IMPORTED_MODULE_1__case_autosuggest___default.a
     },
     data: function data() {
         return {
-            selected: ''
+            history: ''
         };
     },
 
     methods: {
-        onCaseSelected: function onCaseSelected(event) {
-            console.log(event);
+        onCaseSelected: function onCaseSelected(refNum) {
+            var _this = this;
+
+            __WEBPACK_IMPORTED_MODULE_0__providers_cases_provider___default.a.getHistory(refNum).then(function (response) {
+                return _this.history = JSON.stringify(response.data, null, '   |');
+            }).catch(function (err) {
+                return console.error(err);
+            });
         }
     }
 });
@@ -45293,14 +45317,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "select": _vm.onCaseSelected
     }
-  }), _vm._v(" "), _vm._m(0)], 1)])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
+  }), _vm._v(" "), (_vm.history.length) ? _c('div', {
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-sm-12"
-  })])
-}]}
+  }, [_c('pre', [_vm._v("                    "), _c('code', [_vm._v("\n                        "), _c('div', {
+    staticClass: "preview-content",
+    domProps: {
+      "innerHTML": _vm._s(_vm.history)
+    }
+  }), _vm._v("\n                    ")]), _vm._v("\n                ")])])]) : _vm._e()], 1)])
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()

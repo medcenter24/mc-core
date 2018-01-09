@@ -449,4 +449,12 @@ class CasesController extends ApiController
         }
         return response()->download($service->generate($accident)->getPdfPath());
     }
+
+    public function history(int $id)
+    {
+        /** @var Accident $accident */
+        $accident = Accident::findOrFail($id);
+
+        return $this->response->collection($accident->history, new ScenarioTransformer());
+    }
 }

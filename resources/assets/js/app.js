@@ -30,10 +30,14 @@ Vue.component(
 );
 
 Vue.component(
-    'case-report-preview',
-    require('./components/preview/case/report')
+    'case-report-page',
+    require('./components/case/report/case.report.page')
 );
 
+Vue.component(
+    'case-history-page',
+    require('./components/case/history/case.history.page')
+);
 
 const app = new Vue({
   el: '#app'

@@ -22,4 +22,9 @@ class PreviewController extends AdminController
     {
         return view('admin.preview.case.report');
     }
+
+    public function caseHistory()
+    {
+        return view('admin.preview.case.history');
+    }
 }

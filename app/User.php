@@ -9,6 +9,7 @@ namespace App;
 
 
 use App\Services\LogoService;
+use Cmgmyr\Messenger\Traits\Messagable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,6 +25,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConv
     use Notifiable;
     use SoftDeletes;
     use HasMediaTrait;
+    use Messagable;
 
     const THUMB_200 = 'thumb_200';
     const THUMB_45 = 'thumb_45';

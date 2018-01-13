@@ -39,6 +39,11 @@ Vue.component(
     require('./components/case/history/case.history.page')
 );
 
+Vue.component(
+    'messenger-dashboard',
+    require('./components/messenger/dashboard.page')
+);
+
 const app = new Vue({
   el: '#app'
 });

@@ -16,7 +16,7 @@
                 />
             </div>
             <div class="col-sm-6">
-                <pre v-if="selected">You have selected: '{{selected}}'</pre>
+                <div class="lead" v-if="selected">You have selected: '{{selected}}'</div>
             </div>
         </div>
     </div>

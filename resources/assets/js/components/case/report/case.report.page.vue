@@ -6,11 +6,11 @@
 
 <template>
     <div class="case-report-container">
-        <div class="container white">
+        <div class="container white p-2">
             <case-autosuggest
                     v-on:select="onCaseSelected"
             ></case-autosuggest>
-            <div class="row">
+            <div class="row mt-2">
                 <div class="col-sm-12">
                     <case-report-html
                             ref="caseReportHtml"

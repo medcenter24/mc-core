@@ -6,6 +6,7 @@
  */
 
 return [
+    'profile' => 'Profile',
     'assistant' => 'Assistant',
     'npp' => 'Number in order',
     'patient_name' => 'Patient name',
@@ -51,4 +52,5 @@ return [
     'preview' => 'Preview',
     'case_report' => 'Case Report',
     'case_history' => 'Case History',
+    'messenger' => 'Messenger',
 ];

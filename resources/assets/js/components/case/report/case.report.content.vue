@@ -8,8 +8,8 @@
     <div class="case-report-html">
         <div class="row" v-if="reportPage">
             <div class="col-sm-12">
-                <button v-on:click="reportPrint()">Print</button>
-                <button v-on:click="reportPdf()">PDF</button>
+                <button class="btn" v-on:click="reportPrint()">Print</button>
+                <button class="btn" v-on:click="reportPdf()">PDF</button>
             </div>
         </div>
         <div class="row">

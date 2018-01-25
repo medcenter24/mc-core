@@ -27,4 +27,9 @@ class AccidentStatusHistory extends Model
     {
         return $this->belongsTo(AccidentStatus::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

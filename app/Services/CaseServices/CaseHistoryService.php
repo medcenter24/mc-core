@@ -30,6 +30,11 @@ class CaseHistoryService
         return $this;
     }
 
+    public function getHistory()
+    {
+        return $this->history;
+    }
+
     public function toArray()
     {
         return $this->history->toArray();

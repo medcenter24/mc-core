@@ -22,6 +22,7 @@ use App\Services\AccidentStatusesService;
 use App\Services\CaseServices\CaseHistoryService;
 use App\Services\CaseServices\CaseReportService;
 use App\Services\DocumentService;
+use App\Services\Messenger\ThreadService;
 use App\Services\ReferralNumberService;
 use App\Services\RoleService;
 use App\Services\Scenario\DoctorScenarioService;
@@ -37,8 +38,13 @@ use App\Transformers\DoctorCaseTransformer;
 use App\Transformers\DoctorServiceTransformer;
 use App\Transformers\DoctorSurveyTransformer;
 use App\Transformers\DocumentTransformer;
+use App\Transformers\MessageTransformer;
 use App\Transformers\ScenarioTransformer;
+use App\User;
 use Carbon\Carbon;
+use Cmgmyr\Messenger\Models\Message;
+use Cmgmyr\Messenger\Models\Participant;
+use Cmgmyr\Messenger\Models\Thread;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
@@ -461,5 +467,50 @@ class CasesController extends ApiController
             $service->generate($accident)->getHistory(),
             new AccidentStatusHistoryTransformer()
         );
+    }
+
+    public function comments(int $id)
+    {
+        // I need to be sure that there is such accident
+        /** @var Accident $accident */
+        $accident = Accident::findOrFail($id);
+        $thread = Thread::firstOrCreate(['subject' => 'Accident_'.$accident->id]);
+        $userId = \Auth::id();
+        // $users = User::whereNotIn('id', $thread->participantsUserIds($userId))->get();
+        $thread->markAsRead($userId);
+
+        return $this->response->collection(
+            $thread->messages,
+            new MessageTransformer()
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return \Dingo\Api\Http\Response
+     * @throws \ErrorException
+     */
+    public function addComment(Request $request, int $id)
+    {
+        $accident = Accident::findOrFail($id);
+        $thread = Thread::firstOrCreate(['subject' => 'Accident_'.$accident->id]);
+        $userId = \Auth::id();
+
+        $message = Message::create([
+            'thread_id' => $thread->id,
+            'user_id' => $userId,
+            'body' => $request->input('text', ''),
+        ]);
+
+        // Add Sender to participants
+        Participant::firstOrCreate([
+            'thread_id' => $thread->id,
+            'user_id' => $userId,
+            'last_read' => new Carbon(),
+        ]);
+
+        $transform = new MessageTransformer();
+        return $this->response->created(null, $transform->transform($message));
     }
 }

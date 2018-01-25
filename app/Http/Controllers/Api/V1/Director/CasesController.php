@@ -19,6 +19,7 @@ use App\Http\Controllers\ApiController;
 use App\Patient;
 use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
+use App\Services\CaseServices\CaseHistoryService;
 use App\Services\CaseServices\CaseReportService;
 use App\Services\DocumentService;
 use App\Services\ReferralNumberService;
@@ -28,6 +29,7 @@ use App\Services\Scenario\ScenarioService;
 use App\Services\Scenario\StoryService;
 use App\Services\ScenarioInterface;
 use App\Transformers\AccidentCheckpointTransformer;
+use App\Transformers\AccidentStatusHistoryTransformer;
 use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DirectorCaseTransformer;
@@ -450,11 +452,14 @@ class CasesController extends ApiController
         return response()->download($service->generate($accident)->getPdfPath());
     }
 
-    public function history(int $id)
+    public function history(int $id, CaseHistoryService $service)
     {
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
 
-        return $this->response->collection($accident->history, new ScenarioTransformer());
+        return $this->response->collection(
+            $service->generate($accident)->getHistory(),
+            new AccidentStatusHistoryTransformer()
+        );
     }
 }

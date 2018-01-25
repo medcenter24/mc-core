@@ -88,6 +88,8 @@ $api->group([
                 $api->get('cases/{id}/reportHtml', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@reportHtml');
                 $api->get('cases/{id}/downloadPdf', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@downloadPdf');
                 $api->get('cases/{id}/history', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@history');
+                $api->get('cases/{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@comments');
+                $api->put('cases/{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@addComment');
 
                 $api->resource('cases', \App\Http\Controllers\Api\V1\Director\CasesController::class);
 

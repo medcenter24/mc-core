@@ -500,7 +500,7 @@ class CasesController extends ApiController
         $message = Message::create([
             'thread_id' => $thread->id,
             'user_id' => $userId,
-            'body' => $request->input('text', ''),
+            'body' => $request->json('text', ''),
         ]);
 
         // Add Sender to participants

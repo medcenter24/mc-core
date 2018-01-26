@@ -22,6 +22,19 @@ if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
 
     // replace storage path if provided
     $app->useStoragePath( realpath(__DIR__ . '/../../data/laravel') );
+
+    if (!function_exists('vendor_path')) {
+        function vendor_path ($path = '') {
+            return realpath(__DIR__ . '/../../vendor') . ($path ? DIRECTORY_SEPARATOR.$path : $path);
+        }
+    }
+}
+
+// vendor path needed for some of the serviceProviders ie MessengerServiceProvider
+if (!function_exists('vendor_path')) {
+    function vendor_path ($path = '') {
+        return realpath(__DIR__ . '/../vendor') . ($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
 }
 
 /*

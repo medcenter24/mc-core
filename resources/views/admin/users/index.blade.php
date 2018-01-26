@@ -1,7 +1,7 @@
 @extends('admin.html')
 
 @section('content')
-    <div class="container white">
+    <div class="container white m-2">
         <div class="row offset-bottom10">
             <div class="col-sm-4">
                 <a href="{{ url('admin/users/create') }}" class="btn btn-success">+ @lang('content.new_user')</a>

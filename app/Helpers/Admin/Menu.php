@@ -37,7 +37,15 @@ class Menu extends AbstractMenu
                     '10' => [
                         'name' => trans('content.case_report'),
                         'slug' => 'admin/preview/caseReport',
-                    ]
+                    ],
+                    '20' => [
+                        'name' => trans('content.case_history'),
+                        'slug' => 'admin/preview/caseHistory',
+                    ],
+                    '30' => [
+                        'name' => trans('content.messenger'),
+                        'slug' => 'admin/preview/messenger',
+                    ],
                 ],
             ],
             '3' => [

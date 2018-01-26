@@ -17,6 +17,7 @@
     "require": {
         "php": ">=5.6.4",
         "barryvdh/laravel-cors": "^0.10.0",
+        "cmgmyr/messenger": "dev-master",
         "dingo/api": "2.0.0-alpha1",
         "intervention/image": "^2.4",
         "laravel/framework": "5.5.*",

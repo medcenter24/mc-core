@@ -52,7 +52,7 @@ class ReferralNumberService
      * 010117 - date
      * FAD -
      *     FA - Doctor initials = Doctor referral prefix (Foster Abigail) / Hospital referral prefix (SP - Sant Paolo Hospital)
-     *     D - Day/Night/Weekend
+     *     D - Day/Night/Weekend(F)
      *
      * @param Accident $accident
      * @return string
@@ -109,7 +109,7 @@ class ReferralNumberService
     {
         $mark = 'N'; // night
         if (in_array($date->dayOfWeek, [0,6])) {
-            $mark = 'W'; // weekend
+            $mark = 'F'; // weekend
         } elseif($date->hour >= 8 && $date->hour <= 21) {
             $mark = 'D'; // day
         }

@@ -30,8 +30,24 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
     Route::resource('roles', 'Admin\RolesController');
     Route::group(['prefix' => 'preview'], function() {
         Route::get('caseReport', 'Admin\PreviewController@caseReport');
+        Route::get('caseHistory', 'Admin\PreviewController@caseHistory');
+        Route::get('messenger', 'Admin\PreviewController@messenger');
     });
-    Route::get('cases', 'Admin\CasesController@search');
-    Route::get('cases/report', 'Admin\CasesController@report');
-    Route::get('cases/pdf', 'Admin\CasesController@downloadPdf');
+
+    Route::group(['prefix' => 'cases'], function () {
+        Route::get('/', 'Admin\CasesController@search');
+        Route::get('report', 'Admin\CasesController@report');
+        Route::get('pdf', 'Admin\CasesController@downloadPdf');
+        Route::get('history', 'Admin\CasesController@history');
+    });
+
+    Route::group(['prefix' => 'messenger'], function () {
+        Route::group(['prefix' => 'thread'], function () {
+            Route::get('/', 'Admin\Messenger\ThreadController@index');
+            Route::get('/counts', 'Admin\Messenger\ThreadController@counts');
+            Route::get('/{id}', 'Admin\Messenger\ThreadController@show');
+            Route::post('/', 'Admin\Messenger\ThreadController@create');
+            Route::post('/{id}/message/create', 'Admin\Messenger\ThreadController@createMessage');
+        });
+    });
 });

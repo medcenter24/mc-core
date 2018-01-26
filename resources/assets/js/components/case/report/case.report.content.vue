@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) 2017.
+  - Copyright (c) 2018.
   -
   - @author Alexander Zagovorichev <zagovorichev@gmail.com>
   -->
@@ -8,11 +8,15 @@
     <div class="case-report-html">
         <div class="row" v-if="reportPage">
             <div class="col-sm-12">
-                <button v-on:click="reportPrint()">Print</button>
-                <button v-on:click="reportPdf()">PDF</button>
+                <button class="btn" v-on:click="reportPrint()">Print</button>
+                <button class="btn" v-on:click="reportPdf()">PDF</button>
             </div>
         </div>
-        <div class="preview-content" v-html="reportPage"></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="preview-content" v-html="reportPage"></div>
+            </div>
+        </div>
         <iframe id="printf" name="printf" style="display: none;"></iframe>
     </div>
 </template>
@@ -21,7 +25,7 @@
     import CasesProvider from '../../../providers/cases.provider'
 
     export default {
-        name: "case-report-html",
+        name: "case-report-content",
         data (){
             return {
                 reportPage: '',

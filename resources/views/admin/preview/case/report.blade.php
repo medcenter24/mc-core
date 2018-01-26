@@ -1,5 +1,5 @@
 @extends('admin.html')
 
 @push('components')
-    <case-report-preview></case-report-preview>
+    <case-report-page></case-report-page>
 @endpush

@@ -22,4 +22,19 @@ class PreviewController extends AdminController
     {
         return view('admin.preview.case.report');
     }
+
+    public function caseHistory()
+    {
+        view()->share('current_menu', '2.20');
+        return view('admin.preview.case.history');
+    }
+
+    /**
+     * Dashboard of the messenger
+     */
+    public function messenger()
+    {
+        view()->share('current_menu', '2.30');
+        return view('admin.preview.messenger');
+    }
 }

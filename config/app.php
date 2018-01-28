@@ -191,6 +191,7 @@ return [
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         \Maatwebsite\Excel\ExcelServiceProvider::class,
         \App\Services\Messenger\LocMessengerServiceProvider::class,
+        BackupManager\Laravel\Laravel55ServiceProvider::class,
     ],
 
     /*

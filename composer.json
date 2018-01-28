@@ -16,6 +16,8 @@
     ],
     "require": {
         "php": ">=5.6.4",
+        "backup-manager/backup-manager": "1.0.x-dev",
+        "backup-manager/laravel": "^1.0@dev",
         "barryvdh/laravel-cors": "^0.10.0",
         "cmgmyr/messenger": "dev-master",
         "dingo/api": "2.0.0-alpha1",
@@ -26,6 +28,7 @@
         "mpdf/mpdf": "dev-master",
         "mydoctors24/lib-installer": "~0.0.1",
         "spatie/laravel-medialibrary": "^6.6.3",
+        "srmklive/flysystem-dropbox-v2": "dev-master",
         "tymon/jwt-auth": "^1.0.0-rc.1"
     },
     "require-dev": {

@@ -42,7 +42,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConv
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password', 'phone', 'lang'];
+    protected $fillable = ['name', 'email', 'password', 'phone', 'lang', 'timezone'];
 
     /**
      * The attributes that should be hidden for arrays.

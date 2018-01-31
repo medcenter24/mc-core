@@ -32,8 +32,8 @@ class AccidentStatusHistoryTransformer extends TransformerAbstract
             'accident_status_id' => $history->accident_status_id,
             'status' => $history->accidentStatus->title,
             'commentary' => $history->commentary,
-            'created_at' => $history->created_at->format(config('date.systemFormat')),
-            'updated_at' => $history->updated_at->format(config('date.systemFormat')),
+            'created_at' => $history->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
+            'updated_at' => $history->updated_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
         ];
     }
 }

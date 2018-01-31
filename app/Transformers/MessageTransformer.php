@@ -30,7 +30,7 @@ class MessageTransformer extends TransformerAbstract
             'user_thumb' => $message->user_id && $message->user->hasMedia(LogoService::FOLDER)
                 ? MediaHelper::b64($message->user, LogoService::FOLDER, User::THUMB_45) : '',
             'body' => $message->body,
-            'created_at' => $message->created_at->format(config('date.systemFormat')),
+            'created_at' => $message->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
         ];
     }
 }

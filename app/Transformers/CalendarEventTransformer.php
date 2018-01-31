@@ -18,7 +18,7 @@ class CalendarEventTransformer extends TransformerAbstract
             'id' => $accident->id,
             'title' => $accident->ref_num,
             'start' => $accident->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
-            'end' => $accident->visited_at ? $accident->visited_at->format(config('date.systemFormat')) : '',
+            'end' => $accident->visited_at ? $accident->visited_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : '',
             'status' => $accident->accidentStatus ? $accident->accidentStatus->title : '',
         ];
     }

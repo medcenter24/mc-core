@@ -43,11 +43,11 @@ class AccidentTransformer extends TransformerAbstract
             'contacts' => $accident->contacts,
             'symptoms' => $accident->symptoms,
             // system format needed by the director case editor
-            'created_at' => $accident->created_at->format(config('date.systemFormat')),
-            'updated_at' => $accident->updated_at ? $accident->updated_at->format(config('date.systemFormat')) : null,
-            'deleted_at' => $accident->deleted_at ? $accident->deleted_at->format(config('date.systemFormat')) : null,
+            'created_at' => $accident->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
+            'updated_at' => $accident->updated_at ? $accident->updated_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : null,
+            'deleted_at' => $accident->deleted_at ? $accident->deleted_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : null,
             'closed_at' => $accident->closed_at,
-            'handling_time' => $accident->handling_time ? $accident->handling_time->format(config('date.systemFormat'))
+            'handling_time' => $accident->handling_time ? $accident->handling_time->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat'))
                 : date(config('date.systemFormat')),
         ];
     }

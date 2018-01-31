@@ -46,6 +46,7 @@ class UsersController extends ApiController
         $user->email = $request->json('email', '');
         $user->phone = $request->json('phone', '');
         $user->lang = $request->json('lang', 'en');
+        $user->timezone = $request->json('timezone', 'UTC');
         $user->save();
 
         \Log::info('User updated', [$user]);
@@ -61,6 +62,7 @@ class UsersController extends ApiController
             'phone' => $request->json('phone', ''),
             'password' => \Hash::make($request->json('password')),
             'lang' => $request->json('lang', 'en'),
+            'timezone' => $request->json('timezone', 'UTC'),
         ]);
         // director could create only users with doctor role
         $user->roles()->attach(Role::where('title', Role::ROLE_DOCTOR)->get()->first());

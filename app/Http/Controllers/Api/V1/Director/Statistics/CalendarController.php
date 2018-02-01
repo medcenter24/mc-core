@@ -11,12 +11,17 @@ namespace App\Http\Controllers\Api\V1\Director\Statistics;
 use App\Accident;
 use App\Http\Controllers\ApiController;
 use App\Transformers\CalendarEventTransformer;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class CalendarController extends ApiController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $cases = Accident::all();
+        $start = $request->input('start');
+        $end = $request->input('end');
+
+        $cases = Accident::whereBetween('created_at', [$start.' 00:00:00', $end.' 00:00:00'])->get();
         return $this->response->collection($cases, new CalendarEventTransformer());
     }
 }

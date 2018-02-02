@@ -10,8 +10,7 @@ namespace App\Http\Controllers\Api\V1\Director\Statistics;
 
 use App\Accident;
 use App\Http\Controllers\ApiController;
-use App\Transformers\CalendarEventTransformer;
-use Carbon\Carbon;
+use App\Transformers\statistics\CalendarEventTransformer;
 use Illuminate\Http\Request;
 
 class CalendarController extends ApiController

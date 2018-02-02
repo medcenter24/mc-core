@@ -5,7 +5,7 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-namespace App\Transformers;
+namespace App\Transformers\statistics;
 
 
 use App\Accident;

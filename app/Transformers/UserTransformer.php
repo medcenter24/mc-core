@@ -15,6 +15,11 @@ use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
 {
+    /**
+     * @param User $user
+     * @return array
+     * @throws \ErrorException
+     */
     public function transform (User $user)
     {
         return [
@@ -27,6 +32,7 @@ class UserTransformer extends TransformerAbstract
                 ? MediaHelper::b64($user, LogoService::FOLDER, User::THUMB_200) : '',
             'thumb_45' => $user->hasMedia(LogoService::FOLDER)
                 ? MediaHelper::b64($user, LogoService::FOLDER, User::THUMB_45) : '',
+            'timezone' => $user->timezone,
         ];
     }
 }

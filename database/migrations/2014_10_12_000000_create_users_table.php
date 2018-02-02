@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('phone', 100)->default('');
             $table->string('password')->default('');
             $table->string('lang')->default('');
+            $table->string('timezone')->default('UTC');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

@@ -116,6 +116,11 @@ $api->group([
                 $api->delete('media/{id}', '\App\Http\Controllers\Api\V1\Director\MediaController@destroy');
 
                 $api->resource('documents', \App\Http\Controllers\Api\V1\Director\DocumentsController::class);
+
+                $api->group(['prefix' => 'statistics'], function ($api) {
+                    $api->get('calendar', \App\Http\Controllers\Api\V1\Director\Statistics\CalendarController::class . '@index');
+                    $api->get('traffic', \App\Http\Controllers\Api\V1\Director\Statistics\TrafficController::class . '@index');
+                });
             });
         });
     });

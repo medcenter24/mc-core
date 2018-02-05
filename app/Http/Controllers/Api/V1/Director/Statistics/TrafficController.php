@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class TrafficController extends ApiController
 {
-    public function index(Request $request)
+    public function doctors(Request $request)
     {
         $year = $request->input('year');
         if (!$year) {
@@ -29,9 +29,28 @@ class TrafficController extends ApiController
                     ->on('accidents.caseable_id', '=', 'doctor_accidents.id');
             })
             ->join('doctors', 'doctors.id', '=', 'doctor_accidents.doctor_id')
-            ->select('doctors.id as doctor_id', 'doctors.name as doctor_name', DB::raw('count(accidents.id) as cases_count'))
+            ->select('doctors.id as id', 'doctors.name as name', DB::raw('count(accidents.id) as cases_count'))
             ->whereBetween('accidents.created_at', [$year.'-01-01 00:00:00', $year.'-12-31 23:59:59'])
             ->groupBy('doctors.id')
+            ->orderBy('cases_count', 'desc')
+            ->get();
+
+        return $this->response->collection($statistic, new TrafficTransformer());
+    }
+
+    public function assistants(Request $request)
+    {
+        $year = $request->input('year');
+        if (!$year) {
+            $year = (new Carbon())->format('Y');
+        }
+
+        $statistic = DB::table('accidents')
+            ->join('assistants', 'assistants.id', '=', 'accidents.assistant_id')
+            ->select('assistants.id as id', 'assistants.title as name', DB::raw('count(accidents.id) as cases_count'))
+            ->whereBetween('accidents.created_at', [$year.'-01-01 00:00:00', $year.'-12-31 23:59:59'])
+            ->groupBy('assistants.id')
+            ->orderBy('cases_count', 'desc')
             ->get();
 
         return $this->response->collection($statistic, new TrafficTransformer());

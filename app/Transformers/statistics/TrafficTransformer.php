@@ -14,8 +14,8 @@ class TrafficTransformer extends TransformerAbstract
 {
     public function transform($statistic) {
         return [
-            'doctorId' => $statistic->doctor_id,
-            'doctorName' => $statistic->doctor_name,
+            'id' => $statistic->id,
+            'name' => $statistic->name,
             'casesCount' => $statistic->cases_count,
         ];
     }

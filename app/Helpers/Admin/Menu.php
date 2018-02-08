@@ -46,6 +46,10 @@ class Menu extends AbstractMenu
                         'name' => trans('content.messenger'),
                         'slug' => 'admin/preview/messenger',
                     ],
+                    '40' => [
+                        'name' => trans('content.telegram'),
+                        'slug' => 'admin/preview/telegram',
+                    ],
                 ],
             ],
             '3' => [

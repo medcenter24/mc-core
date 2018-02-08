@@ -12,7 +12,7 @@
             return '/admin/cases' + (src && src.length ? '/' + src : '');
         },
         search (options) {
-            return Vue.axios.get(this.getUrl(), options)
+            return Vue.axios.get(this.getUrl(), options);
         },
         getReportHtml (refNum) {
             return Vue.axios.get(this.getUrl('report'), {params: {ref: refNum}});

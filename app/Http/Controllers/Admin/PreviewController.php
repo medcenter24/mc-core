@@ -37,4 +37,10 @@ class PreviewController extends AdminController
         view()->share('current_menu', '2.30');
         return view('admin.preview.messenger');
     }
+
+    public function telegram()
+    {
+        view()->share('current_menu', '2.40');
+        return view('admin.preview.telegram.bot');
+    }
 }

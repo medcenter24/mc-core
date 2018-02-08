@@ -53,4 +53,5 @@ return [
     'case_report' => 'Case Report',
     'case_history' => 'Case History',
     'messenger' => 'Messenger',
+    'telegram' => 'Telegram',
 ];

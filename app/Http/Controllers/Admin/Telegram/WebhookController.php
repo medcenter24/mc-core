@@ -10,27 +10,32 @@ namespace App\Http\Controllers\Admin\Telegram;
 
 use App\Http\Controllers\AdminController;
 use App\Http\Requests\Telegram\SetWebhook;
+use App\Services\Bot\BotInstance;
 use Telegram;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class WebhookController extends  AdminController
 {
 
-    public function index ()
+    /**
+     * @param BotInstance $botInstance
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \ErrorException
+     */
+    public function index (BotInstance $botInstance)
     {
-        $info = Telegram::getWebhookInfo();
-
-        return response()->json([
-            'webhookUrl' => $info->getUrl(),
-            'hasCertificate' => $info->getHasCustomCertificate(),
-            'pendingUpdateCount' => $info->getPendingUpdateCount(),
-            'lastErrorDate' => $info->getLasErrorDate(),
-            'maxConnections' => $info->getMaxConnections(),
-            'allowedUpdates' => $info->getAllowedUpdates(),
-        ]);
+        $telegram = $botInstance->getBot('telegram');
+        $info = $telegram->getWebhookInformation();
+        return response()->json($info);
     }
 
-    public function update (SetWebhook $request)
+    /**
+     * @param SetWebhook $request
+     * @param BotInstance $botInstance
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \ErrorException
+     */
+    public function update (SetWebhook $request, BotInstance $botInstance)
     {
         $url = $request->input('webhook');
         $conf = [
@@ -42,23 +47,31 @@ class WebhookController extends  AdminController
         }
 
         try {
-            $response = Telegram::setWebhook($conf);
+            $telegram = $botInstance->getBot('telegram');
+            $response = $telegram->setWebhook($conf);
         } catch (TelegramSDKException $e) {
             return response()->json(['message' => $e->getMessage() . '('.$conf['url'].')'], 500);
         }
         return response()->json(['status' => $response]);
     }
 
-    public function destroy ()
+    /**
+     * @param BotInstance $botInstance
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \ErrorException
+     */
+    public function destroy (BotInstance $botInstance)
     {
-        $response = Telegram::removeWebhook();
-        return response()->json(['status' => $response]);
+        return response()->json(['status' => $botInstance->getBot('telegram')->removeWebhook()]);
     }
 
     /**
-     * set default webhook in order to the configuration file
+     * set default webhook in order to the Telegrams configuration file
+     * @param BotInstance $botInstance
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \ErrorException
      */
-    public function store ()
+    public function store (BotInstance $botInstance)
     {
         $conf = [
             'url' => env('TELEGRAM_WEBHOOK_URL')
@@ -68,7 +81,8 @@ class WebhookController extends  AdminController
             $conf['certificate'] = $cert;
         }
         try {
-            $response = Telegram::setWebhook($conf);
+            $telegram = $botInstance->getBot('telegram');
+            $response = $telegram->setWebhook($conf);
         } catch (TelegramSDKException $e) {
             return response()->json(['message' => $e->getMessage() . '('.$conf['url'].')'], 500);
         }

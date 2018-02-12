@@ -46,7 +46,7 @@
                                 <form action="{{ action('Admin\InvitesController@destroy', [$invite->id]) }}" method="post">
                                     {{ csrf_field() }}
                                     {{ method_field('delete') }}
-                                    <button class="btn btn-danger" type="submit">@lang('content.delete')</button>
+                                    <button class="btn btn-danger btn-sm" type="submit">@lang('content.delete')</button>
                                 </form>
                             </td>
                         </tr>

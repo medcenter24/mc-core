@@ -63,4 +63,6 @@ return [
     'valid_to' => 'Valid To',
     'no_invites' => 'Generate new invites to get opportunity to bind telegram',
     'choose_user' => 'Choose user from the list',
+    'created' => 'Created',
+    'deleted' => 'Deleted',
 ];

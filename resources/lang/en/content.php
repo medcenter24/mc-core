@@ -54,4 +54,13 @@ return [
     'case_history' => 'Case History',
     'messenger' => 'Messenger',
     'telegram' => 'Telegram',
+    'invites' => 'Invites',
+    'create_invite' => 'Create Invite',
+    'user_id' => 'User ID',
+    'user_name' => 'User Name',
+    'token' => 'token',
+    'valid_from' => 'Valid From',
+    'valid_to' => 'Valid To',
+    'no_invites' => 'Generate new invites to get opportunity to bind telegram',
+    'choose_user' => 'Choose user from the list',
 ];

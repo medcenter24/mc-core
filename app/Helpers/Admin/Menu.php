@@ -28,6 +28,10 @@ class Menu extends AbstractMenu
                         'name' => trans('content.roles'),
                         'slug' => 'admin/roles',
                     ],
+                    '30' => [
+                        'name' => trans('content.invites'),
+                        'slug' => 'admin/invites',
+                    ]
                 ],
                 'role' => 'admin'
             ],
@@ -46,16 +50,21 @@ class Menu extends AbstractMenu
                         'name' => trans('content.messenger'),
                         'slug' => 'admin/preview/messenger',
                     ],
-                    '40' => [
-                        'name' => trans('content.telegram'),
-                        'slug' => 'admin/preview/telegram',
-                    ],
                 ],
             ],
             '3' => [
                 'name' => trans('content.translate'),
                 'slug' => 'admin/translation',
             ],
+            '4' => [
+                'name' => trans('content.telegram'),
+                'submenu' => [
+                    '10' => [
+                        'name' => trans('content.preview'),
+                        'slug' => 'admin/preview/telegram',
+                    ],
+                ]
+            ]
         ];
     }
 }

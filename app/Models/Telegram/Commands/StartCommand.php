@@ -8,6 +8,7 @@
 namespace App\Models\Telegram\Commands;
 
 
+use App\TelegramUser;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
 
@@ -25,10 +26,17 @@ class StartCommand extends Command
      */
     public function handle()
     {
-        \Log::info('Im here but dont work');
-        $this->replyWithMessage(['text' => 'Hello! Welcome to our bot, Here are our available commands:']);
+
+        $user = $this->getUpdate()->getMessage()->getFrom();
+        // \Log::info('i', [$user->id, $user->username, $user->languageCode, $user->first_name, $user->last_name]);
 
         $this->replyWithChatAction(['action' => Actions::TYPING]);
+
+        $telegramUser = TelegramUser::where('telegram_id', $user->id)->first();
+        if (!$telegramUser) {
+            $this->replyWithMessage(['text' => trans('telegram.welcome_guest')]);
+            $this->replyWithMessage(['text' => trans('telegram.invite_request')]);
+        }
 
         $commands = $this->telegram->getCommands();
 

@@ -33,6 +33,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
     Route::get('/', 'Admin\MainController@index');
     Route::resource('users', 'Admin\UsersController');
     Route::resource('roles', 'Admin\RolesController');
+    Route::resource('invites', 'Admin\InvitesController');
+
     Route::group(['prefix' => 'preview'], function() {
         Route::get('caseReport', 'Admin\PreviewController@caseReport');
         Route::get('caseHistory', 'Admin\PreviewController@caseHistory');
@@ -58,8 +60,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
     });
 
     Route::group(['prefix' => 'telegram'], function () {
+
         Route::get('getMe', 'Admin\Telegram\TelegramController@getMe');
         Route::get('getWebhookInfo', 'Admin\Telegram\TelegramController@getWebhookInfo');
+
         Route::group(['prefix' => 'message'], function () {
             Route::post('send', 'Admin\Telegram\MessageController@send');
         });

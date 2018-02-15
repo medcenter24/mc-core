@@ -65,4 +65,5 @@ return [
     'choose_user' => 'Choose user from the list',
     'created' => 'Created',
     'deleted' => 'Deleted',
+    'success' => 'Success',
 ];

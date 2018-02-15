@@ -14,7 +14,7 @@ class TelegramUser extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['telegram_id', 'user_id', 'username', 'last_visit'];
+    protected $fillable = ['telegram_id', 'user_id', 'username', 'last_visit', 'first_name', 'last_name'];
 
     public function user()
     {

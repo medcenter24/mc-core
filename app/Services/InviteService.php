@@ -38,22 +38,36 @@ class InviteService
 
     /**
      * Check if invite is match to user, exists, and active
-     * @param User $user
      * @param string $token
      * @return bool
      */
-    public function isValidInvite(User $user, $token = '')
+    public function isValidInvite($token = '')
     {
-        $now = Carbon::now();
-        $invite = Invite::were('user_id', $user->id)
-            ->where('token', $token)
-            ->where('valid_from', '>=', $now)
-            ->where('valid_to', '<=', $now)
-            ->first();
-
-        return $invite->id ? true : false;
+        $invite = $this->getInviteByToken($token);
+        return $invite && $invite->id ? true : false;
     }
 
+    /**
+     * Load invite by the token
+     * @param $token
+     * @return Invite
+     */
+    public function getInviteByToken($token)
+    {
+        $now = Carbon::now();
+        \Log::info('Token is not valid', [
+            'token' => $token,
+            'now' => $now->format(config('date.systemFormat')),
+        ]);
+        return Invite::where('token', $token)
+            ->where('valid_from', '<=', $now->format(config('date.systemFormat')))
+            ->where('valid_to', '>=', $now->format(config('date.systemFormat')))
+            ->first();
+    }
+
+    /**
+     * Clean all outdated tokens
+     */
     public function clean()
     {
         Invite::where('valid_to', '<=', Carbon::now())->delete();

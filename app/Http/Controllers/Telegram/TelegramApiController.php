@@ -21,7 +21,7 @@ class TelegramApiController extends Controller
      *
      * @param InviteService $inviteService
      * @return string
-     * @throws Telegram\Bot\Exceptions\TelegramSDKException
+     * @throws \Exception
      */
     public function index(InviteService $inviteService)
     {

@@ -10,16 +10,25 @@ namespace App\Models\Telegram\Commands;
 
 use Telegram\Bot\Commands\Command;
 
-class HelloCommand extends Command
+/**
+ * Class HelpCommand.
+ */
+class HelpCommand extends Command
 {
-    protected $name = 'initialization';
+    /**
+     * @var string Command Name
+     */
+    protected $name = 'help';
 
-    protected $aliases = ['init'];
+    /**
+     * @var array Command Aliases
+     */
+    protected $aliases = ['listcommands'];
 
     /**
      * @var string Command Description
      */
-    protected $description = 'Initialize new user to assign it to the system with invite key';
+    protected $description = 'telegram.command_help_description';
 
     /**
      * {@inheritdoc}
@@ -28,11 +37,13 @@ class HelloCommand extends Command
     {
         $user = $this->getUpdate()->getMessage()->getFrom();
         \App::setLocale($user->languageCode);
+        $this->description = trans($this->description);
+
         $commands = $this->telegram->getCommands();
 
         $text = '';
         foreach ($commands as $name => $handler) {
-            $text .= sprintf('/%s - %s'.PHP_EOL, $name, $handler->getDescription());
+            $text .= sprintf('/%s - %s'.PHP_EOL, $name, trans($handler->getDescription()));
         }
 
         $this->replyWithMessage(compact('text'));

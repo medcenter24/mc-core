@@ -31,21 +31,24 @@ class StartCommand extends Command
         // \Log::info('i', [$user->id, $user->username, $user->languageCode, $user->first_name, $user->last_name]);
 
         $this->replyWithChatAction(['action' => Actions::TYPING]);
-
+        $this->replyWithMessage(['text' => trans('telegram.welcome_guest')]);
         $telegramUser = TelegramUser::where('telegram_id', $user->id)->first();
         if (!$telegramUser) {
-            $this->replyWithMessage(['text' => trans('telegram.welcome_guest')]);
-            $this->replyWithMessage(['text' => trans('telegram.invite_request')]);
+            $response = \Telegram::sendMessage([
+                'chat_id' => $user->id,
+                'text' => trans('telegram.invite_request'),
+                'reply_markup' => json_encode(['force_reply' => true]),
+            ]);
+            $this->replyWithMessage(['text' => 'msg_id' . $response->getMessageId()]);
+        } else {
+            $commands = $this->telegram->getCommands();
+            $text = '';
+            foreach ($commands as $name => $handler) {
+                $text .= sprintf('/%s - %s'.PHP_EOL, $name, $handler->getDescription());
+            }
+            $this->replyWithMessage(compact('text'));
         }
-
-        $commands = $this->telegram->getCommands();
-
-        $text = '';
-        foreach ($commands as $name => $handler) {
-            $text .= sprintf('/%s - %s'.PHP_EOL, $name, $handler->getDescription());
-        }
-
-        $this->replyWithMessage(compact('text'));
+        // $this->replyWithChatAction()
 
         // Trigger another command dynamically from within this command
         // When you want to chain multiple commands within one or process the request further.

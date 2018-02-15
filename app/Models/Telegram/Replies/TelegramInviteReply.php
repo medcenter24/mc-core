@@ -41,6 +41,7 @@ class TelegramInviteReply
     {
         $this->update = $update;
         $this->message = $this->update->getMessage();
+        \App::setLocale($this->message->from->languageCode);
         $this->inviteService = $service;
         if ($this->message) {
             $this->bindAccount();

@@ -19,32 +19,33 @@ class StartCommand extends Command
     /**
      * @var string Command Description
      */
-    protected $description = 'Start to use the bot';
+    protected $description = 'telegram.command_start_description';
 
     /**
      * {@inheritdoc}
      */
     public function handle()
     {
-
         $user = $this->getUpdate()->getMessage()->getFrom();
+        \App::setLocale($user->languageCode);
+        $this->description = trans($this->description);
         // \Log::info('i', [$user->id, $user->username, $user->languageCode, $user->first_name, $user->last_name]);
 
         $this->replyWithChatAction(['action' => Actions::TYPING]);
-        $this->replyWithMessage(['text' => trans('telegram.welcome_guest')]);
         $telegramUser = TelegramUser::where('telegram_id', $user->id)->first();
         if (!$telegramUser) {
-            $response = \Telegram::sendMessage([
+            $this->replyWithMessage(['text' => trans('telegram.welcome_guest')]);
+            \Telegram::sendMessage([
                 'chat_id' => $user->id,
                 'text' => trans('telegram.invite_request'),
                 'reply_markup' => json_encode(['force_reply' => true]),
             ]);
-            $this->replyWithMessage(['text' => 'msg_id' . $response->getMessageId()]);
         } else {
+            $this->replyWithMessage(['text' => trans('telegram.welcome_user', ['user' => $telegramUser->user->name])]);
             $commands = $this->telegram->getCommands();
             $text = '';
             foreach ($commands as $name => $handler) {
-                $text .= sprintf('/%s - %s'.PHP_EOL, $name, $handler->getDescription());
+                $text .= sprintf('/%s - %s'.PHP_EOL, $name, trans($handler->getDescription()));
             }
             $this->replyWithMessage(compact('text'));
         }

@@ -13,4 +13,5 @@ return [
     'invite_success' => 'Вы подключили свой аккаунт к Telegram. Используйте комманду /help для получения списка доступных комманд.',
     'command_start_description' => 'Начало использования сервиса',
     'command_help_description' => 'Помощь, список комманд',
+    'help_account' => 'Вы можете писать @zagovorichev если у вас возникли вопросы',
 ];

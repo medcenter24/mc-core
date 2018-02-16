@@ -121,4 +121,13 @@ class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConv
     {
         return [];
     }
+
+    /**
+     * assignment to the Telegram messenger
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function telegram()
+    {
+        return $this->hasOne(TelegramUser::class);
+    }
 }

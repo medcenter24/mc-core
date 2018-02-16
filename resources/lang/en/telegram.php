@@ -13,4 +13,5 @@ return [
     'invite_success' => 'Now you will receive messages from the bot. Or you can use command /help for info.',
     'command_start_description' => 'Start to use the bot',
     'command_help_description' => 'Help command, Get a list of commands',
+    'help_account' => 'You can write to @zagovorichev if you have any questions',
 ];

@@ -37,6 +37,8 @@ class HelpCommand extends Command
     {
         $user = $this->getUpdate()->getMessage()->getFrom();
         \App::setLocale($user->languageCode);
+        $this->replyWithMessage(['text' => trans('telegram.help_account')]);
+
         $this->description = trans($this->description);
 
         $commands = $this->telegram->getCommands();

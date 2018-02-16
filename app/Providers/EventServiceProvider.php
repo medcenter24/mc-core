@@ -6,6 +6,7 @@ use App\Events\AccidentStatusChangedEvent;
 use App\Events\DoctorAccidentUpdatedEvent;
 use App\Listeners\AccidentStatusHistoryListener;
 use App\Listeners\DoctorAccidentDoctorAssignmentListener;
+use App\Listeners\SendTelegramMessageOnDocAssignment;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -21,6 +22,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         DoctorAccidentUpdatedEvent::class => [
             DoctorAccidentDoctorAssignmentListener::class,
+            SendTelegramMessageOnDocAssignment::class,
         ]
     ];
 

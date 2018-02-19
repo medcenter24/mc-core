@@ -10,7 +10,6 @@ namespace App\Models\Telegram\Replies;
 
 use App\Services\InviteService;
 use App\TelegramUser;
-use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\Update;
 
@@ -30,6 +29,11 @@ class TelegramInviteReply
      * @var InviteService
      */
     private $inviteService;
+
+    /**
+     * @var null|Update
+     */
+    private $update;
 
     /**
      * TelegramInviteReply constructor.

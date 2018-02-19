@@ -5,6 +5,8 @@ namespace App\Listeners;
 use App\Events\DoctorAccidentUpdatedEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Telegram\Bot\Keyboard\Button;
+use Telegram\Bot\Keyboard\Keyboard;
 
 class SendTelegramMessageOnDocAssignment
 {
@@ -33,10 +35,24 @@ class SendTelegramMessageOnDocAssignment
             && $doctorAccident->doctor->user_id
             && $doctorAccident->doctor->user->telegram
         ) {
+            $doctorUser = $doctorAccident->doctor->user;
+            \App::setLocale($doctorUser->lang);
+            $keyboard = new Keyboard([
+                'keyboard' => [
+                    [new Button([
+                        'text' => trans('content.pickup_case', ['ref_num' => $doctorAccident->accident->ref_num]),
+                        // 'request_location' => true, not implemented yet (on telegrams side)
+                    ])]
+                ],
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true,
+            ]);
+
             \Telegram::sendMessage([
                 'chat_id' => $doctorAccident->doctor->user->telegram->telegram_id,
                 'text' => view('case.info', compact('doctorAccident'))->render(),
                 'parse_mode' => 'HTML',
+                'reply_markup' => $keyboard,
             ]);
         } elseif(!$doctorAccident->doctor->user_id) {
             \Log::warning('Doctor will not receive any messages to the telegram, because he does not have assignment to user', [

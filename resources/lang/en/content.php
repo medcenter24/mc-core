@@ -66,4 +66,6 @@ return [
     'created' => 'Created',
     'deleted' => 'Deleted',
     'success' => 'Success',
+    'go_to_accident_page' => 'Go to the accident page',
+    'pickup_case' => 'Accept Case Assignment :ref_num',
 ];

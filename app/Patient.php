@@ -16,6 +16,7 @@ class Patient extends Model
 
     protected $fillable = ['name', 'address', 'phones', 'birthday', 'comment'];
     protected $visible = ['name', 'address', 'phones', 'birthday', 'comment'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at', 'birthday'];
 
     /**
      * Photos of the documents from the patient

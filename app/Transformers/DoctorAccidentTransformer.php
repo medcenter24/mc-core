@@ -25,8 +25,8 @@ class DoctorAccidentTransformer extends AccidentTransformer
             'investigation' => $accident->caseable->investigation,
             'status' => $accident->caseable->status,
             'accident_status_id' => $accident->caseable->accident_status_id,
-            'visit_time' => $accident->caseable->visit_time,
-            'created_at' => $accident->caseable->created_at,
+            'visit_time' => $accident->caseable->visit_time->format(config('date.systemFormat')),
+            'created_at' => $accident->caseable->created_at->format(config('date.systemFormat')),
             'city_id' => $accident->caseable->city_id,
             'doctor_id' => $accident->caseable->doctor_id,
         ];

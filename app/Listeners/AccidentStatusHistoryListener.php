@@ -33,7 +33,7 @@ class AccidentStatusHistoryListener
     public function handle(AccidentStatusChangedEvent $event)
     {
         AccidentStatusHistory::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => auth()->guest() ? 0 : auth()->user()->id,
             'accident_status_id' => $event->getAccident()->accident_status_id,
             'historyable_id' => $event->getAccident()->id,
             'historyable_type' => get_class($event->getAccident()),

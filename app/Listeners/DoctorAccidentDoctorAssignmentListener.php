@@ -42,7 +42,6 @@ class DoctorAccidentDoctorAssignmentListener
         $prev = $event->getPreviousData();
         $doctorAccident = $event->getDoctorAccident();
 
-        \Log::error('test listener', ['prev' => $prev, 'docAcc' => $doctorAccident]);
         if (
             $doctorAccident->doctor_id &&
             (!$prev || $prev->doctor_id != $doctorAccident->doctor_id)

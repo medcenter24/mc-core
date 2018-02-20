@@ -13,3 +13,5 @@ Description of the features and tools for the application.
 - Parameter `ONLY_API` passed as a server parameter will be interpreted as configuration is used as a API only.
  It means that with that parameter all requests will be proceed by the `router/api.php` 
   
+### Telegram settings
+To generate new cert: `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nodes`

@@ -192,6 +192,7 @@ return [
         \Maatwebsite\Excel\ExcelServiceProvider::class,
         \App\Services\Messenger\LocMessengerServiceProvider::class,
         BackupManager\Laravel\Laravel55ServiceProvider::class,
+        Telegram\Bot\Laravel\TelegramServiceProvider::class,
     ],
 
     /*
@@ -245,6 +246,7 @@ return [
         'Roles' => App\Support\Facades\Roles::class,
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Telegram'  => Telegram\Bot\Laravel\Facades\Telegram::class,
     ],
 
 ];

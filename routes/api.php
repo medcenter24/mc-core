@@ -119,7 +119,8 @@ $api->group([
 
                 $api->group(['prefix' => 'statistics'], function ($api) {
                     $api->get('calendar', \App\Http\Controllers\Api\V1\Director\Statistics\CalendarController::class . '@index');
-                    $api->get('traffic', \App\Http\Controllers\Api\V1\Director\Statistics\TrafficController::class . '@index');
+                    $api->get('doctorsTraffic', \App\Http\Controllers\Api\V1\Director\Statistics\TrafficController::class . '@doctors');
+                    $api->get('assistantsTraffic', \App\Http\Controllers\Api\V1\Director\Statistics\TrafficController::class . '@assistants');
                 });
             });
         });

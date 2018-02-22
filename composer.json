@@ -16,22 +16,21 @@
     ],
     "require": {
         "php": ">=5.6.4",
-        "backup-manager/backup-manager": "dev-master",
-        "backup-manager/laravel": "^1.0@dev",
+        "backup-manager/laravel": "dev-master",
         "barryvdh/laravel-cors": "^0.10.0",
         "cmgmyr/messenger": "dev-master",
-        "phpdocumentor/reflection-common": "1.0",
         "dingo/api": "2.0.0-alpha1",
         "intervention/image": "^2.4",
+        "irazasyed/telegram-bot-sdk": "dev-develop",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "maatwebsite/excel": "~2.1.0",
         "mpdf/mpdf": "dev-master",
         "mydoctors24/lib-installer": "~0.0.1",
+        "phpdocumentor/reflection-common": "1.0",
         "spatie/laravel-medialibrary": "^6.6.3",
         "srmklive/flysystem-dropbox-v2": "dev-master",
-        "tymon/jwt-auth": "^1.0.0-rc.1",
-        "irazasyed/telegram-bot-sdk": "dev-develop"
+        "tymon/jwt-auth": "^1.0.0-rc.1"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.4",

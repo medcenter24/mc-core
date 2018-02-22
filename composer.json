@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": ">=5.6.4",
-        "backup-manager/backup-manager": "1.0.x-dev",
+        "backup-manager/backup-manager": "dev-master",
         "backup-manager/laravel": "^1.0@dev",
         "barryvdh/laravel-cors": "^0.10.0",
         "cmgmyr/messenger": "dev-master",

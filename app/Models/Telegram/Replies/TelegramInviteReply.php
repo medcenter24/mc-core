@@ -65,9 +65,9 @@ class TelegramInviteReply
                 $telegramUser = TelegramUser::create([
                     'telegram_id' => $this->message->from->id,
                     'user_id' => $user->id,
-                    'username' => $this->message->from->username,
-                    'first_name' => $this->message->from->firstName,
-                    'last_name' => $this->message->from->lastName,
+                    'username' => (string)$this->message->from->username,
+                    'first_name' => (string)$this->message->from->firstName,
+                    'last_name' => (string)$this->message->from->lastName,
                 ]);
 
                 \Log::info('TelegramUser was assigned to the our user',

@@ -20,7 +20,7 @@ class PatientTransformer extends TransformerAbstract
             'name' => $patient->name,
             'address' => $patient->address,
             'phones' => $patient->phones,
-            'birthday' => $patient->birthday->format(config('date.systemFormat')),
+            'birthday' => $patient->birthday ? $patient->birthday->format(config('date.systemFormat')) : '',
             'comment' => $patient->comment
         ];
     }

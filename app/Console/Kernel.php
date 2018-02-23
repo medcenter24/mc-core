@@ -25,7 +25,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // clearing redundant invites
         $schedule->command('invite:clean')->weekly();
+        // creating backups
+        $schedule->command('db:backup --database=mysql --destination=dropbox --compression=gzip --destinationPath=/'.
+            config('app.env').'/'.config('app.name')
+            .' --timestamp=Y_m_d_H_i_s')->daily();
     }
 
     /**

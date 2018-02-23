@@ -22,8 +22,8 @@ class CreateInvitesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id')->index();
             $table->string('token')->index();
-            $table->timestamp('valid_from')->index();
-            $table->timestamp('valid_to')->index();
+            $table->timestamp('valid_from')->nullable()->index();
+            $table->timestamp('valid_to')->nullable()->index();
             $table->timestamps();
         });
     }

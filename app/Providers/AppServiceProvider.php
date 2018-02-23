@@ -1,8 +1,13 @@
 <?php
+/**
+ * Copyright (c) 2018.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
 
 namespace App\Providers;
 
-use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,7 +30,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         if ($this->app->environment() !== 'production') {
-            $this->app->register(IdeHelperServiceProvider::class);
+            // fyi needs full path, because I don't have this lib on the prod
+            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
     }
 }

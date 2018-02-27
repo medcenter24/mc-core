@@ -12,7 +12,7 @@ use App\Accident;
 use App\Doctor;
 use App\DoctorAccident;
 
-class DoctorsService
+class DoctorsService extends PersonAbstract
 {
 
     /**

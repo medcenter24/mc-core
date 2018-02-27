@@ -176,6 +176,7 @@ return [
         \App\Services\Messenger\LocMessengerServiceProvider::class,
         BackupManager\Laravel\Laravel55ServiceProvider::class,
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
+        \App\Providers\CaseFinanceProvider::class,
     ],
 
     /*

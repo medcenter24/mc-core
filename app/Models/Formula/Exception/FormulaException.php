@@ -5,10 +5,10 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-namespace App\Services\Finance;
+namespace App\Models\Formula\Exception;
 
 
-class CaseFinanceService
+class FormulaException extends \Exception
 {
 
 }

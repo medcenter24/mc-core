@@ -8,7 +8,8 @@
 namespace Tests\Unit\Services\Finance;
 
 
-use App\Services\Finance\CaseFinanceService;
+use App\Accident;
+use App\Services\CaseServices\CaseFinanceService;
 use Tests\TestCase;
 
 class CaseFinanceServiceTest extends TestCase
@@ -29,8 +30,9 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testEmptyCase()
     {
-        $this->financeService->calculateIncome($accident);
-        $this->financeService->calculateDoctorFee($accident);
-        $this->financeService->calculateAssistantFee($accident);
+        $accident = new Accident();
+        self::assertEquals(0, $this->financeService->calculateIncome($accident), 'Income is correct');
+        self::assertEquals(0, $this->financeService->calculateDoctorPayment($accident), 'Doctor payment is correct');
+        self::assertEquals(0, $this->financeService->calculateAssistantPayment($accident), 'Assistant payment is correct');
     }
 }

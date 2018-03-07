@@ -7,7 +7,7 @@
 
 namespace App\Providers;
 
-use App\Services\Finance\CaseFinanceService;
+use App\Services\Formula\CaseFinanceService;
 use Illuminate\Support\ServiceProvider;
 
 class CaseFinanceProvider extends ServiceProvider

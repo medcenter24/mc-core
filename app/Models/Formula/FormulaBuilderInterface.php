@@ -9,6 +9,7 @@ namespace App\Models\Formula;
 
 
 use App\Models\Formula\Exception\FormulaException;
+use App\Models\Formula\Variables\Integer;
 use Illuminate\Support\Collection;
 
 interface FormulaBuilderInterface extends FormulaResultable
@@ -122,4 +123,15 @@ interface FormulaBuilderInterface extends FormulaResultable
      * @return FormulaBuilderInterface - new sub-formula
      */
     public function divNestedFormula();
+
+    /**
+     * @return FormulaBuilderInterface - parent formula
+     */
+    public function closeNestedFormula();
+
+    /**
+     * @return string
+     * @throws \Throwable
+     */
+    public function varView();
 }

@@ -20,9 +20,13 @@ class ReferralNumberServiceTest extends TestCase
      */
     private $service;
 
+    /**
+     * @throws \ReflectionException
+     */
     protected function setUp()
     {
         parent::setUp();
+        /** @var AccidentService $accidentService */
         $accidentService = $this->createMock(AccidentService::class);
         $accidentService->method('getCountByAssistance')
             ->willReturn(3);

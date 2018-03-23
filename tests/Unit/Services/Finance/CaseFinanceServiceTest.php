@@ -10,7 +10,9 @@ namespace Tests\Unit\Services\Finance;
 
 use App\Accident;
 use App\Services\CaseServices\CaseFinanceService;
+use App\Services\Formula\FormulaService;
 use Tests\TestCase;
+use Tests\Unit\fakes\AccidentFake;
 
 class CaseFinanceServiceTest extends TestCase
 {
@@ -22,7 +24,8 @@ class CaseFinanceServiceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->financeService = new CaseFinanceService();
+        $formulaService = $this->prophesize(FormulaService::class);
+        $this->financeService = new CaseFinanceService($formulaService->reveal());
     }
 
     /**
@@ -30,7 +33,7 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testEmptyCase()
     {
-        $accident = new Accident();
+        $accident = AccidentFake::make();
         self::assertEquals(0, $this->financeService->calculateIncome($accident), 'Income is correct');
         self::assertEquals(0, $this->financeService->calculateDoctorPayment($accident), 'Doctor payment is correct');
         self::assertEquals(0, $this->financeService->calculateAssistantPayment($accident), 'Assistant payment is correct');

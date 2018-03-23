@@ -5,12 +5,11 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-use Cmgmyr\Messenger\Models\Models;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class AddSoftDeletesToMessagesTable extends Migration
+class CreateFinanceConditionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -19,7 +18,9 @@ class AddSoftDeletesToMessagesTable extends Migration
      */
     public function up()
     {
-        Schema::table(Models::table('messages'), function (Blueprint $table) {
+        Schema::create('finance_conditions', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
             $table->softDeletes();
         });
     }
@@ -31,8 +32,6 @@ class AddSoftDeletesToMessagesTable extends Migration
      */
     public function down()
     {
-        Schema::table(Models::table('messages'), function (Blueprint $table) {
-            $table->dropSoftDeletes();
-        });
+        Schema::dropIfExists('finance_conditions');
     }
 }

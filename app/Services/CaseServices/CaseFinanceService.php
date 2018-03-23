@@ -9,16 +9,40 @@ namespace App\Services\CaseServices;
 
 
 use App\Accident;
+use App\AccidentType;
+use App\Models\Cases\Finance\CaseFinanceCondition;
+use App\Services\Formula\FormulaService;
 
 class CaseFinanceService
 {
     /**
+     * @var FormulaService
+     */
+    private $formulaService;
+
+    public function __construct(FormulaService $formulaService)
+    {
+        $this->formulaService = $formulaService;
+    }
+
+    public function factory()
+    {
+        return new CaseFinanceCondition($this->formulaService);
+    }
+
+    /**
      * @param Accident $accident
-     * @return int
+     * @return float|int
+     * @throws \App\Models\Formula\Exception\FormulaException
      */
     public function calculateIncome(Accident $accident)
     {
-        return 1;
+        $formula = $this->getFormula($accident);
+        return $this->formulaService->getResult($formula);
+    }
+
+    protected function getFormula(Accident $accident)
+    {
     }
 
     /**

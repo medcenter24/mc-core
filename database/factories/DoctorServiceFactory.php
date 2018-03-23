@@ -11,6 +11,6 @@ $factory->define(App\DoctorService::class, function (Faker $faker) {
     return [
         'title' => $faker->text(20),
         'description' => $faker->text(),
-        'price' => $faker->randomFloat(2, 0, 10000),
+        'disease_code' => str_random(3),
     ];
 });

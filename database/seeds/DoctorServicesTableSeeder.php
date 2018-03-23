@@ -17,7 +17,11 @@ class DoctorServicesTableSeeder extends Seeder
      */
     public function run()
     {
-        DoctorService::truncate();
-        factory(DoctorService::class, 10)->create();
+        if (env('APP_ENV') == 'production' && DoctorService::all()->count()) {
+            return;
+        } elseif (env('APP_ENV') != 'production') {
+            DoctorService::truncate();
+            factory(DoctorService::class, 10)->create();
+        }
     }
 }

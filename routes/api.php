@@ -107,8 +107,6 @@ $api->group([
                 $api->put('doctors/{id}/cities', \App\Http\Controllers\Api\V1\Director\DoctorsController::class . '@setCities');
                 $api->resource('hospitals', \App\Http\Controllers\Api\V1\Director\HospitalsController::class);
                 $api->resource('cities', \App\Http\Controllers\Api\V1\Director\CitiesController::class);
-
-                $api->resource('discounts', \App\Http\Controllers\Api\V1\Director\DiscountsController::class);
                 $api->resource('diagnostics', \App\Http\Controllers\Api\V1\Director\DiagnosticsController::class);
 
                 $api->post('media', '\App\Http\Controllers\Api\V1\Director\MediaController@upload');
@@ -122,6 +120,11 @@ $api->group([
                     $api->get('doctorsTraffic', \App\Http\Controllers\Api\V1\Director\Statistics\TrafficController::class . '@doctors');
                     $api->get('assistantsTraffic', \App\Http\Controllers\Api\V1\Director\Statistics\TrafficController::class . '@assistants');
                 });
+
+                $api->get('finance', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@index');
+                $api->post('finance', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@store');
+                $api->put('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@update');
+                $api->delete('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@destroy');
             });
         });
     });

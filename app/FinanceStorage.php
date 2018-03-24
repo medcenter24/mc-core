@@ -12,8 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FinanceStorage extends Model
 {
-    use SoftDeletes;
-
     protected $table = 'finance_storage';
-    protected $fillable = [''];
+    protected $fillable = ['finance_condition_id', 'model', 'model_id'];
 }

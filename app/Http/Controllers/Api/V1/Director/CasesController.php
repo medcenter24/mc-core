@@ -10,7 +10,6 @@ namespace App\Http\Controllers\Api\V1\Director;
 use App\Accident;
 use App\AccidentStatus;
 use App\Diagnostic;
-use App\Discount;
 use App\DoctorAccident;
 use App\DoctorService;
 use App\DoctorSurvey;
@@ -22,7 +21,6 @@ use App\Services\AccidentStatusesService;
 use App\Services\CaseServices\CaseHistoryService;
 use App\Services\CaseServices\CaseReportService;
 use App\Services\DocumentService;
-use App\Services\Messenger\ThreadService;
 use App\Services\ReferralNumberService;
 use App\Services\RoleService;
 use App\Services\Scenario\DoctorScenarioService;
@@ -40,7 +38,6 @@ use App\Transformers\DoctorSurveyTransformer;
 use App\Transformers\DocumentTransformer;
 use App\Transformers\MessageTransformer;
 use App\Transformers\ScenarioTransformer;
-use App\User;
 use Carbon\Carbon;
 use Cmgmyr\Messenger\Models\Message;
 use Cmgmyr\Messenger\Models\Participant;
@@ -309,14 +306,6 @@ class CasesController extends ApiController
 
                 event(new DoctorAccidentUpdatedEvent($before, $doctorAccident, 'Updated by director'));
             }
-        }
-
-        $discountData = $request->json('discount', false);
-        if ($discountData) {
-            $accident->discount_value = floatval($discountData['value']);
-            $discount = Discount::find($discountData['type']['id']);
-            $accident->discount_id = $discount->id ?: 1;
-            $accident->save();
         }
 
         // Services ==========================

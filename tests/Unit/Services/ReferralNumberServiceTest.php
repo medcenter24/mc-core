@@ -51,7 +51,6 @@ class ReferralNumberServiceTest extends TestCase
             'caseable_id' => 1,
             'form_report_id' => 1,
             'city_id' => 1,
-            'discount_id' => 1,
         ];
         $additionalParams = [
             'assistant' => ['ref_key' => 'T', 'id'=>1],

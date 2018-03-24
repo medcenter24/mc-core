@@ -39,8 +39,6 @@ class Accident extends AccidentAbstract
         'address',
         'contacts',
         'symptoms',
-        'discount_id',
-        'discount_value',
         'fixed_income',
         'income',
         'handling_time',
@@ -59,8 +57,6 @@ class Accident extends AccidentAbstract
         'address',
         'contacts',
         'symptoms',
-        'discount_id',
-        'discount_value',
         'caseable_cost',
         'fixed_income',
         'income',
@@ -85,15 +81,6 @@ class Accident extends AccidentAbstract
     public function history()
     {
         return $this->morphMany(AccidentStatusHistory::class, 'historyable');
-    }
-
-    /**
-     * Discount which should be used for this accident
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function discount()
-    {
-        return $this->belongsTo(Discount::class);
     }
 
     /**

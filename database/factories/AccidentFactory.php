@@ -7,12 +7,10 @@
 
 use App\AccidentType;
 use App\Assistant;
-use App\Discount;
 use App\DoctorAccident;
 use App\FormReport;
 use App\Patient;
 use App\Services\AccidentTypeService;
-use App\Services\DiscountService;
 use App\User;
 use Faker\Generator as Faker;
 

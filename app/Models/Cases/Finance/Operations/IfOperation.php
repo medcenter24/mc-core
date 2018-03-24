@@ -8,8 +8,6 @@
 namespace App\Models\Cases\Finance\Operations;
 
 
-use App\Accident;
-
 class IfOperation
 {
     /**
@@ -33,12 +31,13 @@ class IfOperation
         $this->id = $id;
     }
 
-    /**
-     * Check that condition confirms to the accident
-     * @param Accident $accident
-     */
-    public function valid(Accident $accident)
+    public function modelName()
     {
+        return $this->modelName;
+    }
 
+    public function id()
+    {
+        return $this->id;
     }
 }

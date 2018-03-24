@@ -21,7 +21,6 @@ class CreateFinanceStorageTable extends Migration
         Schema::create('finance_storage', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

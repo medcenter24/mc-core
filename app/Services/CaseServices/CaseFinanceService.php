@@ -10,6 +10,8 @@ namespace App\Services\CaseServices;
 
 use App\Accident;
 use App\AccidentType;
+use App\FinanceCondition;
+use App\FinanceStorage;
 use App\Models\Cases\Finance\CaseFinanceCondition;
 use App\Services\Formula\FormulaService;
 
@@ -27,7 +29,34 @@ class CaseFinanceService
 
     public function factory()
     {
-        return new CaseFinanceCondition($this->formulaService);
+        return new CaseFinanceCondition();
+    }
+
+    public function saveCondition(CaseFinanceCondition $condition, $title = '', $id = 0)
+    {
+        if ($id) {
+            $financeCondition = FinanceCondition::findOrFail($id);
+            $financeCondition->conditions()->delete(); // unassign all stored conditions
+        } else {
+            $financeCondition = FinanceCondition::create([
+                'created_by' => auth()->id(),
+                'title' => $title,
+            ]);
+        }
+        $financeCondition->price = $condition->getPrice();
+        $financeCondition->save();
+
+        // store conditions
+        $collection = $condition->getCondition()->getIterator();
+        while ($collection->valid()) {
+            $op = $collection->current();
+            FinanceStorage::create([
+                'finance_condition_id' => $financeCondition,
+                'model' => $op->modelName(),
+                'model_id' => $op->id(),
+            ]);
+            $collection->next();
+        }
     }
 
     /**
@@ -43,6 +72,7 @@ class CaseFinanceService
 
     protected function getFormula(Accident $accident)
     {
+        return;
     }
 
     /**

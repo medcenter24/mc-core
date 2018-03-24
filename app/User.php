@@ -74,11 +74,17 @@ class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConv
         return $this->belongsToMany(Role::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function doctor()
     {
         return $this->hasOne(Doctor::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function company()
     {
         return $this->belongsTo(Company::class);
@@ -124,7 +130,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConv
 
     /**
      * assignment to the Telegram messenger
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function telegram()
     {

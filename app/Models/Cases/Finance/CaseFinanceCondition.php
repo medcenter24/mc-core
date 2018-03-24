@@ -8,11 +8,7 @@
 namespace App\Models\Cases\Finance;
 
 
-use App\FinanceCondition;
-use App\Formula;
 use App\Models\Cases\Finance\Operations\IfOperation;
-use App\Models\Formula\FormulaBuilderInterface;
-use App\Services\Formula\FormulaService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -24,14 +20,13 @@ class CaseFinanceCondition
     private $condition;
 
     /**
-     * @var FormulaService
+     * @var int
      */
-    private $formulaService;
+    private $price = 0;
 
-    public function __construct(FormulaService $formulaService)
+    public function __construct()
     {
         $this->condition = collect([]);
-        $this->formulaService = $formulaService;
     }
 
     /**
@@ -46,44 +41,30 @@ class CaseFinanceCondition
         return $this;
     }
 
-    public function thenDoctorPaymentFormula(FormulaBuilderInterface $formulaBuilder)
+    /**
+     * Set price for the rule
+     * @param int $price
+     * @return $this
+     */
+    public function thenPrice($price = 0)
     {
-        return $this->store($this->condition, $formulaBuilder, 'doctorPayment');
-    }
-
-    public function thenAssistantPaymentFormula(FormulaBuilderInterface $formulaBuilder)
-    {
-        return $this->store($this->condition, $formulaBuilder, 'assistantPayment');
+        $this->price = $price;
+        return $this;
     }
 
     /**
-     * @param Collection $conditionCollection
-     * @param FormulaBuilderInterface $formulaBuilder
-     * @param string $type
-     * @return FinanceCondition
+     * @return Collection
      */
-    protected function store(Collection $conditionCollection, FormulaBuilderInterface $formulaBuilder, $type = '')
+    public function getCondition()
     {
-        $formula = $this->saveFormula($formulaBuilder);
-        return $this->saveCondition($conditionCollection, $formula, $type);
+        return $this->condition;
     }
 
-    protected function saveFormula(FormulaBuilderInterface $formula)
+    /**
+     * @return int
+     */
+    public function getPrice()
     {
-        return $this->formulaService->store($formula);
-    }
-
-    protected function saveCondition(Collection $conditionCollection, Formula $formula, $type = '')
-    {
-        $financeCondition = FinanceCondition::firstOrCreate([
-            'formula_id' => $formula->id,
-            'type' => $type,
-        ]);
-        return $financeCondition;
-    }
-
-    protected function assign(Formula $formula, FinanceCondition $financeCondition)
-    {
-
+        return $this->price;
     }
 }

@@ -21,7 +21,6 @@ class CreateFinanceConditionsTable extends Migration
         Schema::create('finance_conditions', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

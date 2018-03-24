@@ -30,8 +30,6 @@ class AccidentTransformer extends TransformerAbstract
             'caseable_id' => $accident->caseable_id,
             'city_id' => $accident->city_id,
             'form_report_id' => $accident->form_report_id,
-            'discount_value' => $accident->discount_value,
-            'discount_type_id' => $accident->discount_id,
             'caseable_type' => $accident->caseable_type,
             'caseable_cost' => $accident->caseable_cost,
             'income' => $accident->income,

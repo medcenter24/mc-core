@@ -28,12 +28,12 @@ class CreateAccidentsTable extends Migration
             $table->unsignedInteger('assistant_id')->default(0)->index();
             $table->unsignedInteger('form_report_id')->default(0)->index();
             $table->unsignedInteger('city_id')->default(0)->index();
-            $table->unsignedInteger('discount_id')->default(0)->index();
-            $table->decimal('discount_value', 8, 2)->default(0);
             // payment which should be done to the doctor or hospital
             $table->decimal('caseable_cost', 8, 2)->default(0);
             // total income from this case
             $table->decimal('income', 8, 2)->default(0);
+            // payment to assistant
+            $table->decimal('assistant_payment', 8, 2)->default(0);
             // if income is fixed it won't be changed automatically (only hand mode)
             $table->unsignedTinyInteger('fixed_income')->default(0);
             $table->string('assistant_ref_num')->default('')->index();
@@ -42,10 +42,10 @@ class CreateAccidentsTable extends Migration
             $table->string('title')->default('')->index();
             $table->string('address')->default('');
             $table->timestamp('handling_time')->nullable()->index();
-            $table->timestamps();
-            $table->softDeletes();
             $table->text('contacts');
             $table->text('symptoms');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

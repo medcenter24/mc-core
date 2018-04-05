@@ -8,12 +8,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FinanceCondition extends Model
 {
+    use SoftDeletes;
 
     protected $fillable = ['created_by', 'title', 'price'];
-    protected $visible = ['title', 'price'];
+    protected $visible = ['id', 'title', 'price'];
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

@@ -123,8 +123,11 @@ $api->group([
 
                 $api->get('finance', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@index');
                 $api->post('finance', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@store');
+                $api->get('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@show');
                 $api->put('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@update');
                 $api->delete('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@destroy');
+
+                $api->resource('periods', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class);
             });
         });
     });

@@ -14,6 +14,7 @@ use App\DoctorService;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\FinanceRequest;
 use App\Services\CaseServices\CaseFinanceService;
+use App\Transformers\FinanceConditionTransformer;
 
 class FinanceController extends ApiController
 {
@@ -30,43 +31,25 @@ class FinanceController extends ApiController
      * @param CaseFinanceService $caseFinanceService
      * @return \Dingo\Api\Http\Response
      */
-    public function store(FinanceRequest $request, CaseFinanceService $caseFinanceService) {
-        $caseFinanceCondition = $caseFinanceService->factory();
-        $doctor = $request->json('doctor', false);
-        if ($doctor && isset($doctor['id'])) {
-            $caseFinanceCondition->if(Doctor::class, $doctor['id']);
-        }
-        $assistant = $request->json('assistant', false);
-        if ($assistant && isset($assistant['id'])) {
-            $caseFinanceCondition->if(Assistant::class, $assistant['id']);
-        }
-        $city = $request->json('city', false);
-        if ($city && isset($city['id'])) {
-            $caseFinanceCondition->if(City::class, $city['id']);
-        }
-
-        // condition base on the full match
-        // if you need to have only one service in condition or condition for each of the provided service:
-        // you need to create new conditions from the gui one by one
-        $services = $request->json('services', false);
-        if ($services && count($services)) {
-            foreach ($services as $service) {
-                $caseFinanceCondition->if(DoctorService::class, $service['id']);
-            }
-        }
-
-        $caseFinanceCondition->thenPrice($request->json('priceAmount', 0));
-        $caseFinanceService->saveCondition($caseFinanceCondition);
-
-        return $this->response->created();
+    public function store(FinanceRequest $request, CaseFinanceService $caseFinanceService)
+    {
+        $financeCondition = $caseFinanceService->updateFinanceConditionByRequest($request);
+        return $this->response->created(action('Api\V1\Director\FinanceController@show', [$financeCondition]),
+            $financeCondition->toArray());
     }
 
     /**
      * Update existing rule
      * @param $id
      * @param FinanceRequest $request
+     * @param CaseFinanceService $caseFinanceService
+     * @return \Dingo\Api\Http\Response
      */
-    public function update($id, FinanceRequest $request) {}
+    public function update($id, FinanceRequest $request, CaseFinanceService $caseFinanceService)
+    {
+        $financeCondition = $caseFinanceService->updateFinanceConditionByRequest($request, $id);
+        return $this->response->item($financeCondition, new FinanceConditionTransformer());
+    }
 
     /**
      * Destroy rule

@@ -10,9 +10,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class FinanceStorage extends Model
+class DatePeriod extends Model
 {
-    use SoftDeletes;
-    protected $table = 'finance_storage';
-    protected $fillable = ['finance_condition_id', 'model', 'model_id'];
+    protected $fillable = ['title', 'from', 'to'];
+    protected $visible = ['id', 'title', 'from', 'to'];
 }

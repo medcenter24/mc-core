@@ -5,11 +5,12 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests;
 
 use App\Role;
+use Dingo\Api\Http\FormRequest;
 
-class FinanceRequest extends JsonRequest
+class DatePeriodRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,8 +19,7 @@ class FinanceRequest extends JsonRequest
      */
     public function authorize()
     {
-        return \Auth::check()
-            && \Roles::hasRole(auth()->user(), Role::ROLE_DIRECTOR);
+        return \Auth::check() && \Roles::hasRole(auth()->user(), Role::ROLE_DIRECTOR);
     }
 
     /**
@@ -30,8 +30,9 @@ class FinanceRequest extends JsonRequest
     public function rules()
     {
         return [
-            'title' => 'max:200',
-            'priceAmount' => 'required',
+            'title' => 'required|min:1',
+            'from' => 'required|min:3',
+            'to' => 'required|min:3'
         ];
     }
 }

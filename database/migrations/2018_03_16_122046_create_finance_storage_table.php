@@ -20,7 +20,11 @@ class CreateFinanceStorageTable extends Migration
     {
         Schema::create('finance_storage', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('finance_condition_id')->index();
+            $table->string('model')->index();
+            $table->unsignedInteger('model_id')->index();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -20,7 +20,11 @@ class CreateFinanceConditionsTable extends Migration
     {
         Schema::create('finance_conditions', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('created_by')->default(0)->index();
+            $table->string('title');
+            $table->decimal('price');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -178,6 +178,7 @@ return [
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
         // \App\Providers\CaseFinanceProvider::class,
         \App\Providers\FormulaServiceProvider::class,
+        \App\Providers\ValidatorServiceProvider::class,
     ],
 
     /*

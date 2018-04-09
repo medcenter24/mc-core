@@ -9,7 +9,7 @@ namespace App\Http\Controllers\Api\V1\Director;
 
 use App\DatePeriod;
 use App\Http\Controllers\ApiController;
-use App\Http\Requests\DatePeriodRequest;
+use App\Http\Requests\Api\DatePeriodRequest;
 use App\Transformers\DatePeriodTransformer;
 
 class DatePeriodController extends ApiController
@@ -28,15 +28,17 @@ class DatePeriodController extends ApiController
     /**
      * Store a newly created resource in storage.
      * @param DatePeriodRequest $request
+     * @return \Dingo\Api\Http\Response
      */
     public function store(DatePeriodRequest $request)
     {
         if ($request->json('id', false)) {
             $this->response->errorBadRequest();
         }
-        $datePeriod = DatePeriod::create($request->json());
+        $datePeriod = DatePeriod::create($request->json()->all());
+        \Log::info('Period created', [$datePeriod, $this->user()]);
         $transformer = new DatePeriodTransformer();
-        $this->response->created(self::class, $transformer->transform($datePeriod));
+        return $this->response->created(self::class, $transformer->transform($datePeriod));
     }
 
     /**

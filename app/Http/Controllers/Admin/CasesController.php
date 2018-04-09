@@ -13,8 +13,6 @@ use App\Http\Controllers\AdminController;
 use App\Services\CaseServices\CaseHistoryService;
 use App\Services\CaseServices\CaseReportService;
 use Illuminate\Http\Request;
-use Mpdf\Mpdf;
-use Mpdf\Output\Destination;
 
 class CasesController extends AdminController
 {

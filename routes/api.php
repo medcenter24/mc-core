@@ -127,6 +127,7 @@ $api->group([
                 $api->put('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@update');
                 $api->delete('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@destroy');
 
+                $api->post('periods/list', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class . '@index');
                 $api->resource('periods', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class);
             });
         });

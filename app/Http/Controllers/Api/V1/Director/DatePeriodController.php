@@ -11,18 +11,35 @@ use App\DatePeriod;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\DatePeriodRequest;
 use App\Transformers\DatePeriodTransformer;
+use Illuminate\Http\Request;
 
 class DatePeriodController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $companies = DatePeriod::orderBy('title')->get();
-        return $this->response->collection($companies, new DatePeriodTransformer());
+        $first = $request->json('first', false);
+        $rows = $request->json('rows', 25);
+        if ($first !== false) {
+            $rows = $rows ? $rows : 25;
+            $page = ($first / $rows) + 1;
+        } else {
+            $page = $request->json('page', 0);
+        }
+
+        $sortField = $request->json('sortField', 'title');
+        $sortField = $sortField ?: 'title';
+        $datePeriods = DatePeriod::orderBy(
+                $sortField,
+                $request->json('sortOrder', 1) > 0 ? 'asc' : 'desc'
+            )
+            ->paginate($rows, ['*'], 'page', $page);
+        return $this->response->paginator($datePeriods, new DatePeriodTransformer());
     }
 
     /**

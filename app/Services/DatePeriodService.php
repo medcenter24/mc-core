@@ -74,6 +74,14 @@ class DatePeriodService
     }
 
     /**
+     * Returns list of day of week
+     */
+    public function getDows()
+    {
+        return $this->dow;
+    }
+
+    /**
      * Value is day of week
      * @param string $val
      * @return bool

@@ -47,6 +47,16 @@ use Illuminate\Http\Request;
 
 class CasesController extends ApiController
 {
+    protected function getModelClass()
+    {
+        return Accident::class;
+    }
+
+    protected function getDataTransformer()
+    {
+        return new CaseAccidentTransformer();
+    }
+
     /**
      * Maybe onetime it would be helpful for optimization, but for now I need a lot of queries
      * Load all data that needed by director for the case editing
@@ -58,15 +68,6 @@ class CasesController extends ApiController
     {
         $accident = Accident::findOrFail($id);
         return $this->response->item($accident, new DirectorCaseTransformer());
-    }
-
-    public function index(Request $request, AccidentService $service)
-    {
-        $rows = $request->get('rows', 10);
-        $accidents = $service->getCasesQuery($request->all())
-            ->paginate($rows, $columns = ['*'], $pageName = 'page', $request->get('page', null)+1);
-
-        return $this->response->paginator($accidents, new CaseAccidentTransformer());
     }
 
     public function getDoctorCase($id)

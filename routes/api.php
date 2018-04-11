@@ -66,32 +66,39 @@ $api->group([
                 $api->delete('companies/{id}/sign', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@deleteSign');
 
                 // Exporter
+                // todo move exporter to the cases group
                 $api->post('export/{form}', \App\Http\Controllers\Api\V1\Director\CasesExporterController::class . '@export');
 
-                // Importer
-                $api->post('cases/importer', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@upload');
-                $api->get('cases/importer', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@uploads');
-                $api->put('cases/importer/{id}', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@import');
-                $api->delete('cases/importer/{id}', '\App\Http\Controllers\Api\V1\Director\CasesImporterController@destroy');
-
                 // Cases
-                $api->get('cases/{id}/doctorcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getDoctorCase');
-                $api->get('cases/{id}/hospitalcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getHospitalCase');
-                $api->get('cases/{id}/diagnostics', '\App\Http\Controllers\Api\V1\Director\CasesController@getDiagnostics');
-                $api->get('cases/{id}/services', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@getServices');
-                $api->get('cases/{id}/surveys', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@getSurveys');
-                $api->get('cases/{id}/scenario', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@story');
-                $api->post('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@createDocuments');
-                $api->get('cases/{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
-                $api->get('cases/{id}/checkpoints', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@getCheckpoints');
-                $api->put('cases/{id}/close', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@close');
-                $api->get('cases/{id}/reportHtml', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@reportHtml');
-                $api->get('cases/{id}/downloadPdf', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@downloadPdf');
-                $api->get('cases/{id}/history', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@history');
-                $api->get('cases/{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@comments');
-                $api->put('cases/{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@addComment');
+                $api->group(['prefix' => 'cases'], function ($api) {
 
-                $api->resource('cases', \App\Http\Controllers\Api\V1\Director\CasesController::class);
+                    $api->group(['prefix' => 'importer'], function ($api) {
+                        $api->post('', \App\Http\Controllers\Api\V1\Director\CasesImporterController::class . '@upload');
+                        $api->get('', \App\Http\Controllers\Api\V1\Director\CasesImporterController::class . '@uploads');
+                        $api->put('{id}', \App\Http\Controllers\Api\V1\Director\CasesImporterController::class . '@import');
+                        $api->delete('{id}', \App\Http\Controllers\Api\V1\Director\CasesImporterController::class . '@destroy');
+                    });
+
+                    // assigned to case
+                    $api->get('{id}/doctorcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getDoctorCase');
+                    $api->get('{id}/hospitalcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getHospitalCase');
+                    $api->get('{id}/diagnostics', '\App\Http\Controllers\Api\V1\Director\CasesController@getDiagnostics');
+                    $api->get('{id}/services', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@getServices');
+                    $api->get('{id}/surveys', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@getSurveys');
+                    $api->get('{id}/scenario', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@story');
+                    $api->post('{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@createDocuments');
+                    $api->get('{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
+                    $api->get('{id}/checkpoints', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@getCheckpoints');
+                    $api->put('{id}/close', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@close');
+                    $api->get('{id}/reportHtml', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@reportHtml');
+                    $api->get('{id}/downloadPdf', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@downloadPdf');
+                    $api->get('{id}/history', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@history');
+                    $api->get('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@comments');
+                    $api->put('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@addComment');
+
+                    $api->post('datatable', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@datatable');
+                    $api->resource('', \App\Http\Controllers\Api\V1\Director\CasesController::class);
+                });
 
                 $api->get('accidents/{id}', '\App\Http\Controllers\Api\V1\Director\AccidentsController@show');
                 $api->get('accidents', '\App\Http\Controllers\Api\V1\Director\AccidentsController@index');
@@ -127,7 +134,7 @@ $api->group([
                 $api->put('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@update');
                 $api->delete('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@destroy');
 
-                $api->post('periods/list', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class . '@index');
+                $api->post('periods/datatable', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class . '@datatable');
                 $api->resource('periods', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class);
             });
         });

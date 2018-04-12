@@ -31,8 +31,12 @@ class CaseReportService
         return $this;
     }
 
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function toHtml() {
-        // todo make it works through accident->formReport component to store all the datas in the storage
+        // todo make it works through accident->formReport component to store all the data in the storage
         // I prefer to implement it as a new driver/option to the view which maybe easiest?
         return view('case.report', ['report' => $this->report])->render();
     }

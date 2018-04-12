@@ -19,7 +19,6 @@ use App\Services\LogoService;
 use App\Services\SignatureService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Spatie\MediaLibrary\Media;
 
 class CaseReport
 {
@@ -194,7 +193,7 @@ class CaseReport
      */
     public function patientBirthday()
     {
-        return $this->patientHasBirthDate() ? Carbon::createFromFormat('Y-m-d', $this->accident->patient->birthday)->format(config('date.dateFormat')) : '';
+        return $this->patientHasBirthDate() ? $this->accident->patient->birthday->format(config('date.dateFormat')) : '';
     }
 
     /**

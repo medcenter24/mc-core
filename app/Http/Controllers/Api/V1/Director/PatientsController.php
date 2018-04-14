@@ -14,10 +14,14 @@ use App\Transformers\PatientTransformer;
 
 class PatientsController extends ApiController
 {
-    public function index()
+    protected function getDataTransformer()
     {
-        $patient = Patient::orderBy('name')->get();
-        return $this->response->collection($patient, new PatientTransformer());
+        return new PatientTransformer();
+    }
+
+    protected function getModelClass()
+    {
+        return Patient::class;
     }
     
     public function show($id)

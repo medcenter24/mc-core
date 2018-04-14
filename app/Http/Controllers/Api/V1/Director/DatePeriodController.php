@@ -61,7 +61,7 @@ class DatePeriodController extends ApiController
     public function update(DatePeriodRequest $request, $id)
     {
         $datePeriod = DatePeriod::findOrFail($id);
-        $datePeriod->update($request->json());
+        $datePeriod->update($request->json()->all());
         return $this->response->item($datePeriod, new DatePeriodTransformer());
     }
 

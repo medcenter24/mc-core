@@ -47,11 +47,19 @@ use Illuminate\Http\Request;
 
 class CasesController extends ApiController
 {
+    /**
+     * Datatable model
+     * @return string
+     */
     protected function getModelClass()
     {
         return Accident::class;
     }
 
+    /**
+     * Datatable transformer
+     * @return CaseAccidentTransformer|\League\Fractal\TransformerAbstract
+     */
     protected function getDataTransformer()
     {
         return new CaseAccidentTransformer();

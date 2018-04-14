@@ -107,6 +107,7 @@ $api->group([
                 $api->resource('surveys', \App\Http\Controllers\Api\V1\Director\SurveysController::class);
                 $api->resource('assistants', \App\Http\Controllers\Api\V1\Director\AssistantsController::class);
 
+                $api->post('patients/datatable', \App\Http\Controllers\Api\V1\Director\PatientsController::class . '@datatable');
                 $api->resource('patients', \App\Http\Controllers\Api\V1\Director\PatientsController::class);
                 $api->resource('doctors', \App\Http\Controllers\Api\V1\Director\DoctorsController::class);
                 $api->get('doctors/{id}/cities', \App\Http\Controllers\Api\V1\Director\DoctorsController::class . '@cities');

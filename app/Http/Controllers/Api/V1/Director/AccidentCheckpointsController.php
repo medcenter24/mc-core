@@ -14,6 +14,16 @@ use App\Transformers\AccidentCheckpointTransformer;
 
 class AccidentCheckpointsController extends ApiController
 {
+    protected function getDataTransformer()
+    {
+        return new AccidentCheckpointTransformer();
+    }
+
+    protected function getModelClass()
+    {
+        return new AccidentCheckpoint();
+    }
+
     public function index()
     {
         $accidentCheckpoint = AccidentCheckpoint::orderBy('title')->get();

@@ -9,6 +9,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\NotImplementedException;
 use Dingo\Api\Routing\Helpers;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use League\Fractal\TransformerAbstract;
@@ -40,8 +41,8 @@ class ApiController extends Controller
             $page = $request->json('page', 0);
         }
 
-        $sortField = $request->json('sortField', 'title');
-        $sortField = $sortField ?: 'title';
+        $sortField = $this->getSortField($request->json('sortField', 'id'));
+        $sortField = $sortField ?: 'id';
 
         $sortOrder = $request->json('sortOrder', 1) > 0 ? 'asc' : 'desc';
 
@@ -65,5 +66,25 @@ class ApiController extends Controller
      */
     protected function getDataTransformer() {
         throw new NotImplementedException('ApiController::getDataTransformer needs to be rewrote by the child');
+    }
+
+    /**
+     * @param $fieldName
+     * @return string
+     * @throws NotImplementedException
+     */
+    private function getSortField($fieldName)
+    {
+        $field = '';
+        $fields = [];
+
+        $class = $this->getModelClass();
+        if (class_exists($class)) {
+            /** @var Model $model */
+            $model = new $class;
+            $fields = $model->getVisible();
+            $field = camel_case($fieldName);
+        }
+        return in_array($field, $fields) ? $field : 'id';
     }
 }

@@ -37,7 +37,7 @@ class DatePeriodController extends ApiController
         $datePeriod = DatePeriod::create($request->json()->all());
         \Log::info('Period created', [$datePeriod, $this->user()]);
         $transformer = new DatePeriodTransformer();
-        return $this->response->created(self::class, $transformer->transform($datePeriod));
+        return $this->response->created(url('api/director/period/'.$datePeriod->id), $transformer->transform($datePeriod));
     }
 
     /**

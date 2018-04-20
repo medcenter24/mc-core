@@ -52,6 +52,7 @@ $api->group([
 
             $api->group(['prefix' => 'director', 'middleware' => ['role:director']], function ($api) {
                 $api->get('scenario/doctor', \App\Http\Controllers\Api\V1\Director\AccidentScenarioController::class . '@doctorScenario');
+                $api->post('checkpoints/datatable', \App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController::class . '@datatable');
                 $api->resource('checkpoints', \App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController::class);
                 $api->resource('statuses', \App\Http\Controllers\Api\V1\Director\AccidentStatusesController::class);
                 $api->resource('users', \App\Http\Controllers\Api\V1\Director\UsersController::class);
@@ -105,6 +106,8 @@ $api->group([
                 $api->resource('types', \App\Http\Controllers\Api\V1\Director\AccidentTypesController::class);
                 $api->resource('services', \App\Http\Controllers\Api\V1\Director\DoctorServicesController::class);
                 $api->resource('surveys', \App\Http\Controllers\Api\V1\Director\SurveysController::class);
+
+                $api->post('assistants/datatable', \App\Http\Controllers\Api\V1\Director\AssistantsController::class . '@datatable');
                 $api->resource('assistants', \App\Http\Controllers\Api\V1\Director\AssistantsController::class);
 
                 $api->post('patients/datatable', \App\Http\Controllers\Api\V1\Director\PatientsController::class . '@datatable');

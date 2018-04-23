@@ -59,7 +59,6 @@ $api->group([
                 $api->post('users/{id}/photo', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@updatePhoto');
                 $api->delete('users/{id}/photo', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@deletePhoto');
                 $api->resource('categories', \App\Http\Controllers\Api\V1\Director\CategoriesController::class);
-                // $api->resource('companies', \App\Http\Controllers\Api\V1\Director\CompaniesController::class);
                 $api->put('companies/{id}', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@update');
                 $api->post('companies/{id}/logo', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@uploadLogo');
                 $api->post('companies/{id}/sign', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@uploadSign');

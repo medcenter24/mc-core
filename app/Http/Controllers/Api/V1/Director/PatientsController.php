@@ -23,7 +23,13 @@ class PatientsController extends ApiController
     {
         return Patient::class;
     }
-    
+
+    public function index()
+    {
+        $patients = Patient::orderBy('name')->get();
+        return $this->response->collection($patients, new PatientTransformer());
+    }
+
     public function show($id)
     {
         return $this->response->item(

@@ -14,10 +14,21 @@ use App\Role;
 use App\Services\LogoService;
 use App\Transformers\UserTransformer;
 use App\User;
+use Hash;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded;
 
 class UsersController extends ApiController
 {
+    protected function getModelClass()
+    {
+        return User::class;
+    }
+
+    protected function getDataTransformer()
+    {
+        return new UserTransformer();
+    }
+
     // get only users which assigned to doctors
     public function index()
     {
@@ -47,6 +58,13 @@ class UsersController extends ApiController
         $user->phone = $request->json('phone', '');
         $user->lang = $request->json('lang', 'en');
         $user->timezone = $request->json('timezone', 'UTC');
+
+        // reset password
+        $password = $request->json('password', false);
+        if ($password) {
+            $user->password = Hash::make($password);
+        }
+
         $user->save();
 
         \Log::info('User updated', [$user]);
@@ -60,7 +78,7 @@ class UsersController extends ApiController
             'name' => $request->json('name', ''),
             'email' => $request->json('email', ''),
             'phone' => $request->json('phone', ''),
-            'password' => \Hash::make($request->json('password')),
+            'password' => Hash::make($request->json('password')),
             'lang' => $request->json('lang', 'en'),
             'timezone' => $request->json('timezone', 'UTC'),
         ]);

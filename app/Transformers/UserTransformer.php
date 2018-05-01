@@ -28,9 +28,9 @@ class UserTransformer extends TransformerAbstract
             'email' => $user->email,
             'phone' => $user->phone,
             'lang' => $user->lang,
-            'thumb_200' => $user->hasMedia(LogoService::FOLDER)
+            'thumb200' => $user->hasMedia(LogoService::FOLDER)
                 ? MediaHelper::b64($user, LogoService::FOLDER, User::THUMB_200) : '',
-            'thumb_45' => $user->hasMedia(LogoService::FOLDER)
+            'thumb45' => $user->hasMedia(LogoService::FOLDER)
                 ? MediaHelper::b64($user, LogoService::FOLDER, User::THUMB_45) : '',
             'timezone' => $user->timezone,
         ];

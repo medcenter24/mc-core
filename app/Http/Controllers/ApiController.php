@@ -25,12 +25,12 @@ class ApiController extends Controller
     }
 
     /**
-     * Implement datatable models to the controllers
+     * Implement models seeker to find data with filters
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      * @throws NotImplementedException
      */
-    public function datatable(Request $request)
+    public function find(Request $request)
     {
         $first = $request->json('first', false);
         $rows = $request->json('rows', 25);

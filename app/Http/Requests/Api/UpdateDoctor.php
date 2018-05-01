@@ -31,8 +31,8 @@ class UpdateDoctor extends JsonRequest
 
         if(isset($data['id'])) {
             $doc = Doctor::find($data['id']);
-            if (isset($data['ref_key']) && $doc->ref_key == $data['ref_key']) {
-                unset($data['ref_key']);
+            if (isset($data['refKey']) && $doc->ref_key == $data['refKey']) {
+                unset($data['refKey']);
             }
         }
 
@@ -54,7 +54,7 @@ class UpdateDoctor extends JsonRequest
         return [
             'name' => 'min:1|max:150',
             'description' => 'min:1|max:255',
-            'ref_key' => 'min:1|max:5|unique:doctors',
+            'refKey' => 'min:1|max:5|unique:doctors',
         ];
     }
 }

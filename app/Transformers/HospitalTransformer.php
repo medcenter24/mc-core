@@ -19,7 +19,7 @@ class HospitalTransformer extends TransformerAbstract
             'id' => $hospital->id,
             'title' => $hospital->title,
             'description' => $hospital->description,
-            'ref_key' => $hospital->ref_key,
+            'refKey' => $hospital->ref_key,
             'phones' => $hospital->phones,
             'address' => $hospital->address,
         ];

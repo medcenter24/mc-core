@@ -14,6 +14,16 @@ use App\Transformers\CityTransformer;
 
 class CitiesController extends ApiController
 {
+    protected function getDataTransformer()
+    {
+        return new CityTransformer();
+    }
+
+    protected function getModelClass()
+    {
+        return City::class;
+    }
+
     public function index()
     {
         $cities = City::orderBy('title')->get();

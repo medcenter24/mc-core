@@ -19,6 +19,18 @@ use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded;
 
 class UsersController extends ApiController
 {
+    /**
+     * For director allowed only Doctors
+     * @param $eloquent
+     * @return mixed
+     */
+    protected function applyCondition($eloquent)
+    {
+        return $eloquent->whereHas('roles', function ($query) {
+            $query->where('title', 'doctor');
+        });
+    }
+
     protected function getModelClass()
     {
         return User::class;
@@ -45,6 +57,7 @@ class UsersController extends ApiController
     {
         $user = User::findOrFail($id);
         if ($user->id != $this->user()->id && !\Roles::hasRole($user, Role::ROLE_DOCTOR)) {
+            \Log::info('Director has no access to the user', [$user]);
             $this->response->errorMethodNotAllowed();
         }
         return $this->response->item($user, new UserTransformer());

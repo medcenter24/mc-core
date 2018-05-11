@@ -25,12 +25,23 @@ class ApiController extends Controller
     }
 
     /**
+     * To have possibility to add some conditions
+     * @param $eloquent
+     * @return mixed
+     */
+    protected function applyCondition($eloquent)
+    {
+        return $eloquent;
+    }
+
+    /**
      * Implement models seeker to find data with filters
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      * @throws NotImplementedException
+     * @throws \ErrorException
      */
-    public function find(Request $request)
+    public function search(Request $request)
     {
         $first = $request->json('first', false);
         $rows = $request->json('rows', 25);
@@ -47,9 +58,9 @@ class ApiController extends Controller
         $sortOrder = $request->json('sortOrder', 1) > 0 ? 'asc' : 'desc';
 
         $eloquent = call_user_func(array($this->getModelClass(), 'orderBy'), $sortField, $sortOrder);
-        $datePeriods = $eloquent->paginate($rows, ['*'], 'page', $page);
-
-        return $this->response->paginator($datePeriods, $this->getDataTransformer());
+        $eloquent = $this->applyCondition($eloquent);
+        $data = $eloquent->paginate($rows, ['*'], 'page', $page);
+        return $this->response->paginator($data, $this->getDataTransformer());
     }
 
     /**

@@ -52,11 +52,14 @@ $api->group([
 
             $api->group(['prefix' => 'director', 'middleware' => ['role:director']], function ($api) {
                 $api->get('scenario/doctor', \App\Http\Controllers\Api\V1\Director\AccidentScenarioController::class . '@doctorScenario');
-                $api->post('checkpoints/find', \App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController::class . '@find');
+
+                $api->post('checkpoints/search', \App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController::class . '@search');
                 $api->resource('checkpoints', \App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController::class);
                 $api->resource('statuses', \App\Http\Controllers\Api\V1\Director\AccidentStatusesController::class);
-                $api->post('users/find', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@find');
+
+                $api->post('users/search', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@search');
                 $api->resource('users', \App\Http\Controllers\Api\V1\Director\UsersController::class);
+
                 $api->post('users/{id}/photo', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@updatePhoto');
                 $api->delete('users/{id}/photo', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@deletePhoto');
                 $api->resource('categories', \App\Http\Controllers\Api\V1\Director\CategoriesController::class);
@@ -81,6 +84,7 @@ $api->group([
                     });
 
                     // assigned to case
+                    $api->post('search', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@search');
                     $api->get('{id}/doctorcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getDoctorCase');
                     $api->get('{id}/hospitalcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getHospitalCase');
                     $api->get('{id}/diagnostics', '\App\Http\Controllers\Api\V1\Director\CasesController@getDiagnostics');
@@ -96,8 +100,6 @@ $api->group([
                     $api->get('{id}/history', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@history');
                     $api->get('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@comments');
                     $api->put('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@addComment');
-
-                    $api->post('find', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@find');
                     $api->resource('', \App\Http\Controllers\Api\V1\Director\CasesController::class);
                 });
 
@@ -107,25 +109,26 @@ $api->group([
                 $api->resource('services', \App\Http\Controllers\Api\V1\Director\DoctorServicesController::class);
                 $api->resource('surveys', \App\Http\Controllers\Api\V1\Director\SurveysController::class);
 
-                $api->post('assistants/find', \App\Http\Controllers\Api\V1\Director\AssistantsController::class . '@find');
+                $api->post('assistants/search', \App\Http\Controllers\Api\V1\Director\AssistantsController::class . '@search');
                 $api->resource('assistants', \App\Http\Controllers\Api\V1\Director\AssistantsController::class);
 
-                $api->post('patients/find', \App\Http\Controllers\Api\V1\Director\PatientsController::class . '@find');
+                $api->post('patients/search', \App\Http\Controllers\Api\V1\Director\PatientsController::class . '@search');
                 $api->resource('patients', \App\Http\Controllers\Api\V1\Director\PatientsController::class);
 
                 $api->resource('doctors', \App\Http\Controllers\Api\V1\Director\DoctorsController::class);
                 $api->group(['prefix' => 'doctors'], function ($api) {
                     $api->get('{id}/cities', \App\Http\Controllers\Api\V1\Director\DoctorsController::class . '@cities');
                     $api->put('{id}/cities', \App\Http\Controllers\Api\V1\Director\DoctorsController::class . '@setCities');
-                    $api->post('find', \App\Http\Controllers\Api\V1\Director\DoctorsController::class . '@find');
+                    $api->post('search', \App\Http\Controllers\Api\V1\Director\DoctorsController::class . '@search');
                     $api->get('cities/{id}', \App\Http\Controllers\Api\V1\Director\DoctorsController::class . '@getDoctorsByCity');
                 });
 
                 $api->post('hospitals/find', \App\Http\Controllers\Api\V1\Director\HospitalsController::class . '@find');
                 $api->resource('hospitals', \App\Http\Controllers\Api\V1\Director\HospitalsController::class);
-                // todo extend resource() to have a Post to find entry point
-                $api->post('cities/find', \App\Http\Controllers\Api\V1\Director\CitiesController::class . '@find');
+
+                $api->post('cities/search', \App\Http\Controllers\Api\V1\Director\CitiesController::class . '@find');
                 $api->resource('cities', \App\Http\Controllers\Api\V1\Director\CitiesController::class);
+
                 $api->resource('diagnostics', \App\Http\Controllers\Api\V1\Director\DiagnosticsController::class);
 
                 $api->post('media', '\App\Http\Controllers\Api\V1\Director\MediaController@upload');
@@ -146,7 +149,7 @@ $api->group([
                 $api->put('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@update');
                 $api->delete('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@destroy');
 
-                $api->post('periods/find', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class . '@find');
+                $api->post('periods/search', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class . '@search');
                 $api->resource('periods', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class);
             });
         });

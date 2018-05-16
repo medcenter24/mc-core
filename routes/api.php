@@ -62,7 +62,10 @@ $api->group([
 
                 $api->post('users/{id}/photo', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@updatePhoto');
                 $api->delete('users/{id}/photo', \App\Http\Controllers\Api\V1\Director\UsersController::class . '@deletePhoto');
+
+                $api->post('categories/search', \App\Http\Controllers\Api\V1\Director\CategoriesController::class . '@search');
                 $api->resource('categories', \App\Http\Controllers\Api\V1\Director\CategoriesController::class);
+
                 $api->put('companies/{id}', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@update');
                 $api->post('companies/{id}/logo', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@uploadLogo');
                 $api->post('companies/{id}/sign', \App\Http\Controllers\Api\V1\Director\CompaniesController::class . '@uploadSign');
@@ -123,12 +126,13 @@ $api->group([
                     $api->get('cities/{id}', \App\Http\Controllers\Api\V1\Director\DoctorsController::class . '@getDoctorsByCity');
                 });
 
-                $api->post('hospitals/find', \App\Http\Controllers\Api\V1\Director\HospitalsController::class . '@find');
+                $api->post('hospitals/search', \App\Http\Controllers\Api\V1\Director\HospitalsController::class . '@search');
                 $api->resource('hospitals', \App\Http\Controllers\Api\V1\Director\HospitalsController::class);
 
-                $api->post('cities/search', \App\Http\Controllers\Api\V1\Director\CitiesController::class . '@find');
+                $api->post('cities/search', \App\Http\Controllers\Api\V1\Director\CitiesController::class . '@search');
                 $api->resource('cities', \App\Http\Controllers\Api\V1\Director\CitiesController::class);
 
+                $api->post('diagnostics/search', \App\Http\Controllers\Api\V1\Director\DiagnosticsController::class . '@search');
                 $api->resource('diagnostics', \App\Http\Controllers\Api\V1\Director\DiagnosticsController::class);
 
                 $api->post('media', '\App\Http\Controllers\Api\V1\Director\MediaController@upload');

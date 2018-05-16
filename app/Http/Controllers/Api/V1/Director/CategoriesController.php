@@ -14,6 +14,17 @@ use App\Transformers\CategoryTransformer;
 
 class CategoriesController extends ApiController
 {
+
+    protected function getDataTransformer()
+    {
+        return new CategoryTransformer();
+    }
+
+    protected function getModelClass()
+    {
+        return DiagnosticCategory::class;
+    }
+
     public function index()
     {
         $categories = DiagnosticCategory::orderBy('title')->get();

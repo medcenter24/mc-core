@@ -14,6 +14,16 @@ use App\Transformers\DiagnosticTransformer;
 
 class DiagnosticsController extends ApiController
 {
+    protected function getDataTransformer()
+    {
+        return new DiagnosticTransformer();
+    }
+
+    protected function getModelClass()
+    {
+        return Diagnostic::class;
+    }
+
     public function index()
     {
         $diagnostics = Diagnostic::orderBy('title')->get();
@@ -28,9 +38,9 @@ class DiagnosticsController extends ApiController
         }
 
         $diagnostic->title= $request->json('title', '');
-        $diagnostic->disease_code = $request->json('disease_code', '');
+        $diagnostic->disease_code = $request->json('diseaseCode', '');
         $diagnostic->description = $request->json('description', '');
-        $diagnostic->diagnostic_category_id = $request->json('diagnostic_category_id', 0);
+        $diagnostic->diagnostic_category_id = $request->json('diagnosticCategoryId', 0);
         $diagnostic->created_by = $this->user()->id;
         $diagnostic->save();
 
@@ -42,9 +52,9 @@ class DiagnosticsController extends ApiController
     {
         $diagnostic = Diagnostic::create([
             'title' => $request->json('title', ''),
-            'disease_code' => $request->json('disease_code', ''),
+            'disease_code' => $request->json('diseaseCode', ''),
             'description' => $request->json('description', ''),
-            'category_id' => $request->json('diagnostic_category_id', 0),
+            'category_id' => $request->json('diagnosticCategoryId', 0),
             'created_by' => $this->user()->id,
         ]);
         $transformer = new DiagnosticTransformer();

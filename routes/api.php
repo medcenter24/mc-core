@@ -112,6 +112,8 @@ $api->group([
 
                 $api->post('services/search', \App\Http\Controllers\Api\V1\Director\DoctorServicesController::class . '@search');
                 $api->resource('services', \App\Http\Controllers\Api\V1\Director\DoctorServicesController::class);
+
+                $api->post('surveys/search', \App\Http\Controllers\Api\V1\Director\SurveysController::class . '@search');
                 $api->resource('surveys', \App\Http\Controllers\Api\V1\Director\SurveysController::class);
 
                 $api->post('assistants/search', \App\Http\Controllers\Api\V1\Director\AssistantsController::class . '@search');

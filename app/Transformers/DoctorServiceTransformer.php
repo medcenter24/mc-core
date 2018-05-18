@@ -19,8 +19,8 @@ class DoctorServiceTransformer extends TransformerAbstract
             'id' => $service->id,
             'title' => $service->title,
             'description' => $service->description,
-            'price' => $service->price,
-            'type' => $service->isDoctor() ? 'doctor' : ''
+            'diseaseCode' => $service->disease_code,
+            'type' => $service->isDoctor() ? 'doctor' : ($service->created_by ? 'director' : 'system')
         ];
     }
 }

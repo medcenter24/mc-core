@@ -33,8 +33,6 @@ class DoctorServiceRequest extends JsonRequest
     {
         return [
             'title' => 'required|min:3',
-            'description' => 'required|max:250',
-            'price' => 'required|numeric'
         ];
     }
 }

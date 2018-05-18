@@ -109,6 +109,8 @@ $api->group([
                 $api->get('accidents/{id}', '\App\Http\Controllers\Api\V1\Director\AccidentsController@show');
                 $api->get('accidents', '\App\Http\Controllers\Api\V1\Director\AccidentsController@index');
                 $api->resource('types', \App\Http\Controllers\Api\V1\Director\AccidentTypesController::class);
+
+                $api->post('services/search', \App\Http\Controllers\Api\V1\Director\DoctorServicesController::class . '@search');
                 $api->resource('services', \App\Http\Controllers\Api\V1\Director\DoctorServicesController::class);
                 $api->resource('surveys', \App\Http\Controllers\Api\V1\Director\SurveysController::class);
 

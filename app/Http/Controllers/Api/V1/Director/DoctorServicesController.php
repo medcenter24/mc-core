@@ -14,6 +14,16 @@ use App\Transformers\DoctorServiceTransformer;
 
 class DoctorServicesController extends ApiController
 {
+    protected function getDataTransformer()
+    {
+        return new DoctorServiceTransformer();
+    }
+
+    protected function getModelClass()
+    {
+        return DoctorService::class;
+    }
+
     public function index()
     {
         $services = DoctorService::orderBy('title', 'desc')->get();
@@ -29,7 +39,7 @@ class DoctorServicesController extends ApiController
 
         $doctorService->title= $request->json('title', '');
         $doctorService->description = $request->json('description', '');
-        $doctorService->price = $request->json('price', 0);
+        $doctorService->disease_code = $request->json('diseaseCode', '');
         $doctorService->created_by = $this->user()->id;
         $doctorService->save();
 
@@ -42,7 +52,7 @@ class DoctorServicesController extends ApiController
         $doctorService = DoctorService::create([
             'title' => $request->json('title', ''),
             'description' => $request->json('description', ''),
-            'price' => $request->json('price', 0),
+            'disease_code' => $request->json('diseaseCode', ''),
             'created_by' => $this->user()->id,
         ]);
         $transformer = new DoctorServiceTransformer();

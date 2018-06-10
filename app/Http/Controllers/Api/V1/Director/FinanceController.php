@@ -7,10 +7,7 @@
 
 namespace App\Http\Controllers\Api\V1\Director;
 
-use App\Assistant;
-use App\City;
-use App\Doctor;
-use App\DoctorService;
+use App\FinanceCondition;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\FinanceRequest;
 use App\Services\CaseServices\CaseFinanceService;
@@ -18,12 +15,16 @@ use App\Transformers\FinanceConditionTransformer;
 
 class FinanceController extends ApiController
 {
-    /**
-     * List of rules
-     */
-    public function index() {}
+    protected function getDataTransformer()
+    {
+        return new FinanceConditionTransformer();
+    }
 
-    public function show($id) {}
+    protected function getModelClass()
+    {
+        return FinanceCondition::class;
+    }
+
 
     /**
      * Add new rule

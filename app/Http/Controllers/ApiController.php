@@ -39,17 +39,17 @@ class ApiController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      * @throws NotImplementedException
-     * @throws \ErrorException
      */
     public function search(Request $request)
     {
-        $first = $request->json('first', false);
-        $rows = $request->json('rows', 25);
+        // first
+        $first = (int)$request->json('first', false);
+        // 3000 like a all but not to overload server
+        $rows = (int)$request->json('rows', 3000);
         if ($first !== false) {
-            $rows = $rows ? $rows : 25;
             $page = ($first / $rows) + 1;
         } else {
-            $page = $request->json('page', 0);
+            $page = (int)$request->json('page', 0);
         }
 
         $sortField = $this->getSortField($request->json('sortField', 'id'));

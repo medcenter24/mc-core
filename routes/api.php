@@ -151,11 +151,8 @@ $api->group([
                     $api->get('assistantsTraffic', \App\Http\Controllers\Api\V1\Director\Statistics\TrafficController::class . '@assistants');
                 });
 
-                $api->get('finance', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@index');
-                $api->post('finance', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@store');
-                $api->get('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@show');
-                $api->put('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@update');
-                $api->delete('finance/{id}', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@destroy');
+                $api->post('finance/search', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@search');
+                $api->resource('finance', \App\Http\Controllers\Api\V1\Director\FinanceController::class);
 
                 $api->post('periods/search', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class . '@search');
                 $api->resource('periods', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class);

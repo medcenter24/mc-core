@@ -106,6 +106,7 @@ $api->group([
                     $api->resource('', \App\Http\Controllers\Api\V1\Director\CasesController::class);
                 });
 
+                $api->post('accidents/search', \App\Http\Controllers\Api\V1\Director\AccidentsController::class . '@search');
                 $api->get('accidents/{id}', '\App\Http\Controllers\Api\V1\Director\AccidentsController@show');
                 $api->get('accidents', '\App\Http\Controllers\Api\V1\Director\AccidentsController@index');
                 $api->resource('types', \App\Http\Controllers\Api\V1\Director\AccidentTypesController::class);

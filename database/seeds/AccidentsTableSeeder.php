@@ -41,11 +41,7 @@ class AccidentsTableSeeder extends Seeder
                         ? factory(AccidentType::class)->create()
                         : AccidentType::first();
                 },
-                'accident_status_id' => function () {
-                    return AccidentStatus::count()
-                        ? AccidentStatus::first()
-                        : factory(AccidentStatus::class)->create();
-                },
+                'accident_status_id' => 1, // new
                 'assistant_id' => function () {
                     return factory(Assistant::class)->create();
                 },

@@ -8,9 +8,10 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\Assistant::class, function (Faker $faker) {
+    $refKey = $faker->toUpper(str_random(3));
     return [
-        'title' => $faker->text(120),
-        'ref_key' => str_random(3),
+        'title' => 'Assistant ' . $refKey,
+        'ref_key' => $refKey,
         'email' => $faker->email,
         'comment' => $faker->text(200),
     ];

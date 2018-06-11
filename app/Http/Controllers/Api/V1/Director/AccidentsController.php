@@ -17,6 +17,15 @@ use App\Transformers\AccidentTransformer;
 
 class AccidentsController extends ApiController
 {
+    protected function getDataTransformer()
+    {
+        return new AccidentTransformer();
+    }
+
+    protected function getModelClass()
+    {
+        return Accident::class;
+    }
 
     public function index()
     {

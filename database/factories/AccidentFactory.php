@@ -15,7 +15,7 @@ use App\User;
 use Faker\Generator as Faker;
 
 $factory->define(\App\Accident::class, function (Faker $faker) {
-
+    $refNum = $faker->toUpper(str_random(3)) . '-' . $faker->toUpper(str_random(3)) . $faker->toUpper(str_random(3));
     return [
         'created_by' => function () {
             return factory(User::class)->make()->id;
@@ -35,7 +35,7 @@ $factory->define(\App\Accident::class, function (Faker $faker) {
         'assistant_id' => function () {
             return factory(Assistant::class)->make()->id;
         },
-        'assistant_ref_num' => $faker->text(20),
+        'assistant_ref_num' => $faker->toUpper(str_random(3)) . '-' . $faker->toUpper(str_random(3)),
         'caseable_id' => function () {
             return factory(DoctorAccident::class)->make()->id;
         },
@@ -43,8 +43,8 @@ $factory->define(\App\Accident::class, function (Faker $faker) {
             return factory(FormReport::class)->make()->id;
         },
         'caseable_type' => DoctorAccident::class,
-        'ref_num' => str_random(3) . '-' . $faker->numberBetween('100', '999') . '-' . str_random(2),
-        'title' => $faker->text(30),
+        'ref_num' => $refNum,
+        'title' => 'Accident ' . $refNum,
         'city_id' => function () {
             return factory(\App\City::class)->make()->id;
         },

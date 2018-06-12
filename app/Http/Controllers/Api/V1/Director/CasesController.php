@@ -183,8 +183,8 @@ class CasesController extends ApiController
     public function store(Request $request, ReferralNumberService $referralNumberService, AccidentStatusesService $statusesService)
     {
         $accidentData = $request->json('accident', []);
-        if (!isset($accidentData['handling_time']) || !$accidentData['handling_time']) {
-            $accidentData['handling_time'] = NULL;
+        if (!isset($accidentData['handlingTime']) || !$accidentData['handlingTime']) {
+            $accidentData['handlingTime'] = NULL;
         }
         $accidentData = array_merge(['contacts' => '', 'symptoms' => ''], $accidentData);
         $accident = Accident::create($accidentData);
@@ -218,10 +218,7 @@ class CasesController extends ApiController
         }
         $accident->save();
 
-        $statusesService->set($accident, AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusesService::STATUS_NEW,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT,
-        ]), 'Created by director');
+        $statusesService->set($accident, AccidentStatus::firstOrCreate(AccidentStatusesTableSeeder::ACCIDENT_STATUSES[0]), 'Created by director');
 
         $accident->diagnostics()->attach($request->json('diagnostics', []));
         $accident->services()->attach($request->json('services', []));
@@ -262,7 +259,7 @@ class CasesController extends ApiController
             $this->response->errorBadRequest('Accident data should be provided in the request data');
         }
 
-        if (!$requestedAccident['handling_time']) {
+        if (!$requestedAccident['handlingTime']) {
             \Log::error('Undefined handling time', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
@@ -292,7 +289,7 @@ class CasesController extends ApiController
             $patient = Patient::findOrFail($patientData['id']);
         }
 
-        $requestedAccident['patient_id'] = $patient && $patient->id ? $patient->id : 0;
+        $requestedAccident['patientId'] = $patient && $patient->id ? $patient->id : 0;
         $accident = $this->setData($accident, $requestedAccident);
         $accident->save();
 

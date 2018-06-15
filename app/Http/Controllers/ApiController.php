@@ -26,10 +26,13 @@ class ApiController extends Controller
 
     /**
      * To have possibility to add some conditions
+     * # notice: do not want to search by all of the visible properties because we need to control that
+     * # we need to control filter's types and not all filters are able to be searchable
      * @param $eloquent
+     * @param Request $request
      * @return mixed
      */
-    protected function applyCondition($eloquent)
+    protected function applyCondition($eloquent, Request $request = null)
     {
         return $eloquent;
     }
@@ -58,7 +61,7 @@ class ApiController extends Controller
         $sortOrder = $request->json('sortOrder', 1) > 0 ? 'asc' : 'desc';
 
         $eloquent = call_user_func(array($this->getModelClass(), 'orderBy'), $sortField, $sortOrder);
-        $eloquent = $this->applyCondition($eloquent);
+        $eloquent = $this->applyCondition($eloquent, $request);
         $data = $eloquent->paginate($rows, ['*'], 'page', $page);
         return $this->response->paginator($data, $this->getDataTransformer());
     }

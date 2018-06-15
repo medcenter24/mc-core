@@ -12,9 +12,19 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\FinanceRequest;
 use App\Services\CaseServices\CaseFinanceService;
 use App\Transformers\FinanceConditionTransformer;
+use Illuminate\Http\Request;
 
 class FinanceController extends ApiController
 {
+    protected function applyCondition($eloquent, Request $request = null)
+    {
+        $id = (int)$request->json('id', false);
+        if ($id) {
+            $eloquent->where('id', $id);
+        }
+        return $eloquent;
+    }
+
     protected function getDataTransformer()
     {
         return new FinanceConditionTransformer();
@@ -25,6 +35,15 @@ class FinanceController extends ApiController
         return FinanceCondition::class;
     }
 
+    /**
+     * @param $id
+     * @return \Dingo\Api\Http\Response
+     */
+    public function show($id)
+    {
+        $finance = FinanceCondition::findOrFail($id);
+        return $this->response->item($finance, new FinanceConditionTransformer());
+    }
 
     /**
      * Add new rule

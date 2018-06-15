@@ -15,6 +15,15 @@ class FinanceConditionTransformer extends TransformerAbstract
 {
     public function transform(FinanceCondition $financeCondition)
     {
-        return $financeCondition->toArray();
+        return [
+            'id' => $financeCondition->id,
+            'title' => $financeCondition->title,
+            'priceAmount' => [], // $financeCondition->price,
+            'assistants' => [], // $financeCondition->assistants->get('id'),
+            'cities' => [], // $financeCondition->cities->get('id'),
+            'doctors' => [], // $financeCondition->doctors->get('id'),
+            'services' => [], // $financeCondition->services->get('id'),
+            'datePeriods' => [], // $financeCondition->datePeriods()->get('id'),
+        ];
     }
 }

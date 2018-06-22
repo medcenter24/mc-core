@@ -8,7 +8,7 @@
 use App\DatePeriod;
 use Illuminate\Database\Seeder;
 
-class DatePeriodSeeder extends Seeder
+class DatePeriodTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,6 +18,6 @@ class DatePeriodSeeder extends Seeder
     public function run()
     {
         DatePeriod::truncate();
-        factory(DatePeriod::class, 100)->create();
+        factory(DatePeriod::class, 3)->create();
     }
 }

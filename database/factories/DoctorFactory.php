@@ -18,7 +18,7 @@ $factory->define(Doctor::class, function (Faker $faker) {
         'gender' => $faker->randomElement(['male', 'female', 'none']),
         'medical_board_num' => $faker->numberBetween(1000000, 9999999),
         'city_id' => function () {
-            return factory(City::class)->make()->id;
+            return factory(City::class)->create()->id;
         }
     ];
 });

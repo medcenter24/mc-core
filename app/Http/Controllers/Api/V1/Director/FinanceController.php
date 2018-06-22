@@ -50,12 +50,13 @@ class FinanceController extends ApiController
      * @param FinanceRequest $request
      * @param CaseFinanceService $caseFinanceService
      * @return \Dingo\Api\Http\Response
+     * @throws \App\Exceptions\InconsistentDataException
      */
     public function store(FinanceRequest $request, CaseFinanceService $caseFinanceService)
     {
         $financeCondition = $caseFinanceService->updateFinanceConditionByRequest($request);
-        return $this->response->created(action('Api\V1\Director\FinanceController@show', [$financeCondition]),
-            $financeCondition->toArray());
+        $transformer = new FinanceConditionTransformer();
+        return $this->response->created(url("pages/settings/finance/{$financeCondition->id}"), $transformer->transform($financeCondition));
     }
 
     /**
@@ -64,6 +65,7 @@ class FinanceController extends ApiController
      * @param FinanceRequest $request
      * @param CaseFinanceService $caseFinanceService
      * @return \Dingo\Api\Http\Response
+     * @throws \App\Exceptions\InconsistentDataException
      */
     public function update($id, FinanceRequest $request, CaseFinanceService $caseFinanceService)
     {

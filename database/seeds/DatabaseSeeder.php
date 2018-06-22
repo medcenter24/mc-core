@@ -38,7 +38,9 @@ class DatabaseSeeder extends Seeder
             $this->call(AccidentsTableSeeder::class);
             $this->call(HospitalsTableSeeder::class);
             $this->call(InvoicesTableSeeder::class);
-            $this->call(DatePeriodSeeder::class);
+            $this->call(DatePeriodTableSeeder::class);
+            $this->call(FinanceConditionTableSeeder::class);
+            $this->call(FinanceStorageTableSeeder::class);
         }
     }
 }

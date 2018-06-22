@@ -18,7 +18,7 @@ class Doctor extends Model implements HasMedia
     use HasMediaTrait;
 
     protected $fillable = ['name', 'description', 'ref_key', 'gender', 'medical_board_num'];
-    protected $visible  = ['name', 'description', 'ref_key', 'gender', 'medical_board_num'];
+    protected $visible  = ['id', 'name', 'description', 'ref_key', 'gender', 'medical_board_num'];
 
     public function user()
     {

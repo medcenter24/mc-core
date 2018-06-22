@@ -12,8 +12,10 @@ use App\Accident;
 use App\AccidentType;
 use App\Assistant;
 use App\City;
+use App\DatePeriod;
 use App\Doctor;
 use App\DoctorService;
+use App\Exceptions\InconsistentDataException;
 use App\FinanceCondition;
 use App\FinanceStorage;
 use App\Http\Requests\Api\FinanceRequest;
@@ -42,6 +44,7 @@ class CaseFinanceService
         if ($id) {
             $financeCondition = FinanceCondition::findOrFail($id);
             $financeCondition->price = $condition->getPrice();
+            $financeCondition->title = $title;
             $financeCondition->save();
             $financeCondition->conditions()->delete(); // unassign all stored conditions
         } else {
@@ -57,7 +60,7 @@ class CaseFinanceService
         while ($collection->valid()) {
             $op = $collection->current();
             FinanceStorage::create([
-                'finance_condition_id' => $financeCondition,
+                'finance_condition_id' => $financeCondition->id,
                 'model' => $op->modelName(),
                 'model_id' => $op->id(),
             ]);
@@ -101,31 +104,40 @@ class CaseFinanceService
         return 1;
     }
 
+    /**
+     * Adding clause to the condition
+     * @param $toCondition
+     * @param FinanceRequest $request
+     * @param $className
+     * @param $jsonKey
+     * @throws InconsistentDataException
+     */
+    private function addCondition(CaseFinanceCondition &$toCondition, FinanceRequest $request, $className, $jsonKey)
+    {
+        $data = $request->json($jsonKey, []);
+        if ($data && count($data)) {
+            foreach ($data as $model) {
+                $toCondition->if($className, $model['id']);
+            }
+        }
+    }
+
+    /**
+     * Update or create condition
+     * @param FinanceRequest $request
+     * @param int $id
+     * @return mixed
+     * @throws InconsistentDataException
+     */
     public function updateFinanceConditionByRequest(FinanceRequest $request, $id = 0)
     {
         $caseFinanceCondition = $this->factory();
-        $doctor = $request->json('doctor', false);
-        if ($doctor && isset($doctor['id'])) {
-            $caseFinanceCondition->if(Doctor::class, $doctor['id']);
-        }
-        $assistant = $request->json('assistant', false);
-        if ($assistant && isset($assistant['id'])) {
-            $caseFinanceCondition->if(Assistant::class, $assistant['id']);
-        }
-        $city = $request->json('city', false);
-        if ($city && isset($city['id'])) {
-            $caseFinanceCondition->if(City::class, $city['id']);
-        }
 
-        // condition base on the full match
-        // if you need to have only one service in condition or condition for each of the provided service:
-        // then you need to create new conditions from the gui one by one
-        $services = $request->json('services', false);
-        if ($services && count($services)) {
-            foreach ($services as $service) {
-                $caseFinanceCondition->if(DoctorService::class, $service['id']);
-            }
-        }
+        $this->addCondition($caseFinanceCondition, $request, Doctor::class, 'doctors');
+        $this->addCondition($caseFinanceCondition, $request, Assistant::class, 'assistants');
+        $this->addCondition($caseFinanceCondition, $request, City::class, 'cities');
+        $this->addCondition($caseFinanceCondition, $request, DoctorService::class, 'services');
+        $this->addCondition($caseFinanceCondition, $request, DatePeriod::class, 'datePeriods');
 
         $caseFinanceCondition->thenPrice($request->json('priceAmount', 0));
         return $this->saveCondition(

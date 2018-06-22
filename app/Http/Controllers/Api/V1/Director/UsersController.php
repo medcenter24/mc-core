@@ -16,15 +16,17 @@ use App\Transformers\UserTransformer;
 use App\User;
 use Hash;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded;
+use Illuminate\Http\Request;
 
 class UsersController extends ApiController
 {
     /**
      * For director allowed only Doctors
      * @param $eloquent
+     * @param $request
      * @return mixed
      */
-    protected function applyCondition($eloquent)
+    protected function applyCondition($eloquent, Request $request = null)
     {
         return $eloquent->whereHas('roles', function ($query) {
             $query->where('title', 'doctor');

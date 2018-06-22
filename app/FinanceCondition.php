@@ -16,11 +16,12 @@ class FinanceCondition extends Model
 
     protected $fillable = ['created_by', 'title', 'price'];
     protected $visible = ['id', 'title', 'price'];
+
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function conditions()
     {
-        return $this->belongsTo(FinanceStorage::class);
+        return $this->hasMany(FinanceStorage::class);
     }
 }

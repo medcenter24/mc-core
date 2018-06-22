@@ -24,7 +24,7 @@ class DoctorService extends Model
     use DoctorTrait;
 
     protected $fillable = ['title', 'description', 'created_by', 'disease_code'];
-    protected $visible = ['title', 'description', 'created_by', 'disease_code'];
+    protected $visible = ['id', 'title', 'description', 'created_by', 'disease_code'];
 
     public function creator()
     {

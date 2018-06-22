@@ -62,6 +62,13 @@ class ApiController extends Controller
 
         $eloquent = call_user_func(array($this->getModelClass(), 'orderBy'), $sortField, $sortOrder);
         $eloquent = $this->applyCondition($eloquent, $request);
+
+        // default conditions for all models
+        $ids = $request->json('ids', []);
+        if (count($ids)) {
+            $eloquent->whereIn('id', $ids);
+        }
+
         $data = $eloquent->paginate($rows, ['*'], 'page', $page);
         return $this->response->paginator($data, $this->getDataTransformer());
     }

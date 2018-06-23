@@ -34,12 +34,13 @@
         "tymon/jwt-auth": "^1.0.0-rc.1"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.2@dev",
         "barryvdh/laravel-ide-helper": "^2.4",
+        "doctrine/dbal": "^2.7@dev",
         "fzaninotto/faker": "~1.7",
         "mockery/mockery": "0.9.*",
         "nunomaduro/collision": "~2.0",
-        "phpunit/phpunit": "~7.0",
-        "doctrine/dbal": "^2.7@dev"
+        "phpunit/phpunit": "~7.0"
     },
     "autoload": {
         "classmap": [

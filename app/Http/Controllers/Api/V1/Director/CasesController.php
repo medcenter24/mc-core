@@ -29,6 +29,7 @@ use App\Services\Scenario\StoryService;
 use App\Services\ScenarioInterface;
 use App\Transformers\AccidentCheckpointTransformer;
 use App\Transformers\AccidentStatusHistoryTransformer;
+use App\Transformers\AccidentTransformer;
 use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DirectorCaseTransformer;
@@ -188,7 +189,6 @@ class CasesController extends ApiController
         }
         $accidentData = array_merge(['contacts' => '', 'symptoms' => ''], $accidentData);
         $accident = Accident::create($accidentData);
-
         $doctorAccidentData = $request->json('doctorAccident', []);
         if (!isset($doctorAccidentData['visit_time']) || !$doctorAccidentData['visit_time']) {
             $doctorAccidentData['visit_time'] = NULL;
@@ -209,16 +209,21 @@ class CasesController extends ApiController
         } else {
             $patient = Patient::findOrFail($patientData['id']);
         }
+
         $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
         $accident->caseable_id = $doctorAccident->id;
         $accident->caseable_type = DoctorAccident::class;
         $accident->created_by = $this->user()->id;
+
         if (empty($accident->ref_num)) {
             $accident->ref_num = $referralNumberService->generate($accident);
         }
         $accident->save();
 
-        $statusesService->set($accident, AccidentStatus::firstOrCreate(AccidentStatusesTableSeeder::ACCIDENT_STATUSES[0]), 'Created by director');
+        $statusesService->set($accident, AccidentStatus::firstOrCreate([
+            'title' => AccidentStatusesService::STATUS_NEW,
+            'type' => AccidentStatusesService::TYPE_ACCIDENT
+        ]), 'Created by director');
 
         $accident->diagnostics()->attach($request->json('diagnostics', []));
         $accident->services()->attach($request->json('services', []));
@@ -234,6 +239,7 @@ class CasesController extends ApiController
     /**
      * @param $id
      * @param Request $request
+     * @return \Dingo\Api\Http\Response
      */
     public function update($id, Request $request)
     {
@@ -361,6 +367,8 @@ class CasesController extends ApiController
 
         $accident->checkpoints()->detach();
         $accident->checkpoints()->attach($request->json('checkpoints', []));
+
+        return $this->response->item($accident, new DirectorCaseTransformer());
     }
 
     private function setData(Model $model, $data)

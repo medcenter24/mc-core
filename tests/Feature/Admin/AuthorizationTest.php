@@ -35,7 +35,7 @@ class AuthorizationTest extends TestCase
             'password' => '234234secureing...',
         ]);
         if ($response->getStatusCode() != 302) {
-            var_dump($response->getContent());
+            // why am I here?
         }
         $response->assertRedirect('')->assertSessionHas('_token', session()->get('_token'));
         $this->get('admin')->assertRedirect('login');

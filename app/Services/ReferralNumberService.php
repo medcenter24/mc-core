@@ -71,9 +71,10 @@ class ReferralNumberService
 
             // skip duplicates
             $additionalPrefix = 0;
-            while ($this->exists($refNum = $ref
-                . ($additionalPrefix ? '^' . ++$additionalPrefix : ''))
-            ) { }
+            do {
+                $refNum = $ref . ($additionalPrefix ? '_' . $additionalPrefix : '');
+                $additionalPrefix++;
+            } while ($this->exists($refNum));
         }
 
         return $refNum;

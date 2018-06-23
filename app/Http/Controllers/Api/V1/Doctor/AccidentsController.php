@@ -78,10 +78,10 @@ class AccidentsController extends ApiController
             ->leftJoin('cities', 'accidents.city_id', '=', 'cities.id')
             ->where('accidents.caseable_type', DoctorAccident::class)
             ->whereIn('accidents.caseable_id', DoctorAccident::where('doctor_id', $this->getDoctor()->id)->pluck('id')->toArray())
-            ->where('accident_statuses.type', \AccidentStatusesTableSeeder::TYPE_DOCTOR)
+            ->where('accident_statuses.type', AccidentStatusesService::TYPE_DOCTOR)
             ->whereIn('accident_statuses.title', [
-                \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
-                \AccidentStatusesTableSeeder::STATUS_ASSIGNED
+                AccidentStatusesService::STATUS_IN_PROGRESS,
+                AccidentStatusesService::STATUS_ASSIGNED
             ])
             ->orderBy($sort[0], $sort[1])
             ->paginate($request->get('per_page', 10),
@@ -416,11 +416,11 @@ class AccidentsController extends ApiController
         }
 
         if (
-            !$accident->accidentStatus->type == \AccidentStatusesTableSeeder::TYPE_DOCTOR
+            !$accident->accidentStatus->type == AccidentStatusesService::TYPE_DOCTOR
             || (
                 !in_array($accident->accidentStatus->title, [
-                    \AccidentStatusesTableSeeder::STATUS_ASSIGNED,
-                    \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
+                    AccidentStatusesService::STATUS_ASSIGNED,
+                    AccidentStatusesService::STATUS_IN_PROGRESS,
                 ])
             )) {
 

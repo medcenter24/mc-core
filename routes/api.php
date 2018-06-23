@@ -104,6 +104,7 @@ $api->group([
                     $api->get('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@comments');
                     $api->put('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@addComment');
                     $api->put('{id}', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@update');
+                    $api->delete('{id}', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@destroy');
                     $api->resource('', \App\Http\Controllers\Api\V1\Director\CasesController::class);
                 });
 

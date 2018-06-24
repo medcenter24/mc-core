@@ -373,6 +373,11 @@ class CasesController extends ApiController
 
     private function setData(Model $model, $data)
     {
+        $converted = [];
+        foreach ($data as $key => $val) {
+            $converted[snake_case($key)] = $val;
+        }
+        $data = $converted;
         foreach ($model->getVisible() as $item) {
             if (isset($data[$item])) {
                 if (in_array($item, $model->getDates())) {

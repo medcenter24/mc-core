@@ -188,6 +188,8 @@ class CasesController extends ApiController
             $accidentData['handlingTime'] = NULL;
         }
         $accidentData = array_merge(['contacts' => '', 'symptoms' => ''], $accidentData);
+        $accidentData = $this->convertIndexes($accidentData);
+
         $accident = Accident::create($accidentData);
         $doctorAccidentData = $request->json('doctorAccident', []);
         if (!isset($doctorAccidentData['visit_time']) || !$doctorAccidentData['visit_time']) {
@@ -371,13 +373,18 @@ class CasesController extends ApiController
         return $this->response->item($accident, new DirectorCaseTransformer());
     }
 
-    private function setData(Model $model, $data)
+    private function convertIndexes($data)
     {
         $converted = [];
         foreach ($data as $key => $val) {
             $converted[snake_case($key)] = $val;
         }
-        $data = $converted;
+        return $converted;
+    }
+
+    private function setData(Model $model, $data)
+    {
+        $data = $this->convertIndexes($data);
         foreach ($model->getVisible() as $item) {
             if (isset($data[$item])) {
                 if (in_array($item, $model->getDates())) {

@@ -14,9 +14,9 @@ use App\DoctorAccident;
 use App\DoctorService;
 use App\DoctorSurvey;
 use App\Events\DoctorAccidentUpdatedEvent;
+use App\HospitalAccident;
 use App\Http\Controllers\ApiController;
 use App\Patient;
-use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
 use App\Services\CaseServices\CaseHistoryService;
 use App\Services\CaseServices\CaseReportService;
@@ -29,7 +29,6 @@ use App\Services\Scenario\StoryService;
 use App\Services\ScenarioInterface;
 use App\Transformers\AccidentCheckpointTransformer;
 use App\Transformers\AccidentStatusHistoryTransformer;
-use App\Transformers\AccidentTransformer;
 use App\Transformers\CaseAccidentTransformer;
 use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DirectorCaseTransformer;
@@ -174,6 +173,27 @@ class CasesController extends ApiController
         return $this->response->collection($created, new DocumentTransformer());
     }
 
+    private function createCaseableFromRequest(Accident $accident, Request $request) {
+
+        if ($accident->caseable_type == DoctorAccident::class) {
+            $doctorAccidentData = $request->json('doctorAccident', []);
+            if (!isset($doctorAccidentData['visit_time']) || !$doctorAccidentData['visit_time']) {
+                $doctorAccidentData['visit_time'] = NULL;
+            }
+            $doctorAccidentData = array_merge(['recommendation' => '', 'investigation' => ''], $doctorAccidentData);
+            $caseable = DoctorAccident::create($doctorAccidentData);
+
+            event(new DoctorAccidentUpdatedEvent(null, $caseable, 'Created by director'));
+        } else {
+            $hospitalAccidentData = $request->json('hospitalAccident', []);
+            $caseable = HospitalAccident::create($hospitalAccidentData);
+        }
+
+        $accident->caseable_id = $caseable->id;
+        $accident->caseable_type = get_class($caseable);
+        $accident->save();
+    }
+
     /**
      * New case accident
      * @param Request $request
@@ -191,12 +211,8 @@ class CasesController extends ApiController
         $accidentData = $this->convertIndexes($accidentData);
 
         $accident = Accident::create($accidentData);
-        $doctorAccidentData = $request->json('doctorAccident', []);
-        if (!isset($doctorAccidentData['visit_time']) || !$doctorAccidentData['visit_time']) {
-            $doctorAccidentData['visit_time'] = NULL;
-        }
-        $doctorAccidentData = array_merge(['recommendation' => '', 'investigation' => ''], $doctorAccidentData);
-        $doctorAccident = DoctorAccident::create($doctorAccidentData);
+
+        $this->createCaseableFromRequest($accident, $request);
 
         $patientData = $request->json('patient', []);
         if (!isset($patientData['birthday']) || !$patientData['birthday']) {
@@ -213,8 +229,6 @@ class CasesController extends ApiController
         }
 
         $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
-        $accident->caseable_id = $doctorAccident->id;
-        $accident->caseable_type = DoctorAccident::class;
         $accident->created_by = $this->user()->id;
 
         if (empty($accident->ref_num)) {
@@ -233,9 +247,55 @@ class CasesController extends ApiController
         $accident->documents()->attach($request->json('documents', []));
         $accident->checkpoints()->attach($request->json('checkpoints', []));
 
-        event(new DoctorAccidentUpdatedEvent(null, $doctorAccident, 'Created by director'));
         $transformer = new DirectorCaseTransformer();
         return $this->response->created($accident->id, $transformer->transform($accident));
+    }
+
+    private function updateCaseableData(Accident $accident, Request $request)
+    {
+        if (!$accident->caseable) {
+            $this->createCaseableFromRequest($accident, $request);
+        } else {
+            $isDoc = true;
+            if (!$accident->caseable_type == DoctorAccident::class) {
+                $caseableAccidentData = $request->json('doctorAccident', []);
+            } else {
+                $isDoc = false;
+                $caseableAccidentData = $request->json('hospitalAccident', []);
+            }
+
+            $before = clone $accident->caseable;
+            $caseable = $this->setData($accident->caseable, $caseableAccidentData);
+            $caseable->save();
+
+            if ($isDoc) {
+                event(new DoctorAccidentUpdatedEvent($before, $caseable, 'Updated by director'));
+            }
+        }
+    }
+
+    /**
+     * Updated morphed data (services, diagnostics, surveys)
+     * @param Accident $accident
+     * @param Request $request
+     * @param $morphName
+     */
+    private function updateAccidentMorph(Accident $accident, Request $request, $morphName)
+    {
+        $morphData = $request->json($morphName, []);
+        $caseableMorph = [];
+        if ($accident->caseable()->$morphName()) {
+            foreach ($accident->caseable->$morphName() as $morph) {
+                if ($morph && in_array($morph->id, $morphData) ) {
+                    $caseableMorph[] = $morph->id;
+                }
+            }
+        }
+        $accident->caseable->$morphName()->detach();
+        $accident->caseable->$morphName()->attach($caseableMorph);
+        $accidentMorphs = array_diff($morphData, $caseableMorph);
+        $accident->services()->detach();
+        $accident->services()->attach($accidentMorphs);
     }
 
     /**
@@ -245,6 +305,7 @@ class CasesController extends ApiController
      */
     public function update($id, Request $request)
     {
+        /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
 
         // if it needed then status for this accident would be reset by the administrator
@@ -301,68 +362,11 @@ class CasesController extends ApiController
         $accident = $this->setData($accident, $requestedAccident);
         $accident->save();
 
-        $doctorAccidentData = $request->json('doctorAccident', false);
-        if ($doctorAccidentData) {
-            if (!$accident->caseable) {
-                $doctorAccident = DoctorAccident::create(
-                    array_merge(['recommendation' => '', 'investigation' => ''],
-                        $request->json('doctorAccident', []))
-                );
-                $accident->caseable_id = $doctorAccident->id;
-                $accident->caseable_type = DoctorAccident::class;
-                $accident->save();
+        $this->updateCaseableData($accident, $request);
 
-                event(new DoctorAccidentUpdatedEvent(null, $doctorAccident, 'Created by director'));
-            } else {
-                $before = clone $accident->caseable;
-                $doctorAccident = $this->setData($accident->caseable, $doctorAccidentData);
-                $doctorAccident->save();
-
-                event(new DoctorAccidentUpdatedEvent($before, $doctorAccident, 'Updated by director'));
-            }
-        }
-
-        // Services ==========================
-        $services = $request->json('services', []);
-        $docServices = [];
-        foreach ($accident->caseable->services() as $service) {
-            if ($service && in_array($service->id, $services) ) {
-                $docServices[] = $services->id;
-            }
-        }
-        $accidentServices = array_diff($services, $docServices);
-        $accident->caseable->services()->detach();
-        $accident->caseable->services()->attach($docServices);
-        $accident->services()->detach();
-        $accident->services()->attach($accidentServices);
-
-        // Surveys ==========================
-        $surveys = $request->json('surveys', []);
-        $docSurveys = [];
-        foreach ($accident->caseable->surveys() as $survey) {
-            if ($survey && in_array($survey->id, $surveys) ) {
-                $docSurveys[] = $surveys->id;
-            }
-        }
-        $accidentSurveys = array_diff($surveys, $docSurveys);
-        $accident->caseable->surveys()->detach();
-        $accident->caseable->surveys()->attach($docSurveys);
-        $accident->surveys()->detach();
-        $accident->surveys()->attach($accidentSurveys);
-
-        // Diagnostics ======================
-        $diagnostics = $request->json('diagnostics', []);
-        $docDiagnostics = [];
-        foreach ($accident->caseable->diagnostics() as $diagnostic) {
-            if ($diagnostic && in_array($diagnostic->id, $diagnostics) ) {
-                $docDiagnostics[] = $diagnostic->id;
-            }
-        }
-        $accidentDiagnostics = array_diff($diagnostics, $docDiagnostics);
-        $accident->caseable->diagnostics()->detach();
-        $accident->caseable->diagnostics()->attach($docDiagnostics);
-        $accident->diagnostics()->detach();
-        $accident->diagnostics()->attach($accidentDiagnostics);
+        $this->updateAccidentMorph($accident, $request, 'services');
+        $this->updateAccidentMorph($accident, $request, 'surveys');
+        $this->updateAccidentMorph($accident, $request, 'diagnostics');
 
         $accident->documents()->detach();
         $accident->documents()->attach($request->json('documents', []));
@@ -373,6 +377,11 @@ class CasesController extends ApiController
         return $this->response->item($accident, new DirectorCaseTransformer());
     }
 
+    /**
+     * Makes indexes snake_case because frontend works with camelCase
+     * @param $data
+     * @return array
+     */
     private function convertIndexes($data)
     {
         $converted = [];
@@ -382,6 +391,12 @@ class CasesController extends ApiController
         return $converted;
     }
 
+    /**
+     * Set provided data to the visible properties of the model
+     * @param Model $model
+     * @param $data
+     * @return Model
+     */
     private function setData(Model $model, $data)
     {
         $data = $this->convertIndexes($data);

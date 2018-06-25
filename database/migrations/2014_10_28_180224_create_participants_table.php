@@ -20,6 +20,7 @@ class CreateParticipantsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->timestamp('last_read')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

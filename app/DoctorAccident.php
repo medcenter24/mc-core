@@ -26,11 +26,6 @@ class DoctorAccident extends AccidentAbstract
     protected $fillable = ['city_id', 'doctor_id', 'recommendation', 'investigation', 'visit_time'];
     protected $visible = ['city_id', 'doctor_id', 'recommendation', 'investigation', 'visit_time'];
 
-    public function accident()
-    {
-        return $this->morphOne(Accident::class, 'caseable');
-    }
-
     /**
      * Photos of the documents from the patient
      *
@@ -49,16 +44,6 @@ class DoctorAccident extends AccidentAbstract
     public function diagnostics()
     {
         return $this->morphToMany(Diagnostic::class, 'diagnosticable');
-    }
-
-    /**
-     * Assignment from the Doctor_Accident to the status action with comment
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function statusHistory()
-    {
-        return $this->morphMany(AccidentStatusHistory::class, 'historyable');
     }
 
     /**

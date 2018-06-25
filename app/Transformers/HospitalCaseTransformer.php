@@ -10,7 +10,6 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 
-// not implemented
 class HospitalCaseTransformer extends TransformerAbstract
 {
     public function transform(HospitalAccident $doctorAccident)

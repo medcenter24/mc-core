@@ -88,12 +88,12 @@ $api->group([
 
                     // assigned to case
                     $api->post('search', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@search');
+                    $api->get('{id}/scenario', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@story');
                     $api->get('{id}/doctorcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getDoctorCase');
                     $api->get('{id}/hospitalcase', '\App\Http\Controllers\Api\V1\Director\CasesController@getHospitalCase');
                     $api->get('{id}/diagnostics', '\App\Http\Controllers\Api\V1\Director\CasesController@getDiagnostics');
                     $api->get('{id}/services', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@getServices');
                     $api->get('{id}/surveys', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@getSurveys');
-                    $api->get('{id}/scenario', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@story');
                     $api->post('{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@createDocuments');
                     $api->get('{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
                     $api->get('{id}/checkpoints', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@getCheckpoints');

@@ -19,10 +19,8 @@ class DoctorCaseTransformer extends TransformerAbstract
         return [
             'id' => $doctorAccident->id,
             'accident_id' => $doctorAccident->accident->id,
-            'accident_status_id' => $doctorAccident->accident_status_id,
             'doctor_id' => $doctorAccident->doctor_id,
             'city_id' => $doctorAccident->city_id,
-            'status' => $doctorAccident->status,
             // api uses only system format if we need to convert it - do it at the frontend
             'created_at' => $doctorAccident->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
             'visit_time' => $doctorAccident->visit_time ? $doctorAccident->visit_time->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : '',

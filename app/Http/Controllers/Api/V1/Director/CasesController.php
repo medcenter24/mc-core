@@ -16,6 +16,7 @@ use App\DoctorSurvey;
 use App\Events\DoctorAccidentUpdatedEvent;
 use App\HospitalAccident;
 use App\Http\Controllers\ApiController;
+use App\Models\Scenario\ScenarioModel;
 use App\Patient;
 use App\Services\AccidentStatusesService;
 use App\Services\CaseServices\CaseHistoryService;
@@ -23,10 +24,8 @@ use App\Services\CaseServices\CaseReportService;
 use App\Services\DocumentService;
 use App\Services\ReferralNumberService;
 use App\Services\RoleService;
-use App\Services\Scenario\DoctorScenarioService;
 use App\Services\Scenario\ScenarioService;
 use App\Services\Scenario\StoryService;
-use App\Services\ScenarioInterface;
 use App\Transformers\AccidentCheckpointTransformer;
 use App\Transformers\AccidentStatusHistoryTransformer;
 use App\Transformers\CaseAccidentTransformer;
@@ -36,6 +35,7 @@ use App\Transformers\DoctorCaseTransformer;
 use App\Transformers\DoctorServiceTransformer;
 use App\Transformers\DoctorSurveyTransformer;
 use App\Transformers\DocumentTransformer;
+use App\Transformers\HospitalCaseTransformer;
 use App\Transformers\MessageTransformer;
 use App\Transformers\ScenarioTransformer;
 use Carbon\Carbon;
@@ -81,20 +81,19 @@ class CasesController extends ApiController
     public function getDoctorCase($id)
     {
         $accident = Accident::findOrFail($id);
-        if(!$accident->caseable) {
-            $doctorAccident = DoctorAccident::create();
-            $accident->caseable_id = $doctorAccident->id;
-            $accident->caseable_type = DoctorAccident::class;
-            $accident->save();
+        if (!$accident->caseable) {
+            $this->response->errorNotFound('Doctor case not found');
         }
         return $this->response->item($accident->caseable, new DoctorCaseTransformer());
     }
 
     public function getHospitalCase($id)
     {
-        /*$accident = Accident::findOrCreate($id);
-        return $this->response->item($accident->hospitalCase, new HospitalCaseTransformer());*/
-        $this->response->errorMethodNotAllowed('Not implemented, yet');
+        $accident = Accident::findOrFail($id);
+        if (!$accident->caseable) {
+            $this->response->errorNotFound('Hospital case not found');
+        }
+        return $this->response->item($accident->caseable, new HospitalCaseTransformer());
     }
 
     public function getDiagnostics($id, RoleService $roleService)
@@ -425,17 +424,11 @@ class CasesController extends ApiController
     {
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
-        $scenarioService = null;
-        if ($accident->caseable_type == DoctorAccident::class) {
-            $scenarioService = new DoctorScenarioService($accidentStatusesService, $scenariosService);
-        }
-
-        if ( !($scenarioService instanceof ScenarioInterface) ) {
-            $this->response->errorNotFound('Story has not been found for that accident');
-        }
+        $scenario = null;
+        $scenario = new ScenarioModel($accidentStatusesService, $scenariosService->getScenarioByTag($accident->caseable_type));
 
         return $this->response->collection(
-            $storyService->init($accident->history, $scenarioService)->getStory(),
+            $storyService->init($accident->history, $scenario)->getStory(),
             new ScenarioTransformer()
         );
     }

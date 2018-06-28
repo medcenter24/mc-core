@@ -22,9 +22,12 @@ class CreateHospitalAccidentsTable extends Migration
         Schema::create('hospital_accidents', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('hospital_id')->default(0)->index();
-            $table->unsignedInteger('guarantee_id')->default(0)->index();
-            $table->unsignedInteger('invoice_id')->default(0)->index();
-            $table->unsignedInteger('form_report_id')->default(0)->index();
+            // link to the form
+            $table->unsignedInteger('hospital_guarantee_id')->default(0)->index();
+            $table->unsignedInteger('hospital_invoice_id')->default(0)->index();
+            $table->unsignedInteger('assistant_invoice_id')->default(0)->index();
+            // link to the form
+            $table->unsignedInteger('assistant_guarantee_id')->default(0)->index();
             $table->timestamps();
             $table->softDeletes();
         });

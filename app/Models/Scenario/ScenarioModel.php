@@ -1,22 +1,20 @@
 <?php
 /**
- * Copyright (c) 2017.
+ * Copyright (c) 2018.
  *
- * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ * @author Oleksander Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace App\Services\Scenario;
+namespace App\Models\Scenario;
 
 
 use App\AccidentStatus;
-use App\DoctorAccident;
 use App\Exceptions\InconsistentDataException;
-use App\Scenario;
 use App\Services\AccidentStatusesService;
 use App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;
 
-class DoctorScenarioService implements ScenarioInterface
+class ScenarioModel implements ScenarioInterface
 {
     /**
      * Current step
@@ -34,31 +32,21 @@ class DoctorScenarioService implements ScenarioInterface
      */
     private $accidentStatusesService;
 
-    /**
-     * @var ScenarioService
-     */
-    private $scenarioService;
-
-    public function __construct(AccidentStatusesService $accidentStatusesService, ScenarioService $scenarioService)
+    public function __construct(AccidentStatusesService $accidentStatusesService, Collection $scenario)
     {
         $this->accidentStatusesService = $accidentStatusesService;
-        $this->scenarioService = $scenarioService;
-    }
-
-    public function setScenario(Collection $scenario)
-    {
         $this->scenario = $scenario;
     }
 
     public function scenario()
     {
-        if (!$this->scenario) {
-            $this->scenario = $this->scenarioService->getScenarioByTag(DoctorAccident::class);
-        }
-
         return $this->scenario;
     }
 
+    /**
+     * @param int $stepId
+     * @throws InconsistentDataException
+     */
     public function setCurrentStepId($stepId = 0)
     {
         $this->stepId = (int) $this->findStepId($stepId);
@@ -69,6 +57,9 @@ class DoctorScenarioService implements ScenarioInterface
         return $this->stepId;
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function next()
     {
         $step = $this->current() + 1;
@@ -117,6 +108,11 @@ class DoctorScenarioService implements ScenarioInterface
         return $step;
     }
 
+    /**
+     * @param $step
+     * @return mixed
+     * @throws InconsistentDataException
+     */
     public function getStepData($step)
     {
         $stepId = $this->findStepId($step);

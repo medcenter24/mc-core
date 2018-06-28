@@ -18,6 +18,7 @@ class AccidentStatusesService
     const TYPE_ACCIDENT = 'accident';
     const TYPE_DOCTOR = 'doctor';
     const TYPE_HOSPITAL = 'hospital';
+    const TYPE_ASSISTANT = 'assistant';
 
     const STATUS_NEW = 'new';
     const STATUS_ASSIGNED = 'assigned';
@@ -26,6 +27,11 @@ class AccidentStatusesService
     const STATUS_PAID = 'paid';
     const STATUS_REJECT = 'reject';
     const STATUS_CLOSED = 'closed';
+
+    const STATUS_HOSPITAL_GUARANTEE = 'hospital_guarantee';
+    const STATUS_HOSPITAL_INVOICE = 'hospital_invoice';
+    const STATUS_ASSISTANT_INVOICE = 'assistant_invoice';
+    const STATUS_ASSISTANT_GUARANTEE = 'assistant_guarantee';
 
     /**
      * Set new status to accident

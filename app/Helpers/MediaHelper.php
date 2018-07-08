@@ -31,7 +31,7 @@ class MediaHelper
     }
 
     /**
-     *
+     * If no image available
      * @return string
      */
     public static function getB64Gag()

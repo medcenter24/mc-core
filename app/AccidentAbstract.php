@@ -30,19 +30,47 @@ class AccidentAbstract extends Model
         return $this->morphMany(AccidentStatusHistory::class, 'historyable');
     }
 
-    public function surveys()
-    {
-        return [];
-    }
-
-    public function services()
-    {
-        return [];
-    }
-
+    /**
+     * Selected by doctor diagnostics
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function diagnostics()
     {
-        return [];
+        return $this->morphToMany(Diagnostic::class, 'diagnosticable');
+    }
+
+    /**
+     * Each DoctorAccident is able to has own services, created by a doctor
+     * but by default it could be defined by the director
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function services()
+    {
+        return $this->morphToMany(DoctorService::class, 'doctor_serviceable');
+    }
+
+    /**
+     * As same as serviceable()
+     * each doctorAccident is able to has his own survey
+     * but by default it could be defined by the director
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function surveys()
+    {
+        return $this->morphToMany(DoctorSurvey::class, 'doctor_surveable');
+    }
+
+    /**
+     * Photos of the documents from the patient
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function documents()
+    {
+        return $this->morphToMany(Document::class, 'documentable');
     }
 
 

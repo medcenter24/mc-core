@@ -142,9 +142,15 @@ $api->group([
                 $api->post('diagnostics/search', \App\Http\Controllers\Api\V1\Director\DiagnosticsController::class . '@search');
                 $api->resource('diagnostics', \App\Http\Controllers\Api\V1\Director\DiagnosticsController::class);
 
-                $api->post('media', '\App\Http\Controllers\Api\V1\Director\MediaController@upload');
-                $api->get('media', '\App\Http\Controllers\Api\V1\Director\MediaController@uploads');
-                $api->delete('media/{id}', '\App\Http\Controllers\Api\V1\Director\MediaController@destroy');
+                $api->post('media', \App\Http\Controllers\Api\V1\Director\MediaController::class . '@upload');
+                $api->get('media', \App\Http\Controllers\Api\V1\Director\MediaController::class . '@uploads');
+                $api->delete('media/{id}', \App\Http\Controllers\Api\V1\Director\MediaController::class . '@destroy');
+
+                // the same media entrypoints but to work only with Froala editor
+                // @see https://www.froala.com/wysiwyg-editor/docs/options#imageManagerLoadURL
+                $api->post('froala', \App\Http\Controllers\Api\V1\Director\FroalaController::class . '@upload');
+                $api->get('froala', \App\Http\Controllers\Api\V1\Director\FroalaController::class . '@uploads');
+                $api->delete('froala/{id}', \App\Http\Controllers\Api\V1\Director\FroalaController::class . '@destroy');
 
                 $api->resource('documents', \App\Http\Controllers\Api\V1\Director\DocumentsController::class);
 
@@ -159,6 +165,9 @@ $api->group([
 
                 $api->post('periods/search', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class . '@search');
                 $api->resource('periods', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class);
+
+                $api->post('forms/search', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@search');
+                $api->resource('forms', \App\Http\Controllers\Api\V1\Director\FormsController::class);
             });
         });
     });

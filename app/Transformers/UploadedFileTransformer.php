@@ -8,7 +8,6 @@
 namespace App\Transformers;
 
 
-use App\Accident;
 use App\Upload;
 use League\Fractal\TransformerAbstract;
 

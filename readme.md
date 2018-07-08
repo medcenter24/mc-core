@@ -15,3 +15,6 @@ Description of the features and tools for the application.
   
 ### Telegram settings
 To generate new cert: `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nodes`
+
+# v2.0 Changes:
+`php artisan storage:link`

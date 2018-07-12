@@ -146,12 +146,6 @@ $api->group([
                 $api->get('media', \App\Http\Controllers\Api\V1\Director\MediaController::class . '@uploads');
                 $api->delete('media/{id}', \App\Http\Controllers\Api\V1\Director\MediaController::class . '@destroy');
 
-                // the same media entrypoints but to work only with Froala editor
-                // @see https://www.froala.com/wysiwyg-editor/docs/options#imageManagerLoadURL
-                $api->post('froala', \App\Http\Controllers\Api\V1\Director\FroalaController::class . '@upload');
-                $api->get('froala', \App\Http\Controllers\Api\V1\Director\FroalaController::class . '@uploads');
-                $api->delete('froala/{id}', \App\Http\Controllers\Api\V1\Director\FroalaController::class . '@destroy');
-
                 $api->resource('documents', \App\Http\Controllers\Api\V1\Director\DocumentsController::class);
 
                 $api->group(['prefix' => 'statistics'], function ($api) {

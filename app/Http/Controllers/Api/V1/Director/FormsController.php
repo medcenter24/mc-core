@@ -10,8 +10,8 @@ namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Form;
 use App\Http\Controllers\ApiController;
+use App\Http\Requests\Api\FormRequest;
 use App\Transformers\FormTransformer;
-use Illuminate\Http\Request;
 
 class FormsController extends ApiController
 {
@@ -41,24 +41,24 @@ class FormsController extends ApiController
         return $this->response->item($form, new FormTransformer());
     }
 
-    public function store(Request $request)
+    public function store(FormRequest $request)
     {
         $form = Form::create([
             'title' => $request->json('title', ''),
             'template' => $request->json('template', ''),
-            'variables' => $request->json('variables', ''),
+            'variables' => json_encode($request->json('variables', [])),
             'formable_type' => $request->json('formableType', ''),
         ]);
         $transformer = new FormTransformer();
         return $this->response->created(null, $transformer->transform($form));
     }
 
-    public function update($id, Request $request)
+    public function update($id, FormRequest $request)
     {
         $form = Form::findOrFail($id);
         $form->title = $request->json('title', '');
         $form->template = $request->json('template', '');
-        $form->variables = $request->json('variables', '');
+        $form->variables = json_encode($request->json('variables', []));
         $form->formable_type = $request->json('formableType', '');
         $form->save();
 

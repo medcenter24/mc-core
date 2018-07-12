@@ -17,12 +17,12 @@ class HospitalCaseTransformer extends TransformerAbstract
     {
         return [
             'id' => $hospitalAccident->id,
-            'accident_id' => $hospitalAccident->accident->id,
-            'hospital_id' => $hospitalAccident->hospital_id,
-            'hospital_guarantee_id' => $hospitalAccident->hospital_guarantee_id,
-            'hospital_invoice_id' => $hospitalAccident->hospital_invoice_id,
-            'assistant_invoice_id' => $hospitalAccident->assistant_invoice_id,
-            'assistant_guarantee_id' => $hospitalAccident->assistant_guarantee_id,
+            'accidentId' => $hospitalAccident->accident->id,
+            'hospitalId' => $hospitalAccident->hospital_id,
+            'hospitalGuaranteeId' => $hospitalAccident->hospital_guarantee_id,
+            'hospitalInvoiceId' => $hospitalAccident->hospital_invoice_id,
+            'assistantInvoiceId' => $hospitalAccident->assistant_invoice_id,
+            'assistantGuaranteeId' => $hospitalAccident->assistant_guarantee_id,
         ];
     }
 }

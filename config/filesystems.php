@@ -89,6 +89,11 @@ return [
             'root' => storage_path(\App\Services\CaseServices\CaseReportService::PDF_FOLDER),
         ],
 
+        \App\Services\UploaderService::CONF_DEFAULT => [
+            'driver' => 'local',
+            'root' => storage_path(\App\Services\UploaderService::CONF_DEFAULT),
+        ],
+
         /*
          * @deprecated We can't store in the public path files! everything should be stored in the storage folder
          * 'media' => [

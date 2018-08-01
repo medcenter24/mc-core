@@ -21,7 +21,6 @@ class UploadedFileTransformer extends TransformerAbstract
     {
         return [
             'id'   => $file->id,
-            'path' => $file->path,
             'name' => $file->file_name,
         ];
     }

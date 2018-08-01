@@ -23,6 +23,7 @@ class CreateInvoicesTable extends Migration
             $table->unsignedInteger('created_by')->index();
             $table->string('title')->default('')->index();
             $table->decimal('price', 8, 2)->default(0);
+            $table->string('type')->default('');
             $table->timestamps();
             $table->softDeletes();
         });

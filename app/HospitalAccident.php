@@ -16,8 +16,8 @@ class HospitalAccident extends AccidentAbstract
         'deleted_at',
     ];
 
-    protected $fillable = ['hospital_id', 'guarantee_id', 'invoice_id', 'form_report_id'];
-    protected $visible = ['hospital_id', 'guarantee_id', 'invoice_id', 'form_report_id'];
+    protected $fillable = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id', 'assistant_invoice_id', 'assistant_guarantee_id', 'assistant_paid'];
+    protected $visible = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id', 'assistant_invoice_id', 'assistant_guarantee_id', 'assistant_paid'];
 
     /**
      * Hospital of this accident
@@ -28,17 +28,35 @@ class HospitalAccident extends AccidentAbstract
         return $this->belongsTo(Hospital::class);
     }
 
-    public function guarantee()
+    /**
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function hospitalGuarantee()
     {
-        return $this->belongsTo(Guarantee::class);
+        return $this->belongsTo(FormReport::class);
     }
 
-    public function invoice()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function hospitalInvoice()
     {
         return $this->belongsTo(Invoice::class);
     }
 
-    public function formReport()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assistantInvoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assistantGuarantee()
     {
         return $this->belongsTo(FormReport::class);
     }

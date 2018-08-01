@@ -1,29 +1,34 @@
 <?php
+/**
+ * Copyright (c) 2018.
+ *
+ * @author Oleksander Zagovorychev <zagovorichev@gmail.com>
+ */
 
 namespace App\Events;
 
-use App\DoctorAccident;
+use App\HospitalAccident;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class DoctorAccidentUpdatedEvent
+class HospitalAccidentUpdatedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Data that were before updated
-     * @var DoctorAccident
+     * @var HospitalAccident
      */
     private $previousData;
 
     /**
      * Current stored model
-     * @var DoctorAccident
+     * @var HospitalAccident
      */
-    private $doctorAccident;
+    private $hospitalAccident;
 
     /**
      * Commentary to the operation
@@ -34,20 +39,20 @@ class DoctorAccidentUpdatedEvent
     /**
      * Create a new event instance.
      *
-     * DoctorAccidentUpdatedEvent constructor.
-     * @param DoctorAccident|null $previousData
-     * @param DoctorAccident $doctorAccident
+     * HospitalAccidentUpdatedEvent constructor.
+     * @param HospitalAccident|null $previousData
+     * @param HospitalAccident $hospitalAccident
      * @param string $commentary
      */
-    public function __construct(DoctorAccident $previousData = null, DoctorAccident $doctorAccident, $commentary = '')
+    public function __construct(HospitalAccident $previousData = null, HospitalAccident $hospitalAccident, $commentary = '')
     {
         $this->previousData = $previousData;
-        $this->doctorAccident = $doctorAccident;
+        $this->hospitalAccident = $hospitalAccident;
         $this->commentary = $commentary;
     }
 
     /**
-     * @return DoctorAccident
+     * @return HospitalAccident
      */
     public function getPreviousData()
     {
@@ -55,11 +60,11 @@ class DoctorAccidentUpdatedEvent
     }
 
     /**
-     * @return DoctorAccident
+     * @return HospitalAccident
      */
     public function getDoctorAccident()
     {
-        return $this->doctorAccident;
+        return $this->hospitalAccident;
     }
 
     /**

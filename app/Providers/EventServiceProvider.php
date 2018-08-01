@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\AccidentStatusChangedEvent;
 use App\Events\DoctorAccidentUpdatedEvent;
+use App\Events\HospitalAccidentUpdatedEvent;
 use App\Listeners\AccidentStatusHistoryListener;
 use App\Listeners\DoctorAccidentDoctorAssignmentListener;
 use App\Listeners\SendTelegramMessageOnDocAssignment;
@@ -23,7 +24,10 @@ class EventServiceProvider extends ServiceProvider
         DoctorAccidentUpdatedEvent::class => [
             DoctorAccidentDoctorAssignmentListener::class,
             SendTelegramMessageOnDocAssignment::class,
-        ]
+        ],
+        HospitalAccidentUpdatedEvent::class => [
+
+        ],
     ];
 
     /**

@@ -20,15 +20,22 @@ class Invoice extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'price'];
-    protected $visible = ['created_by', 'title', 'price'];
+    protected $fillable = ['title', 'price', 'type', 'created_by'];
+    protected $visible = ['created_by', 'title', 'price', 'type'];
+
+    /**
+     * File uploader
+     */
+    public function uploads()
+    {
+        return $this->morphMany(Upload::class, 'uploadable');
+    }
 
     /**
      * Invoice body stored as a FormReport element
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function formReport()
+    public function forms()
     {
-        return $this->belongsTo(FormReport::class);
+        return $this->morphToMany(Form::class, 'formable');
     }
 }

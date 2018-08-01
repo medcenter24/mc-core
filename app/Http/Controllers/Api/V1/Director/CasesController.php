@@ -14,6 +14,7 @@ use App\DoctorAccident;
 use App\DoctorService;
 use App\DoctorSurvey;
 use App\Events\DoctorAccidentUpdatedEvent;
+use App\Events\HospitalAccidentUpdatedEvent;
 use App\HospitalAccident;
 use App\Http\Controllers\ApiController;
 use App\Models\Scenario\ScenarioModel;
@@ -268,7 +269,9 @@ class CasesController extends ApiController
             $caseable->save();
 
             if ($isDoc) {
-                event(new DoctorAccidentUpdatedEvent($before, $caseable, 'Updated by director'));
+                event(new DoctorAccidentUpdatedEvent($before, $caseable, 'Updated by the director'));
+            } else {
+                event(new HospitalAccidentUpdatedEvent($before, $caseable, 'Updated by the director'));
             }
         }
     }
@@ -292,9 +295,9 @@ class CasesController extends ApiController
         }
         $accident->caseable->$morphName()->detach();
         $accident->caseable->$morphName()->attach($caseableMorph);
-        $accidentMorphs = array_diff($morphData, $caseableMorph);
-        $accident->services()->detach();
-        $accident->services()->attach($accidentMorphs);
+        // $accidentMorphs = array_diff($morphData, $caseableMorph);
+        // todo why ? $accident->services()->detach();
+        //$accident->services()->attach($accidentMorphs);
     }
 
     /**

@@ -51,6 +51,9 @@ $api->group([
             });
 
             $api->group(['prefix' => 'director', 'middleware' => ['role:director']], function ($api) {
+
+                $api->resource('uploads', \App\Http\Controllers\Api\V1\Director\UploadsController::class);
+
                 $api->get('scenario/doctor', \App\Http\Controllers\Api\V1\Director\AccidentScenarioController::class . '@doctorScenario');
 
                 $api->post('checkpoints/search', \App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController::class . '@search');
@@ -162,6 +165,8 @@ $api->group([
 
                 $api->post('forms/search', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@search');
                 $api->resource('forms', \App\Http\Controllers\Api\V1\Director\FormsController::class);
+
+                $api->resource('invoice', \App\Http\Controllers\Api\V1\Director\InvoiceController::class);
             });
         });
     });

@@ -51,7 +51,7 @@ class InvoiceController extends ApiController
         } elseif ($invoice->type === 'file') {
             $file = Upload::find($request->json('fileId'));
             $invoice->uploads()->delete();
-            $invoice->uploads()->attach($file);
+            $invoice->uploads()->save($file);
         }
 
         $transformer = $this->getDataTransformer();

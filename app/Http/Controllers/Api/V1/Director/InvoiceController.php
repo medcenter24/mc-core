@@ -35,7 +35,7 @@ class InvoiceController extends ApiController
 
     public function update($id, InvoiceRequest $request)
     {
-        $invoice = Invoice::find($id);
+        $invoice = Invoice::findOrFail($id);
         if (!$invoice) {
             $this->response->errorNotFound();
         }
@@ -45,35 +45,42 @@ class InvoiceController extends ApiController
         $invoice->price = $request->json('price', 0);
         $invoice->save();
 
-        // assign typed resource
-        if ($invoice->type === 'form') {
-            $form = Form::find($request->json('formId'));
-            if ($form) {
-                $invoice->forms()->detach();
-                $invoice->forms()->attach($form);
-            }
-        } elseif ($invoice->type === 'file') {
-            $file = Upload::find($request->json('fileId'));
-            if ($file) {
-                $invoice->uploads()->delete();
-                $invoice->uploads()->save($file);
-            }
-        }
+        $this->assignInvoiceTypeResource($invoice, $request);
 
         $transformer = $this->getDataTransformer();
         return $this->response->accepted(null, $transformer->transform($invoice));
     }
 
+    private function assignInvoiceTypeResource(Invoice $invoice, $request)
+    {
+        if ($invoice->type === 'form' && $request->json('formId', false)) {
+            $form = Form::findOrFail($request->json('formId'));
+            if ($form && !$invoice->forms()->where('id', $form->id)->count()) {
+                $invoice->forms()->detach();
+                $invoice->forms()->attach($form);
+            }
+        } elseif ($invoice->type === 'file' && $request->json('fileId', false)) {
+            $file = Upload::findOrFail($request->json('fileId'));
+            if ($file && !$invoice->uploads()->where('id', $file->id)->count()) {
+                $invoice->uploads()->delete();
+                $invoice->uploads()->save($file);
+            }
+        }
+    }
+
     public function store(InvoiceRequest $request)
     {
-        $doctorService = Invoice::create([
+        $invoice = Invoice::create([
             'title' => $request->json('title', ''),
             'type' => $request->json('type', ''),
             'created_by' => $this->user()->id,
             'price' => $request->json('price', 0),
         ]);
+
+        $this->assignInvoiceTypeResource($invoice, $request);
+
         $transformer = $this->getDataTransformer();
-        return $this->response->created(null, $transformer->transform($doctorService));
+        return $this->response->created(null, $transformer->transform($invoice));
     }
 
     /**

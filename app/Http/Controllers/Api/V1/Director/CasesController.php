@@ -173,25 +173,46 @@ class CasesController extends ApiController
         return $this->response->collection($created, new DocumentTransformer());
     }
 
+    /**
+     * Creating caseable
+     * @param Accident $accident
+     * @param Request $request
+     */
     private function createCaseableFromRequest(Accident $accident, Request $request) {
-
-        if ($accident->caseable_type == DoctorAccident::class) {
-            $doctorAccidentData = $request->json('doctorAccident', []);
-            if (!isset($doctorAccidentData['visit_time']) || !$doctorAccidentData['visit_time']) {
-                $doctorAccidentData['visit_time'] = NULL;
-            }
-            $doctorAccidentData = array_merge(['recommendation' => '', 'investigation' => ''], $doctorAccidentData);
-            $caseable = DoctorAccident::create($doctorAccidentData);
-
-            event(new DoctorAccidentUpdatedEvent(null, $caseable, 'Created by director'));
-        } else {
-            $hospitalAccidentData = $request->json('hospitalAccident', []);
-            $caseable = HospitalAccident::create($hospitalAccidentData);
-        }
+        $caseable = $accident->caseable_type == DoctorAccident::class
+            ? DoctorAccident::create(['recommendation' => '', 'investigation' => ''])
+            : HospitalAccident::create();
 
         $accident->caseable_id = $caseable->id;
         $accident->caseable_type = get_class($caseable);
         $accident->save();
+        $accident->refresh();
+        $this->updateCaseableData($accident, $request);
+    }
+
+    private function updateCaseableData(Accident $accident, Request $request)
+    {
+        if (!$accident->caseable) {
+            $this->createCaseableFromRequest($accident, $request);
+        } else {
+            $isDoc = true;
+            if ($accident->caseable_type == DoctorAccident::class) {
+                $caseableAccidentData = $request->json('doctorAccident', []);
+            } else {
+                $isDoc = false;
+                $caseableAccidentData = $request->json('hospitalAccident', []);
+            }
+
+            $before = clone $accident->caseable;
+            $caseable = $this->setData($accident->caseable, $caseableAccidentData);
+            $caseable->save();
+
+            if ($isDoc) {
+                event(new DoctorAccidentUpdatedEvent($before, $caseable, 'Updated by the director'));
+            } else {
+                event(new HospitalAccidentUpdatedEvent($before, $caseable, 'Updated by the director'));
+            }
+        }
     }
 
     /**
@@ -249,31 +270,6 @@ class CasesController extends ApiController
 
         $transformer = new DirectorCaseTransformer();
         return $this->response->created($accident->id, $transformer->transform($accident));
-    }
-
-    private function updateCaseableData(Accident $accident, Request $request)
-    {
-        if (!$accident->caseable) {
-            $this->createCaseableFromRequest($accident, $request);
-        } else {
-            $isDoc = true;
-            if (!$accident->caseable_type == DoctorAccident::class) {
-                $caseableAccidentData = $request->json('doctorAccident', []);
-            } else {
-                $isDoc = false;
-                $caseableAccidentData = $request->json('hospitalAccident', []);
-            }
-
-            $before = clone $accident->caseable;
-            $caseable = $this->setData($accident->caseable, $caseableAccidentData);
-            $caseable->save();
-
-            if ($isDoc) {
-                event(new DoctorAccidentUpdatedEvent($before, $caseable, 'Updated by the director'));
-            } else {
-                event(new HospitalAccidentUpdatedEvent($before, $caseable, 'Updated by the director'));
-            }
-        }
     }
 
     /**

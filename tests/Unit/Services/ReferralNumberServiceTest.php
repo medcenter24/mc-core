@@ -7,6 +7,8 @@
 
 namespace Tests\Unit\Services;
 
+use App\DoctorAccident;
+use App\HospitalAccident;
 use App\Services\AccidentService;
 use App\Services\ReferralNumberService;
 use Carbon\Carbon;
@@ -39,7 +41,7 @@ class ReferralNumberServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGenerate()
+    public function testGenerateDoctorsKey()
     {
         $params = [
             'ref_num' => '',
@@ -49,6 +51,7 @@ class ReferralNumberServiceTest extends TestCase
             'accident_status_id' => 1,
             'assistant_id' => 1,
             'caseable_id' => 1,
+            'caseable_type' => DoctorAccident::class,
             'form_report_id' => 1,
             'city_id' => 1,
         ];
@@ -64,6 +67,39 @@ class ReferralNumberServiceTest extends TestCase
             . Carbon::now()->format('dmy')
             . '-'
             . 'DOC'
+            . $this->service->getTimesOfDayCode(Carbon::now()), $this->service->generate(AccidentFake::make($params, $additionalParams)));
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testGenerateHospitalsKey()
+    {
+        $params = [
+            'ref_num' => '',
+            'created_by' => 1,
+            'patient_id' => 1,
+            'accident_type_id' => 1,
+            'accident_status_id' => 1,
+            'assistant_id' => 1,
+            'caseable_id' => 1,
+            'caseable_type' => HospitalAccident::class,
+            'form_report_id' => 1,
+            'city_id' => 1,
+        ];
+        $additionalParams = [
+            'assistant' => ['ref_key' => 'T', 'id' => 1],
+            'hospitalAccident' => [],
+            'hospital' => [
+                'ref_key' => 'HOSPITAL',
+            ],
+        ];
+        self::assertEquals('T0003-'
+            . Carbon::now()->format('dmy')
+            . '-'
+            . 'HOSPITAL'
             . $this->service->getTimesOfDayCode(Carbon::now()), $this->service->generate(AccidentFake::make($params, $additionalParams)));
     }
 }

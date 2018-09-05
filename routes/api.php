@@ -166,6 +166,9 @@ $api->group([
                 $api->post('forms/search', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@search');
                 $api->resource('forms', \App\Http\Controllers\Api\V1\Director\FormsController::class);
 
+                $api->post('invoice/search', \App\Http\Controllers\Api\V1\Director\InvoiceController::class . '@search');
+                $api->get('invoice/{id}/form', \App\Http\Controllers\Api\V1\Director\InvoiceController::class . '@form');
+                $api->get('invoice/{id}/file', \App\Http\Controllers\Api\V1\Director\InvoiceController::class . '@file');
                 $api->resource('invoice', \App\Http\Controllers\Api\V1\Director\InvoiceController::class);
             });
         });

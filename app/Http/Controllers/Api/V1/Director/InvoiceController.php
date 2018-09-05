@@ -12,7 +12,9 @@ use App\Form;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\InvoiceRequest;
 use App\Invoice;
+use App\Transformers\FormTransformer;
 use App\Transformers\InvoiceTransformer;
+use App\Transformers\UploadedFileTransformer;
 use App\Upload;
 
 class InvoiceController extends ApiController
@@ -46,12 +48,16 @@ class InvoiceController extends ApiController
         // assign typed resource
         if ($invoice->type === 'form') {
             $form = Form::find($request->json('formId'));
-            $invoice->forms()->detach();
-            $invoice->forms()->attach($form);
+            if ($form) {
+                $invoice->forms()->detach();
+                $invoice->forms()->attach($form);
+            }
         } elseif ($invoice->type === 'file') {
             $file = Upload::find($request->json('fileId'));
-            $invoice->uploads()->delete();
-            $invoice->uploads()->save($file);
+            if ($file) {
+                $invoice->uploads()->delete();
+                $invoice->uploads()->save($file);
+            }
         }
 
         $transformer = $this->getDataTransformer();
@@ -68,5 +74,37 @@ class InvoiceController extends ApiController
         ]);
         $transformer = $this->getDataTransformer();
         return $this->response->created(null, $transformer->transform($doctorService));
+    }
+
+    /**
+     * Getting form of the invoice
+     * @param $id
+     * @return \Dingo\Api\Http\Response
+     */
+    public function form($id)
+    {
+        /** @var Invoice $invoice */
+        $invoice = Invoice::find($id);
+        $form = $invoice->forms()->first();
+        if (!$invoice->forms()->count()) {
+            return $this->response->noContent();
+        }
+        return $this->response->item($form, new FormTransformer());
+    }
+
+    /**
+     * Getting invoices file
+     * @param $id
+     * @return \Dingo\Api\Http\Response
+     */
+    public function file($id)
+    {
+        /** @var Invoice $invoice */
+        $invoice = Invoice::find($id);
+        $upload = $invoice->uploads()->first();
+        if (!$invoice->uploads()->count()) {
+            return $this->response->noContent();
+        }
+        return $this->response->item($upload, new UploadedFileTransformer());
     }
 }

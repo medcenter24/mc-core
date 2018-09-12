@@ -24,6 +24,7 @@ class CreateInvoicesTable extends Migration
             $table->string('title')->default('')->index();
             $table->decimal('price', 8, 2)->default(0);
             $table->string('type')->default('');
+            $table->enum('status', ['new', 'sent', 'paid'])->default('new')->index();
             $table->timestamps();
             $table->softDeletes();
         });

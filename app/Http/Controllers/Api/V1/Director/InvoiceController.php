@@ -43,6 +43,7 @@ class InvoiceController extends ApiController
         $invoice->title= $request->json('title', '');
         $invoice->type = $request->json('type', '');
         $invoice->price = $request->json('price', 0);
+        $invoice->status = $request->json('status', 'new');
         $invoice->save();
 
         $this->assignInvoiceTypeResource($invoice, $request);
@@ -75,6 +76,7 @@ class InvoiceController extends ApiController
             'type' => $request->json('type', ''),
             'created_by' => $this->user()->id,
             'price' => $request->json('price', 0),
+            'status' => $request->json('status', 'new'),
         ]);
 
         $this->assignInvoiceTypeResource($invoice, $request);

@@ -20,8 +20,8 @@ class Invoice extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'price', 'type', 'created_by'];
-    protected $visible = ['created_by', 'title', 'price', 'type'];
+    protected $fillable = ['title', 'price', 'type', 'created_by', 'status'];
+    protected $visible = ['created_by', 'title', 'price', 'type', 'status'];
 
     /**
      * File uploader

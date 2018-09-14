@@ -14,6 +14,5 @@ $factory->define(App\HospitalAccident::class, function (Faker $faker) {
         'hospital_invoice_id' => $faker->numberBetween(1, 10),
         'assistant_invoice_id' => $faker->numberBetween(1, 10),
         'assistant_guarantee_id' => $faker->numberBetween(1, 10),
-        'assistant_paid' => 0,
     ];
 });

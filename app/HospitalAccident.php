@@ -16,8 +16,8 @@ class HospitalAccident extends AccidentAbstract
         'deleted_at',
     ];
 
-    protected $fillable = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id', 'assistant_invoice_id', 'assistant_guarantee_id', 'assistant_paid'];
-    protected $visible = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id', 'assistant_invoice_id', 'assistant_guarantee_id', 'assistant_paid'];
+    protected $fillable = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id', 'assistant_invoice_id', 'assistant_guarantee_id'];
+    protected $visible = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id', 'assistant_invoice_id', 'assistant_guarantee_id'];
 
     /**
      * Hospital of this accident

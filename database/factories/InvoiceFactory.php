@@ -14,5 +14,6 @@ $factory->define(App\Invoice::class, function (Faker $faker) {
         },
         'title' => $faker->text(30),
         'price' => $faker->randomFloat(2, 0, 50000),
+        'status' => 'new',
     ];
 });

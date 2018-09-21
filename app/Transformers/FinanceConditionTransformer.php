@@ -14,7 +14,6 @@ use App\DatePeriod;
 use App\Doctor;
 use App\DoctorService;
 use App\FinanceCondition;
-use function foo\func;
 use League\Fractal\TransformerAbstract;
 
 class FinanceConditionTransformer extends TransformerAbstract

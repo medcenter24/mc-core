@@ -75,6 +75,15 @@ class FinanceController extends ApiController
 
     /**
      * Destroy rule
+     * Neither Real finance condition or finance rules from the finance_storage won't be deleted
+     * For the support and backward data compatibility
+     * @param $id
+     * @return \Dingo\Api\Http\Response
      */
-    public function destroy($id) {}
+    public function destroy($id) {
+        $condition = FinanceCondition::findOrFail($id);
+        \Log::info('Finance condition deleted', [$condition, $this->user()]);
+        $condition->delete();
+        return $this->response->noContent();
+    }
 }

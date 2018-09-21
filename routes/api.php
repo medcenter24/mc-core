@@ -160,6 +160,9 @@ $api->group([
                 $api->post('finance/search', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@search');
                 $api->resource('finance', \App\Http\Controllers\Api\V1\Director\FinanceController::class);
 
+                $api->post('currency/search', \App\Http\Controllers\Api\V1\Director\FinanceCurrencyController::class . '@search');
+                $api->resource('currency', \App\Http\Controllers\Api\V1\Director\FinanceCurrencyController::class);
+
                 $api->post('periods/search', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class . '@search');
                 $api->resource('periods', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class);
 

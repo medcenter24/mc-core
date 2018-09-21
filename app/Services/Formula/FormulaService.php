@@ -35,7 +35,7 @@ class FormulaService
      */
     public function formula()
     {
-        return new FormulaBuilder(null, $this->viewService, $this->resultService);
+        return new FormulaBuilder($this->viewService, $this->resultService);
     }
 
     /**

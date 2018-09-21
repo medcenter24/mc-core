@@ -50,9 +50,9 @@ class FormulaBuilder implements FormulaBuilderInterface
     private $formulaResultService;
 
     public function __construct(
-        FormulaBuilderInterface $parent = null,
         FormulaViewService $formulaViewService,
-        FormulaResultService $formulaResultService
+        FormulaResultService $formulaResultService,
+        FormulaBuilderInterface $parent = null
     )
     {
         $this->formula = collect([]);
@@ -214,7 +214,7 @@ class FormulaBuilder implements FormulaBuilderInterface
      */
     public function addNestedFormula()
     {
-        $subFormula = new FormulaBuilder($this, $this->formulaViewService, $this->formulaResultService);
+        $subFormula = new FormulaBuilder($this->formulaViewService, $this->formulaResultService, $this);
         $op = new Add($subFormula);
         $this->formula->push($op);
         return $subFormula;
@@ -226,7 +226,7 @@ class FormulaBuilder implements FormulaBuilderInterface
      */
     public function divNestedFormula()
     {
-        $subFormula = new FormulaBuilder($this, $this->formulaViewService, $this->formulaResultService);
+        $subFormula = new FormulaBuilder($this->formulaViewService, $this->formulaResultService, $this);
         $op = new Div($subFormula);
         $this->formula->push($op);
         return $subFormula;
@@ -238,7 +238,7 @@ class FormulaBuilder implements FormulaBuilderInterface
      */
     public function mulNestedFormula()
     {
-        $subFormula = new FormulaBuilder($this, $this->formulaViewService, $this->formulaResultService);
+        $subFormula = new FormulaBuilder($this->formulaViewService, $this->formulaResultService, $this);
         $op = new Mul($subFormula);
         $this->formula->push($op);
         return $subFormula;
@@ -250,7 +250,7 @@ class FormulaBuilder implements FormulaBuilderInterface
      */
     public function subNestedFormula()
     {
-        $subFormula = new FormulaBuilder($this, $this->formulaViewService, $this->formulaResultService);
+        $subFormula = new FormulaBuilder($this->formulaViewService, $this->formulaResultService, $this);
         $op = new Sub($subFormula);
         $this->formula->push($op);
         return $subFormula;

@@ -9,7 +9,6 @@ namespace App\Services\CaseServices;
 
 
 use App\Accident;
-use App\AccidentType;
 use App\Assistant;
 use App\City;
 use App\DatePeriod;
@@ -20,6 +19,7 @@ use App\FinanceCondition;
 use App\FinanceStorage;
 use App\Http\Requests\Api\FinanceRequest;
 use App\Models\Cases\Finance\CaseFinanceCondition;
+use App\Models\Formula\FormulaBuilderInterface;
 use App\Services\Formula\FormulaService;
 
 class CaseFinanceService
@@ -34,7 +34,7 @@ class CaseFinanceService
         $this->formulaService = $formulaService;
     }
 
-    public function factory()
+    public function createCondition()
     {
         return new CaseFinanceCondition();
     }
@@ -81,9 +81,13 @@ class CaseFinanceService
         return $this->formulaService->getResult($formula);
     }
 
+    /**
+     * @param Accident $accident
+     * @return FormulaBuilderInterface
+     */
     protected function getFormula(Accident $accident)
     {
-        return;
+        return $this->formulaService->formula();
     }
 
     /**
@@ -131,7 +135,7 @@ class CaseFinanceService
      */
     public function updateFinanceConditionByRequest(FinanceRequest $request, $id = 0)
     {
-        $caseFinanceCondition = $this->factory();
+        $caseFinanceCondition = $this->createCondition();
 
         $this->addCondition($caseFinanceCondition, $request, Doctor::class, 'doctors');
         $this->addCondition($caseFinanceCondition, $request, Assistant::class, 'assistants');

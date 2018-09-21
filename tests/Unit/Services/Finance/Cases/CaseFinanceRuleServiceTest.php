@@ -2,10 +2,10 @@
 /**
  * Copyright (c) 2018.
  *
- * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ * @author Oleksander Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace Tests\Unit\Services\Finance;
+namespace Tests\Unit\Services\Finance\Cases;
 
 
 use App\Assistant;
@@ -49,13 +49,12 @@ class GenerateFinanceConditionTest extends TestCase
      */
     public function testSimpleDoctorProfit()
     {
-
         $formula = $this->formulaService->formula()->addInteger(7);
 
         $this->caseFinanceService
-            ->factory()
+            ->createCondition()
             ->if(Doctor::class, 1)
-            ->thenDoctorPaymentFormula($formula);
+            ->thenFormula($formula);
 
         $params = [
             'ref_num' => '',

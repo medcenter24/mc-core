@@ -13,15 +13,16 @@ use Illuminate\Database\Migrations\Migration;
 class CreateFinanceConditionsTable extends Migration
 {
 
-    public function up(FinanceService $service)
+    public function up()
     {
-        Schema::create('finance_conditions', function (Blueprint $table) use ($service) {
+        Schema::create('finance_conditions', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('created_by')->default(0)->index();
             $table->string('title');
-            $table->enum('type', $service->getTypes());
-            $table->decimal('price');
-            $table->enum('currency', $service->getCurrencies());
+            $table->enum('type', FinanceService::getTypes());
+            $table->decimal('value');
+            $table->unsignedInteger('currency_id')->index();
+            $table->string('currency_mode'); // percent, currency
             $table->string('model');
             $table->timestamps();
             $table->softDeletes();

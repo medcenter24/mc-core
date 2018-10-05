@@ -75,8 +75,8 @@ class FinanceController extends ApiController
 
     /**
      * Destroy rule
-     * Neither Real finance condition or finance rules from the finance_storage won't be deleted
-     * For the support and backward data compatibility
+     * Neither Real finance condition or finance rules from the finance_storage will be deleted
+     *   for the support and backward data compatibility
      * @param $id
      * @return \Dingo\Api\Http\Response
      */

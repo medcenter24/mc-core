@@ -66,12 +66,16 @@ class FinanceConditionTransformer extends TransformerAbstract
         return [
             'id' => $financeCondition->id,
             'title' => $financeCondition->title,
-            'priceAmount' => $financeCondition->price,
+            'value' => $financeCondition->value,
             'assistants' => $assistants,
             'cities' => $cities,
             'doctors' => $doctors,
             'services' => $services,
             'datePeriods' => $datePeriods,
+            'type' => $financeCondition->type,
+            'model' => $financeCondition->model,
+            'currencyId' => $financeCondition->currency_id,
+            'currencyMode' => $financeCondition->currency_mode,
         ];
     }
 }

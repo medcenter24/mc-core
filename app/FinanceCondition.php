@@ -24,6 +24,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * Type
  *     property which allows us to know what do we need to do with this value (amount) - add or sub them from the general formula
+ *      Add +
+ *      Sub -
+ *
+ * CurrencyMode
+ *      'percent' - calculate percents of the total
+ *      'currency' - using currency_id value to add or dec value from the total
+ *
  *
  * Class FinanceCondition
  * @package App
@@ -32,8 +39,8 @@ class FinanceCondition extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['created_by', 'title', 'price', 'type', 'currency', 'model'];
-    protected $visible = ['id', 'title', 'price', 'type', 'currency', 'model'];
+    protected $fillable = ['created_by', 'title', 'value', 'type', 'currency_id', 'currency_mode', 'model'];
+    protected $visible = ['id', 'title', 'value', 'type', 'currency', 'model'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

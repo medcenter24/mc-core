@@ -8,27 +8,56 @@
 namespace App\Services;
 
 
-use App\FinanceCurrency;
+use App\Accident;
+use App\Doctor;
 
 class FinanceService
 {
     /** @var string Types */
-    const PARAM_TYPE_PAYMENT = 'payment';
-    const PARAM_TYPE_DISCOUNT = 'discount';
+    const PARAM_TYPE_ADD = 'add';
+    const PARAM_TYPE_SUBTRACT = 'sub';
 
-    /** @var string Currencies */
-    const PARAM_DEFAULT_CURRENCY = 'euro';
+    /** @var string Currency modes */
+    const PARAM_CURRENCY_MODE_PERCENT = 'percent';
+    const PARAM_CURRENCY_MODE_CURRENCY = 'currency';
+
     /**
-     * it isn't a currency from the currency table but can be calculated in conditions
-     * TODO
+     * Types
+     * @return array
      */
-    const PARAM_CURRENCY_PERCENT = 'percent';
-
-    public function getTypes()
+    public static function getTypes()
     {
         return [
-            FinanceService::PARAM_TYPE_PAYMENT,
-            FinanceService::PARAM_TYPE_DISCOUNT,
+            self::PARAM_TYPE_ADD,
+            self::PARAM_TYPE_SUBTRACT,
+        ];
+    }
+
+    /**
+     * Modes
+     * @return array
+     */
+    public static function getModes()
+    {
+        return [
+            self::PARAM_CURRENCY_MODE_PERCENT,
+            self::PARAM_CURRENCY_MODE_CURRENCY,
+        ];
+    }
+
+    /**
+     * Either
+     * Counted for the accident (company profit from the accident)
+     * Or
+     * Counted for the doctor (doctors payment)
+     *
+     * @return array
+     */
+    public static function allowedModels()
+    {
+        return [
+            Accident::class,
+            Doctor::class,
         ];
     }
 }

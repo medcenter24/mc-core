@@ -30,8 +30,9 @@ class FinanceRequest extends JsonRequest
     public function rules()
     {
         return [
-            'title' => 'max:200',
-            'priceAmount' => 'required',
+            'title' => 'required|max:200',
+            'value' => 'required',
+            'currencyMode' => 'required',
         ];
     }
 }

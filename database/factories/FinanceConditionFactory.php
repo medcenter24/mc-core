@@ -11,13 +11,15 @@ use App\FinanceCondition;
 use App\Services\FinanceService;
 use Faker\Generator as Faker;
 
-$factory->define(FinanceCondition::class, function (Faker $faker, FinanceService $financeService) {
+$factory->define(FinanceCondition::class, function (Faker $faker) {
     return [
         'created_by' => 0, // default for the system
         'title' => 'Finance condition',
-        'price' => mt_rand(1, 999),
-        'type' => $faker->randomElement($financeService->getTypes()),
-        'currency' => $faker->randomElement($financeService->getCurrencies()),
+        'value' => mt_rand(1, 999),
+        'type' => $faker->randomElement(FinanceService::getTypes()),
+        'currency_id' => 0,
+        'currency_mode' => 'percent',
         'model' => $faker->randomElement([Accident::class, Doctor::class]),
     ];
 });
+

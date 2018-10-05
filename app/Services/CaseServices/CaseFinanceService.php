@@ -20,6 +20,7 @@ use App\FinanceStorage;
 use App\Http\Requests\Api\FinanceRequest;
 use App\Models\Cases\Finance\CaseFinanceCondition;
 use App\Models\Formula\FormulaBuilderInterface;
+use App\Services\FinanceService;
 use App\Services\Formula\FormulaService;
 
 class CaseFinanceService
@@ -29,29 +30,51 @@ class CaseFinanceService
      */
     private $formulaService;
 
+    /**
+     * CaseFinanceService constructor.
+     * @param FormulaService $formulaService
+     */
     public function __construct(FormulaService $formulaService)
     {
         $this->formulaService = $formulaService;
     }
 
+    /**
+     * New object
+     * @return CaseFinanceCondition
+     */
     public function createCondition()
     {
         return new CaseFinanceCondition();
     }
 
-    public function saveCondition(CaseFinanceCondition $condition, $title = '', $id = 0)
+    /**
+     * Creates or updates the conditions
+     * @param CaseFinanceCondition $condition
+     * @param int $id
+     * @return mixed
+     */
+    public function saveCondition(CaseFinanceCondition $condition, $id = 0)
     {
         if ($id) {
             $financeCondition = FinanceCondition::findOrFail($id);
-            $financeCondition->price = $condition->getPrice();
-            $financeCondition->title = $title;
+            $financeCondition->title = $condition->getTitle();
+            $financeCondition->value = $condition->getValue();
+            $financeCondition->currency_id = $condition->getCurrencyId();
+            $financeCondition->currency_mode = $condition->getCurrencyMode();
+            $financeCondition->type = $condition->getConditionType();
+            $financeCondition->model = $condition->getModel();
             $financeCondition->save();
             $financeCondition->conditions()->delete(); // unassign all stored conditions
         } else {
             $financeCondition = FinanceCondition::create([
                 'created_by' => auth()->id(),
-                'title' => $title,
-                'price' => $condition->getPrice(),
+                'title' => $condition->getTitle(),
+                'value' => $condition->getValue(),
+                'currency_id' => $condition->getCurrencyId(),
+                'currency_mode' => $condition->getCurrencyMode(),
+                'type' => $condition->getConditionType(),
+                'model' => $condition->getModel(),
             ]);
         }
 
@@ -143,11 +166,13 @@ class CaseFinanceService
         $this->addCondition($caseFinanceCondition, $request, DoctorService::class, 'services');
         $this->addCondition($caseFinanceCondition, $request, DatePeriod::class, 'datePeriods');
 
-        $caseFinanceCondition->thenPrice($request->json('priceAmount', 0));
-        return $this->saveCondition(
-            $caseFinanceCondition,
-            $request->json('title', ''),
-            $id
-        );
+        $caseFinanceCondition->thenValue($request->json('value', 0));
+        $caseFinanceCondition->setTitle($request->json('title', ''));
+        $caseFinanceCondition->setConditionType($request->json('type', FinanceService::PARAM_TYPE_ADD));
+        $caseFinanceCondition->setCurrencyMode($request->json('currencyMode', FinanceService::PARAM_CURRENCY_MODE_PERCENT));
+        $caseFinanceCondition->setCurrency($request->json('currencyId', 0));
+        $caseFinanceCondition->setModel($request->json('model', Accident::class));
+
+        return $this->saveCondition($caseFinanceCondition, $id);
     }
 }

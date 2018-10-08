@@ -10,11 +10,14 @@ namespace Tests\Unit\Services\Finance\Cases;
 
 use App\Services\CaseServices\CaseFinanceService;
 use App\Services\Formula\FormulaService;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Tests\Unit\fakes\AccidentFake;
 
 class CaseFinanceServiceTest extends TestCase
 {
+    use DatabaseMigrations;
+
     /**
      * @var CaseFinanceService
      */

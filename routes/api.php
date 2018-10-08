@@ -108,7 +108,8 @@ $api->group([
                     $api->put('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@addComment');
                     $api->put('{id}', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@update');
                     $api->delete('{id}', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@destroy');
-                    $api->resource('', \App\Http\Controllers\Api\V1\Director\CasesController::class);
+                    $api->post('', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@store');
+                    $api->put('{id}', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@update');
                 });
 
                 $api->post('accidents/search', \App\Http\Controllers\Api\V1\Director\AccidentsController::class . '@search');

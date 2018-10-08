@@ -12,11 +12,13 @@ use App\HospitalAccident;
 use App\Services\AccidentService;
 use App\Services\ReferralNumberService;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Tests\Unit\fakes\AccidentFake;
 
 class ReferralNumberServiceTest extends TestCase
 {
+    use DatabaseMigrations;
     /**
      * @var ReferralNumberService
      */
@@ -84,8 +86,6 @@ class ReferralNumberServiceTest extends TestCase
             'accident_type_id' => 1,
             'accident_status_id' => 1,
             'assistant_id' => 1,
-            'caseable_id' => 1,
-            'caseable_type' => HospitalAccident::class,
             'form_report_id' => 1,
             'city_id' => 1,
         ];

@@ -14,11 +14,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
-use Spatie\MediaLibrary\Media;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\Models\Media;
 
-class Company extends Model implements HasMedia, HasMediaConversions
+class Company extends Model implements HasMedia
 {
     use SoftDeletes;
     use HasMediaTrait;

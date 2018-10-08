@@ -41,7 +41,11 @@ class FinancesTest extends TestCase
 
         $this->financeData = [
             'title' => 'Unit test rule',
-            'priceAmount' => 11,
+            'value' => 11,
+            'currencyMode' => 'currency',
+            'currencyId' => 0,
+            'model' => Doctor::class,
+            'type' => 'sub',
             'assistants' => $assistants->map(function($v) { return $v['id']; }),
             'cities' => $cities->map(function($v) { return $v['id']; }),
             'doctors' => $doctors->map(function($v) { return $v['id']; }),
@@ -55,12 +59,7 @@ class FinancesTest extends TestCase
         $response = $this->json('POST', '/api/director/finance', $this->financeData, $this->headers($this->getUser()));
         $response->assertJson([
             'title' => 'Unit test rule',
-            'priceAmount' => 11,
-            'assistants' => $this->financeData['assistants']->toArray(),
-            'cities' => $this->financeData['cities']->toArray(),
-            'doctors' => $this->financeData['doctors']->toArray(),
-            'services' => $this->financeData['services']->toArray(),
-            'datePeriods' => $this->financeData['datePeriods']->toArray(),
+            'value' => 11,
         ]);
         $response->assertStatus(201);
     }
@@ -71,9 +70,9 @@ class FinancesTest extends TestCase
         $response->assertStatus(201);
         $data = $response->json();
         $data['title'] = 'newTitle';
-        $data['priceAmount'] = '9';
+        $data['value'] = '9';
         $updateResponse = $this->json('PUT', "/api/director/finance/{$response->json('id')}", $data, $this->headers($this->getUser()));
-        $updateResponse->assertJson(['data' => ['title' => 'newTitle', 'priceAmount' => 9]]);
+        $updateResponse->assertJson(['data' => ['title' => 'newTitle', 'value' => 9]]);
         $updateResponse->assertStatus(200);
     }
 

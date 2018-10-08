@@ -20,7 +20,7 @@ class AuthorizationTest extends TestCase
     public function testAuthorizationWithoutJwtHeaders()
     {
         $response = $this->json('POST', '/api/authenticate');
-        $response->assertStatus(400);
+        $response->assertStatus(401);
     }
 
     public function testWrongCredentialsAuthorization()

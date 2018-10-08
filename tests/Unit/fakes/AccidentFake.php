@@ -29,7 +29,7 @@ class AccidentFake implements Fake
         } else {
             $defaults['hospitalAccident'] = [];
             $additionalParams = array_merge($defaults, $additionalParams);
-            $accident->caseable = HospitalAccidentFake::make($additionalParams['hospitalAccident']);
+            $accident->caseable = HospitalAccidentFake::make($additionalParams['hospitalAccident'], $additionalParams);
         }
 
         $accident->assistant = AssistantFake::make($additionalParams['assistant']);

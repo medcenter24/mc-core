@@ -40,10 +40,10 @@ class CasesTest extends TestCase
         $response->assertStatus(200)->assertJsonStructure(['token_type']);
     }
 
-    public function testIndex()
+    public function testSearch()
     {
         factory(Accident::class, 7)->create();
-        $response = $this->get('/api/director/cases', $this->headers($this->getUser()));
+        $response = $this->post('/api/director/cases/search', [], $this->headers($this->getUser()));
 
         $response->assertStatus(200)->assertJson([
             'data' => [
@@ -53,7 +53,7 @@ class CasesTest extends TestCase
                 "pagination" => [
                     "total" => 7,
                     "count" => 7,
-                    "per_page" => 10,
+                    "per_page" => 3000,
                     "current_page" => 1,
                     "total_pages" => 1,
                     "links" => []
@@ -64,7 +64,7 @@ class CasesTest extends TestCase
 
     public function testCreate()
     {
-        $response = $this->post('/api/director/cases', $caseData = [], $this->headers($this->getUser()));
+        $response = $this->post('/api/director/cases', [], $this->headers($this->getUser()));
         $response->assertStatus(201);
     }
 

@@ -114,19 +114,21 @@ class CaseFinanceService
     }
 
     /**
+     * Payment from the company to the doctor
      * @param Accident $accident
      * @return int
      */
-    public function calculateDoctorPayment(Accident $accident)
+    public function calculateToDoctorPayment(Accident $accident)
     {
         return 1;
     }
 
     /**
+     * Payment from the assistant to the company
      * @param Accident $accident
      * @return int
      */
-    public function calculateAssistantPayment(Accident $accident)
+    public function calculateFromAssistantPayment(Accident $accident)
     {
         return 1;
     }
@@ -144,7 +146,7 @@ class CaseFinanceService
         $data = $request->json($jsonKey, []);
         if ($data && count($data)) {
             foreach ($data as $model) {
-                $toCondition->if($className, $model['id']);
+                $toCondition->if($className, is_array($model) ? $model['id'] : $model);
             }
         }
     }

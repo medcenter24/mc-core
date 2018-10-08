@@ -14,6 +14,9 @@ class HospitalAccidentFake implements Fake
 {
     public static function make(array $params = [], array $additionalParams = [])
     {
-        return factory(HospitalAccident::class)->make($params);
+        $hospitalAccident = factory(HospitalAccident::class)->make($params);
+        $hospital = HospitalFake::make($additionalParams['hospital']);
+        $hospitalAccident->hospital = $hospital;
+        return $hospitalAccident;
     }
 }

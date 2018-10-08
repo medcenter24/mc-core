@@ -9,7 +9,7 @@ namespace App\Helpers;
 
 
 
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 
 class MediaHelper
 {

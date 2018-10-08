@@ -8,12 +8,12 @@
 namespace Tests\Unit\fakes;
 
 
-use App\Services\AccidentService;
+use App\DoctorService;
 
-class AccidentServiceFake implements Fake
+class DoctorServiceFake implements Fake
 {
     public static function make(array $params = [], array $additionalParams = [])
     {
-        return factory(AccidentService::class)->make();
+        return factory(DoctorService::class)->create();
     }
 }

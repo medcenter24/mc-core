@@ -19,7 +19,7 @@ class AuthorizationTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $_SESSION = [];
+        $this->startSession();
     }
 
     public function testUnauthorizedRedirect()
@@ -33,9 +33,12 @@ class AuthorizationTest extends TestCase
         $response = $this->post('login', [
             'email' => 'mail@example.com',
             'password' => '234234secureing...',
+            '_token' => csrf_token(),
         ]);
         if ($response->getStatusCode() != 302) {
             // why am I here?
+            $this->assertTrue(false, 'I have to get correct Status Code 302 but '
+                . $response->getStatusCode());
         }
         $response->assertRedirect('')->assertSessionHas('_token', session()->get('_token'));
         $this->get('admin')->assertRedirect('login');
@@ -54,6 +57,7 @@ class AuthorizationTest extends TestCase
         $response = $this->post('login', [
             'email' => $mail,
             'password' => $passwd,
+            '_token' => csrf_token(),
         ]);
 
         $response->assertRedirect('')->assertSessionHas('_token', session()->get('_token'));
@@ -61,7 +65,7 @@ class AuthorizationTest extends TestCase
 
         $r2 = $this->get('admin'); //->assertRedirect('login');
         $r2->assertStatus(403);
-        $r2->assertSee('Access denied');
+        $r2->assertSee('Unauthorized');
     }
 
     public function testAdminsAuthorization()
@@ -83,6 +87,7 @@ class AuthorizationTest extends TestCase
         $response = $this->post('login', [
             'email' => $mail,
             'password' => $passwd,
+            '_token' => csrf_token(),
         ]);
 
         $response->assertRedirect('')->assertSessionHas('_token', session()->get('_token'));

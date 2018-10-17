@@ -15,11 +15,15 @@ use App\Services\CaseServices\CaseFinanceService;
 use App\Services\Formula\FormulaResultService;
 use App\Services\Formula\FormulaService;
 use App\Services\Formula\FormulaViewService;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Tests\Unit\fakes\AccidentFake;
 
 class GenerateFinanceConditionTest extends TestCase
 {
+
+    use DatabaseMigrations;
+
     /**
      * @var CaseFinanceService
      */

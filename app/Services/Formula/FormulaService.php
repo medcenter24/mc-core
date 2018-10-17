@@ -24,6 +24,11 @@ class FormulaService
      */
     private $resultService;
 
+    /**
+     * FormulaService constructor.
+     * @param FormulaViewService $viewService
+     * @param FormulaResultService $resultService
+     */
     public function __construct(FormulaViewService $viewService, FormulaResultService $resultService)
     {
         $this->viewService = $viewService;
@@ -31,6 +36,7 @@ class FormulaService
     }
 
     /**
+     * Formula builder
      * @return FormulaBuilderInterface
      */
     public function formula()
@@ -39,6 +45,7 @@ class FormulaService
     }
 
     /**
+     * Calculates result
      * @param FormulaBuilderInterface $formula
      * @return int|float
      * @throws \App\Models\Formula\Exception\FormulaException

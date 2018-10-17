@@ -13,14 +13,16 @@ use App\Assistant;
 use App\City;
 use App\DatePeriod;
 use App\Doctor;
+use App\DoctorAccident;
 use App\DoctorService;
 use App\Exceptions\InconsistentDataException;
 use App\FinanceCondition;
 use App\FinanceStorage;
+use App\HospitalAccident;
 use App\Http\Requests\Api\FinanceRequest;
 use App\Models\Cases\Finance\CaseFinanceCondition;
-use App\Models\Formula\FormulaBuilderInterface;
-use App\Services\FinanceService;
+use App\Services\AccidentService;
+use App\Services\FinanceConditionService;
 use App\Services\Formula\FormulaService;
 
 class CaseFinanceService
@@ -31,12 +33,19 @@ class CaseFinanceService
     private $formulaService;
 
     /**
+     * @var AccidentService
+     */
+    private $accidentService;
+
+    /**
      * CaseFinanceService constructor.
      * @param FormulaService $formulaService
+     * @param AccidentService $accidentService
      */
-    public function __construct(FormulaService $formulaService)
+    public function __construct(FormulaService $formulaService, AccidentService $accidentService)
     {
         $this->formulaService = $formulaService;
+        $this->accidentService = $accidentService;
     }
 
     /**
@@ -94,23 +103,30 @@ class CaseFinanceService
     }
 
     /**
+     * Assistant's income minus doctor's payment or the hospitals' payment
      * @param Accident $accident
      * @return float|int
-     * @throws \App\Models\Formula\Exception\FormulaException
      */
     public function calculateIncome(Accident $accident)
     {
-        $formula = $this->getFormula($accident);
-        return $this->formulaService->getResult($formula);
-    }
+        $caseablePayment = 0;
+        $income = $this->calculateFromAssistantPayment($accident);
+        if ($accident->caseable_type == DoctorAccident::class) {
+            $caseablePayment = $this->calculateToDoctorPayment($accident);
+        } elseif ($accident->caseable_type == HospitalAccident::class) {
+            $caseablePayment = $this->calculateToHospitalPayment($accident);
+        }
 
-    /**
-     * @param Accident $accident
-     * @return FormulaBuilderInterface
-     */
-    protected function getFormula(Accident $accident)
-    {
-        return $this->formulaService->formula();
+        $income = $income - $caseablePayment;
+        if ($income <= 0) {
+            \Log::emergency('Wasting money on the accident', [
+                'accident_id' => $accident->id,
+                'income' => $income,
+                'caseablePayment' => $caseablePayment,
+            ]);
+        }
+
+        return $income;
     }
 
     /**
@@ -119,6 +135,24 @@ class CaseFinanceService
      * @return int
      */
     public function calculateToDoctorPayment(Accident $accident)
+    {
+        $doctorServices = $this->accidentService->getAccidentServices($accident);
+        $conditionProps = [
+            DatePeriod::class => $accident->handling_time,
+            Doctor::class => $accident->caseable_id,
+            Assistant::class => $accident->assistant_id,
+            City::class => $accident->city_id,
+            DoctorService::class => $doctorServices ? $doctorServices->get('id') : false,
+        ];
+        $conditions = FinanceConditionService::findConditions($conditionProps);
+
+        // calculate formula by conditions
+        $formula = $this->formulaService->formula();
+        var_dump($conditions);
+        return 1;
+    }
+
+    public function calculateToHospitalPayment(Accident $accident)
     {
         return 1;
     }
@@ -139,7 +173,6 @@ class CaseFinanceService
      * @param FinanceRequest $request
      * @param $className
      * @param $jsonKey
-     * @throws InconsistentDataException
      */
     private function addCondition(CaseFinanceCondition &$toCondition, FinanceRequest $request, $className, $jsonKey)
     {
@@ -157,6 +190,7 @@ class CaseFinanceService
      * @param int $id
      * @return mixed
      * @throws InconsistentDataException
+     * // todo move it from this service, I can't use requests here
      */
     public function updateFinanceConditionByRequest(FinanceRequest $request, $id = 0)
     {
@@ -170,8 +204,8 @@ class CaseFinanceService
 
         $caseFinanceCondition->thenValue($request->json('value', 0));
         $caseFinanceCondition->setTitle($request->json('title', ''));
-        $caseFinanceCondition->setConditionType($request->json('type', FinanceService::PARAM_TYPE_ADD));
-        $caseFinanceCondition->setCurrencyMode($request->json('currencyMode', FinanceService::PARAM_CURRENCY_MODE_PERCENT));
+        $caseFinanceCondition->setConditionType($request->json('type', FinanceConditionService::PARAM_TYPE_ADD));
+        $caseFinanceCondition->setCurrencyMode($request->json('currencyMode', FinanceConditionService::PARAM_CURRENCY_MODE_PERCENT));
         $caseFinanceCondition->setCurrency($request->json('currencyId', 0));
         $caseFinanceCondition->setModel($request->json('model', Accident::class));
 

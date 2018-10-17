@@ -19,6 +19,7 @@ use App\HospitalAccident;
 use App\Http\Controllers\ApiController;
 use App\Models\Scenario\ScenarioModel;
 use App\Patient;
+use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
 use App\Services\CaseServices\CaseHistoryService;
 use App\Services\CaseServices\CaseReportService;
@@ -112,13 +113,10 @@ class CasesController extends ApiController
         return $this->response->collection($accidentDiagnostics, new DiagnosticTransformer());
     }
 
-    public function getServices($id, RoleService $roleService)
+    public function getServices($id, RoleService $roleService, AccidentService $accidentServiceService)
     {
         $accident = Accident::findOrFail($id);
-        $accidentServices = $accident->services;
-        if ($accident->caseable) {
-            $accidentServices = $accidentServices->merge($accident->caseable->services);
-        }
+        $accidentServices = $accidentServiceService->getAccidentServices($accident);
         $accidentServices->each(function (DoctorService $doctorService) use ($roleService) {
             if ($doctorService->created_by && $roleService->hasRole($doctorService->creator, 'doctor')) {
                 $doctorService->markAsDoctor();

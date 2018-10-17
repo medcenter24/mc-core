@@ -10,6 +10,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+// todo delete this with Formula.php and all storages for that
 class FormulaStorage extends Model
 {
     use SoftDeletes;

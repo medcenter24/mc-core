@@ -16,13 +16,13 @@ class DatePeriodService
     CONST DOW = 'dow'; // day of week
 
     protected $dow = [
-        'mon',
-        'tues',
-        'wed',
-        'thurs',
-        'fri',
-        'sat',
-        'sun',
+        0 => 'sun',
+        1 => 'mon',
+        2 => 'tues',
+        3 => 'wed',
+        4 => 'thurs',
+        5 => 'fri',
+        6 => 'sat',
     ];
 
     /**
@@ -61,12 +61,14 @@ class DatePeriodService
                     $res[self::TIME] = $parts;
                     break;
                 }
+                break;
             case 2:
                 if ($this->isDow($parts[0]) && $this->isTime($parts[1])) {
                     $res[self::DOW] = $parts[0];
                     $res[self::TIME] = $parts[1];
                     break;
                 }
+                break;
             default:
                 throw new InconsistentDataException('Incorrect period format');
         }
@@ -76,7 +78,7 @@ class DatePeriodService
     /**
      * Returns list of day of week
      */
-    public function getDows()
+    public function getDow()
     {
         return $this->dow;
     }

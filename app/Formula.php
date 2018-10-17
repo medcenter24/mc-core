@@ -10,6 +10,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+// todo delete this ie i'm not storing the formulas, only the conditions
 class Formula extends Model
 {
     use SoftDeletes;

@@ -10,6 +10,7 @@ namespace App\Services;
 
 use App\Accident;
 use App\City;
+use App\DoctorService;
 
 class AccidentService
 {
@@ -46,7 +47,6 @@ class AccidentService
     public function getCity(Accident $accident)
     {
         $city = new City();
-        \Log::debug('asdf', ['f' => $accident->id, 'd' => $accident->caseable->city]);
         if ($accident->caseable->city_id) {
             $city = $accident->caseable->city;
         } elseif ($accident->city_id) {
@@ -54,5 +54,19 @@ class AccidentService
         }
 
         return $city;
+    }
+
+    /**
+     * @param Accident $accident
+     * @return DoctorService[]
+     */
+    public function getAccidentServices(Accident $accident)
+    {
+        $accidentServices = $accident->services;
+        if ($accident->caseable) {
+            $accidentServices = $accidentServices->merge($accident->caseable->services);
+        }
+
+        return $accidentServices;
     }
 }

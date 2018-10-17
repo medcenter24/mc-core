@@ -8,10 +8,10 @@
 use App\Accident;
 use App\Doctor;
 use App\FinanceCurrency;
-use App\Services\FinanceService;
+use App\Services\FinanceConditionService;
 use Faker\Generator as Faker;
 
-$factory->define(FinanceCurrency::class, function (Faker $faker, FinanceService $financeService) {
+$factory->define(FinanceCurrency::class, function (Faker $faker, FinanceConditionService $financeService) {
     return [
         'created_by' => 0, // default for the system
         'title' => 'Finance condition',

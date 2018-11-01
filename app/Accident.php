@@ -15,13 +15,6 @@ namespace App;
  */
 class Accident extends AccidentAbstract
 {
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'handling_time',
-    ];
-
     protected $fillable = [
         'created_by',
         'parent_id',
@@ -30,17 +23,23 @@ class Accident extends AccidentAbstract
         'accident_status_id',
         'assistant_id',
         'assistant_ref_num',
+        'assistant_invoice_id',
+        'assistant_guarantee_id',
         'caseable_id',
         'caseable_type',
-        'caseable_cost',
         'ref_num',
         'title',
         'city_id',
         'address',
         'contacts',
         'symptoms',
-        'fixed_income',
-        'income',
+        'handling_time',
+    ];
+
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
         'handling_time',
     ];
 
@@ -58,9 +57,6 @@ class Accident extends AccidentAbstract
         'address',
         'contacts',
         'symptoms',
-        'caseable_cost',
-        'fixed_income',
-        'income',
         'handling_time',
     ];
 
@@ -173,5 +169,21 @@ class Accident extends AccidentAbstract
     public function accidentStatus()
     {
         return $this->belongsTo(AccidentStatus::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assistantInvoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assistantGuarantee()
+    {
+        return $this->belongsTo(Invoice::class);
     }
 }

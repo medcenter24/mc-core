@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\V1\Director;
 use App\DatePeriod;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\DatePeriodRequest;
+use App\Services\DatePeriodService;
 use App\Transformers\DatePeriodTransformer;
 
 class DatePeriodController extends ApiController
@@ -27,15 +28,15 @@ class DatePeriodController extends ApiController
     /**
      * Store a newly created resource in storage.
      * @param DatePeriodRequest $request
+     * @param DatePeriodService $service
      * @return \Dingo\Api\Http\Response
      */
-    public function store(DatePeriodRequest $request)
+    public function store(DatePeriodRequest $request, DatePeriodService $service)
     {
         if ($request->json('id', false)) {
             $this->response->errorBadRequest();
         }
-        $datePeriod = DatePeriod::create($request->json()->all());
-        \Log::info('Period created', [$datePeriod, $this->user()]);
+        $datePeriod = $service->save($request->json()->all());
         $transformer = new DatePeriodTransformer();
         return $this->response->created(url('api/director/period/'.$datePeriod->id), $transformer->transform($datePeriod));
     }
@@ -56,12 +57,12 @@ class DatePeriodController extends ApiController
      *
      * @param DatePeriodRequest $request
      * @param $id
+     * @param DatePeriodService $service
      * @return \Dingo\Api\Http\Response
      */
-    public function update(DatePeriodRequest $request, $id)
+    public function update(DatePeriodRequest $request, $id, DatePeriodService $service)
     {
-        $datePeriod = DatePeriod::findOrFail($id);
-        $datePeriod->update($request->json()->all());
+        $datePeriod = $service->save($request->json()->all());
         return $this->response->item($datePeriod, new DatePeriodTransformer());
     }
 

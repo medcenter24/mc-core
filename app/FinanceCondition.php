@@ -40,7 +40,7 @@ class FinanceCondition extends Model
     use SoftDeletes;
 
     protected $fillable = ['created_by', 'title', 'value', 'type', 'currency_id', 'currency_mode', 'model'];
-    protected $visible = ['id', 'title', 'value', 'type', 'currency', 'model'];
+    protected $visible = ['id', 'title', 'value', 'type', 'currency_id', 'currency_mode', 'model'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

@@ -11,6 +11,7 @@ namespace App\Models\Formula;
 use App\Models\Formula\Operations\Add;
 use App\Models\Formula\Operations\Div;
 use App\Models\Formula\Operations\Mul;
+use App\Models\Formula\Operations\Percent;
 use App\Models\Formula\Operations\Sub;
 use App\Models\Formula\Variables\Decimal;
 use App\Models\Formula\Variables\Integer;
@@ -38,53 +39,25 @@ class FormulaBuilder implements FormulaBuilderInterface
     private $parent = null;
 
     /**
-     * We need it to print sub-formulas
-     * @var FormulaViewService
+     * Percent which needs to be taken from this operation
+     * # nested formulas can get their own percents
+     * @var int
      */
-    private $formulaViewService;
+    private $percent = 100;
 
-    /**
-     * to count formulas
-     * @var FormulaResultService
-     */
-    private $formulaResultService;
-
-    public function __construct(
-        FormulaViewService $formulaViewService,
-        FormulaResultService $formulaResultService,
-        FormulaBuilderInterface $parent = null
-    )
+    public function __construct(FormulaBuilderInterface $parent = null)
     {
         $this->formula = collect([]);
         $this->parent = $parent;
-        $this->formulaViewService = $formulaViewService;
-        $this->formulaResultService = $formulaResultService;
     }
 
     /**
      * @return Collection
+     * @throws Exception\FormulaException
      */
     public function getFormulaCollection()
     {
-        return $this->formula;
-    }
-
-    /**
-     * If current formula is not Base formula - top formula in the collection
-     * @return bool
-     */
-    public function hasParentFormula()
-    {
-        return $this->parent !== null;
-    }
-
-    /**
-     * Parent formula for the current formula
-     * @return FormulaBuilderInterface
-     */
-    public function getParentFormula()
-    {
-        return $this->parent ?: $this;
+        return $this->hasPercent() ? $this->attachPercent()->getFormulaCollection() : $this->formula;
     }
 
     /**
@@ -98,6 +71,32 @@ class FormulaBuilder implements FormulaBuilderInterface
             $base = $base->getParentFormula();
         }
         return $base;
+    }
+
+    /**
+     * Parent formula for the current formula
+     * @return FormulaBuilderInterface
+     */
+    public function getParentFormula()
+    {
+        return $this->parent ?: $this;
+    }
+
+    /**
+     * If current formula is not Base formula - top formula in the collection
+     * @return bool
+     */
+    public function hasParentFormula()
+    {
+        return $this->parent !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPercent()
+    {
+        return $this->percent != 100;
     }
 
     /**
@@ -214,7 +213,7 @@ class FormulaBuilder implements FormulaBuilderInterface
      */
     public function addNestedFormula()
     {
-        $subFormula = new FormulaBuilder($this->formulaViewService, $this->formulaResultService, $this);
+        $subFormula = new FormulaBuilder($this);
         $op = new Add($subFormula);
         $this->formula->push($op);
         return $subFormula;
@@ -226,7 +225,7 @@ class FormulaBuilder implements FormulaBuilderInterface
      */
     public function divNestedFormula()
     {
-        $subFormula = new FormulaBuilder($this->formulaViewService, $this->formulaResultService, $this);
+        $subFormula = new FormulaBuilder($this);
         $op = new Div($subFormula);
         $this->formula->push($op);
         return $subFormula;
@@ -238,7 +237,7 @@ class FormulaBuilder implements FormulaBuilderInterface
      */
     public function mulNestedFormula()
     {
-        $subFormula = new FormulaBuilder($this->formulaViewService, $this->formulaResultService, $this);
+        $subFormula = new FormulaBuilder($this);
         $op = new Mul($subFormula);
         $this->formula->push($op);
         return $subFormula;
@@ -250,7 +249,7 @@ class FormulaBuilder implements FormulaBuilderInterface
      */
     public function subNestedFormula()
     {
-        $subFormula = new FormulaBuilder($this->formulaViewService, $this->formulaResultService, $this);
+        $subFormula = new FormulaBuilder($this);
         $op = new Sub($subFormula);
         $this->formula->push($op);
         return $subFormula;
@@ -264,6 +263,10 @@ class FormulaBuilder implements FormulaBuilderInterface
         return $this->getParentFormula();
     }
 
+    /**
+     * @param int $val
+     * @return Integer
+     */
     private function getInteger($val = 0)
     {
         return new Integer($val);
@@ -280,22 +283,50 @@ class FormulaBuilder implements FormulaBuilderInterface
     }
 
     /**
-     * @return float|int|mixed
-     * @throws Exception\FormulaException
+     * Increase percents
+     * @param int $percent
+     * @return FormulaBuilderInterface|$this
      */
-    public function getResult()
+    public function addPercent($percent = 0)
     {
-        return $this->formulaResultService->calculate($this);
+        $this->percent += $percent;
+        return $this;
     }
 
     /**
-     * @return string
-     * @throws \Throwable
+     * Decrease percents
+     * @param int $percent
+     * @return FormulaBuilderInterface|$this
      */
-    public function varView()
+    public function subPercent($percent = 0)
     {
-        $result = $this->formulaViewService->render($this);
-        $result = $this->hasParentFormula() ? '( ' . $result . ' )' : $result;
-        return $result;
+        $this->percent -= $percent;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPercent()
+    {
+        return $this->percent;
+    }
+
+    /**
+     * @return FormulaBuilderInterface
+     * @throws Exception\FormulaException
+     */
+    private function attachPercent()
+    {
+        $formula = $this;
+        if ($this->getPercent() !== 100) {
+            $topFormula = new FormulaBuilder($this->parent);
+            $this->parent = $topFormula;
+            $topFormula->formula->push(new Mul($this));
+            $topFormula->formula->push(new Percent($this->getInteger($this->getPercent())));
+            $formula = $topFormula;
+        }
+
+        return $formula;
     }
 }

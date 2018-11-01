@@ -8,13 +8,16 @@
 namespace Tests\Unit\Services;
 
 
-use App\Services\DatePeriodInterpretationService;
-use App\Services\DatePeriodService;
+use App\Services\DatePeriod\DatePeriodInterpretationService;
+use App\Services\DatePeriod\DatePeriodService;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Tests\Unit\fakes\DatePeriodFake;
 
 class DatePeriodInterpretationServiceTest extends TestCase
 {
+
+    use DatabaseMigrations;
 
     /**
      * @var DatePeriodInterpretationService

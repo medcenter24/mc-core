@@ -8,11 +8,13 @@
 namespace Tests\Unit\Services;
 
 
-use App\Services\DatePeriodService;
+use App\Services\DatePeriod\DatePeriodService;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class DatePeriodServiceTest extends TestCase
 {
+    use DatabaseMigrations;
 
     /**
      * @var DatePeriodService
@@ -63,5 +65,28 @@ class DatePeriodServiceTest extends TestCase
     public function testIsNotPeriod(string $period)
     {
         self::assertNotTrue($this->service->isPeriod($period));
+    }
+
+    public function testSave()
+    {
+        $data = [
+            'title' => 'test',
+            'from' => 'sun 12:21',
+            'to' => 'mon 22:15',
+        ];
+        $datePeriod = $this->service->save($data);
+        $data['id'] = 1;
+        self::assertSame($data, $datePeriod->toArray());
+        self::assertSame([[
+            'date_period_id' => '1',
+            'day_of_week' => 'sun',
+            'from' => '12:21',
+            'to' => '23:59',
+        ], [
+            'date_period_id' => '1',
+            'day_of_week' => 'mon',
+            'from' => '00:00',
+            'to' => '22:15',
+        ]], $datePeriod->interpretation->toArray());
     }
 }

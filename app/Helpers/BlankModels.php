@@ -29,13 +29,13 @@ class BlankModels
             'assistant_ref_num' => '',
             'caseable_id' => 0,
             'caseable_type' => '',
-            'caseable_cost' => 0,
             'ref_num' => '',
             'title' => '',
             'city_id' => 0,
             'address' => '',
             'contacts' => '',
             'symptoms' => '',
+            'handlingTime' => ''
         ]);
     }
 

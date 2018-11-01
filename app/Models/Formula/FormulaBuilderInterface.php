@@ -9,21 +9,14 @@ namespace App\Models\Formula;
 
 
 use App\Models\Formula\Exception\FormulaException;
-use App\Models\Formula\Variables\Integer;
 use Illuminate\Support\Collection;
 
-interface FormulaBuilderInterface extends FormulaResultable
+interface FormulaBuilderInterface
 {
     /**
      * @return Collection
      */
     public function getFormulaCollection();
-
-    /**
-     * Check if formula is nested by the some Parent formula
-     * @return bool
-     */
-    public function hasParentFormula();
 
     /**
      * Get Parent formula for this
@@ -37,6 +30,12 @@ interface FormulaBuilderInterface extends FormulaResultable
      * @return FormulaBuilderInterface
      */
     public function getBaseFormula();
+
+    /**
+     * Check if formula is nested by the some Parent formula
+     * @return bool
+     */
+    public function hasParentFormula();
 
     /**
      * Adding integer
@@ -130,8 +129,16 @@ interface FormulaBuilderInterface extends FormulaResultable
     public function closeNestedFormula();
 
     /**
-     * @return string
-     * @throws \Throwable
+     * adding percents to the percents which needs to be taken from the result
+     * @param float $percent
+     * @return FormulaBuilderInterface
      */
-    public function varView();
+    public function addPercent($percent = 0.0);
+
+    /**
+     * sub percents from the percents which needs to be taken from the result
+     * @param float $percent
+     * @return FormulaBuilderInterface
+     */
+    public function subPercent($percent = 0.0);
 }

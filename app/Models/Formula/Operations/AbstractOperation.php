@@ -36,6 +36,7 @@ abstract class AbstractOperation implements Operation
 
     /**
      * @return string
+     * @throws \Throwable
      */
     public function varView()
     {

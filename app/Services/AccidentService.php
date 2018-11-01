@@ -11,6 +11,7 @@ namespace App\Services;
 use App\Accident;
 use App\City;
 use App\DoctorService;
+use Illuminate\Support\Collection;
 
 class AccidentService
 {
@@ -58,7 +59,7 @@ class AccidentService
 
     /**
      * @param Accident $accident
-     * @return DoctorService[]
+     * @return Collection
      */
     public function getAccidentServices(Accident $accident)
     {

@@ -10,9 +10,12 @@ namespace App\Services;
 
 use App\Accident;
 use App\DatePeriod;
+use App\DatePeriodInterpretation;
 use App\Doctor;
 use App\DoctorService;
+use App\FinanceCondition;
 use App\FinanceStorage;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 class FinanceConditionService
@@ -29,7 +32,7 @@ class FinanceConditionService
      * Types
      * @return array
      */
-    public static function getTypes()
+    public function getTypes()
     {
         return [
             self::PARAM_TYPE_ADD,
@@ -41,7 +44,7 @@ class FinanceConditionService
      * Modes
      * @return array
      */
-    public static function getModes()
+    public function getModes()
     {
         return [
             self::PARAM_CURRENCY_MODE_PERCENT,
@@ -57,7 +60,7 @@ class FinanceConditionService
      *
      * @return array
      */
-    public static function allowedModels()
+    public function allowedModels()
     {
         return [
             Accident::class,
@@ -71,38 +74,49 @@ class FinanceConditionService
      *  [
      *      Doctor::class => 1
      *      DatePeriod::class => Carbon,
-     *      DoctorAccident::class => Services...
+     *      DoctorAccident::class => 1,
+     *      Assistant::class => 1,
+     *      City::class => 1,
+     *      DoctorService::class => [1, 2, 3, 4], // id's
      * ]]
      *
-     * @return array
+     * @return Collection
      */
-    public static function findConditions($models = [])
+    public function findConditions($models = [])
     {
-        $result = [];
+        $result = collect([]);
         if (count($models)) {
             $storageQuery = FinanceStorage::query();
-            $datePeriod = false;
             foreach ($models as $key => $val) {
-                if ($key === DatePeriod::class) {
-                    // dates will be filtered later, on the sql results
-                    $datePeriod = $val;
-                } elseif ($key === DoctorService::class) {
-                    if ($val && is_array($val)) {
-                        $storageQuery->whereIn($key, $val);
-                    }
-                } else {
-                    $storageQuery->where('model', $key)->where('model_id', $val);
+                switch ($key) {
+                    case DatePeriod::class :
+                        /** @var Carbon $date */
+                        $date = $val;
+                        $time = $date->toTimeString();
+                        $periodIds = DatePeriodInterpretation::query()
+                            ->where('day_of_week', $date->dayOfWeek)
+                            ->where('from', '>=', $time)
+                            ->where('to', '<=', $time)
+                            ->get(['date_period_id']);
+                        if ($periodIds->count()) {
+                            $storageQuery->where('model', $key)->whereIn('model_id', $periodIds->get('date_period_id'));
+                        }
+                        break;
+                    case DoctorService::class :
+                        if ($val && is_array($val) && count($val)) {
+                            $storageQuery->where('model', $key)->whereIn('model_id', $val);
+                        }
+                        break;
+                    default:
+                        $storageQuery->where('model', $key)->where('model_id', $val);
                 }
             }
-            // todo неправильнывй формат хранения периодов дат, не понятно как их теперь сравнить чисто по бд?
-            $result = $storageQuery
-                ->groupBy('finance_condition_id')
-                ->get();
 
-            // filter by the date
-            if ($datePeriod) {
-                var_dump($result, $datePeriod); die('not implemented yet');
-            }
+            $stored = $storageQuery
+                ->groupBy('finance_condition_id')
+                ->get('finance_condition_id');
+
+            $result = FinanceCondition::query()->whereIn('id', $stored);
         }
 
         return $result;

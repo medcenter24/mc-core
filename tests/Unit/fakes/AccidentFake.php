@@ -12,6 +12,13 @@ use App\Accident;
 use App\DoctorAccident;
 use App\HospitalAccident;
 
+// TODO Delete this
+
+/**
+ * Class AccidentFake
+ * @package Tests\Unit\fakes
+ * @deprecated You need to use prophesize instead! do not use storage anymore!
+ */
 class AccidentFake implements Fake
 {
     public static function make(array $params = [], array $additionalParams = [])
@@ -54,6 +61,9 @@ class AccidentFake implements Fake
         $params['caseable_type'] = HospitalAccident::class;
         if (!isset($additionalParams['hospitalAccident'])) {
             $additionalParams['hospitalAccident'] = [];
+        }
+        if (!isset($additionalParams['hospital'])) {
+            $additionalParams['hospital'] = [];
         }
         return self::make($params, $additionalParams);
     }

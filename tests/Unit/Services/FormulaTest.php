@@ -38,8 +38,8 @@ class FormulaTest extends TestCase
     public function testEmptyFormulaHowToUse()
     {
         $formula = $this->formulaService->formula();
-        self::assertEmpty($formula->varView(), 'Empty formula produces empty view');
-        self::assertEquals(0, $formula->getResult(), 'Empty formula returns 0 as a result');
+        self::assertEmpty($formula->varView(), 'Correct view');
+        self::assertEquals(0, $formula->getResult(), 'Correct result');
     }
 
     /**
@@ -47,8 +47,8 @@ class FormulaTest extends TestCase
      */
     public function testEmptyFormula()
     {
-        self::assertEmpty($this->formulaService->getFormulaView($this->formulaService->formula()->getBaseFormula()), 'Empty formula produces empty view');
-        self::assertEquals(0, $this->formulaService->getResult($this->formulaService->formula()->getBaseFormula()), 'Empty formula returns 0 as a result');
+        self::assertEmpty($this->formulaService->getFormulaView($this->formulaService->formula()->getBaseFormula()), 'Correct view');
+        self::assertEquals(0, $this->formulaService->getResult($this->formulaService->formula()->getBaseFormula()), 'Correct result');
     }
 
     /**
@@ -278,13 +278,59 @@ class FormulaTest extends TestCase
             ->closeNestedFormula()
             ->mulInteger(2);
 
-        self::assertEquals('( 2 + 2.00 ) * 2', $this->formulaService->getFormulaView($formula->getBaseFormula()), 'Empty formula produces empty view');
-        self::assertEquals(8, $this->formulaService->getResult($formula->getBaseFormula()), 'Empty formula returns 0 as a result');
+        self::assertEquals('( 2 + 2.00 ) * 2', $this->formulaService->getFormulaView($formula->getBaseFormula()), 'Correct view');
+        self::assertEquals(8, $this->formulaService->getResult($formula->getBaseFormula()), 'Correct result');
     }
 
     /**
      * Formula:
-     * (2+2)*2
+     * ((2+2)*(2+2))
+     */
+    public function testComplexNested()
+    {
+        $formula = $this->formulaService
+            ->formula()
+            ->addNestedFormula()
+            ->addNestedFormula()
+            ->addInteger(2)
+            ->addInteger(2)
+            ->closeNestedFormula()
+            ->mulNestedFormula()
+            ->addInteger(2)
+            ->addInteger(2)
+            ->closeNestedFormula()
+            ->closeNestedFormula();
+
+        self::assertEquals('( ( 2 + 2 ) * ( 2 + 2 ) )', $formula->varView(), 'Correct view');
+        self::assertEquals(16, $formula->getResult(), 'Correct result');
+    }
+
+    /**
+     * Formula:
+     * ((2+2*(2+2)))
+     */
+    public function testComplexNested2()
+    {
+        $formula = $this->formulaService
+            ->formula()
+            ->addNestedFormula()
+            ->addNestedFormula()
+            ->addInteger(2)
+            ->addInteger(2)
+            ->mulNestedFormula()
+            ->addInteger(2)
+            ->addInteger(2)
+            ->closeNestedFormula()
+            ->closeNestedFormula()
+            ->closeNestedFormula();
+
+        self::assertEquals('( ( 2 + 2 * ( 2 + 2 ) ) )', $formula->varView(), 'Correct view');
+        self::assertEquals(10, $formula->getResult(), 'Correct result');
+    }
+
+    /**
+     * Formula:
+     * '( 2 + 2.00 ) * 2 * ( 2 + 2.00 ) * 2 * ( 2 + 2.00 * ( 2 + 2.00 ) )'
      * @throws \Throwable
      */
     public function testSimpleFormulaV2()
@@ -296,9 +342,44 @@ class FormulaTest extends TestCase
             ->addInteger(2)
             ->addFloat(2)
             ->closeNestedFormula()
-            ->mulInteger(2);
+            ->mulInteger(2)
+            ->mulNestedFormula()
+            ->addInteger(2)
+            ->addFloat(2)
+            ->closeNestedFormula()
+            ->mulInteger(2)
+            ->mulNestedFormula()
+            ->addInteger(2)
+            ->addFloat(2)
+            ->mulNestedFormula()
+            ->addInteger(2)
+            ->addFloat(2)
+            ->closeNestedFormula()
+            ->closeNestedFormula();
 
-        self::assertEquals('( 2 + 2.00 ) * 2', $formula->varView(), 'Empty formula produces empty view');
-        self::assertEquals(8, $formula->getResult(), 'Empty formula returns 0 as a result');
+        self::assertEquals('( 2 + 2.00 ) * 2 * ( 2 + 2.00 ) * 2 * ( 2 + 2.00 * ( 2 + 2.00 ) )', $formula->varView(), 'Correct view');
+        self::assertEquals(640, $formula->getResult(), 'Correct result');
     }
+
+    /**
+     * 50% from 0 is 0
+     */
+    public function testPercentOnZero()
+    {
+        /** @var FormulaBuilderInterface $formula */
+        $formula = $this->formulaService->formula()->addInteger(0)->subPercent(50);
+
+        self::assertEquals('( 0 ) * 50%', $formula->varView(), 'Correct view');
+        self::assertEquals(0, $formula->getResult(), 'Correct result');
+    }
+    
+    public function testPercentOnInt(){}
+    
+    public function testPercentOnDecimal(){}
+    
+    public function testPercentOnFormula(){}
+    
+    public function testPercentOnNestedFormula(){}
+    
+    public function testNestedPercents(){}
 }

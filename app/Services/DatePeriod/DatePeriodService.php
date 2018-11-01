@@ -2,13 +2,16 @@
 /**
  * Copyright (c) 2018.
  *
- * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ * @author Oleksander Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace App\Services;
+namespace App\Services\DatePeriod;
 
 
+use App\DatePeriod;
+use App\Events\DatePeriodChangedEvent;
 use App\Exceptions\InconsistentDataException;
+use Auth;
 
 class DatePeriodService
 {
@@ -115,5 +118,26 @@ class DatePeriodService
         }
 
         return $isTime;
+    }
+
+    /**
+     * Save data to storage
+     * @param array $data
+     * @return mixed
+     */
+    public function save(array $data = [])
+    {
+        if (array_key_exists('id', $data) && $data['id']) {
+            $datePeriod = DatePeriod::findOrFail($data['id']);
+            $datePeriod->update($data);
+            \Log::info('Period updated', [$datePeriod, Auth::user()]);
+        } else {
+            $datePeriod = DatePeriod::create($data);
+            \Log::info('Period created', [$datePeriod, Auth::user()]);
+        }
+
+        event(new DatePeriodChangedEvent($datePeriod));
+
+        return $datePeriod;
     }
 }

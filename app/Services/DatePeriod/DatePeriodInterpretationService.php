@@ -5,11 +5,11 @@
  * @author Oleksander Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace App\Services;
+namespace App\Services\DatePeriod;
 
 use App\DatePeriod;
+use App\DatePeriodInterpretation;
 use Carbon\Carbon;
-use Mpdf\Tag\P;
 
 /**
  * Converting GUIs periods to the storing format to make possibility to use it in the DB with SQL
@@ -93,5 +93,27 @@ class DatePeriodInterpretationService
             // there are many days, we need to add last one
             $result[] = [$to['dow'], '00:00', $to['time']];
         }
+    }
+
+    /**
+     * Updating interpreted data
+     * @param DatePeriod $datePeriod
+     * @throws \App\Exceptions\InconsistentDataException
+     */
+    public function update(DatePeriod $datePeriod)
+    {
+        // delete old data
+        DatePeriodInterpretation::where('date_period_id', $datePeriod->id)->delete();
+        $days = $this->interpret($datePeriod);
+        $data = [];
+        foreach ($days as $day) {
+            $data[] = [
+                'date_period_id' => $datePeriod->id,
+                'day_of_week' => $day[0],
+                'from' => $day[1],
+                'to' => $day[2],
+            ];
+        }
+        DatePeriodInterpretation::insert($data);
     }
 }

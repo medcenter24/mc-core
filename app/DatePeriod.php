@@ -14,4 +14,9 @@ class DatePeriod extends Model
 {
     protected $fillable = ['title', 'from', 'to'];
     protected $visible = ['id', 'title', 'from', 'to'];
+
+    public function interpretation()
+    {
+        return $this->hasMany(DatePeriodInterpretation::class);
+    }
 }

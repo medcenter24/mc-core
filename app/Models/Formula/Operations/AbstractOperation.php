@@ -59,11 +59,6 @@ abstract class AbstractOperation implements Operation
         return $this->variable;
     }
 
-    public function appendTo($result = false)
-    {
-        return $result === false ? $this->variable->getResult() : $this->runOperation($result);
-    }
-
     /**
      * Execute operation
      * @param $result

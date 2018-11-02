@@ -9,7 +9,6 @@ namespace App\Services\Formula;
 
 
 use App\Models\Formula\FormulaBuilderInterface;
-use Illuminate\Support\Collection;
 
 class FormulaViewService
 {
@@ -43,7 +42,7 @@ class FormulaViewService
                     $strFormula .= $operation->leftSignView();
                 }
 
-                $var = $operation->varView();
+                $var = $operation->getVar();
                 $strFormula .= $var instanceof FormulaBuilderInterface
                     ? '( ' . $this->render($var) . ' )'
                     : $operation->varView();

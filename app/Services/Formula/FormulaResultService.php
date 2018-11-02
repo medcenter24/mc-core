@@ -26,6 +26,12 @@ class FormulaResultService
         while ($collection->valid()) {
             /** @var Operation $operation */
             $operation = $collection->current();
+            $var = $operation->getResult();
+            if ($var instanceof FormulaBuilderInterface ) {
+                $strFormula .= '( ' . $this->render($var) . ' )';
+            } else {
+                $strFormula .= $operation->varView();
+            }
             $result = $operation->appendTo($result);
             $collection->next();
         }

@@ -15,7 +15,7 @@ class Add extends AbstractOperation
      */
     public function getLeftSignView()
     {
-        return '+';
+        return ' + ';
     }
 
     public function runOperation($result)

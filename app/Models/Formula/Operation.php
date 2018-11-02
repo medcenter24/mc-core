@@ -8,18 +8,8 @@
 namespace App\Models\Formula;
 
 
-use App\Models\Formula\Exception\FormulaException;
-
 interface Operation
 {
-    /**
-     * Apply the operation to the result
-     * @param int|float|bool $result
-     * @return int|float Result
-     * @throws FormulaException
-     */
-    public function appendTo($result = false);
-
     /**
      * @return string
      */
@@ -48,4 +38,11 @@ interface Operation
      * @return  int
      */
     public function getWeight();
+
+    /**
+     * Runs operations between variable and a result
+     * @param $result
+     * @return mixed
+     */
+    public function runOperation($result);
 }

@@ -143,7 +143,8 @@ interface FormulaBuilderInterface
     public function subPercent($percent = 0.0);
 
     /**
+     * to define in in the formula we have nested formula
      * @return FormulaBuilderInterface
      */
-    public function varView();
+    public function getVar();
 }

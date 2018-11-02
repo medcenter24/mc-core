@@ -57,11 +57,6 @@ class FormulaResultService
         return $result === false ? 0 : $result;
     }
 
-    public function appendToResult($op, $result)
-    {
-        return ;
-    }
-
     /**
      * @param FormulaBuilderInterface $formula
      * @return float

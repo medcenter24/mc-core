@@ -15,8 +15,6 @@ use App\Models\Formula\Operations\Percent;
 use App\Models\Formula\Operations\Sub;
 use App\Models\Formula\Variables\Decimal;
 use App\Models\Formula\Variables\Integer;
-use App\Services\Formula\FormulaResultService;
-use App\Services\Formula\FormulaViewService;
 use Illuminate\Support\Collection;
 
 /**
@@ -71,6 +69,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         while ($base->hasParentFormula()) {
             $base = $base->getParentFormula();
         }
+
         return $base->attachPercent();
     }
 
@@ -110,6 +109,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $var = $this->getInteger($val);
         $op = new Add($var);
         $this->formula->push($op);
+
         return $this;
     }
 
@@ -124,6 +124,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $var = $this->getDecimal($val, $precision);
         $op = new Add($var);
         $this->formula->push($op);
+
         return $this;
     }
 
@@ -137,6 +138,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $var = $this->getInteger($val);
         $op = new Mul($var);
         $this->formula->push($op);
+
         return $this;
     }
 
@@ -151,6 +153,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $var = $this->getDecimal($val, $precision);
         $op = new Mul($var);
         $this->formula->push($op);
+
         return $this;
     }
 
@@ -164,6 +167,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $var = $this->getInteger($val);
         $op = new Div($var);
         $this->formula->push($op);
+
         return $this;
     }
 
@@ -178,6 +182,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $var = $this->getDecimal($val, $precision);
         $op = new Div($var);
         $this->formula->push($op);
+
         return $this;
     }
 
@@ -191,6 +196,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $var = $this->getInteger($val);
         $op = new Sub($var);
         $this->formula->push($op);
+
         return $this;
     }
 
@@ -205,6 +211,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $var = $this->getDecimal($val, $precision);
         $op = new Sub($var);
         $this->formula->push($op);
+
         return $this;
     }
 
@@ -217,6 +224,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $subFormula = new FormulaBuilder($this);
         $op = new Add($subFormula);
         $this->formula->push($op);
+
         return $subFormula;
     }
 
@@ -229,6 +237,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $subFormula = new FormulaBuilder($this);
         $op = new Div($subFormula);
         $this->formula->push($op);
+
         return $subFormula;
     }
 
@@ -241,6 +250,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $subFormula = new FormulaBuilder($this);
         $op = new Mul($subFormula);
         $this->formula->push($op);
+
         return $subFormula;
     }
 
@@ -253,6 +263,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         $subFormula = new FormulaBuilder($this);
         $op = new Sub($subFormula);
         $this->formula->push($op);
+
         return $subFormula;
     }
 
@@ -291,6 +302,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     public function addPercent($percent = 0)
     {
         $this->percent += $percent;
+
         return $this;
     }
 
@@ -302,6 +314,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     public function subPercent($percent = 0)
     {
         $this->percent -= $percent;
+
         return $this;
     }
 
@@ -337,11 +350,8 @@ class FormulaBuilder implements FormulaBuilderInterface
      * For the compatibility and having opportunity to getting nested formulas
      * @return $this|FormulaBuilderInterface
      */
-    public function varView()
+    public function getVar()
     {
         return $this;
     }
-
-    public function getResult()
-    {}
 }

@@ -62,7 +62,8 @@ class FormulaBuilder implements FormulaBuilderInterface
 
     /**
      * Return the Base formula
-     * @return FormulaBuilder
+     * @return FormulaBuilderInterface
+     * @throws Exception\FormulaException
      */
     public function getBaseFormula()
     {
@@ -70,7 +71,7 @@ class FormulaBuilder implements FormulaBuilderInterface
         while ($base->hasParentFormula()) {
             $base = $base->getParentFormula();
         }
-        return $base;
+        return $base->attachPercent();
     }
 
     /**
@@ -172,7 +173,7 @@ class FormulaBuilder implements FormulaBuilderInterface
      * @return $this|FormulaBuilderInterface
      * @throws Exception\FormulaException
      */
-    public function divDecimal($val = 1, int $precision = 2)
+    public function divFloat($val = 1, int $precision = 2)
     {
         $var = $this->getDecimal($val, $precision);
         $op = new Div($var);
@@ -321,12 +322,28 @@ class FormulaBuilder implements FormulaBuilderInterface
         $formula = $this;
         if ($this->getPercent() !== 100) {
             $topFormula = new FormulaBuilder($this->parent);
-            $this->parent = $topFormula;
             $topFormula->formula->push(new Mul($this));
+            $this->parent = $topFormula;
             $topFormula->formula->push(new Percent($this->getInteger($this->getPercent())));
+            // percent moved upper, and I need to set it to 100 to avoid recursions
+            $this->percent = 100;
             $formula = $topFormula;
         }
 
         return $formula;
+    }
+
+    /**
+     * For the compatibility and having opportunity to getting nested formulas
+     * @return $this|FormulaBuilderInterface
+     */
+    public function varView()
+    {
+        return $this;
+    }
+
+    public function getResult()
+    {
+
     }
 }

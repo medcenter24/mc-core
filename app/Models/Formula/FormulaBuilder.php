@@ -343,7 +343,5 @@ class FormulaBuilder implements FormulaBuilderInterface
     }
 
     public function getResult()
-    {
-
-    }
+    {}
 }

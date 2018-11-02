@@ -36,4 +36,16 @@ interface Operation
      * @return string
      */
     public function rightSignView(bool $visible = true);
+
+    /**
+     * Getting stored variable
+     * @return mixed
+     */
+    public function getVar();
+
+    /**
+     * Weight of the action (mul|div|percent needs to be done firstly)
+     * @return  int
+     */
+    public function getWeight();
 }

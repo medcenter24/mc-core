@@ -10,6 +10,7 @@ namespace App\Services\Formula;
 
 use App\Models\Formula\FormulaBuilderInterface;
 use App\Models\Formula\Operation;
+use App\Models\Formula\Variables\Decimal;
 
 class FormulaResultService
 {
@@ -22,21 +23,43 @@ class FormulaResultService
     public function calculate(FormulaBuilderInterface $formula)
     {
         $result = false;
-        $collection = $formula->getFormulaCollection()->getIterator();
-        while ($collection->valid()) {
-            /** @var Operation $operation */
-            $operation = $collection->current();
-            $var = $operation->getResult();
-            if ($var instanceof FormulaBuilderInterface ) {
-                $strFormula .= '( ' . $this->render($var) . ' )';
-            } else {
-                $strFormula .= $operation->varView();
+        $collection = $formula->getFormulaCollection();
+        $collection = $collection->sortByDesc(function (Operation $op, $key) {
+            if (!$key) {
+                // first operation in the row doesn't have any sense - this is just a variable
+                return 1000;
             }
-            $result = $operation->appendTo($result);
-            $collection->next();
+            return $op->getWeight();
+        });
+        $iterator = $collection->getIterator();
+        while ($iterator->valid()) {
+            /** @var Operation $operation */
+            $operation = $iterator->current();
+
+            $var = $operation->getVar();
+            if ($var instanceof FormulaBuilderInterface) {
+                $partRes = $this->calculate($var);
+                if ($result === false) {
+                    $result = $partRes;
+                } else {
+                    $newOpClass = get_class($operation);
+                    /** @var Operation $newOp */
+                    $newOp = new $newOpClass(new Decimal($partRes));
+                    $result = $newOp->runOperation($result);
+                }
+            } else {
+                $result = $result === false ? $operation->getVar()->getResult() : $operation->runOperation($result);
+            }
+
+            $iterator->next();
         }
 
         return $result === false ? 0 : $result;
+    }
+
+    public function appendToResult($op, $result)
+    {
+        return ;
     }
 
     /**

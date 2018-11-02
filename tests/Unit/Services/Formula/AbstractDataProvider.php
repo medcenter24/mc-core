@@ -164,7 +164,8 @@ class AbstractDataProvider extends TestCase
                     ->addInteger(2)
                     ->addFloat(2)
                     ->closeNestedFormula()
-                    ->mulInteger(2)->getBaseFormula(),
+                    ->mulInteger(2)
+                    ->getBaseFormula(),
                 '( 2 + 2.00 ) * 2',
                 8,
                 'Simple formula'
@@ -248,11 +249,11 @@ class AbstractDataProvider extends TestCase
             ],
             [
                 (new FormulaBuilder())
-                    ->addInteger(100)
                     ->addPercent(50)
+                    ->addInteger(100)
                     ->getBaseFormula(),
                 '( 100 ) * 150%',
-                250,
+                150,
                 'Percent on Int'
             ],
             [
@@ -261,7 +262,7 @@ class AbstractDataProvider extends TestCase
                     ->addPercent(50)
                     ->getBaseFormula(),
                 '( 100 ) * 150%',
-                250,
+                150,
                 'Percent on Int'
             ],
             [
@@ -270,7 +271,7 @@ class AbstractDataProvider extends TestCase
                     ->subPercent(93)
                     ->getBaseFormula(),
                 '( 3.45 ) * 7%',
-                250,
+                0.2415,
                 'Percent on Float'
             ],
             [

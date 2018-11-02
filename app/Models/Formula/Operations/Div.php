@@ -12,6 +12,8 @@ use App\Models\Formula\Exception\FormulaException;
 
 class Div extends AbstractOperation
 {
+    protected $weight = 1;
+
     /**
      * Div constructor.
      * @param $var

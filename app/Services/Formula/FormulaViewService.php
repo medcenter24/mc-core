@@ -9,6 +9,7 @@ namespace App\Services\Formula;
 
 
 use App\Models\Formula\FormulaBuilderInterface;
+use Illuminate\Support\Collection;
 
 class FormulaViewService
 {
@@ -21,6 +22,43 @@ class FormulaViewService
     public function render(FormulaBuilderInterface $formula)
     {
         $collection = $formula->getFormulaCollection()->getIterator();
-        return view('formula.formulaRow', compact('collection'))->render();
+        return $this->showFormula($collection);
+    }
+
+    /**
+     * @param \ArrayIterator $collection
+     * @return string
+     * @throws \Throwable
+     */
+    private function showFormula(\ArrayIterator $collection)
+    {
+        $strFormula = '';
+        if ($collection->count()) {
+            $first = true;
+            while ($collection->valid()) {
+                /** @var \App\Models\Formula\Operation $operation */
+                $operation = $collection->current();
+
+                if ($operation->leftSignView(!$first)) {
+                    $strFormula .= $operation->leftSignView();
+                }
+
+                $var = $operation->varView();
+                if ($var instanceof FormulaBuilderInterface ) {
+                    $strFormula .= '( ' . $this->render($var) . ' )';
+                } else {
+                    $strFormula .= $operation->varView();
+                }
+
+                if ($operation->rightSignView()) {
+                    $strFormula .= $operation->rightSignView();
+                }
+
+                $collection->next();
+                $first = false;
+            }
+        }
+
+        return $strFormula;
     }
 }

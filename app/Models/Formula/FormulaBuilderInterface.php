@@ -97,7 +97,7 @@ interface FormulaBuilderInterface
      * @return FormulaBuilderInterface
      * @throws FormulaException if divide by 0
      */
-    public function divDecimal($val = 1, int $precision = 2);
+    public function divFloat($val = 1, int $precision = 2);
 
     /**
      * Creates Nested Formula which injected with operation Add
@@ -141,4 +141,9 @@ interface FormulaBuilderInterface
      * @return FormulaBuilderInterface
      */
     public function subPercent($percent = 0.0);
+
+    /**
+     * @return FormulaBuilderInterface
+     */
+    public function varView();
 }

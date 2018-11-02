@@ -16,6 +16,12 @@ use App\Models\Formula\Variable;
 abstract class AbstractOperation implements Operation
 {
     /**
+     * Weight of the action (mul|div|percent needs to be done firstly)
+     * @var int
+     */
+    protected $weight = 0;
+
+    /**
      * @var FormulaBuilderInterface|Variable
      */
     protected $variable;
@@ -34,6 +40,11 @@ abstract class AbstractOperation implements Operation
         }
     }
 
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
     /**
      * @return string
      * @throws \Throwable
@@ -41,6 +52,11 @@ abstract class AbstractOperation implements Operation
     public function varView()
     {
         return $this->variable->varView();
+    }
+
+    public function getVar()
+    {
+        return $this->variable;
     }
 
     public function appendTo($result = false)
@@ -53,7 +69,7 @@ abstract class AbstractOperation implements Operation
      * @param $result
      * @return mixed
      */
-    abstract protected function runOperation($result);
+    abstract public function runOperation($result);
 
     public function rightSignView(bool $visible = true)
     {

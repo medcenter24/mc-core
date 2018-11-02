@@ -44,11 +44,9 @@ class FormulaViewService
                 }
 
                 $var = $operation->varView();
-                if ($var instanceof FormulaBuilderInterface ) {
-                    $strFormula .= '( ' . $this->render($var) . ' )';
-                } else {
-                    $strFormula .= $operation->varView();
-                }
+                $strFormula .= $var instanceof FormulaBuilderInterface
+                    ? '( ' . $this->render($var) . ' )'
+                    : $operation->varView();
 
                 if ($operation->rightSignView()) {
                     $strFormula .= $operation->rightSignView();

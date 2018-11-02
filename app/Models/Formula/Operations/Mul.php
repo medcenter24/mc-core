@@ -10,6 +10,8 @@ namespace App\Models\Formula\Operations;
 
 class Mul extends AbstractOperation
 {
+    protected $weight = 1;
+
     /**
      * @return string
      */

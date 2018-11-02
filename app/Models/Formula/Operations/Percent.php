@@ -10,6 +10,8 @@ namespace App\Models\Formula\Operations;
 
 class Percent extends AbstractOperation
 {
+    protected $weight = 2;
+
     /**
      * @return string
      */

@@ -8,7 +8,7 @@
 namespace App\Models\Formula\Variables;
 
 
-use App\Models\Formula\Variable;
+use App\Contract\Formula\Variable;
 
 class Decimal implements Variable
 {

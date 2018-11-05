@@ -8,19 +8,20 @@
 namespace App\Services\Formula;
 
 
-use App\Models\Formula\FormulaBuilderInterface;
-use App\Models\Formula\Operation;
+use App\Contract\Formula\FormulaBuilder;
+use App\Contract\Formula\Operation;
+use App\Contract\Formula\Result;
 use App\Models\Formula\Variables\Decimal;
 
-class FormulaResultService
+class FormulaResultService implements Result
 {
     /**
      * Calculate and get result
-     * @param FormulaBuilderInterface $formula
+     * @param FormulaBuilder $formula
      * @return int|float
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function calculate(FormulaBuilderInterface $formula)
+    public function calculate(FormulaBuilder $formula)
     {
         $result = false;
         $collection = $formula->getFormulaCollection();
@@ -37,7 +38,7 @@ class FormulaResultService
             $operation = $iterator->current();
 
             $var = $operation->getVar();
-            if ($var instanceof FormulaBuilderInterface) {
+            if ($var instanceof FormulaBuilder) {
                 $partRes = $this->calculate($var);
                 if ($result === false) {
                     $result = $partRes;
@@ -55,25 +56,5 @@ class FormulaResultService
         }
 
         return $result === false ? 0 : $result;
-    }
-
-    /**
-     * @param FormulaBuilderInterface $formula
-     * @return float
-     * @throws \App\Models\Formula\Exception\FormulaException
-     */
-    public function toFloat(FormulaBuilderInterface $formula)
-    {
-        return floatval($this->calculate($formula));
-    }
-
-    /**
-     * @param FormulaBuilderInterface $formula
-     * @return int
-     * @throws \App\Models\Formula\Exception\FormulaException
-     */
-    public function toInteger(FormulaBuilderInterface $formula)
-    {
-        return intval($this->calculate($formula));
     }
 }

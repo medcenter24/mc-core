@@ -8,6 +8,7 @@
 namespace App\Models\Formula;
 
 
+use App\Contract\Formula\FormulaBuilder as FormulaBuilderContract;
 use App\Models\Formula\Operations\Add;
 use App\Models\Formula\Operations\Div;
 use App\Models\Formula\Operations\Mul;
@@ -22,7 +23,7 @@ use Illuminate\Support\Collection;
  * Class Formula
  * @package App\Models\Formula
  */
-class FormulaBuilder implements FormulaBuilderInterface
+class FormulaBuilder implements FormulaBuilderContract
 {
     /**
      * @var Collection
@@ -32,7 +33,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     /**
      * Open bracket creates new formula which will be included to the main formula
      *
-     * @var null|FormulaBuilderInterface
+     * @var null|FormulaBuilderContract
      */
     private $parent = null;
 
@@ -43,7 +44,7 @@ class FormulaBuilder implements FormulaBuilderInterface
      */
     private $percent = 100;
 
-    public function __construct(FormulaBuilderInterface $parent = null)
+    public function __construct(FormulaBuilderContract $parent = null)
     {
         $this->formula = collect([]);
         $this->parent = $parent;
@@ -60,7 +61,7 @@ class FormulaBuilder implements FormulaBuilderInterface
 
     /**
      * Return the Base formula
-     * @return FormulaBuilderInterface
+     * @return FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function getBaseFormula()
@@ -75,7 +76,7 @@ class FormulaBuilder implements FormulaBuilderInterface
 
     /**
      * Parent formula for the current formula
-     * @return FormulaBuilderInterface
+     * @return FormulaBuilderContract
      */
     public function getParentFormula()
     {
@@ -116,7 +117,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     /**
      * @param int $val
      * @param int $precision
-     * @return $this|FormulaBuilderInterface
+     * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function addFloat($val = 0, int $precision = 2)
@@ -130,7 +131,7 @@ class FormulaBuilder implements FormulaBuilderInterface
 
     /**
      * @param int $val
-     * @return $this|FormulaBuilderInterface
+     * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function mulInteger($val = 1)
@@ -145,7 +146,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     /**
      * @param int $val
      * @param int $precision
-     * @return $this|FormulaBuilderInterface
+     * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function mulFloat($val = 1, int $precision = 2)
@@ -159,7 +160,7 @@ class FormulaBuilder implements FormulaBuilderInterface
 
     /**
      * @param int $val
-     * @return $this|FormulaBuilderInterface
+     * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function divInteger($val = 1)
@@ -174,7 +175,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     /**
      * @param int $val
      * @param int $precision
-     * @return $this|FormulaBuilderInterface
+     * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function divFloat($val = 1, int $precision = 2)
@@ -203,7 +204,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     /**
      * @param int $val
      * @param int $precision
-     * @return $this|FormulaBuilderInterface
+     * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function subFloat($val = 0, int $precision = 2)
@@ -216,7 +217,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     }
 
     /**
-     * @return FormulaBuilder|FormulaBuilderInterface
+     * @return FormulaBuilder|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function addNestedFormula()
@@ -229,7 +230,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     }
 
     /**
-     * @return FormulaBuilder|FormulaBuilderInterface
+     * @return FormulaBuilder|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function divNestedFormula()
@@ -242,7 +243,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     }
 
     /**
-     * @return FormulaBuilder|FormulaBuilderInterface
+     * @return FormulaBuilder|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function mulNestedFormula()
@@ -255,7 +256,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     }
 
     /**
-     * @return FormulaBuilder|FormulaBuilderInterface
+     * @return FormulaBuilder|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     public function subNestedFormula()
@@ -268,7 +269,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     }
 
     /**
-     * @return FormulaBuilderInterface
+     * @return FormulaBuilderContract
      */
     public function closeNestedFormula()
     {
@@ -297,7 +298,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     /**
      * Increase percents
      * @param int $percent
-     * @return FormulaBuilderInterface|$this
+     * @return FormulaBuilderContract|$this
      */
     public function addPercent($percent = 0)
     {
@@ -309,7 +310,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     /**
      * Decrease percents
      * @param int $percent
-     * @return FormulaBuilderInterface|$this
+     * @return FormulaBuilderContract|$this
      */
     public function subPercent($percent = 0)
     {
@@ -327,7 +328,7 @@ class FormulaBuilder implements FormulaBuilderInterface
     }
 
     /**
-     * @return FormulaBuilderInterface
+     * @return FormulaBuilderContract
      * @throws Exception\FormulaException
      */
     private function attachPercent()
@@ -348,7 +349,7 @@ class FormulaBuilder implements FormulaBuilderInterface
 
     /**
      * For the compatibility and having opportunity to getting nested formulas
-     * @return $this|FormulaBuilderInterface
+     * @return $this|FormulaBuilderContract
      */
     public function getVar()
     {

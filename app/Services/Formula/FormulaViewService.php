@@ -8,17 +8,17 @@
 namespace App\Services\Formula;
 
 
-use App\Models\Formula\FormulaBuilderInterface;
+use App\Models\Formula\FormulaBuilder;
 
 class FormulaViewService
 {
     /**
      * Returns string where is row performed as a linear string
-     * @param FormulaBuilderInterface $formula
+     * @param FormulaBuilder $formula
      * @return string
      * @throws \Throwable
      */
-    public function render(FormulaBuilderInterface $formula)
+    public function render(FormulaBuilder $formula)
     {
         $collection = $formula->getFormulaCollection()->getIterator();
         return $this->showFormula($collection);
@@ -43,7 +43,7 @@ class FormulaViewService
                 }
 
                 $var = $operation->getVar();
-                $strFormula .= $var instanceof FormulaBuilderInterface
+                $strFormula .= $var instanceof FormulaBuilder
                     ? '( ' . $this->render($var) . ' )'
                     : $operation->varView();
 

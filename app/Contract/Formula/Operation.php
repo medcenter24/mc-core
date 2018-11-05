@@ -2,10 +2,10 @@
 /**
  * Copyright (c) 2018.
  *
- * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ * @author Oleksander Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace App\Models\Formula;
+namespace App\Contract\Formula;
 
 
 interface Operation

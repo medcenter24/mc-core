@@ -16,7 +16,7 @@ use App\Payment;
 use App\Services\AccidentService;
 use App\Services\CaseServices\CaseFinanceService;
 use App\Services\FinanceConditionService;
-use App\Services\Formula\FormulaService;
+use App\Services\FormulaService;
 use Prophecy\Argument;
 use Tests\TestCase;
 
@@ -35,7 +35,7 @@ class CaseFinanceServiceTest extends TestCase
         $formulaBuilder = $formulaBuilderMock->reveal();
 
         $formulaServiceMock = $this->prophesize(FormulaService::class);
-        $formulaServiceMock->formula()->willReturn($formulaBuilder);
+        $formulaServiceMock->createFormula()->willReturn($formulaBuilder);
         /** @var FormulaService $formulaService */
         $formulaService = $formulaServiceMock->reveal();
 

@@ -11,6 +11,7 @@ namespace App\Services\CaseServices;
 use App\Accident;
 use App\Assistant;
 use App\City;
+use App\Contract\Formula\Result;
 use App\DatePeriod;
 use App\Doctor;
 use App\DoctorAccident;
@@ -19,12 +20,9 @@ use App\Exceptions\InconsistentDataException;
 use App\FinanceCondition;
 use App\FinanceCurrency;
 use App\FinanceStorage;
-use App\Hospital;
 use App\HospitalAccident;
 use App\Http\Requests\Api\FinanceRequest;
 use App\Models\Cases\Finance\CaseFinanceCondition;
-use App\Models\Formula\FormulaBuilder;
-use App\Models\Formula\FormulaBuilderInterface;
 use App\Services\AccidentService;
 use App\Services\FinanceConditionService;
 use App\Services\Formula\FormulaService;
@@ -47,19 +45,27 @@ class CaseFinanceService
     private $financeConditionService;
 
     /**
+     * @var Result
+     */
+    private $resultService;
+
+    /**
      * CaseFinanceService constructor.
      * @param FormulaService $formulaService
      * @param AccidentService $accidentService
      * @param FinanceConditionService $financeConditionService
+     * @param Result $resultService
      */
     public function __construct(
         FormulaService $formulaService,
         AccidentService $accidentService,
-        FinanceConditionService $financeConditionService
+        FinanceConditionService $financeConditionService,
+        Result $resultService
     ) {
         $this->formulaService = $formulaService;
         $this->accidentService = $accidentService;
         $this->financeConditionService = $financeConditionService;
+        $this->resultService = $resultService;
     }
 
     /**
@@ -151,8 +157,9 @@ class CaseFinanceService
     /**
      * Payment from the company to the doctor
      * @param Accident $accident
-     * @return int
+     * @return float|int
      * @throws InconsistentDataException
+     * @throws \App\Models\Formula\Exception\FormulaException
      */
     public function calculateToDoctorPayment(Accident $accident)
     {
@@ -174,8 +181,8 @@ class CaseFinanceService
 
         // calculate formula by conditions
         if ($conditions->count()) {
-            $formula = $this->formulaService->formula();
-            die('dp has not implemented yet');
+            $formula = $this->formulaService->createFormulaFromConditions($conditions);
+            $amount = $this->resultService->calculate($formula);
         }
         return $amount;
     }
@@ -226,7 +233,7 @@ class CaseFinanceService
             $result = $payment->getAttribute('value');
         } else {
             // if doesn't stored - calculate
-            $formula = $this->formulaService->formula();
+            $formula = $this->formulaService->createFormula();
             // 1. take amout from the invoice from assistant
             $guaranteePrice = $accident->assistantGuarantee ? $accident->assistantGuarantee->price : 0;
             $formula->addFloat($guaranteePrice);
@@ -251,10 +258,10 @@ class CaseFinanceService
 
     /**
      * @param FinanceCondition $condition
-     * @param FormulaBuilderInterface $formula
+     * @param FormulaBuilder $formula
      * @throws InconsistentDataException
      */
-    public function appendConditionToFormula(FinanceCondition $condition, FormulaBuilderInterface $formula)
+    public function appendConditionToFormula(FinanceCondition $condition, FormulaBuilder $formula)
     {
         $mode = $condition->getAttribute('currency_mode');
         switch ($mode) {

@@ -7,8 +7,8 @@
 
 namespace Tests\Unit\Services\Formula;
 
-use App\Models\Formula\FormulaBuilder;
-use App\Models\Formula\FormulaBuilderInterface;
+use App\Contract\Formula\FormulaBuilder;
+use App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
 use App\Services\Formula\FormulaViewService;
 
 class FormulaViewServiceTest extends AbstractDataProvider
@@ -26,13 +26,13 @@ class FormulaViewServiceTest extends AbstractDataProvider
 
     /**
      * @dataProvider dataProviders
-     * @param FormulaBuilderInterface $builder
+     * @param FormulaBuilder $builder
      * @param string $view
      * @param int $expectedResult
      * @param string $description
      * @throws \Throwable
      */
-    public function testView(FormulaBuilderInterface $builder, $view = '', $expectedResult = 0, $description = '')
+    public function testView(FormulaBuilder $builder, $view = '', $expectedResult = 0, $description = '')
     {
         self::assertEquals($view, $this->service->render($builder), $description);
     }
@@ -45,7 +45,7 @@ class FormulaViewServiceTest extends AbstractDataProvider
      */
     public function testDivideByZero()
     {
-        $this->service->render( (new FormulaBuilder())->divInteger(0) );
+        $this->service->render( (new FormulaBuilderModel())->divInteger(0) );
     }
 
     /**
@@ -56,6 +56,6 @@ class FormulaViewServiceTest extends AbstractDataProvider
      */
     public function testDivideByZero2()
     {
-        $this->service->render( (new FormulaBuilder())->divInteger(1)->divInteger(0) );
+        $this->service->render( (new FormulaBuilderModel())->divInteger(1)->divInteger(0) );
     }
 }

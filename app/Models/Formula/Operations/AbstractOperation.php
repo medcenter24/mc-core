@@ -9,9 +9,9 @@ namespace App\Models\Formula\Operations;
 
 
 use App\Models\Formula\Exception\FormulaException;
-use App\Models\Formula\FormulaBuilderInterface;
-use App\Models\Formula\Operation;
-use App\Models\Formula\Variable;
+use App\Contract\Formula\FormulaBuilder;
+use App\Contract\Formula\Operation;
+use App\Contract\Formula\Variable;
 
 abstract class AbstractOperation implements Operation
 {
@@ -22,7 +22,7 @@ abstract class AbstractOperation implements Operation
     protected $weight = 0;
 
     /**
-     * @var FormulaBuilderInterface|Variable
+     * @var FormulaBuilder|Variable
      */
     protected $variable;
 
@@ -33,7 +33,7 @@ abstract class AbstractOperation implements Operation
      */
     public function __construct($var)
     {
-        if ($var instanceof Variable || $var instanceof FormulaBuilderInterface) {
+        if ($var instanceof Variable || $var instanceof FormulaBuilder) {
             $this->variable = $var;
         } else {
             throw new FormulaException('Incorrect type of the variable for the operation');

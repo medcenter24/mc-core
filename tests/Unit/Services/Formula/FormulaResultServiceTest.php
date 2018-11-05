@@ -7,7 +7,7 @@
 
 namespace Tests\Unit\Services\Formula;
 
-use App\Models\Formula\FormulaBuilderInterface;
+use App\Models\Formula\FormulaBuilder;
 use App\Services\Formula\FormulaResultService;
 
 class FormulaResultServiceTest extends AbstractDataProvider
@@ -25,13 +25,13 @@ class FormulaResultServiceTest extends AbstractDataProvider
 
     /**
      * @dataProvider dataProviders
-     * @param FormulaBuilderInterface $builder
+     * @param FormulaBuilder $builder
      * @param string $view
      * @param int $expectedResult
      * @param string $description
      * @throws \Throwable
      */
-    public function testResult(FormulaBuilderInterface $builder, $view = '', $expectedResult = 0, $description = '')
+    public function testResult(FormulaBuilder $builder, $view = '', $expectedResult = 0, $description = '')
     {
         self::assertEquals($expectedResult, $this->service->calculate($builder), $description);
     }

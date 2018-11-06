@@ -22,7 +22,7 @@ class CreateInvoicesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('created_by')->index();
             $table->string('title')->default('')->index();
-            $table->decimal('price', 8, 2)->default(0);
+            $table->unsignedInteger('payment_id')->default(0)->index();
             $table->string('type')->default('');
             $table->enum('status', ['new', 'sent', 'paid'])->default('new')->index();
             $table->timestamps();

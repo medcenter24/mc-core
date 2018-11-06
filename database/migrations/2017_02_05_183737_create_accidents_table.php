@@ -37,9 +37,9 @@ class CreateAccidentsTable extends Migration
             $table->unsignedInteger('form_report_id')->default(0)->index();
             $table->unsignedInteger('city_id')->default(0)->index(); // where from the patient
             // payments
-            $table->unsignedInteger('caseable_payment')->default(0)->index(); // doctors or hospitals revenue
-            $table->unsignedInteger('income_payment')->default(0)->index(); // company's income from the case
-            $table->unsignedInteger('assistant_payment')->default(0)->index(); // what assistant paid to the company
+            $table->unsignedInteger('caseable_payment_id')->default(0)->index(); // doctors or hospitals revenue
+            $table->unsignedInteger('income_payment_id')->default(0)->index(); // company's income from the case
+            $table->unsignedInteger('assistant_payment_id')->default(0)->index(); // what assistant paid to the company
             //
             $table->nullableMorphs('caseable', 'ids_caseable'); // doctor or hospital case
             $table->string('ref_num')->default('')->index(); // mydocs unique referral number

@@ -63,9 +63,9 @@ class AuthorizationTest extends TestCase
         $response->assertRedirect('')->assertSessionHas('_token', session()->get('_token'));
         $response->assertStatus(302);
 
-        $r2 = $this->get('admin'); //->assertRedirect('login');
+        $r2 = $this->get('admin');
         $r2->assertStatus(403);
-        $r2->assertSee('Unauthorized');
+        $r2->assertSee('Forbidden');
     }
 
     public function testAdminsAuthorization()

@@ -61,6 +61,33 @@ class Accident extends AccidentAbstract
     ];
 
     /**
+     * Payment either to doctor or hospital
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function paymentToCaseable()
+    {
+        return $this->belongsTo(Payment::class);
+    }
+
+    /**
+     * Calculated income
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function getIncomePayment()
+    {
+        return $this->belongsTo(Payment::class);
+    }
+
+    /**
+     * Payment from the assistant
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function paymentFromAssistant()
+    {
+        return $this->belongsTo(Payment::class);
+    }
+
+    /**
      * Case checkpoints - statuses which could be selected in different order
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

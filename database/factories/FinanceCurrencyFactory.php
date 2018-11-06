@@ -11,13 +11,11 @@ use App\FinanceCurrency;
 use App\Services\FinanceConditionService;
 use Faker\Generator as Faker;
 
-$factory->define(FinanceCurrency::class, function (Faker $faker, FinanceConditionService $financeService) {
+$factory->define(FinanceCurrency::class, function (Faker $faker) {
+    $currency = $faker->currencyCode;
     return [
-        'created_by' => 0, // default for the system
-        'title' => 'Finance condition',
-        'price' => mt_rand(1, 999),
-        'type' => $faker->randomElement($financeService->getTypes()),
-        'currency' => $faker->randomElement($financeService->getCurrencies()),
-        'model' => $faker->randomElement([Accident::class, Doctor::class]),
+        'title' => $currency,
+        'code' => $currency,
+        'ico' => 'fa fa-'.$currency,
     ];
 });

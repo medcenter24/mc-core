@@ -20,8 +20,8 @@ class Invoice extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'price', 'type', 'created_by', 'status'];
-    protected $visible = ['created_by', 'title', 'price', 'type', 'status'];
+    protected $fillable = ['title', 'payment_id', 'type', 'created_by', 'status'];
+    protected $visible = ['created_by', 'title', 'payment_id', 'type', 'status'];
 
     /**
      * File uploader
@@ -37,5 +37,10 @@ class Invoice extends Model
     public function forms()
     {
         return $this->morphToMany(Form::class, 'formable');
+    }
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class);
     }
 }

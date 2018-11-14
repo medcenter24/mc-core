@@ -106,10 +106,10 @@ class ScenariosTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('APP_ENV') == 'production' && Scenario::all()->count()) {
+        if (App::environment('production') && Scenario::all()->count()) {
             return;
         }
-        if (env('APP_ENV') != 'production') {
+        if (!App::environment('production')) {
             Scenario::truncate();
         }
         foreach (self::DOCTOR_SCENARIO as $step) {

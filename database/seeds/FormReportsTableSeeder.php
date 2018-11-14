@@ -18,9 +18,9 @@ class FormReportsTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('APP_ENV') == 'production' && FormReport::all()->count()) {
+        if (App::environment('production') && FormReport::all()->count()) {
             return;
-        } elseif (env('APP_ENV') != 'production') {
+        } elseif (!App::environment('production')) {
             FormReport::truncate();
             factory(FormReport::class, 10)->create([
                 'form_id' => function () {

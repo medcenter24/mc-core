@@ -67,10 +67,10 @@ class AccidentStatusesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('APP_ENV') == 'production' && \App\AccidentStatus::all()->count()) {
+        if (App::environment('production') && \App\AccidentStatus::all()->count()) {
             return;
         }
-        if (env('APP_ENV') != 'production') {
+        if (!App::environment('production')) {
             AccidentStatus::truncate();
         }
         foreach (self::ACCIDENT_STATUSES as $accidentStatus) {

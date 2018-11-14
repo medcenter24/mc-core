@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Api\V1\Director;
 use App\DatePeriod;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\DatePeriodRequest;
-use App\Services\DatePeriodService;
+use App\Services\DatePeriod\DatePeriodService;
 use App\Transformers\DatePeriodTransformer;
 
 class DatePeriodController extends ApiController

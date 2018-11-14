@@ -27,9 +27,9 @@ class AccidentStatusHistoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('APP_ENV') == 'production' && AccidentStatusHistory::all()->count()) {
+        if (App::environment('production') && AccidentStatusHistory::all()->count()) {
             return;
-        } elseif (env('APP_ENV') != 'production') {
+        } elseif (!App::environment('production')) {
             AccidentStatusHistory::truncate();
             factory(AccidentStatusHistory::class, 10)->create([
                 'historyable_id' => function () {

@@ -8,10 +8,12 @@
 namespace App\Http\Controllers\Api\V1\Director;
 
 
+use App\FinanceCurrency;
 use App\Form;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\InvoiceRequest;
 use App\Invoice;
+use App\Payment;
 use App\Transformers\FormTransformer;
 use App\Transformers\InvoiceTransformer;
 use App\Transformers\UploadedFileTransformer;
@@ -42,9 +44,11 @@ class InvoiceController extends ApiController
 
         $invoice->title= $request->json('title', '');
         $invoice->type = $request->json('type', '');
-        $invoice->price = $request->json('price', 0);
         $invoice->status = $request->json('status', 'new');
         $invoice->save();
+
+        $price = $request->json('price', 0);
+        $this->assignPayment($invoice, $price);
 
         $this->assignInvoiceTypeResource($invoice, $request);
 
@@ -75,14 +79,26 @@ class InvoiceController extends ApiController
             'title' => $request->json('title', ''),
             'type' => $request->json('type', ''),
             'created_by' => $this->user()->id,
-            'price' => $request->json('price', 0),
             'status' => $request->json('status', 'new'),
         ]);
+
+        $price = $request->json('price', 0);
+        $this->assignPayment($invoice, $price);
 
         $this->assignInvoiceTypeResource($invoice, $request);
 
         $transformer = $this->getDataTransformer();
         return $this->response->created(null, $transformer->transform($invoice));
+    }
+
+    private function assignPayment(Invoice &$invoice, $price = 0, FinanceCurrency $currency = null)
+    {
+        $payment = Payment::create([
+            'value' => $price,
+            'currency_id' => 0,
+        ]);
+        $invoice->payment = $payment;
+        $invoice->save();
     }
 
     /**

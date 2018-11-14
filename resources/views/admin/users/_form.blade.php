@@ -23,7 +23,7 @@
             <label for="roles">@lang('content.roles')</label>
             <select name="roles[]" id="roles" size="4" class="form-control" multiple title="@lang('admin.roles')">
                 @foreach(\App\Role::all() as $role)
-                    <option value="{{ $role->id }}"{{ count(old('roles')) ? (in_array($role->id, old('roles')) ? 'selected' : '') : (\Roles::hasRole(auth()->user(), $role->title) ? ' selected' : '') }}>
+                    <option value="{{ $role->id }}"{{ old('roles') && count(old('roles')) ? (in_array($role->id, old('roles')) ? 'selected' : '') : (\Roles::hasRole(auth()->user(), $role->title) ? ' selected' : '') }}>
                         {{ $role->title }}
                     </option>
                 @endforeach
@@ -32,16 +32,16 @@
         <div class="col-sm-5 col-lg-4">
             <label for="password">@lang('content.password')</label>
             <input type="password" class="form-control" name="password" id="password" title="@lang('content.password')"
-                   placeholder="@lang('content.password')" value="{{ old('password', '') }}" autocomplete="off">
+                   placeholder="@lang('content.password')" value="{{ old('password', '') }}" autocomplete="new-password">
 
             <label for="confirmation">@lang('content.confirmation')</label>
             <input type="password" class="form-control" name="confirmation" id="confirmation"
                    title="@lang('content.confirmation')"
                    placeholder="@lang('content.confirmation')" value="{{ old('confirmation', '') }}"
-                   autocomplete="off">
+                   autocomplete="new-password">
 
         </div>
     </div>
 </div>
 
-<button type="submit" class="btn btn-success">{{ $submit_button or trans('content.send') }}</button>
+<button type="submit" class="btn btn-success">{{ $submit_button ?: trans('content.send') }}</button>

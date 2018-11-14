@@ -7,7 +7,7 @@
 
 namespace App\Providers;
 
-use App\Services\DatePeriodService;
+use App\Services\DatePeriod\DatePeriodService;
 use Illuminate\Support\ServiceProvider;
 
 class ValidatorServiceProvider extends ServiceProvider

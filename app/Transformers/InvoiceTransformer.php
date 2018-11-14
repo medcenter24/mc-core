@@ -23,7 +23,7 @@ class InvoiceTransformer extends TransformerAbstract
             'id'   => $invoice->id,
             'title' => $invoice->title,
             'type' => $invoice->type,
-            'price' => $invoice->price,
+            'price' => $invoice->payment ? $invoice->payment->value : 0,
             'status' => $invoice->status,
         ];
     }

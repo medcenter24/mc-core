@@ -35,7 +35,7 @@ class DatePeriodInterpretationService
      */
     public function interpret(DatePeriod $datePeriod)
     {
-        $from = $this->datePeriodService->parsePeriod($datePeriod->from);;
+        $from = $this->datePeriodService->parsePeriod($datePeriod->from);
         $to = $this->datePeriodService->parsePeriod($datePeriod->to);
 
         $time = explode(':', $from[DatePeriodService::TIME]);

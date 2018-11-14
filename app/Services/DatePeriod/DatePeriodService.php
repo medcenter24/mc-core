@@ -61,7 +61,7 @@ class DatePeriodService
         switch (count($parts)) {
             case 1:
                 if ($this->isTime($parts[0])) {
-                    $res[self::TIME] = $parts;
+                    $res[self::TIME] = $parts[0];
                     break;
                 }
                 break;

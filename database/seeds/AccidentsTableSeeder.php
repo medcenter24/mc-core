@@ -29,9 +29,9 @@ class AccidentsTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('APP_ENV') == 'production' && Accident::all()->count()) {
+        if (App::environment('production') && Accident::all()->count()) {
             return;
-        } elseif (env('APP_ENV') != 'production') {
+        } elseif (!App::environment('production')) {
             Accident::truncate();
             factory(Accident::class, 5)->create([
                 'created_by' => factory(User::class)->create(),

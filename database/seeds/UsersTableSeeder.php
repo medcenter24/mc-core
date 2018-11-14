@@ -24,9 +24,9 @@ class UsersTableSeeder extends Seeder
         $adminRoleId = Role::firstOrCreate(['title' => Role::ROLE_ADMIN])->id;
         $directorRoleId = Role::firstOrCreate(['title' => Role::ROLE_DIRECTOR])->id;
 
-        if (env('APP_ENV') == 'production' && \App\User::all()->count()) {
+        if (App::environment('production') && \App\User::all()->count()) {
             return;
-        } elseif (env('APP_ENV') != 'production') {
+        } elseif (!App::environment('production')) {
             User::truncate();
             DB::table('role_user')->delete();
             factory(User::class, 10)->create();

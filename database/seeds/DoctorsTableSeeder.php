@@ -20,9 +20,9 @@ class DoctorsTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('APP_ENV') == 'production' && Doctor::all()->count()) {
+        if (App::environment('production') && Doctor::all()->count()) {
             return;
-        } elseif (env('APP_ENV') != 'production') {
+        } elseif (App::environment('production')) {
             Doctor::truncate();
 
             factory(Doctor::class, 10)->create([

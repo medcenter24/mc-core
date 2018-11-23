@@ -9,7 +9,6 @@ namespace Tests\Feature\Api\Director;
 
 use App\Accident;
 use App\Document;
-use App\User;
 use Tests\Feature\Api\JwtHeaders;
 use Tests\Feature\Api\LoggedUser;
 use Tests\TestCase;

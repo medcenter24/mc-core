@@ -29,6 +29,11 @@ abstract class JsonRequest extends FormRequest
      */
     protected function validationData()
     {
-        return $this->json()->all();
+
+        $data = $this->json()->all();
+        if (!$data || !count($data)) {
+            $data = parent::validationData();
+        }
+        return $data;
     }
 }

@@ -17,6 +17,7 @@ use App\Events\DoctorAccidentUpdatedEvent;
 use App\Events\HospitalAccidentUpdatedEvent;
 use App\HospitalAccident;
 use App\Http\Controllers\ApiController;
+use App\Http\Requests\Api\CaseRequest;
 use App\Models\Scenario\ScenarioModel;
 use App\Patient;
 use App\Services\AccidentService;
@@ -24,6 +25,7 @@ use App\Services\AccidentStatusesService;
 use App\Services\CaseServices\CaseHistoryService;
 use App\Services\CaseServices\CaseReportService;
 use App\Services\DocumentService;
+use App\Services\PatientService;
 use App\Services\ReferralNumberService;
 use App\Services\RoleService;
 use App\Services\Scenario\ScenarioService;
@@ -45,7 +47,9 @@ use Cmgmyr\Messenger\Models\Message;
 use Cmgmyr\Messenger\Models\Participant;
 use Cmgmyr\Messenger\Models\Thread;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Mpdf\Tag\P;
 
 class CasesController extends ApiController
 {
@@ -196,6 +200,10 @@ class CasesController extends ApiController
             $isDoc = true;
             if ($accident->caseable_type == DoctorAccident::class) {
                 $caseableAccidentData = $request->json('doctorAccident', []);
+                // attach services, surveys and diagnostics
+                $this->updateDoctorMorph($accident->caseable, $request, 'services');
+                $this->updateDoctorMorph($accident->caseable, $request, 'surveys');
+                $this->updateDoctorMorph($accident->caseable, $request, 'diagnostics');
             } else {
                 $isDoc = false;
                 $caseableAccidentData = $request->json('hospitalAccident', []);
@@ -215,39 +223,37 @@ class CasesController extends ApiController
 
     /**
      * New case accident
-     * @param Request $request
+     * @param CaseRequest $request
      * @param ReferralNumberService $referralNumberService
      * @param AccidentStatusesService $statusesService
+     * @param AccidentService $accidentService
+     * @param PatientService $patientService
      * @return \Dingo\Api\Http\Response
      */
-    public function store(Request $request, ReferralNumberService $referralNumberService, AccidentStatusesService $statusesService)
-    {
-        $accidentData = $request->json('accident', []);
-        if (!isset($accidentData['handlingTime']) || !$accidentData['handlingTime']) {
-            $accidentData['handlingTime'] = NULL;
-        }
-        $accidentData = array_merge(['contacts' => '', 'symptoms' => ''], $accidentData);
-        $accidentData = $this->convertIndexes($accidentData);
+    public function store(
+        CaseRequest $request,
+        ReferralNumberService $referralNumberService,
+        AccidentStatusesService $statusesService,
+        AccidentService $accidentService,
+        PatientService $patientService
+    ) {
+
+        $accidentData = $accidentService->getFormattedAccidentData(
+            $this->convertIndexes(
+                $request->json('accident', [])
+            )
+        );
 
         $accident = Accident::create($accidentData);
-
         $this->createCaseableFromRequest($accident, $request);
 
-        $patientData = $request->json('patient', []);
-        if (!isset($patientData['birthday']) || !$patientData['birthday']) {
-            $patientData['birthday'] = null;
-        }
-
-        $patient = null;
-        if (!isset($patientData['id']) || !$patientData['id']) {
-            if (isset($patientData['name']) && $patientData['name']) {
-                $patient = Patient::create($patientData);
-            }
+        if (!key_exists('patientId', $accidentData)) {
+            $patient = $patientService->findOrCreate($request->json('patient', []));
+            $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
         } else {
-            $patient = Patient::findOrFail($patientData['id']);
+            $accident->patient_id = intval($accidentData['patientId']);
         }
 
-        $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
         $accident->created_by = $this->user()->id;
 
         if (empty($accident->ref_num)) {
@@ -260,10 +266,11 @@ class CasesController extends ApiController
             'type' => AccidentStatusesService::TYPE_ACCIDENT
         ]), 'Created by director');
 
-        $accident->diagnostics()->attach($request->json('diagnostics', []));
-        $accident->services()->attach($request->json('services', []));
-        $accident->surveys()->attach($request->json('surveys', []));
+        // I can provide list of documents to assign them to the accident directly
+        $accident->documents()->detach();
         $accident->documents()->attach($request->json('documents', []));
+
+        $accident->checkpoints()->detach();
         $accident->checkpoints()->attach($request->json('checkpoints', []));
 
         $transformer = new DirectorCaseTransformer();
@@ -272,97 +279,84 @@ class CasesController extends ApiController
 
     /**
      * Updated morphed data (services, diagnostics, surveys)
-     * @param Accident $accident
+     * @param DoctorAccident $doctorAccident
      * @param Request $request
      * @param $morphName
      */
-    private function updateAccidentMorph(Accident $accident, Request $request, $morphName)
+    private function updateDoctorMorph(DoctorAccident $doctorAccident, Request $request, $morphName)
     {
         $morphData = $request->json($morphName, []);
-        $caseableMorph = [];
-        if ($accident->caseable()->$morphName()) {
-            foreach ($accident->caseable->$morphName() as $morph) {
+        $morphs = [];
+        if ($doctorAccident->$morphName()) {
+            foreach ($doctorAccident->$morphName() as $morph) {
                 if ($morph && in_array($morph->id, $morphData) ) {
-                    $caseableMorph[] = $morph->id;
+                    $morphs[] = $morph->id;
                 }
             }
         }
-        $accident->caseable->$morphName()->detach();
-        $accident->caseable->$morphName()->attach($caseableMorph);
-        // $accidentMorphs = array_diff($morphData, $caseableMorph);
-        // todo why ? $accident->services()->detach();
-        //$accident->services()->attach($accidentMorphs);
+        $doctorAccident->$morphName()->detach();
+        $doctorAccident->$morphName()->attach($morphs);
     }
 
     /**
      * @param $id
-     * @param Request $request
+     * @param CaseRequest $request
+     * @param AccidentService $accidentService
+     * @param PatientService $patientService
      * @return \Dingo\Api\Http\Response
      */
-    public function update($id, Request $request)
-    {
+    public function update(
+        $id,
+        CaseRequest $request,
+        AccidentService $accidentService,
+        PatientService $patientService
+    ) {
         /** @var Accident $accident */
-        $accident = Accident::findOrFail($id);
+        try {
+            $accident = Accident::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            $this->response->errorForbidden('Accident not found');
+        }
 
         // if it needed then status for this accident would be reset by the administrator
-        $status = $accident->accidentStatus;
-
-        if (
-            $status
-            && $status->title == AccidentStatusesService::STATUS_CLOSED
-            && $status->type == AccidentStatusesService::TYPE_ACCIDENT) {
-                $this->response->errorForbidden('Already closed');
+        if ($accidentService->isClosed($accident)) {
+            $this->response->errorForbidden('Already closed');
         }
 
         $requestedAccident = $request->json('accident', false);
 
         if (!$requestedAccident['id']) {
-            \Log::error('Undefined request accident', [
+            \Log::error('Can not update the case: undefined request accident', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
             ]);
             $this->response->errorBadRequest('Accident data should be provided in the request data');
         }
 
-        if (!$requestedAccident['handlingTime']) {
-            \Log::error('Undefined handling time', [
-                'accidentId' => $id,
-                'requestedAccident' => $requestedAccident
-            ]);
-            $this->response->errorBadRequest('Handling time should be provided');
-        }
-
         if ($accident->id != $requestedAccident['id']) {
-            \Log::error('Incorrect requested accident', [
+            \Log::error('Can not update the case: incorrect requested accident', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
             ]);
             $this->response->errorBadRequest('Requested accident did not match to updated one');
         }
 
-        $patientData = $request->json('patient', []);
-        if (!$patientData['birthday']) {
-            $patientData['birthday'] = null;
-        }
-
-        $patient = null;
-        if (!$patientData['id']) {
-            if ($patientData['name']) {
-                $patient = Patient::create($patientData);
+        if (!key_exists('patientId', $requestedAccident)) {
+            $patient = $patientService->findOrCreate($request->json('patient', []));
+            $newPatientId = $patient && $patient->id ? $patient->id : 0;
+            if ($newPatientId) {
+                $requestedAccident['patientId'] = $newPatientId;
+            } elseif ($accident->patient_id) {
+                $requestedAccident['patientId'] = $accident->patient_id;
             }
         } else {
-            $patient = Patient::findOrFail($patientData['id']);
+            $requestedAccident['patientId'] = intval($requestedAccident['patientId']);
         }
-
-        $requestedAccident['patientId'] = $patient && $patient->id ? $patient->id : 0;
+        // I don't need to update all data only to update provided, so I don't need use `getFormattedAccidentData`
         $accident = $this->setData($accident, $requestedAccident);
         $accident->save();
 
         $this->updateCaseableData($accident, $request);
-
-        $this->updateAccidentMorph($accident, $request, 'services');
-        $this->updateAccidentMorph($accident, $request, 'surveys');
-        $this->updateAccidentMorph($accident, $request, 'diagnostics');
 
         $accident->documents()->detach();
         $accident->documents()->attach($request->json('documents', []));
@@ -397,11 +391,11 @@ class CasesController extends ApiController
     {
         $data = $this->convertIndexes($data);
         foreach ($model->getVisible() as $item) {
-            if (isset($data[$item])) {
+            if (key_exists($item, $data)) {
                 if (in_array($item, $model->getDates())) {
-                    $model->$item = Carbon::parse($data[$item])->format('Y-m-d H:i:s');
+                    $model->$item = $data[$item] ? Carbon::parse($data[$item])->format('Y-m-d H:i:s') : null;
                 } else {
-                    $model->$item = $data[$item];
+                    $model->$item = $data[$item] ?: '';
                 }
             }
         }

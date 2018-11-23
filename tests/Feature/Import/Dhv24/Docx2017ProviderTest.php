@@ -44,6 +44,7 @@ class Docx2017ProviderTest extends TestCase
         self::assertEquals(1, $accident->assistant_id, 'Assistant has been loaded');
         self::assertNotEquals('FakeAssistantRef', $accident->assistant_ref_num, 'Assistant referral number has been parsed');
         self::assertEquals(1, $accident->caseable_id, 'Caseable type is selected');
+        self::assertEquals(1, $accident->city_id, 'City exists');
         self::assertEquals(DoctorAccident::class, $accident->caseable_type, 'Caseable type is DoctorAccident');
         self::assertNotEquals('Fake-import-num', $accident->ref_num, 'Accident Referral number is correct');
         self::assertNotEquals('FakeImport', $accident->title, 'Accident title is correct');
@@ -55,7 +56,6 @@ class Docx2017ProviderTest extends TestCase
         $doctorAccident = $accident->caseable;
         self::assertEquals(1, $doctorAccident->id, 'Doctor Accident created and stored');
         self::assertEquals(0, $doctorAccident->doctor_id, 'Doctor is not provided');
-        self::assertEquals(1, $doctorAccident->city_id, 'City exists');
         self::assertEquals(AccidentStatusesService::STATUS_CLOSED, $accident->accidentStatus->title, 'Status is closed');
         self::assertNotEquals('FakeDiagnose', $doctorAccident->diagnose);
         self::assertNotEquals('FakeInvestigation', $doctorAccident->investigation);
@@ -83,6 +83,7 @@ class Docx2017ProviderTest extends TestCase
         self::assertEquals(1, $accident->assistant_id, 'Assistant has been loaded');
         self::assertNotEquals('FakeAssistantRef', $accident->assistant_ref_num, 'Assistant referral number has been parsed');
         self::assertEquals(1, $accident->caseable_id, 'Caseable type is selected');
+        self::assertEquals(1, $accident->city_id, 'City exists');
         self::assertEquals(DoctorAccident::class, $accident->caseable_type, 'Caseable type is DoctorAccident');
         self::assertNotEquals('Fake-import-num', $accident->ref_num, 'Accident Referral number is correct');
         self::assertNotEquals('FakeImport', $accident->title, 'Accident title is correct');
@@ -94,7 +95,6 @@ class Docx2017ProviderTest extends TestCase
         $doctorAccident = $accident->caseable;
         self::assertEquals(1, $doctorAccident->id, 'Doctor Accident created and stored');
         self::assertEquals(1, $doctorAccident->doctor_id, 'Doctor is provided');
-        self::assertEquals(1, $doctorAccident->city_id, 'City exists');
         self::assertEquals(AccidentStatusesService::STATUS_CLOSED, $accident->accidentStatus->title, 'Status is closed');
         self::assertNotEquals('FakeDiagnose', $doctorAccident->diagnose);
         self::assertNotEquals('FakeInvestigation', $doctorAccident->investigation);
@@ -134,6 +134,7 @@ class Docx2017ProviderTest extends TestCase
         self::assertEquals(2, $accident->assistant_id, 'Assistant has been loaded');
         self::assertNotEquals('FakeAssistantRef', $accident->assistant_ref_num, 'Assistant referral number has been parsed');
         self::assertEquals(2, $accident->caseable_id, 'Caseable type is selected');
+        self::assertEquals(2, $accident->city_id, 'City exists');
         self::assertEquals(DoctorAccident::class, $accident->caseable_type, 'Caseable type is DoctorAccident');
         self::assertNotEquals('Fake-import-num', $accident->ref_num, 'Accident Referral number is correct');
         self::assertNotEquals('FakeImport', $accident->title, 'Accident title is correct');
@@ -146,7 +147,6 @@ class Docx2017ProviderTest extends TestCase
         $doctorAccident = $accident->caseable;
         self::assertEquals(2, $doctorAccident->id, 'Doctor Accident created and stored');
         self::assertEquals(1, $doctorAccident->doctor_id, 'Doctor is provided');
-        self::assertEquals(2, $doctorAccident->city_id, 'City exists');
         self::assertEquals('2017-01-01 16:30:00', $doctorAccident->visit_time, 'City exists');
         self::assertEquals(AccidentStatusesService::STATUS_CLOSED, $accident->accidentStatus->title, 'Status is closed');
         self::assertNotEquals('FakeDiagnose', $doctorAccident->diagnose);

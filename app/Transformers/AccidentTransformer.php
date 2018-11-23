@@ -31,12 +31,9 @@ class AccidentTransformer extends TransformerAbstract
             'cityId' => $accident->city_id,
             'formReportId' => $accident->form_report_id,
             'caseableType' => $accident->caseable_type,
-            'caseableCost' => $accident->caseable_cost,
-            'fixedCaseableCost' => $accident->fixed_caseable_cost,
-            'assistantPayment' => $accident->assistant_payment,
-            'fixedAssistantPayment' => $accident->fixed_assistant_payment,
-            'income' => $accident->income,
-            'fixedIncome' => $accident->fixed_income,
+            'assistantPaymentId' => $accident->assistant_payment_id,
+            'incomePaymentId' => $accident->income_payment_id,
+            'caseablePaymentId' => $accident->caseable_payment_id,
             'refNum' => $accident->ref_num,
             'assistantRefNum' => $accident->assistant_ref_num,
             'title' => $accident->title,
@@ -48,8 +45,7 @@ class AccidentTransformer extends TransformerAbstract
             'updatedAt' => $accident->updated_at ? $accident->updated_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : null,
             'deletedAt' => $accident->deleted_at ? $accident->deleted_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : null,
             'closedAt' => $accident->closed_at,
-            'handlingTime' => $accident->handling_time ? $accident->handling_time->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat'))
-                : date(config('date.systemFormat')),
+            'handlingTime' => $accident->handling_time ? $accident->handling_time->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : null,
         ];
     }
 }

@@ -21,11 +21,11 @@ class DoctorAccidentTransformer extends AccidentTransformer
         $transformedAccident = parent::transform($accident);
 
         $doctorAccident = [
-            'diagnose' => $accident->caseable->recommendation,
+            'recommendation' => $accident->caseable->recommendation,
             'investigation' => $accident->caseable->investigation,
             'visitTime' => $accident->caseable->visit_time->format(config('date.systemFormat')),
             'createdAt' => $accident->caseable->created_at->format(config('date.systemFormat')),
-            'cityId' => $accident->caseable->city_id,
+            'cityId' => $accident->city_id,
             'doctorId' => $accident->caseable->doctor_id,
         ];
 

@@ -23,7 +23,6 @@ class CreateDoctorAccidentsTable extends Migration
         Schema::create('doctor_accidents', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('doctor_id')->default(0)->index();
-            $table->unsignedInteger('city_id')->default(0)->index();
             $table->timestamp('visit_time')->nullable();
             $table->timestamps();
             $table->softDeletes();

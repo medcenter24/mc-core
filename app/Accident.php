@@ -16,7 +16,6 @@ namespace App;
 class Accident extends AccidentAbstract
 {
     protected $fillable = [
-        'created_by',
         'parent_id',
         'patient_id',
         'accident_type_id',
@@ -25,15 +24,19 @@ class Accident extends AccidentAbstract
         'assistant_ref_num',
         'assistant_invoice_id',
         'assistant_guarantee_id',
+        'form_report_id',
+        'city_id',
+        'caseable_payment_id',
+        'income_payment_id',
+        'assistant_payment_id',
         'caseable_id',
         'caseable_type',
         'ref_num',
         'title',
-        'city_id',
         'address',
+        'handling_time',
         'contacts',
         'symptoms',
-        'handling_time',
     ];
 
     protected $dates = [
@@ -58,6 +61,7 @@ class Accident extends AccidentAbstract
         'contacts',
         'symptoms',
         'handling_time',
+        'form_report_id',
     ];
 
     /**
@@ -141,35 +145,6 @@ class Accident extends AccidentAbstract
     public function formReport()
     {
         return $this->belongsTo(FormReport::class);
-    }
-
-    /**
-     * by default it could be defined by the director
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function services()
-    {
-        return $this->morphToMany(DoctorService::class, 'doctor_serviceable');
-    }
-
-    /**
-     * by default it could be defined by the director
-     * Or director maybe want to create new case by them own
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function diagnostics()
-    {
-        return $this->morphToMany(Diagnostic::class, 'diagnosticable');
-    }
-
-    /**
-     * by default it could be defined by the director
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function surveys()
-    {
-        return $this->morphToMany(DoctorSurvey::class, 'doctor_surveable');
     }
 
     /**

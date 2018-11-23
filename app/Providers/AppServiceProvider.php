@@ -23,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         HospitalAccident::saved(function ($hospitalAccident) {
+
+            if (!$hospitalAccident->accident) {
+                return; // don't do status changing when we don't have an accident
+            }
+
             $statusesService = new AccidentStatusesService();
 
             $events = [

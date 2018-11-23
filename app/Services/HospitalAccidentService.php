@@ -15,15 +15,15 @@ class HospitalAccidentService
 {
     public function saveHospitalInvoice(HospitalAccident $hospitalAccident, array $data = null)
     {
-        $this->saveInvoice('hospital', $hospitalAccident, $data);
+        $this->saveInvoice($hospitalAccident, $data, 'hospital');
     }
 
     public function saveAssistantInvoice(HospitalAccident $hospitalAccident, array $data = null)
     {
-        $this->saveInvoice('assistant', $hospitalAccident, $data);
+        $this->saveInvoice($hospitalAccident, $data, 'assistant');
     }
 
-    private function saveInvoice($name = 'hospital', HospitalAccident $hospitalAccident, array $data = null)
+    private function saveInvoice(HospitalAccident $hospitalAccident, array $data = null, $name = 'hospital')
     {
         $uri = $name . '_invoice_id';
         $morphName = $name . 'Invoice';
@@ -36,7 +36,7 @@ class HospitalAccidentService
 
         if ($data && is_array($data)) {
             if (isset($data['documentId'])) {
-                // save morph doc
+                // save morph doc todo?
             }
             if (isset($data['price'])) {
                 $invoice->price = $data['price'];

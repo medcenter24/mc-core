@@ -8,6 +8,8 @@
 namespace App;
 
 
+use App\Services\AccidentStatusesService;
+
 /**
  * Accident that needs Doctor involvement
  *
@@ -23,8 +25,17 @@ class DoctorAccident extends AccidentAbstract
         'visit_time',
     ];
 
-    protected $fillable = ['city_id', 'doctor_id', 'recommendation', 'investigation', 'visit_time'];
-    protected $visible = ['city_id', 'doctor_id', 'recommendation', 'investigation', 'visit_time'];
+    protected $fillable = ['doctor_id', 'recommendation', 'investigation', 'visit_time'];
+    protected $visible = ['doctor_id', 'recommendation', 'investigation', 'visit_time'];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::saved( function (DoctorAccident $doctorAccident) {
+            (new AccidentStatusesService())->updateDoctorAccidentStatus($doctorAccident);
+        } );
+    }
 
     /**
      * Doctor of this accident
@@ -33,15 +44,6 @@ class DoctorAccident extends AccidentAbstract
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
-    }
-
-    /**
-     * City from the doctor
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function city()
-    {
-        return $this->belongsTo(City::class);
     }
 
     /**

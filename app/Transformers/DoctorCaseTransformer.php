@@ -17,7 +17,11 @@ class DoctorCaseTransformer extends TransformerAbstract
     public function transform(DoctorAccident $doctorAccident)
     {
         try {
-            $visitTime = $doctorAccident->visit_time->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat'));
+            $visitTime = $doctorAccident->visit_time
+                ? $doctorAccident->visit_time
+                    ->setTimezone(auth()->user()->timezone)
+                    ->format(config('date.systemFormat'))
+                : '';
         } catch (InvalidArgumentException $e) {
             $visitTime = '';
         }

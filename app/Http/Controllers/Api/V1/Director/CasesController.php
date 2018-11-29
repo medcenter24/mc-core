@@ -261,11 +261,6 @@ class CasesController extends ApiController
         }
         $accident->save();
 
-        $statusesService->set($accident, AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusesService::STATUS_NEW,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT
-        ]), 'Created by director');
-
         // I can provide list of documents to assign them to the accident directly
         $accident->documents()->detach();
         $accident->documents()->attach($request->json('documents', []));
@@ -433,12 +428,7 @@ class CasesController extends ApiController
     public function close(int $id, AccidentStatusesService $statusesService)
     {
         $accident = Accident::findOrFail($id);
-
-        $statusesService->set($accident, AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusesService::STATUS_CLOSED,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT,
-        ]), 'Closed by director');
-
+        $statusesService->closeAccident($accident, 'Closed by director');
         return $this->response->noContent();
     }
 

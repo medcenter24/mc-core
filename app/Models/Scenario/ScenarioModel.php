@@ -14,13 +14,12 @@ use App\Services\AccidentStatusesService;
 use App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;
 
+/**
+ * Class ScenarioModel
+ * @package App\Models\Scenario
+ */
 class ScenarioModel implements ScenarioInterface
 {
-    /**
-     * Current step
-     * @var int
-     */
-    private $stepId;
 
     /**
      * @var Collection
@@ -41,31 +40,6 @@ class ScenarioModel implements ScenarioInterface
     public function scenario()
     {
         return $this->scenario;
-    }
-
-    /**
-     * @param int $stepId
-     * @throws InconsistentDataException
-     */
-    public function setCurrentStepId($stepId = 0)
-    {
-        $this->stepId = (int) $this->findStepId($stepId);
-    }
-
-    public function current()
-    {
-        return $this->stepId;
-    }
-
-    /**
-     * @throws InconsistentDataException
-     */
-    public function next()
-    {
-        $step = $this->current() + 1;
-        if ($this->scenario()->has($step)) {
-            $this->setCurrentStepId($step);
-        }
     }
 
     /**

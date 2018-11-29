@@ -1,0 +1,53 @@
+{
+  "name": "md-extension/d-h-v24",
+  "description": "A d h v24",
+  "license": "MIT",
+  "keywords": [
+    "d",
+    "h",
+    "v24"
+  ],
+  "type": "library",
+  "authors": [
+    {
+      "name": "",
+      "email": ""
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "illuminate/support": "~5.7.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "~3.7.0",
+    "phpunit/phpunit": "^7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "mdExtension\\DHV24\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "mdExtension\\DHV24\\Tests\\": "tests"
+    },
+    "files": [
+      "vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"
+    ]
+  },
+  "scripts": {
+    "phpunit": "phpunit"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "mdExtension\\DHV24\\ServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}

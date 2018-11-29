@@ -97,7 +97,7 @@ class AccidentRequest extends JsonRequest
             'accidentStatusId' => 'exists_if_set:accident_statuses,id',
             'assistantId' => 'exists_if_set:assistants,id',
             'assistantInvoiceId' => 'exists_if_set:invoices,id',
-            'assistantGuaranteeId' => 'exists_if_set:invoices,id',
+            'assistantGuaranteeId' => 'exists_if_set:uploads,id',
             'formReportId'  => 'exists_if_set:forms,id',
             'cityId' => 'exists_if_set:cities,id',
             'caseablePaymentId' => 'exists_if_set:payments,id',

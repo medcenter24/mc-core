@@ -262,4 +262,67 @@ class CasesControllerCreateActionTest extends TestCase
             ]
         ]);
     }
+
+    public function testCreateWithAccidentDataOnly5()
+    {
+        $data = [
+            'accident' => [
+                'accidentStatusId' => AccidentStatus::firstOrCreate([
+                    'title' => AccidentStatusesService::STATUS_NEW,
+                    'type' => AccidentStatusesService::TYPE_ACCIDENT,
+                ])->id,
+                'accidentTypeId' => factory(AccidentType::class)->create()->id,
+                'address' => "any",
+                'assistantId' => factory(Assistant::class)->create()->id,
+                'assistantRefNum' => "ref---",
+                'caseableId' => factory(DoctorAccident::class)->create()->id,
+                'caseableType' => 'App\DoctorAccident',
+                'cityId' => factory(City::class)->create()->id,
+                'closedAt' => null,
+                'contacts' => "anything",
+                'deletedAt' => null,
+                'formReportId' => factory(FormReport::class)->create()->id,
+                'handlingTime' => "2018-11-16 02:46:00",
+                'parentId' => factory(Accident::class)->create()->id,
+                'patientId' => factory(Patient::class)->create()->id,
+                'refNum' => "test",
+                'symptoms' => "aaa",
+                'title' => "ccc",
+                'assistantPaymentId' => factory(Payment::class)->create()->id,
+                'incomePaymentId' => factory(Payment::class)->create()->id,
+                'caseablePaymentId' => factory(Payment::class)->create()->id,
+            ]
+        ];
+        $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
+
+        $response->assertStatus(201)->assertJson([
+            'accident' => [
+                'id' => 2,
+                'createdBy' => 2,
+                'parentId' => 1,
+                'patientId' => 0,
+                'accidentTypeId' => 1,
+                'accidentStatusId' => 1,
+                'assistantId' => '1',
+                'caseableId' => 3,
+                'cityId' => 1,
+                'formReportId' => 1,
+                'caseableType' => 'App\\DoctorAccident',
+                'assistantRefNum' => 'ref---',
+                'title' => 'ccc',
+                'address' => 'any',
+                'contacts' => 'anything',
+                'symptoms' => 'aaa',
+                // will be updated on the creation and updating of the record and can't be manipulated
+                // 'createdAt' => '2018-11-20 14:39:50',
+                // 'updatedAt' => '2018-11-20 14:39:50',
+                'deletedAt' => null,
+                'closedAt' => null,
+                'handlingTime' => '2018-11-16 02:46:00',
+                'assistantPaymentId' => 1,
+                'incomePaymentId' => 2,
+                'caseablePaymentId' => 3,
+            ]
+        ]);
+    }
 }

@@ -76,7 +76,7 @@ class CaseReport
      */
     public function companyLogoB64()
     {
-        // todo assignment should has company, implementation of it in the future
+        // todo assignment needs to have a company, implementation of it in the future
         try {
             return MediaHelper::b64($this->getCompany(), LogoService::FOLDER, Company::THUMB_250);
         } catch (\ErrorException $e) {

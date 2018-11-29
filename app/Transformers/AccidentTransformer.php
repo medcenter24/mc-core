@@ -33,6 +33,7 @@ class AccidentTransformer extends TransformerAbstract
             'caseableType' => $accident->caseable_type,
             'assistantPaymentId' => $accident->assistant_payment_id,
             'incomePaymentId' => $accident->income_payment_id,
+            'assistantGuaranteeId' => $accident->assistant_guarantee_id,
             'caseablePaymentId' => $accident->caseable_payment_id,
             'refNum' => $accident->ref_num,
             'assistantRefNum' => $accident->assistant_ref_num,

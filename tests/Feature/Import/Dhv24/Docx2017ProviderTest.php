@@ -40,7 +40,7 @@ class Docx2017ProviderTest extends TestCase
         self::assertEquals(0, $accident->parent_id, 'Parent is 0');
         self::assertEquals(1, $accident->patient_id, 'Patient has been loaded');
         self::assertEquals(1, $accident->accident_type_id, 'Accident type selected');
-        self::assertEquals(1, $accident->accident_status_id, 'Accident status selected');
+        self::assertEquals(2, $accident->accident_status_id, 'Accident status selected');
         self::assertEquals(1, $accident->assistant_id, 'Assistant has been loaded');
         self::assertNotEquals('FakeAssistantRef', $accident->assistant_ref_num, 'Assistant referral number has been parsed');
         self::assertEquals(1, $accident->caseable_id, 'Caseable type is selected');
@@ -79,7 +79,7 @@ class Docx2017ProviderTest extends TestCase
         self::assertEquals(0, $accident->parent_id, 'Parent is 0');
         self::assertEquals(1, $accident->patient_id, 'Patient has been loaded');
         self::assertEquals(1, $accident->accident_type_id, 'Accident type selected');
-        self::assertEquals(1, $accident->accident_status_id, 'Accident status selected');
+        self::assertEquals(2, $accident->accident_status_id, 'Accident status selected');
         self::assertEquals(1, $accident->assistant_id, 'Assistant has been loaded');
         self::assertNotEquals('FakeAssistantRef', $accident->assistant_ref_num, 'Assistant referral number has been parsed');
         self::assertEquals(1, $accident->caseable_id, 'Caseable type is selected');

@@ -45,8 +45,8 @@ class ScenariosTableSeeder extends Seeder
             'order' => 6,
             'title' => AccidentStatusesService::STATUS_REJECT,
             'type' => AccidentStatusesService::TYPE_DOCTOR,
-            'mode' => 'skip:' . AccidentStatusesService::TYPE_DOCTOR, // don't used by
-            // scenario but doctor could set this step in any time that he want
+            'mode' => 'skip:' . AccidentStatusesService::TYPE_DOCTOR,
+            // doesn't used by the scenario but a doctor needs to have opportunity to set this step in any time that he wants
             // skip doctor means that all type doctor will be skipped after that step
         ],
         7 => [
@@ -63,37 +63,43 @@ class ScenariosTableSeeder extends Seeder
             'title' => AccidentStatusesService::STATUS_NEW,
             'type' => AccidentStatusesService::TYPE_ACCIDENT,
         ],
-        /** guarantee created and sent to hospital */
+        /** guarantee received from the assistant */
         2 => [
             'order' => 2,
+            'title' => AccidentStatusesService::STATUS_ASSISTANT_GUARANTEE,
+            'type' => AccidentStatusesService::TYPE_ASSISTANT,
+        ],
+        /** Hospital assigned */
+        3 => [
+            'order' => 3,
+            'title' => AccidentStatusesService::STATUS_ASSIGNED,
+            'type' => AccidentStatusesService::TYPE_HOSPITAL,
+        ],
+        /** guarantee created and sent to hospital */
+        4 => [
+            'order' => 4,
             'title' => AccidentStatusesService::STATUS_HOSPITAL_GUARANTEE,
             'type' => AccidentStatusesService::TYPE_HOSPITAL,
         ],
         /** invoice received from the hospital */
-        3 => [
-            'order' => 3,
+        5 => [
+            'order' => 5,
             'title' => AccidentStatusesService::STATUS_HOSPITAL_INVOICE,
             'type' => AccidentStatusesService::TYPE_HOSPITAL,
         ],
         /** Invoice sent to the assistant */
-        4 => [
-            'order' => 4,
-            'title' => AccidentStatusesService::STATUS_ASSISTANT_INVOICE,
-            'type' => AccidentStatusesService::TYPE_ASSISTANT,
-        ],
-        /** guarantee received from the assistant */
-        5 => [
-            'order' => 5,
-            'title' => AccidentStatusesService::STATUS_ASSISTANT_GUARANTEE,
-            'type' => AccidentStatusesService::TYPE_ASSISTANT,
-        ],
         6 => [
             'order' => 6,
-            'title' => AccidentStatusesService::STATUS_PAID,
+            'title' => AccidentStatusesService::STATUS_ASSISTANT_INVOICE,
             'type' => AccidentStatusesService::TYPE_ASSISTANT,
         ],
         7 => [
             'order' => 7,
+            'title' => AccidentStatusesService::STATUS_PAID,
+            'type' => AccidentStatusesService::TYPE_ASSISTANT,
+        ],
+        8 => [
+            'order' => 8,
             'title' => AccidentStatusesService::STATUS_CLOSED,
             'type' => AccidentStatusesService::TYPE_ACCIDENT,
         ],

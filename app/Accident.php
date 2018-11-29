@@ -7,6 +7,8 @@
 
 namespace App;
 
+use App\Services\AccidentStatusesService;
+
 /**
  * Case|Accident|...
  *
@@ -54,6 +56,7 @@ class Accident extends AccidentAbstract
         'accident_status_id',
         'assistant_id',
         'assistant_ref_num',
+        'assistant_guarantee_id',
         'ref_num',
         'title',
         'city_id',
@@ -63,6 +66,36 @@ class Accident extends AccidentAbstract
         'handling_time',
         'form_report_id',
     ];
+
+    /**
+     * On the save action we need to change status (if it is not status changing action only)
+     * @var bool
+     */
+    private $statusUpdating = false;
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::saved( function(Accident $accident) {
+            (new AccidentStatusesService())->updateAccidentStatus($accident);
+        });
+    }
+
+    public function isStatusUpdatingRunned()
+    {
+        return $this->statusUpdating;
+    }
+
+    public function runStatusUpdating()
+    {
+        $this->statusUpdating = true;
+    }
+
+    public function stopStatusUpdating()
+    {
+        $this->statusUpdating = false;
+    }
 
     /**
      * Payment either to doctor or hospital
@@ -186,6 +219,6 @@ class Accident extends AccidentAbstract
      */
     public function assistantGuarantee()
     {
-        return $this->belongsTo(Invoice::class);
+        return $this->belongsTo(Upload::class);
     }
 }

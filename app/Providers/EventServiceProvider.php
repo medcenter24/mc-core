@@ -13,7 +13,6 @@ use App\Events\DoctorAccidentUpdatedEvent;
 use App\Events\HospitalAccidentUpdatedEvent;
 use App\Listeners\AccidentStatusHistoryListener;
 use App\Listeners\DatePeriodInterpretationListener;
-use App\Listeners\DoctorAccidentDoctorAssignmentListener;
 use App\Listeners\SendTelegramMessageOnDocAssignment;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -29,11 +28,9 @@ class EventServiceProvider extends ServiceProvider
             AccidentStatusHistoryListener::class,
         ],
         DoctorAccidentUpdatedEvent::class => [
-            DoctorAccidentDoctorAssignmentListener::class,
             SendTelegramMessageOnDocAssignment::class,
         ],
         HospitalAccidentUpdatedEvent::class => [
-
         ],
         DatePeriodChangedEvent::class => [
             DatePeriodInterpretationListener::class,

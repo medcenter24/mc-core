@@ -20,4 +20,17 @@ class Scenario extends Model
     {
         return $this->belongsTo(AccidentStatus::class);
     }
+
+    /**
+     * @return string
+     */
+    public function getStatusType()
+    {
+        $type = '';
+        if (mb_strpos($this->mode, 'skip:') !== false) {
+            $parts = explode(':', $this->mode);
+            $type = $parts[1];
+        }
+        return $type;
+    }
 }

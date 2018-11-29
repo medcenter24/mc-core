@@ -8,6 +8,8 @@
 namespace App;
 
 
+use App\Services\AccidentStatusesService;
+
 class HospitalAccident extends AccidentAbstract
 {
     protected $dates = [
@@ -18,6 +20,15 @@ class HospitalAccident extends AccidentAbstract
 
     protected $fillable = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id'];
     protected $visible = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id'];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::saved( function (HospitalAccident $hospitalAccident) {
+            (new AccidentStatusesService())->updateHospitalAccidentStatus($hospitalAccident);
+        } );
+    }
 
     /**
      * Hospital of this accident

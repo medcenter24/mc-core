@@ -19,6 +19,7 @@ use App\HospitalAccident;
 use App\Patient;
 use App\Payment;
 use App\Services\AccidentStatusesService;
+use App\Upload;
 use App\User;
 use Carbon\Carbon;
 use Tests\Feature\Api\JwtHeaders;
@@ -193,24 +194,19 @@ class CasesControllerUpdateActionTest extends TestCase
     {
         $caseable = factory(DoctorAccident::class)->create();
         $accident = factory(Accident::class)->create([
-            'accident_status_id' => factory(AccidentStatus::class)->create([
-                'title' => 'anything'
-            ])->id,
             'created_by' => $createdBy = '' . factory(User::class)->create()->id,
             'accident_type_id' => $accidentType = factory(AccidentType::class)->create([
                 'title' => \App\Services\AccidentTypeService::ALLOWED_TYPES[1],
             ])->id,
             'caseable_id' => $caseable->id,
             'caseable_type' => get_class($caseable),
+            'assistant_guarantee_id' => factory(Upload::class)->create()->id,
         ]);
 
         $caseable2 = factory(HospitalAccident::class)->create();
 
         $data = [
             'accident' => [
-                'accidentStatusId' => $accidentStatus = factory(AccidentStatus::class)->create([
-                    'title' => 'not anything'
-                ])->id,
                 'accidentTypeId' => $accidentType = factory(AccidentType::class)->create([
                     'title' => \App\Services\AccidentTypeService::ALLOWED_TYPES[0]
                 ])->id,
@@ -236,6 +232,7 @@ class CasesControllerUpdateActionTest extends TestCase
                 'assistantPaymentId' => factory(Payment::class)->create()->id,
                 'incomePaymentId' => factory(Payment::class)->create()->id,
                 'caseablePaymentId' => factory(Payment::class)->create()->id,
+                'assistant_guarantee_id' => $assistantGuaranteeId = factory(Upload::class)->create()->id,
             ]
         ];
         $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
@@ -243,7 +240,6 @@ class CasesControllerUpdateActionTest extends TestCase
         $response->assertStatus(200)->assertJson([
             'data' => [
                 'accident' => [
-                    'accidentStatusId' => $accidentStatus,
                     'accidentTypeId' => $accidentType,
                     'address' => $address,
                     'assistantId' => $assistant,
@@ -267,6 +263,7 @@ class CasesControllerUpdateActionTest extends TestCase
                     'assistantPaymentId' => ($accident->assistant_payment_id ? : 0) . '',
                     'incomePaymentId' => ($accident->income_payment_id ?: 0) . '',
                     'caseablePaymentId' => ($accident->caseable_payment_id ?: 0) . '',
+                    'assistantGuaranteeId' => $assistantGuaranteeId,
                 ]
             ]
         ]);
@@ -296,6 +293,7 @@ class CasesControllerUpdateActionTest extends TestCase
                 'parentId' => 100,
                 'patientId' => 100,
                 'assistantPaymentId' => 100,
+                'assistantGuaranteeId' => 100,
                 'incomePaymentId' => 100,
                 'caseablePaymentId' => 100,
             ]
@@ -321,6 +319,9 @@ class CasesControllerUpdateActionTest extends TestCase
             'assistantId' => [
                 'Is not exists'
             ],
+            'assistantGuaranteeId' => [
+                'Is not exists',
+            ],
             'formReportId' => [
                 'Is not exists'
             ],
@@ -340,17 +341,17 @@ class CasesControllerUpdateActionTest extends TestCase
     }
 
     public function testClosedAccident(){
-        $accident = factory(Accident::class)->create([
-            'accident_status_id' => factory(AccidentStatus::class)->create([
-                'title' => AccidentStatusesService::STATUS_CLOSED,
-                'type' => AccidentStatusesService::TYPE_ACCIDENT,
-            ])->id,
-        ]);
+        $accident = factory(Accident::class)->create(['accident_status_id' => 0]);
         $data = [
             'accident' => [
                 'id' => $accident->id,
             ]
         ];
+
+        $accidentStatusService = new AccidentStatusesService();
+        // closing an accident
+        $accidentStatusService->closeAccident($accident);
+
         $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
 
         $response->assertStatus(403)->assertJson([

@@ -20,49 +20,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
-        HospitalAccident::saved(function ($hospitalAccident) {
-
-            if (!$hospitalAccident->accident) {
-                return; // don't do status changing when we don't have an accident
-            }
-
-            $statusesService = new AccidentStatusesService();
-
-            $events = [
-                'hospital_guarantee_id' => [
-                    'status' => AccidentStatusesService::STATUS_HOSPITAL_GUARANTEE,
-                    'type' => AccidentStatusesService::TYPE_HOSPITAL,
-                ],
-                'hospital_invoice_id' => [
-                    'status' => AccidentStatusesService::STATUS_HOSPITAL_INVOICE,
-                    'type' => AccidentStatusesService::TYPE_HOSPITAL,
-                ],
-                'assistant_invoice_id' => [
-                    'status' => AccidentStatusesService::STATUS_ASSISTANT_INVOICE,
-                    'type' => AccidentStatusesService::TYPE_ASSISTANT,
-                ],
-                'assistant_guarantee_id' => [
-                    'status' => AccidentStatusesService::STATUS_ASSISTANT_GUARANTEE,
-                    'type' => AccidentStatusesService::TYPE_ASSISTANT,
-                ],
-                'assistant_paid' => [
-                    'status' => AccidentStatusesService::STATUS_PAID,
-                    'type' => AccidentStatusesService::TYPE_ASSISTANT,
-                ],
-            ];
-
-            foreach ($events as $key=>$event) {
-                if ($hospitalAccident->$key) {
-                    $statusesService->set($hospitalAccident->accident, AccidentStatus::firstOrCreate([
-                        'title' => $event['status'],
-                        'type' => $event['type'],
-                    ]), 'Assigned on change');
-                }
-            }
-        });
-    }
+    public function boot() {}
 
     /**
      * Register any application services.

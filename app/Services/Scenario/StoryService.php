@@ -8,7 +8,7 @@
 namespace App\Services\Scenario;
 
 
-use App\AccidentStatusHistory;
+use App\Scenario;
 use App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;
 
@@ -40,11 +40,6 @@ class StoryService implements ScenarioInterface
     private $story;
 
     /**
-     * @var int
-     */
-    private $currentStepId = 0;
-
-    /**
      * Initialize story
      * @param Collection $history
      * @param ScenarioInterface $scenario
@@ -55,27 +50,7 @@ class StoryService implements ScenarioInterface
         $this->history = $history;
         $this->scenario = $scenario;
 
-        // last from the history will be current for the scenario
-        if ($this->history->count()) {
-            $this->setCurrentStepId($this->history->last()->accidentStatus);
-        }
         return $this;
-    }
-
-    public function setCurrentStepId($step = 0)
-    {
-        $this->scenario->setCurrentStepId($step);
-        $this->currentStepId = $this->scenario->current();
-    }
-
-    public function current()
-    {
-        return $this->scenario->current();
-    }
-
-    public function next()
-    {
-        return $this->scenario->next();
     }
 
     /**
@@ -96,63 +71,79 @@ class StoryService implements ScenarioInterface
     }
 
     /**
-     * Create story from the history and accepted scenario
-     *         // merging history into the scenario with needed statuses
-     * @return Collection
+     * Fill passed scenarios steps
      */
     private function generateStory()
     {
-        $skipper = false;
-        $story = $this->scenario()->scenario();
-
-        // mark all steps which were visited by the student as visited
-        /** @var AccidentStatusHistory $passed */
-        foreach ($this->history as $passed) {
-            $id = $story->search(function ($item) use ($passed) {
-                return $passed->accident_status_id == $item['accident_status_id'];
-            });
-            if ($id !== false) {
-                // init skipper if needed
-                $step = $story->get($id);
-                $step->status = $this->current() == $id ? self::STATUS_CURRENT : self::STATUS_VISITED;
-
-                // on the conditional scenario step and user has made this step
-                if (mb_strpos($step['mode'], ':') !== false
-                    && $step['status'] == self::STATUS_VISITED) {
-                        list($op, $type) = explode(':', $step['mode']);
-                        $skipper = [
-                            'operation' => $op,
-                            'type' => $type,
-                        ];
-                    }
+        $story = $this->history;
+        $scenario = $this->scenario()->scenario()->sortByDesc('order');
+        // latest step will be marked as current
+        $isCurrent = true;
+        $scenario->map(function ($step) use ($story, &$isCurrent) {
+            // step was found in the history
+            if ( ($foundId = $story->search(function ($item) use ($step) {
+                return $item->accident_status_id == $step->accident_status_id;
+            })) !== false) {
+                if ($isCurrent) {
+                    $isCurrent = false; // only one current per story
+                    $step->status = self::STATUS_CURRENT;
+                } else {
+                    $step->status = self::STATUS_VISITED;
                 }
             }
+        });
+        $scenario = $scenario->sortBy('order');
+        $scenario = $this->skip($scenario);
 
-        foreach ($story as $key => $step) {
-            if (
-                // skip steps by condition from the $skipper
-                // or skip condition which has not been reached
-                ( ($this->skipped($skipper, $step) || mb_strpos($step['mode'], ':') !== false)
-                    && (!isset($step[self::OPTION_STATUS]) || $step[self::OPTION_STATUS] != self::STATUS_VISITED))
-            ) {
-                $story->forget($key);
-            }
-        }
-
-        return $story;
+        return $scenario;
     }
 
-    private function skipped($skipper, $step)
+    /**
+     * @param Collection $scenario
+     * @return Collection
+     */
+    private function skip(Collection $scenario)
     {
-        $skipped = false;
-        if (is_array($skipper)) {
-            if (isset($skipper['operation']) && $skipper['operation'] == 'skip') {
-                if ($step->status != self::STATUS_VISITED && $step->accidentStatus->type == $skipper['type']) {
-                    $skipped = true;
-                }
+        // searching for the skipping steps in the scenario
+        $skipSteps = $scenario->filter(function ($step) {
+            return mb_strpos($step->mode, 'skip:') !== false;
+        });
+
+        // delete this steps from the scenario
+        $scenario = $scenario->filter(function ($step) {
+            return mb_strpos($step->mode, 'skip:') === false;
+        });
+
+        $story = $this->history;
+        $skipSteps->each(function(Scenario $skipStep) use ($story, &$scenario) {
+            // search in history if this status was assigned
+            $foundInHistory = $story->filter(function ($step) use ($skipStep) {
+                return $step->accident_status_id == $skipStep->accident_status_id;
+            });
+
+            if ($foundInHistory->count()) {
+                $skipType = $skipStep->getStatusType();
+                $previousMatched = false;
+                $newScenario = collect([]);
+                $scenario->map(function ($step) use ($skipStep, $skipType, &$previousMatched, &$newScenario) {
+                    if ($step->accidentStatus->type == $skipType) {
+                        $previousMatched = true;
+                        if ($step->status) {
+                            $newScenario->push($step);
+                        }
+                    } else {
+                        if ($previousMatched == true) {
+                            $previousMatched = false;
+                            $newScenario->push($skipStep);
+                        }
+                        $newScenario->push($step);
+                    }
+                });
+                $scenario = $newScenario;
             }
-        }
-        return $skipped;
+        });
+
+        return $scenario;
     }
 
     public function findStepId($step)

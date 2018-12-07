@@ -8,7 +8,6 @@
 namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Accident;
-use App\AccidentStatus;
 use App\Diagnostic;
 use App\DoctorAccident;
 use App\DoctorService;
@@ -19,11 +18,9 @@ use App\HospitalAccident;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\CaseRequest;
 use App\Models\Scenario\ScenarioModel;
-use App\Patient;
 use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
 use App\Services\CaseServices\CaseHistoryService;
-use App\Services\CaseServices\CaseReportService;
 use App\Services\DocumentService;
 use App\Services\PatientService;
 use App\Services\ReferralNumberService;
@@ -406,8 +403,12 @@ class CasesController extends ApiController
      * @param ScenarioService $scenariosService
      * @return \Dingo\Api\Http\Response
      */
-    public function story(int $id, StoryService $storyService, AccidentStatusesService $accidentStatusesService, ScenarioService $scenariosService)
-    {
+    public function story(
+        int $id,
+        StoryService $storyService,
+        AccidentStatusesService $accidentStatusesService,
+        ScenarioService $scenariosService
+    ) {
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
         $scenario = null;
@@ -442,24 +443,6 @@ class CasesController extends ApiController
         $accident = Accident::findOrFail($id);
         $accident->delete();
         return $this->response->noContent();
-    }
-
-    public function reportHtml($id, CaseReportService $service)
-    {
-        $accident = Accident::find($id);
-        if (!$accident) {
-            abort(404);
-        }
-        return response()->json(['data' => $service->generate($accident)->toHtml()]);
-    }
-
-    public function downloadPdf($id, CaseReportService $service)
-    {
-        $accident = Accident::find($id);
-        if (!$accident) {
-            abort(404);
-        }
-        return response()->download($service->generate($accident)->getPdfPath());
     }
 
     public function history(int $id, CaseHistoryService $service)

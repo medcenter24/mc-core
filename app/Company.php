@@ -25,12 +25,14 @@ class Company extends Model implements HasMedia
     const THUMB_250 = 'thumb_250';
     const THUMB_300X100 = 'thumb_300x100';
 
-    protected $fillable = ['title'];
+    protected $fillable = ['title', 'hospital_accident_form_id', 'doctor_accident_form_id'];
     protected $visible = ['title'];
 
     /**
      * @param Media|null $media
      * @throws \Spatie\Image\Exceptions\InvalidManipulation
+     * todo has no sense as I become using of the Forms where all images will be placed as images with sizes
+     * todo needs to be removed
      */
     public function registerMediaConversions(Media $media = null)
     {

@@ -9,8 +9,6 @@ namespace Tests\Feature\Api\Director;
 
 
 use App\Accident;
-use App\Assistant;
-use App\Doctor;
 use App\FinanceCondition;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\Feature\Api\JwtHeaders;

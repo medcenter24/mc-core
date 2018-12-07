@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\V1\Director;
 use App\Form;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\FormRequest;
+use App\Services\FormService;
 use App\Transformers\FormTransformer;
 
 class FormsController extends ApiController
@@ -72,5 +73,19 @@ class FormsController extends ApiController
         \Log::info('Form deleted', [$form, $this->user()]);
         $form->delete();
         return $this->response->noContent();
+    }
+
+    public function pdf($formId, $srcId, FormService $formService)
+    {
+        $form = Form::findOrFail($formId);
+        $source = call_user_func([$form->formable_type, 'findOrFail'], $srcId);
+        return response()->download($formService->getPdfPath($form, $source));
+    }
+
+    public function html($formId, $srcId, FormService $formService)
+    {
+        $form = Form::findOrFail($formId);
+        $source = call_user_func([$form->formable_type, 'findOrFail'], $srcId);
+        return response()->json(['data' => $formService->getHtml($form, $source)]);
     }
 }

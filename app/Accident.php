@@ -97,6 +97,11 @@ class Accident extends AccidentAbstract
         $this->statusUpdating = false;
     }
 
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     /**
      * Payment either to doctor or hospital
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

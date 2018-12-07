@@ -101,8 +101,7 @@ $api->group([
                     $api->get('{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
                     $api->get('{id}/checkpoints', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@getCheckpoints');
                     $api->put('{id}/close', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@close');
-                    $api->get('{id}/reportHtml', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@reportHtml');
-                    $api->get('{id}/downloadPdf', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@downloadPdf');
+
                     $api->get('{id}/history', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@history');
                     $api->get('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@comments');
                     $api->put('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@addComment');
@@ -167,8 +166,16 @@ $api->group([
                 $api->post('periods/search', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class . '@search');
                 $api->resource('periods', \App\Http\Controllers\Api\V1\Director\DatePeriodController::class);
 
-                $api->post('forms/search', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@search');
-                $api->resource('forms', \App\Http\Controllers\Api\V1\Director\FormsController::class);
+                $api->group(['prefix' => 'forms'], function ($api) {
+                    $api->post('search', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@search');
+                    $api->get('', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@index');
+                    $api->get('/{id}', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@show');
+                    $api->post('/', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@store');
+                    $api->put('/{id}', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@update');
+                    $api->delete('/{id}', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@destroy');
+                    $api->get('/{formId}/{srcId}/pdf', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@pdf');
+                    $api->get('/{formId}/{srcId}/html', \App\Http\Controllers\Api\V1\Director\FormsController::class . '@html');
+                });
 
                 $api->post('invoice/search', \App\Http\Controllers\Api\V1\Director\InvoiceController::class . '@search');
                 $api->get('invoice/{id}/form', \App\Http\Controllers\Api\V1\Director\InvoiceController::class . '@form');

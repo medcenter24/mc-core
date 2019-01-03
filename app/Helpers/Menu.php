@@ -76,7 +76,7 @@ abstract class Menu
             if ($path) {
                 $this->set_current_menu($path);
             } else {
-                if (!in_array(request()->path(), $this->excluded)) {
+                if (!in_array(request()->path(), $this->excluded, true)) {
                     logger('Admin menu error: cant catch cell by url: ' . request()->path());
                 }
                 return;
@@ -86,22 +86,22 @@ abstract class Menu
 
     private function path_by_url($menu)
     {
-
         foreach ($menu as $key => $cell) {
 
-            if (isset($menu[$key]['submenu']) && count($menu[$key]['submenu'])) {
+            if (array_key_exists('submenu', $cell) && count($cell['submenu'])) {
 
-                $_path = $this->path_by_url($menu[$key]['submenu']);
+                $_path = $this->path_by_url($cell['submenu']);
 
                 if ($_path) {
                     return $key . '.' . $_path;
                 }
             }
 
-            if (isset($cell['slug'])
-                && rtrim($cell['slug'], '/') == rtrim(strtolower(request()->path()), '/')
-            )
+            if( array_key_exists('slug', $cell)
+                && rtrim($cell['slug'], '/') === strtolower(rtrim(request()->path(), '/'))
+            ) {
                 return $key;
+            }
         }
 
         return false;
@@ -112,7 +112,7 @@ abstract class Menu
      * @param string $current_menu
      * @return array
      */
-    public function menu($current_menu = null)
+    public function menu($current_menu = null): array
     {
         $this->set_current_menu($current_menu);
 
@@ -125,6 +125,7 @@ abstract class Menu
     /**
      * Filter menu by users roles
      * @param $menu
+     * @return void
      */
     private function filterMenu(&$menu)
     {

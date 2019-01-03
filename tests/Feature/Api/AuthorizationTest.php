@@ -17,13 +17,13 @@ class AuthorizationTest extends TestCase
     use DatabaseMigrations;
     use JwtHeaders;
 
-    public function testAuthorizationWithoutJwtHeaders()
+    public function testAuthorizationWithoutJwtHeaders(): void
     {
         $response = $this->json('POST', '/api/authenticate');
-        $response->assertStatus(401);
+        $response->assertStatus(400);
     }
 
-    public function testWrongCredentialsAuthorization()
+    public function testWrongCredentialsAuthorization(): void
     {
         $response = $this->json('POST', '/api/authenticate', [
             'email' => 'mail@example.com',

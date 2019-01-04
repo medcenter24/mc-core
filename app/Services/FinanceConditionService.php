@@ -21,18 +21,18 @@ use Illuminate\Support\Collection;
 class FinanceConditionService
 {
     /** @var string Types */
-    const PARAM_TYPE_ADD = 'add';
-    const PARAM_TYPE_SUBTRACT = 'sub';
+    public const PARAM_TYPE_ADD = 'add';
+    public const PARAM_TYPE_SUBTRACT = 'sub';
 
     /** @var string Currency modes */
-    const PARAM_CURRENCY_MODE_PERCENT = 'percent';
-    const PARAM_CURRENCY_MODE_CURRENCY = 'currency';
+    public const PARAM_CURRENCY_MODE_PERCENT = 'percent';
+    public const PARAM_CURRENCY_MODE_CURRENCY = 'currency';
 
     /**
      * Types
      * @return array
      */
-    public function getTypes()
+    public function getTypes(): array
     {
         return [
             self::PARAM_TYPE_ADD,
@@ -44,7 +44,7 @@ class FinanceConditionService
      * Modes
      * @return array
      */
-    public function getModes()
+    public function getModes(): array
     {
         return [
             self::PARAM_CURRENCY_MODE_PERCENT,
@@ -60,7 +60,7 @@ class FinanceConditionService
      *
      * @return array
      */
-    public function allowedModels()
+    public function allowedModels(): array
     {
         return [
             Accident::class,
@@ -82,12 +82,15 @@ class FinanceConditionService
      *
      * @return Collection
      */
-    public function findConditions($models = [])
+    public function findConditions($models = []): Collection
     {
         $result = collect([]);
         if (count($models)) {
             $storageQuery = FinanceStorage::query();
             foreach ($models as $key => $val) {
+                if (!$val) {
+                    continue;
+                }
                 switch ($key) {
                     case DatePeriod::class :
                         /** @var Carbon $date */
@@ -114,9 +117,9 @@ class FinanceConditionService
 
             $stored = $storageQuery
                 ->groupBy('finance_condition_id')
-                ->get('finance_condition_id');
+                ->get(['finance_condition_id']);
 
-            $result = FinanceCondition::query()->whereIn('id', $stored);
+            $result = FinanceCondition::query()->whereIn('id', $stored)->get();
         }
 
         return $result;

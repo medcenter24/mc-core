@@ -19,13 +19,14 @@ use App\Services\CaseServices\CaseFinanceService;
 use App\Services\FinanceConditionService;
 use App\Services\Formula\FormulaService;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Tests\TestCase;
 
 class CaseFinanceServiceTest extends TestCase
 {
     private function getExpectation($key, $list)
     {
-        return key_exists($key, $list) ? $list[$key] : 0;
+        return array_key_exists($key, $list) ? $list[$key] : 0;
     }
 
     /**
@@ -37,10 +38,11 @@ class CaseFinanceServiceTest extends TestCase
      * ]
      * @return CaseFinanceService
      */
-    private function financeService(array $expects = [])
+    private function financeService(array $expects = []): CaseFinanceService
     {
         $formulaBuilder = new FormulaBuilderUnit();
 
+        /** @var ObjectProphecy|FormulaService $formulaServiceMock */
         $formulaServiceMock = $this->prophesize(FormulaService::class);
         $formulaServiceMock->createFormula()
             ->shouldBeCalledTimes($this->getExpectation('formulaServiceMock->createFormula', $expects))
@@ -82,7 +84,7 @@ class CaseFinanceServiceTest extends TestCase
         return new CaseFinanceService($formulaService, $accidentService, $financeConditionService);
     }
 
-    private function getAccidentMock()
+    private function getAccidentMock(): ObjectProphecy
     {
         return $this->prophesize(Accident::class);
     }
@@ -100,7 +102,10 @@ class CaseFinanceServiceTest extends TestCase
         return $accidentMock;
     }
 
-    private function getHospitalAccidentMock()
+    /**
+     * @return ObjectProphecy
+     */
+    private function getHospitalAccidentMock(): ObjectProphecy
     {
         $accidentMock = $this->getAccidentMock();
         $accidentMock->getAttribute(Argument::type('string'))->will(function ($args) {
@@ -118,7 +123,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testEmptyDoctorCase()
+    public function testEmptyDoctorCase(): void
     {
         /** @var Accident $accident */
         $accident = $this->getDoctorAccidentMock()->reveal();
@@ -173,7 +178,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testWrongHospitalCaseException()
+    public function testWrongHospitalCaseException(): void
     {
         /** @var Accident $accident */
         $accident = $this->getDoctorAccidentMock()->reveal();
@@ -186,7 +191,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testWrongDoctorCaseException()
+    public function testWrongDoctorCaseException(): void
     {
         /** @var Accident $accident */
         $accident = $this->getHospitalAccidentMock()->reveal();
@@ -197,7 +202,7 @@ class CaseFinanceServiceTest extends TestCase
      * When the payment already stored (when we had static digit in the DB) - Doesn't need to calculate again
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testStoredFromAssistantPayment()
+    public function testStoredFromAssistantPayment(): void
     {
         $paymentMock = $this->prophesize(Payment::class);
         $paymentMock->getAttribute(Argument::type('string'))->willReturn(10);
@@ -220,7 +225,7 @@ class CaseFinanceServiceTest extends TestCase
      * This is payment that needs to be calculated according to the conditions
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testCalculateFromAssistantEmptyPayment()
+    public function testCalculateFromAssistantEmptyPayment(): void
     {
         $accidentMock = $this->getAccidentMock();
         /** @var Accident $accident */
@@ -236,7 +241,7 @@ class CaseFinanceServiceTest extends TestCase
      * This is payment that needs to be calculated according to the conditions
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testCalculateFromAssistantPaymentWithCondition()
+    public function testCalculateFromAssistantPaymentWithCondition(): void
     {
         $paymentMock = $this->prophesize(Payment::class);
         $paymentMock->getAttribute(Argument::type('string'))->willReturn(987);
@@ -271,7 +276,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testCalculateToDoctorPayment()
+    public function testCalculateToDoctorPayment(): void
     {
         $accidentMock = $this->getAccidentMock();
         $accidentMock->getAttribute(Argument::type('string'))->will(function($args) {
@@ -295,7 +300,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testCalculateToDoctorPaymentWithCondition()
+    public function testCalculateToDoctorPaymentWithCondition(): void
     {
         $accidentMock = $this->getAccidentMock();
         $accidentMock->getAttribute(Argument::type('string'))->will(function($args) {
@@ -321,7 +326,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testStoredToDoctorPayment()
+    public function testStoredToDoctorPayment(): void
     {
         $paymentMock = $this->prophesize(Payment::class);
         $paymentMock->getAttribute(Argument::type('string'))->willReturn(10);
@@ -349,7 +354,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testCalculateToHospitalPayment()
+    public function testCalculateToHospitalPayment(): void
     {
         $accidentMock = $this->getAccidentMock();
         $accidentMock->getAttribute(Argument::type('string'))->will(function($args) {
@@ -373,7 +378,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testCalculateToHospitalPaymentWithCondition()
+    public function testCalculateToHospitalPaymentWithCondition(): void
     {
         $accidentMock = $this->getAccidentMock();
         $accidentMock->getAttribute(Argument::type('string'))->will(function($args) {
@@ -399,7 +404,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testStoredToHospitalPayment()
+    public function testStoredToHospitalPayment(): void
     {
         $paymentMock = $this->prophesize(Payment::class);
         $paymentMock->getAttribute(Argument::type('string'))->willReturn(10);
@@ -428,7 +433,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testCalculateIncome()
+    public function testCalculateIncome(): void
     {
         $accidentMock = $this->getAccidentMock();
         /** @var Accident $accident */
@@ -444,7 +449,7 @@ class CaseFinanceServiceTest extends TestCase
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function testStoredIncome()
+    public function testStoredIncome(): void
     {
         $paymentMock = $this->prophesize(Payment::class);
         $paymentMock->getAttribute(Argument::type('string'))->willReturn(10);

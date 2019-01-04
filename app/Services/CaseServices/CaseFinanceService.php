@@ -63,7 +63,7 @@ class CaseFinanceService
      * New object
      * @return CaseFinanceCondition
      */
-    public function createCondition()
+    public function createCondition(): CaseFinanceCondition
     {
         return new CaseFinanceCondition();
     }
@@ -159,7 +159,7 @@ class CaseFinanceService
      */
     public function getToDoctorPaymentFormula(Accident $accident)
     {
-        if ($accident->caseable_type != DoctorAccident::class) {
+        if ($accident->getAttribute('caseable_type') !== DoctorAccident::class) {
             throw new InconsistentDataException('DoctorAccident only');
         }
 
@@ -242,11 +242,13 @@ class CaseFinanceService
             $formula->addFloat($guaranteePrice);
             // 2. apply formula, which bind to this Assistant and has type Assistant
             $conditionProps = [
-                DatePeriod::class => $accident->handling_time,
                 HospitalAccident::class => $accident->caseable_id,
                 Assistant::class => $accident->assistant_id,
                 City::class => $accident->city_id,
             ];
+            if ($accident->getAttribute('handling_time')) {
+                $conditionProps[DatePeriod::class] = $accident->getAttribute('handling_time');
+            }
             $conditions = $this->financeConditionService->findConditions($conditionProps);
             if ($conditions->count()) {
                 $formula = $this->formulaService->createFormulaFromConditions($conditions);

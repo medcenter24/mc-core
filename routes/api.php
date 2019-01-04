@@ -101,10 +101,10 @@ $api->group([
                     $api->get('{id}/documents', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@documents');
                     $api->get('{id}/checkpoints', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@getCheckpoints');
                     $api->put('{id}/close', \App\Http\Controllers\Api\V1\Director\CasesController::class.'@close');
-
                     $api->get('{id}/history', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@history');
                     $api->get('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@comments');
                     $api->put('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@addComment');
+                    $api->post('{id}/finance', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@finance');
                     $api->put('{id}', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@update');
                     $api->delete('{id}', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@destroy');
                     $api->post('', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@store');
@@ -159,6 +159,8 @@ $api->group([
 
                 $api->post('finance/search', \App\Http\Controllers\Api\V1\Director\FinanceController::class . '@search');
                 $api->resource('finance', \App\Http\Controllers\Api\V1\Director\FinanceController::class);
+
+                $api->resource('payment', \App\Http\Controllers\Api\V1\Director\PaymentController::class);
 
                 $api->post('currency/search', \App\Http\Controllers\Api\V1\Director\FinanceCurrencyController::class . '@search');
                 $api->resource('currency', \App\Http\Controllers\Api\V1\Director\FinanceCurrencyController::class);

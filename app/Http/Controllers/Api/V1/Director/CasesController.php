@@ -20,8 +20,11 @@ use App\Http\Requests\Api\CaseRequest;
 use App\Models\Scenario\ScenarioModel;
 use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
+use App\Services\CaseServices\CaseFinanceService;
 use App\Services\CaseServices\CaseHistoryService;
 use App\Services\DocumentService;
+use App\Services\Formula\FormulaResultService;
+use App\Services\Formula\FormulaViewService;
 use App\Services\PatientService;
 use App\Services\ReferralNumberService;
 use App\Services\RoleService;
@@ -30,6 +33,7 @@ use App\Services\Scenario\StoryService;
 use App\Transformers\AccidentCheckpointTransformer;
 use App\Transformers\AccidentStatusHistoryTransformer;
 use App\Transformers\CaseAccidentTransformer;
+use App\Transformers\CaseFinanceTransformer;
 use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DirectorCaseTransformer;
 use App\Transformers\DoctorCaseTransformer;
@@ -43,10 +47,11 @@ use Carbon\Carbon;
 use Cmgmyr\Messenger\Models\Message;
 use Cmgmyr\Messenger\Models\Participant;
 use Cmgmyr\Messenger\Models\Thread;
+use Dingo\Api\Http\Response;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Mpdf\Tag\P;
+
 
 class CasesController extends ApiController
 {
@@ -244,7 +249,7 @@ class CasesController extends ApiController
         $accident = Accident::create($accidentData);
         $this->createCaseableFromRequest($accident, $request);
 
-        if (!key_exists('patientId', $accidentData)) {
+        if (!array_key_exists('patientId', $accidentData)) {
             $patient = $patientService->findOrCreate($request->json('patient', []));
             $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
         } else {
@@ -411,7 +416,6 @@ class CasesController extends ApiController
     ) {
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
-        $scenario = null;
         $scenario = new ScenarioModel($accidentStatusesService, $scenariosService->getScenarioByTag($accident->caseable_type));
 
         return $this->response->collection(
@@ -456,7 +460,7 @@ class CasesController extends ApiController
         );
     }
 
-    public function comments(int $id)
+    public function comments(int $id): Response
     {
         // I need to be sure that there is such accident
         /** @var Accident $accident */
@@ -478,7 +482,7 @@ class CasesController extends ApiController
      * @return \Dingo\Api\Http\Response
      * @throws \ErrorException
      */
-    public function addComment(Request $request, int $id)
+    public function addComment(Request $request, int $id): Response
     {
         $accident = Accident::findOrFail($id);
         $thread = Thread::firstOrCreate(['subject' => 'Accident_'.$accident->id]);
@@ -499,5 +503,60 @@ class CasesController extends ApiController
 
         $transform = new MessageTransformer();
         return $this->response->created(null, $transform->transform($message));
+    }
+
+    /**
+     * @param Request $request
+     * @param int $id
+     * @param CaseFinanceService $financeService
+     * @param FormulaResultService $formulaResultService
+     * @param FormulaViewService $formulaViewService
+     * @return Response
+     * @throws \App\Exceptions\InconsistentDataException
+     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \Throwable
+     */
+    public function finance(
+        Request $request,
+        int $id,
+        CaseFinanceService $financeService,
+        FormulaResultService $formulaResultService,
+        FormulaViewService $formulaViewService
+    ): Response
+    {
+        /** @var Accident $accident */
+        $accident = Accident::findOrFail($id);
+        $financeDataCollection = collect([]);
+
+        $types = $request->json('types', ['income', 'assistant', 'caseable']);
+        $formula = null;
+        foreach ($types as $type) {
+            switch ($type) {
+                case 'income':
+                    $formula = $financeService->getIncomeFormula($accident);
+                    break;
+                case 'assistant':
+                    $formula = $financeService->getFromAssistantPaymentFormula($accident);
+                    break;
+                case 'caseable':
+                    $formula = $accident->getAttribute('caseable_type') === DoctorAccident::class
+                        ? $financeService->getToDoctorPaymentFormula($accident)
+                        : $financeService->getToHospitalPaymentFormula($accident);
+                    break;
+                default:
+                    $this->response->error('undefined finance type', 500);
+            }
+
+            $typeResult = collect([
+                'type' => $type,
+                'loading' => false,
+                'value' => $formulaResultService->calculate($formula),
+                'currency' => '',
+                'formula' => $formulaViewService->render($formula),
+            ]);
+            $financeDataCollection->push($typeResult);
+        }
+
+        return $this->response->item($financeDataCollection, new CaseFinanceTransformer());
     }
 }

@@ -13,7 +13,7 @@ class Add extends AbstractOperation
     /**
      * @return string
      */
-    public function getLeftSignView()
+    public function getLeftSignView(): string
     {
         return ' + ';
     }

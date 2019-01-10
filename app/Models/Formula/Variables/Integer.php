@@ -19,20 +19,20 @@ class Integer implements Variable
 
     public function __construct($var)
     {
-        $this->var = intval($var);
+        $this->var = (int) $var;
     }
 
-    public function getVar()
+    public function getVar(): int
     {
         return $this->var;
     }
 
-    public function getResult()
+    public function getResult(): int
     {
         return $this->getVar();
     }
 
-    public function varView()
+    public function varView(): string
     {
         return sprintf('%d', $this->getVar());
     }

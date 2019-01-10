@@ -10,9 +10,12 @@ namespace App\Http\Controllers;
 use App\Exceptions\NotImplementedException;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
+use \Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller
 {
@@ -22,6 +25,21 @@ class ApiController extends Controller
     {
         parent::__construct();
         Auth::setDefaultDriver('api');
+    }
+
+    /**
+     * @param string $method
+     * @param array $parameters
+     * @return Response
+     */
+    public function callAction($method, $parameters): Response
+    {
+        try {
+            return parent::callAction($method, $parameters);
+        } catch (ModelNotFoundException $e) {
+            Log::debug($e->getMessage());
+            $this->response->error('Not found', 404);
+        }
     }
 
     /**

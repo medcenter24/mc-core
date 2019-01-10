@@ -29,7 +29,7 @@ class Decimal implements Variable
      */
     public function __construct($var, int $precision = 2)
     {
-        $this->var = round(floatval($var), $precision);
+        $this->var = round((float) $var, $precision);
         $this->precision = $precision;
     }
 
@@ -43,7 +43,7 @@ class Decimal implements Variable
         return $this->getVar();
     }
 
-    public function varView()
+    public function varView(): string
     {
         return sprintf('%0.'.$this->precision.'f', $this->getVar());
     }

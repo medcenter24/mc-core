@@ -19,12 +19,13 @@ use League\Fractal\TransformerAbstract;
 class CaseFinanceTransformer extends TransformerAbstract
 {
     /**
-     * @param Collection $data
+     * @param \stdClass $obj
      * @return array
      */
-    public function transform (Collection $data) : array
+    public function transform (\stdClass $obj) : array
     {
         $result = [];
+        $data = $obj->collection;
         $iterator = $data->getIterator();
         while ($iterator->valid()) {
             /** @var Collection $item */
@@ -36,7 +37,6 @@ class CaseFinanceTransformer extends TransformerAbstract
                 'value' => $item->get('value'),
                 'currency' => (new FinanceCurrencyTransformer())->transform($item->get('currency')),
                 'formula' => $item->get('formula'),
-                'financePayment' => (new PaymentTransformer())->transform($item->get('payment')),
             ];
 
             $iterator->next();

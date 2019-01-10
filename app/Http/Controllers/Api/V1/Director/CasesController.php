@@ -22,6 +22,7 @@ use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
 use App\Services\CaseServices\CaseFinanceService;
 use App\Services\CaseServices\CaseHistoryService;
+use App\Services\CurrencyService;
 use App\Services\DocumentService;
 use App\Services\Formula\FormulaResultService;
 use App\Services\Formula\FormulaViewService;
@@ -384,12 +385,12 @@ class CasesController extends ApiController
      * @param $data
      * @return Model
      */
-    private function setData(Model $model, $data)
+    private function setData(Model $model, $data): Model
     {
         $data = $this->convertIndexes($data);
         foreach ($model->getVisible() as $item) {
-            if (key_exists($item, $data)) {
-                if (in_array($item, $model->getDates())) {
+            if (array_key_exists($item, $data)) {
+                if (in_array($item, $model->getDates(), true)) {
                     $model->$item = $data[$item] ? Carbon::parse($data[$item])->format('Y-m-d H:i:s') : null;
                 } else {
                     $model->$item = $data[$item] ?: '';
@@ -413,7 +414,8 @@ class CasesController extends ApiController
         StoryService $storyService,
         AccidentStatusesService $accidentStatusesService,
         ScenarioService $scenariosService
-    ) {
+    ) : Response
+    {
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
         $scenario = new ScenarioModel($accidentStatusesService, $scenariosService->getScenarioByTag($accident->caseable_type));
@@ -430,7 +432,7 @@ class CasesController extends ApiController
      * @param AccidentStatusesService $statusesService
      * @return \Dingo\Api\Http\Response
      */
-    public function close(int $id, AccidentStatusesService $statusesService)
+    public function close(int $id, AccidentStatusesService $statusesService): Response
     {
         $accident = Accident::findOrFail($id);
         $statusesService->closeAccident($accident, 'Closed by director');
@@ -442,7 +444,7 @@ class CasesController extends ApiController
      * @param $id
      * @return \Dingo\Api\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $accident = Accident::findOrFail($id);
         $accident->delete();
@@ -511,6 +513,7 @@ class CasesController extends ApiController
      * @param CaseFinanceService $financeService
      * @param FormulaResultService $formulaResultService
      * @param FormulaViewService $formulaViewService
+     * @param CurrencyService $currencyService
      * @return Response
      * @throws \App\Exceptions\InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
@@ -521,7 +524,8 @@ class CasesController extends ApiController
         int $id,
         CaseFinanceService $financeService,
         FormulaResultService $formulaResultService,
-        FormulaViewService $formulaViewService
+        FormulaViewService $formulaViewService,
+        CurrencyService $currencyService
     ): Response
     {
         /** @var Accident $accident */
@@ -551,12 +555,14 @@ class CasesController extends ApiController
                 'type' => $type,
                 'loading' => false,
                 'value' => $formulaResultService->calculate($formula),
-                'currency' => '',
+                'currency' => $currencyService->getDefaultCurrency(),
                 'formula' => $formulaViewService->render($formula),
             ]);
             $financeDataCollection->push($typeResult);
         }
 
-        return $this->response->item($financeDataCollection, new CaseFinanceTransformer());
+        $obj = new \stdClass();
+        $obj->collection = $financeDataCollection;
+        return $this->response->item($obj, new CaseFinanceTransformer());
     }
 }

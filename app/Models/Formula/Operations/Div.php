@@ -8,6 +8,7 @@
 namespace App\Models\Formula\Operations;
 
 
+use App\Contract\Formula\Variable;
 use App\Models\Formula\Exception\FormulaException;
 
 class Div extends AbstractOperation
@@ -16,10 +17,10 @@ class Div extends AbstractOperation
 
     /**
      * Div constructor.
-     * @param $var
+     * @param Variable $var
      * @throws FormulaException
      */
-    public function __construct($var)
+    public function __construct(Variable $var)
     {
         if ($var->getResult() === 0) {
             throw new FormulaException('Divide by zero');
@@ -30,7 +31,7 @@ class Div extends AbstractOperation
     /**
      * @return string
      */
-    public function getLeftSignView()
+    public function getLeftSignView(): string
     {
         return ' / ';
     }

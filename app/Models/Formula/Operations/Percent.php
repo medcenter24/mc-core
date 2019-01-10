@@ -15,12 +15,12 @@ class Percent extends AbstractOperation
     /**
      * @return string
      */
-    public function getLeftSignView()
+    public function getLeftSignView(): string
     {
         return ' * ';
     }
 
-    public function getRightSignView()
+    public function getRightSignView(): string
     {
         return '%';
     }

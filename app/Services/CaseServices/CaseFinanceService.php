@@ -120,7 +120,7 @@ class CaseFinanceService
      * @throws InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function getIncomeFormula(Accident $accident)
+    public function getIncomeFormula(Accident $accident): \App\Contract\Formula\FormulaBuilder
     {
         $formula = $this->formulaService->createFormula();
         if ($payment = $accident->getIncomePayment) {

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RolesTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(AccidentTypesTableSeeder::class);
+        $this->call(FinanceCurrenciesTableSeeder::class);
         if (!App::environment('production')) {
             $this->call(CitiesTableSeeder::class);
             $this->call(DiagnosticsTableSeeder::class);

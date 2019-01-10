@@ -40,7 +40,7 @@ abstract class AbstractOperation implements Operation
         }
     }
 
-    public function getWeight()
+    public function getWeight(): int
     {
         return $this->weight;
     }
@@ -49,7 +49,7 @@ abstract class AbstractOperation implements Operation
      * @return string
      * @throws \Throwable
      */
-    public function varView()
+    public function varView(): string
     {
         return $this->variable->varView();
     }
@@ -66,21 +66,26 @@ abstract class AbstractOperation implements Operation
      */
     abstract public function runOperation($result);
 
-    public function rightSignView(bool $visible = true)
+    /**
+     * @param bool $visible
+     * @return string
+     */
+    public function rightSignView(bool $visible = true): string
     {
         return $visible ? $this->getRightSignView() : '';
     }
 
-    public function leftSignView(bool $visible = true)
+    public function leftSignView(bool $visible = true): string
     {
         return $visible ? $this->getLeftSignView() : '';
     }
 
-    protected function getLeftSignView() {
+    protected function getLeftSignView(): string
+    {
         return '';
     }
 
-    protected function getRightSignView()
+    protected function getRightSignView(): string
     {
         return '';
     }

@@ -15,7 +15,7 @@ use App\Models\Formula\Operations\Mul;
 use App\Models\Formula\Operations\Percent;
 use App\Models\Formula\Operations\Sub;
 use App\Models\Formula\Variables\Decimal;
-use App\Models\Formula\Variables\Integer;
+use App\Models\Formula\Variables\Integer as VarInt;
 use Illuminate\Support\Collection;
 
 /**
@@ -35,7 +35,7 @@ class FormulaBuilder implements FormulaBuilderContract
      *
      * @var null|FormulaBuilderContract
      */
-    private $parent = null;
+    private $parent;
 
     /**
      * Percent which needs to be taken from this operation
@@ -54,7 +54,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return Collection
      * @throws Exception\FormulaException
      */
-    public function getFormulaCollection()
+    public function getFormulaCollection(): Collection
     {
         return $this->hasPercent() ? $this->attachPercent()->getFormulaCollection() : $this->formula;
     }
@@ -64,7 +64,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function getBaseFormula()
+    public function getBaseFormula(): FormulaBuilderContract
     {
         $base = $this;
         while ($base->hasParentFormula()) {
@@ -78,7 +78,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * Parent formula for the current formula
      * @return FormulaBuilderContract
      */
-    public function getParentFormula()
+    public function getParentFormula(): FormulaBuilderContract
     {
         return $this->parent ?: $this;
     }
@@ -87,7 +87,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * If current formula is not Base formula - top formula in the collection
      * @return bool
      */
-    public function hasParentFormula()
+    public function hasParentFormula(): bool
     {
         return $this->parent !== null;
     }
@@ -95,9 +95,9 @@ class FormulaBuilder implements FormulaBuilderContract
     /**
      * @return bool
      */
-    public function hasPercent()
+    public function hasPercent(): bool
     {
-        return $this->percent != 100;
+        return $this->percent !== 100;
     }
 
     /**
@@ -259,7 +259,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return FormulaBuilder|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function subNestedFormula()
+    public function subNestedFormula(): FormulaBuilderContract
     {
         $subFormula = new FormulaBuilder($this);
         $op = new Sub($subFormula);
@@ -271,28 +271,28 @@ class FormulaBuilder implements FormulaBuilderContract
     /**
      * @return FormulaBuilderContract
      */
-    public function closeNestedFormula()
+    public function closeNestedFormula(): FormulaBuilderContract
     {
         return $this->getParentFormula();
     }
 
     /**
      * @param int $val
-     * @return Integer
+     * @return VarInt|FormulaBuilderContract
      */
     private function getInteger($val = 0)
     {
-        return new Integer($val);
+        return $val instanceof FormulaBuilderContract ? $val : new VarInt($val);
     }
 
     /**
      * @param int $val
      * @param int $precision
-     * @return Decimal
+     * @return Decimal|FormulaBuilderContract
      */
     private function getDecimal($val = 0, int $precision = 2)
     {
-        return new Decimal($val, $precision);
+        return $val instanceof FormulaBuilderContract ? $val : new Decimal($val, $precision);
     }
 
     /**
@@ -322,7 +322,7 @@ class FormulaBuilder implements FormulaBuilderContract
     /**
      * @return int
      */
-    public function getPercent()
+    public function getPercent(): int
     {
         return $this->percent;
     }
@@ -331,7 +331,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    private function attachPercent()
+    private function attachPercent(): FormulaBuilderContract
     {
         $formula = $this;
         if ($this->getPercent() !== 100) {

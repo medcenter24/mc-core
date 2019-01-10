@@ -32,7 +32,7 @@ class FormulaViewServiceTest extends AbstractDataProvider
      * @param string $description
      * @throws \Throwable
      */
-    public function testView(FormulaBuilder $builder, $view = '', $expectedResult = 0, $description = '')
+    public function testView(FormulaBuilder $builder, $view = '', $expectedResult = 0, $description = ''): void
     {
         self::assertEquals($view, $this->service->render($builder), $description);
     }
@@ -43,7 +43,7 @@ class FormulaViewServiceTest extends AbstractDataProvider
      * @expectedException \App\Models\Formula\Exception\FormulaException
      * @expectedExceptionMessage Divide by zero
      */
-    public function testDivideByZero()
+    public function testDivideByZero(): void
     {
         $this->service->render( (new FormulaBuilderModel())->divInteger(0) );
     }
@@ -54,7 +54,7 @@ class FormulaViewServiceTest extends AbstractDataProvider
      * @expectedException \App\Models\Formula\Exception\FormulaException
      * @expectedExceptionMessage Divide by zero
      */
-    public function testDivideByZero2()
+    public function testDivideByZero2(): void
     {
         $this->service->render( (new FormulaBuilderModel())->divInteger(1)->divInteger(0) );
     }

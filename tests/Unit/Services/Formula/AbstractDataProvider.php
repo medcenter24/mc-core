@@ -326,7 +326,60 @@ class AbstractDataProvider extends TestCase
                 '( ( ( 2 + 2.00 ) * 50% ) * 2 * ( 2 + 2.00 ) * 2 * ( 2 + 2.00 * ( 2 + 2.00 ) ) ) * 50%',
                 160,
                 'Complex nested with percent'
-            ]
+            ],
+            [
+                (new FormulaBuilder())->addInteger((new FormulaBuilder())->addInteger(2))->getBaseFormula(),
+                '( 2 )',
+                2,
+                'FormulaBuilder in the integer variable',
+            ],
+            [
+                (new FormulaBuilder())->addFloat((new FormulaBuilder())->addFloat(2))->getBaseFormula(),
+                '( 2.00 )',
+                2,
+                'FormulaBuilder in the float variable',
+            ],
+            [
+                (new FormulaBuilder())
+                    ->addFloat(
+                        (new FormulaBuilder())
+                        ->addFloat(2.111999, 4)
+                        ->addInteger()
+                    )
+                    ->addInteger(
+                        (new FormulaBuilder())->addNestedFormula()
+                            ->addInteger(new FormulaBuilder())->addInteger(1)->mulFloat(0.99, 1)
+                    )
+                    ->getBaseFormula(),
+                '( 2.1120 + 0 ) + ( (  ) + 1 * 1.0 )',
+                3.112,
+                'Complex FormulaBuilder in the variable',
+            ],
+            [
+                (new FormulaBuilder())
+                    ->addNestedFormula()
+                    ->closeNestedFormula()
+                    ->getBaseFormula(),
+                '',
+                0,
+                'Avoid extra brackets and empty brackets',
+            ],
+            [
+                (new FormulaBuilder())
+                    ->addNestedFormula()
+                    ->closeNestedFormula()
+                    ->addInteger(
+                        (new FormulaBuilder())
+                        ->addInteger(1)
+                        ->addInteger()
+                        ->addInteger()
+                        ->getBaseFormula()
+                    )
+                    ->getBaseFormula(),
+                '',
+                0,
+                'Avoid extra brackets and empty brackets',
+            ],
         ];
     }
 }

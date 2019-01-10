@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright (c) 2019.
+ *
+ * Oleksandr Zagovorychev <zagovorichev@gmail.com>
+ */
 
 use App\FinanceCurrency;
 use Illuminate\Database\Seeder;
@@ -10,9 +15,13 @@ class FinanceCurrenciesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         FinanceCurrency::truncate();
-        factory(FinanceCurrency::class, 3)->create();
+        factory(FinanceCurrency::class)->create([
+            'title' => 'Euro',
+            'code' => 'eur',
+            'ico' => 'fa fa-euro',
+        ]);
     }
 }

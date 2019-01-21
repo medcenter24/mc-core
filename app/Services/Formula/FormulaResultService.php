@@ -28,6 +28,7 @@ class FormulaResultService implements Result
         $collection = $collection->sortByDesc(function (Operation $op, $key) {
             if (!$key) {
                 // first operation in the row doesn't have any sense - this is just a variable
+                // but it should be first in the row
                 return 1000;
             }
             return $op->getWeight();

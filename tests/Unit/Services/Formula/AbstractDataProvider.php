@@ -17,7 +17,7 @@ class AbstractDataProvider extends TestCase
      * @return array
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function dataProviders()
+    public function dataProviders(): array
     {
         return [
             [
@@ -154,7 +154,7 @@ class AbstractDataProvider extends TestCase
             ],
             [
                 (new FormulaBuilder())->addNestedFormula()->getBaseFormula(),
-                '(  )',
+                '0',
                 0,
                 'Nested'
             ],
@@ -234,7 +234,7 @@ class AbstractDataProvider extends TestCase
                     ->addInteger(0)
                     ->subPercent(50)
                     ->getBaseFormula(),
-                '( 0 ) * 50%',
+                '0 * 50%',
                 0,
                 'Percent on Zero'
             ],
@@ -243,7 +243,7 @@ class AbstractDataProvider extends TestCase
                     ->addInteger(100)
                     ->subPercent(50)
                     ->getBaseFormula(),
-                '( 100 ) * 50%',
+                '100 * 50%',
                 50,
                 'Percent on Int'
             ],
@@ -252,7 +252,7 @@ class AbstractDataProvider extends TestCase
                     ->addPercent(50)
                     ->addInteger(100)
                     ->getBaseFormula(),
-                '( 100 ) * 150%',
+                '100 * 150%',
                 150,
                 'Percent on Int'
             ],
@@ -261,7 +261,7 @@ class AbstractDataProvider extends TestCase
                     ->addInteger(100)
                     ->addPercent(50)
                     ->getBaseFormula(),
-                '( 100 ) * 150%',
+                '100 * 150%',
                 150,
                 'Percent on Int'
             ],
@@ -270,7 +270,7 @@ class AbstractDataProvider extends TestCase
                     ->addFloat(3.445345)
                     ->subPercent(93)
                     ->getBaseFormula(),
-                '( 3.45 ) * 7%',
+                '3.45 * 7%',
                 0.2415,
                 'Percent on Float'
             ],
@@ -329,13 +329,13 @@ class AbstractDataProvider extends TestCase
             ],
             [
                 (new FormulaBuilder())->addInteger((new FormulaBuilder())->addInteger(2))->getBaseFormula(),
-                '( 2 )',
+                '2',
                 2,
                 'FormulaBuilder in the integer variable',
             ],
             [
                 (new FormulaBuilder())->addFloat((new FormulaBuilder())->addFloat(2))->getBaseFormula(),
-                '( 2.00 )',
+                '2.00',
                 2,
                 'FormulaBuilder in the float variable',
             ],
@@ -351,7 +351,7 @@ class AbstractDataProvider extends TestCase
                             ->addInteger(new FormulaBuilder())->addInteger(1)->mulFloat(0.99, 1)
                     )
                     ->getBaseFormula(),
-                '( 2.1120 + 0 ) + ( (  ) + 1 * 1.0 )',
+                '( 2.1120 + 0 ) + ( 0 + 1 * 1.0 )',
                 3.112,
                 'Complex FormulaBuilder in the variable',
             ],
@@ -360,7 +360,7 @@ class AbstractDataProvider extends TestCase
                     ->addNestedFormula()
                     ->closeNestedFormula()
                     ->getBaseFormula(),
-                '',
+                '0',
                 0,
                 'Avoid extra brackets and empty brackets',
             ],
@@ -376,9 +376,9 @@ class AbstractDataProvider extends TestCase
                         ->getBaseFormula()
                     )
                     ->getBaseFormula(),
-                '',
-                0,
-                'Avoid extra brackets and empty brackets',
+                '0 + ( 1 + 0 + 0 )',
+                1,
+                'Avoid extra brackets and empty brackets 2',
             ],
         ];
     }

@@ -8,6 +8,7 @@
 namespace Tests\Unit\Services\Finance;
 
 use App\Contract\Formula\FormulaBuilder;
+use Illuminate\Support\Collection;
 
 /**
  * Just for one test CaseFinanceServiceTest
@@ -16,84 +17,84 @@ use App\Contract\Formula\FormulaBuilder;
  */
 class FormulaBuilderUnit implements FormulaBuilder
 {
-    public function addFloat($val = 0, int $precision = 2)
+    public function addFloat($val = 0, int $precision = 2): FormulaBuilder
     {
         return $this;
     }
 
-    public function addInteger($val = 0)
+    public function addInteger($val = 0): FormulaBuilder
     {
         return $this;
     }
-    public function subPercent($percent = 0.0)
+    public function subPercent($percent = 0.0): FormulaBuilder
     {
         return $this;
     }
-    public function subNestedFormula()
+    public function subNestedFormula(): FormulaBuilder
     {
         return $this;
     }
-    public function subInteger($val = 0)
+    public function subInteger($val = 0): FormulaBuilder
     {
         return $this;
     }
-    public function subFloat($val = 0, int $precision = 2)
+    public function subFloat($val = 0, int $precision = 2): FormulaBuilder
     {
         return $this;
     }
-    public function mulNestedFormula()
+    public function mulNestedFormula(): FormulaBuilder
     {
         return $this;
     }
-    public function mulInteger($val = 1)
+    public function mulInteger($val = 1): FormulaBuilder
     {
         return $this;
     }
-    public function mulFloat($val = 1, int $precision = 2)
+    public function mulFloat($val = 1, int $precision = 2): FormulaBuilder
     {
         return $this;
     }
-    public function hasParentFormula()
+    public function hasParentFormula(): bool
     {
         return $this;
     }
-    public function getVar()
+    public function getVar(): FormulaBuilder
     {
         return $this;
     }
-    public function getParentFormula()
+    public function getParentFormula(): FormulaBuilder
     {
         return $this;
     }
-    public function getFormulaCollection()
+    public function getFormulaCollection(): Collection
     {
         return $this;
     }
-    public function getBaseFormula()
+    public function getBaseFormula(): FormulaBuilder
     {
         return $this;
     }
-    public function divNestedFormula()
+    public function divNestedFormula(): FormulaBuilder
     {
         return $this;
     }
-    public function divInteger($val = 1)
+    public function divInteger($val = 1): FormulaBuilder
     {
         return $this;
     }
-    public function divFloat($val = 1, int $precision = 2)
+    public function divFloat($val = 1, int $precision = 2): FormulaBuilder
     {
         return $this;
     }
-    public function closeNestedFormula()
+    public function closeNestedFormula(): FormulaBuilder
     {
         return $this;
     }
-    public function addPercent($percent = 0.0)
+    public function addPercent($percent = 0.0): FormulaBuilder
     {
         return $this;
     }
-    public function addNestedFormula()
+    public function addNestedFormula(): FormulaBuilder
     {
         return $this;
     }

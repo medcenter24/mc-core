@@ -102,10 +102,10 @@ class FormulaBuilder implements FormulaBuilderContract
 
     /**
      * @param int $val
-     * @return $this|mixed
+     * @return $this
      * @throws Exception\FormulaException
      */
-    public function addInteger($val = 0)
+    public function addInteger($val = 0): FormulaBuilderContract
     {
         $var = $this->getInteger($val);
         $op = new Add($var);
@@ -120,7 +120,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function addFloat($val = 0, int $precision = 2)
+    public function addFloat($val = 0, int $precision = 2): FormulaBuilderContract
     {
         $var = $this->getDecimal($val, $precision);
         $op = new Add($var);
@@ -134,7 +134,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function mulInteger($val = 1)
+    public function mulInteger($val = 1): FormulaBuilderContract
     {
         $var = $this->getInteger($val);
         $op = new Mul($var);
@@ -149,7 +149,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function mulFloat($val = 1, int $precision = 2)
+    public function mulFloat($val = 1, int $precision = 2):FormulaBuilderContract
     {
         $var = $this->getDecimal($val, $precision);
         $op = new Mul($var);
@@ -163,7 +163,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function divInteger($val = 1)
+    public function divInteger($val = 1): FormulaBuilderContract
     {
         $var = $this->getInteger($val);
         $op = new Div($var);
@@ -178,7 +178,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function divFloat($val = 1, int $precision = 2)
+    public function divFloat($val = 1, int $precision = 2): FormulaBuilderContract
     {
         $var = $this->getDecimal($val, $precision);
         $op = new Div($var);
@@ -192,7 +192,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return $this|mixed
      * @throws Exception\FormulaException
      */
-    public function subInteger($val = 0)
+    public function subInteger($val = 0): FormulaBuilderContract
     {
         $var = $this->getInteger($val);
         $op = new Sub($var);
@@ -207,7 +207,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return $this|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function subFloat($val = 0, int $precision = 2)
+    public function subFloat($val = 0, int $precision = 2): FormulaBuilderContract
     {
         $var = $this->getDecimal($val, $precision);
         $op = new Sub($var);
@@ -220,7 +220,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return FormulaBuilder|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function addNestedFormula()
+    public function addNestedFormula(): FormulaBuilderContract
     {
         $subFormula = new FormulaBuilder($this);
         $op = new Add($subFormula);
@@ -233,7 +233,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return FormulaBuilder|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function divNestedFormula()
+    public function divNestedFormula(): FormulaBuilderContract
     {
         $subFormula = new FormulaBuilder($this);
         $op = new Div($subFormula);
@@ -246,7 +246,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @return FormulaBuilder|FormulaBuilderContract
      * @throws Exception\FormulaException
      */
-    public function mulNestedFormula()
+    public function mulNestedFormula(): FormulaBuilderContract
     {
         $subFormula = new FormulaBuilder($this);
         $op = new Mul($subFormula);
@@ -300,7 +300,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @param int $percent
      * @return FormulaBuilderContract|$this
      */
-    public function addPercent($percent = 0)
+    public function addPercent($percent = 0): FormulaBuilderContract
     {
         $this->percent += $percent;
 
@@ -312,7 +312,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * @param int $percent
      * @return FormulaBuilderContract|$this
      */
-    public function subPercent($percent = 0)
+    public function subPercent($percent = 0): FormulaBuilderContract
     {
         $this->percent -= $percent;
 
@@ -351,7 +351,7 @@ class FormulaBuilder implements FormulaBuilderContract
      * For the compatibility and having opportunity to getting nested formulas
      * @return $this|FormulaBuilderContract
      */
-    public function getVar()
+    public function getVar(): FormulaBuilderContract
     {
         return $this;
     }

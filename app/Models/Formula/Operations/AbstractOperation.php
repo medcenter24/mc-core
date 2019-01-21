@@ -54,6 +54,9 @@ abstract class AbstractOperation implements Operation
         return $this->variable->varView();
     }
 
+    /**
+     * @return FormulaBuilder|Variable
+     */
     public function getVar()
     {
         return $this->variable;

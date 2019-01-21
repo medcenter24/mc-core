@@ -23,16 +23,6 @@ class FormulaViewService
     public function render(FormulaBuilder $formula): string
     {
         $collection = $formula->getFormulaCollection()->getIterator();
-        return $this->showFormula($collection);
-    }
-
-    /**
-     * @param ArrayIterator $collection
-     * @return string
-     * @throws Throwable
-     */
-    private function showFormula(ArrayIterator $collection): string
-    {
         $strFormula = '';
         if ($collection->count()) {
             $first = true;
@@ -40,14 +30,22 @@ class FormulaViewService
                 /** @var \App\Contract\Formula\Operation $operation */
                 $operation = $collection->current();
                 $var = $operation->getVar();
+                if ($var instanceof FormulaBuilder) {
+                    $part = $this->render($var);
+                } else {
+                    $part = $operation->varView();
+                }
+
 
                 if ($operation->leftSignView(!$first)) {
                     $strFormula .= $operation->leftSignView();
                 }
 
-                $strFormula .= $var instanceof FormulaBuilder
-                    ? '( ' . $this->render($var) . ' )'
-                    : $operation->varView();
+                if ($part) {
+                    $strFormula .= preg_match('/^[0-9\.\-]+$/', $part) ? $part : '( ' . $part . ' )';
+                } else {
+                    $strFormula .= '0';
+                }
 
                 if ($operation->rightSignView()) {
                     $strFormula .= $operation->rightSignView();

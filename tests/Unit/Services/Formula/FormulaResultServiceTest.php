@@ -17,7 +17,7 @@ class FormulaResultServiceTest extends AbstractDataProvider
      */
     private $service;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->service = new FormulaResultService();
@@ -31,7 +31,7 @@ class FormulaResultServiceTest extends AbstractDataProvider
      * @param string $description
      * @throws \Throwable
      */
-    public function testResult(FormulaBuilder $builder, $view = '', $expectedResult = 0, $description = '')
+    public function testResult(FormulaBuilder $builder, $view = '', $expectedResult = 0, $description = ''): void
     {
         self::assertEquals($expectedResult, $this->service->calculate($builder), $description);
     }

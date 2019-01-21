@@ -13,23 +13,23 @@ interface Operation
     /**
      * @return string
      */
-    public function varView();
+    public function varView() : string ;
 
     /**
      * @param bool $visible
      * @return string
      */
-    public function leftSignView(bool $visible = true);
+    public function leftSignView(bool $visible = true) : string ;
 
     /**
      * @param bool $visible
      * @return string
      */
-    public function rightSignView(bool $visible = true);
+    public function rightSignView(bool $visible = true) : string ;
 
     /**
      * Getting stored variable
-     * @return mixed
+     * @return FormulaBuilder|Variable
      */
     public function getVar();
 
@@ -37,7 +37,7 @@ interface Operation
      * Weight of the action (mul|div|percent needs to be done firstly)
      * @return  int
      */
-    public function getWeight();
+    public function getWeight(): int ;
 
     /**
      * Runs operations between variable and a result

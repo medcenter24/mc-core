@@ -26,12 +26,35 @@ class CaseControllerFinanceActionTest extends TestCase
         $response->assertJson([]);
     }
 
-    public function testGetFinance(): void {
+    public function testGetFinanceWithoutCondition(): void {
         $accident = factory(Accident::class)->create();
         factory(FinanceCurrency::class)->create();
         $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
-        $data = $response->getContent();
-        $response->assertStatus(404);
-        $response->assertJson([]);
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'type'  => 'income',
+                    'loading' => false,
+                    'value' => 0,
+                    'currency' => [],
+                    'formula' => '0.00 - 0.00',
+                ],
+                [
+                    'type' => 'assistant',
+                    'loading' => false,
+                    'value' => 0,
+                    'currency' => [],
+                    'formula' => '0.00',
+                ],
+                [
+                    'type' => 'caseable',
+                    'loading' => false,
+                    'value' => 0,
+                    'currency' => [],
+                    'formula' => '0.00',
+                ],
+            ],
+        ]);
     }
 }

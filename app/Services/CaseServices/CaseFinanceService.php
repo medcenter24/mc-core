@@ -77,6 +77,7 @@ class CaseFinanceService
     public function saveCondition(CaseFinanceCondition $condition, $id = 0)
     {
         if ($id) {
+            /** @var FinanceCondition $financeCondition */
             $financeCondition = FinanceCondition::findOrFail($id);
             $financeCondition->title = $condition->getTitle();
             $financeCondition->value = $condition->getValue();
@@ -180,6 +181,8 @@ class CaseFinanceService
             // calculate formula by conditions
             if ($conditions->count()) {
                 $formula = $this->formulaService->createFormulaFromConditions($conditions);
+            } else {
+                $formula->addFloat(0); // to have 0 instead of ''
             }
         }
         return $formula;
@@ -226,7 +229,7 @@ class CaseFinanceService
      * @return FormulaBuilder
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function getFromAssistantPaymentFormula(Accident $accident)
+    public function getFromAssistantPaymentFormula(Accident $accident): FormulaBuilder
     {
         $formula = $this->formulaService->createFormula();
         // check that the value was not stored yet
@@ -292,7 +295,7 @@ class CaseFinanceService
      * @param $className
      * @param $jsonKey
      */
-    private function addCondition(CaseFinanceCondition &$toCondition, FinanceRequest $request, $className, $jsonKey)
+    private function addCondition(CaseFinanceCondition &$toCondition, FinanceRequest $request, $className, $jsonKey): void
     {
         $data = $request->json($jsonKey, []);
         if ($data && count($data)) {

@@ -61,13 +61,13 @@ class CaseFinanceServiceTest extends TestCase
         $financeConditionServiceMock->findConditions(Argument::any())
             ->shouldBeCalledTimes($this->getExpectation('financeConditionServiceMock->findConditions', $expects))
             ->will(function ($args) {
-            if (key_exists(DoctorAccident::class, $args[0])) {
+            if (array_key_exists(DoctorAccident::class, $args[0])) {
                 if (!$args[0][DoctorAccident::class]) {
                     return collect([]);
                 } else {
                     return collect([1]);
                 }
-            } elseif (key_exists(HospitalAccident::class, $args[0])) {
+            } elseif (array_key_exists(HospitalAccident::class, $args[0])) {
                 if (!$args[0][HospitalAccident::class]) {
                     return collect([]);
                 } else {

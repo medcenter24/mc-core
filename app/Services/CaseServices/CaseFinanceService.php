@@ -25,6 +25,7 @@ use App\Models\Formula\FormulaBuilder;
 use App\Services\AccidentService;
 use App\Services\FinanceConditionService;
 use App\Services\Formula\FormulaService;
+use App\Contract\Formula\FormulaBuilder as FormulaBuilderContract;
 
 class CaseFinanceService
 {
@@ -229,7 +230,7 @@ class CaseFinanceService
      * @return FormulaBuilder
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function getFromAssistantPaymentFormula(Accident $accident): FormulaBuilder
+    public function getFromAssistantPaymentFormula(Accident $accident): FormulaBuilderContract
     {
         $formula = $this->formulaService->createFormula();
         // check that the value was not stored yet

@@ -80,7 +80,7 @@ class CaseFinanceCondition
      * @param int $id
      * @return $this
      */
-    public function if(string $modelName, int $id)
+    public function if(string $modelName, int $id): self
     {
         $op = new IfOperation($modelName, $id);
         $this->condition->push($op);
@@ -92,7 +92,7 @@ class CaseFinanceCondition
      * @param int $price
      * @return $this
      */
-    public function thenValue($price = 0)
+    public function thenValue($price = 0): self
     {
         $this->value = $price;
         return $this;
@@ -101,7 +101,7 @@ class CaseFinanceCondition
     /**
      * @return int
      */
-    public function getValue()
+    public function getValue(): int
     {
         return $this->value;
     }
@@ -111,7 +111,7 @@ class CaseFinanceCondition
      * @param $currencyId
      * @return $this
      */
-    public function setCurrency($currencyId)
+    public function setCurrency($currencyId): self
     {
         $this->currencyId = $currencyId;
         return $this;
@@ -120,7 +120,7 @@ class CaseFinanceCondition
     /**
      * @return int
      */
-    public function getCurrencyId()
+    public function getCurrencyId(): int
     {
         return $this->currencyId;
     }
@@ -130,7 +130,7 @@ class CaseFinanceCondition
      * @param bool $value
      * @return $this
      */
-    public function setCurrencyMode($value = true)
+    public function setCurrencyMode($value = true): self
     {
         $this->currencyMode = $value;
         return $this;
@@ -140,7 +140,7 @@ class CaseFinanceCondition
      * Checks if the current mode is a percent mode
      * @return bool
      */
-    public function getCurrencyMode()
+    public function getCurrencyMode(): bool
     {
         return $this->currencyMode;
     }
@@ -148,7 +148,7 @@ class CaseFinanceCondition
     /**
      * @return Collection
      */
-    public function getCondition()
+    public function getCondition(): Collection
     {
         return $this->condition;
     }
@@ -158,7 +158,7 @@ class CaseFinanceCondition
      * @param string $type
      * @return $this
      */
-    public function setConditionType($type = 'add')
+    public function setConditionType($type = 'add'): self
     {
         $this->conditionType = $type;
         return $this;
@@ -168,7 +168,7 @@ class CaseFinanceCondition
      *
      * @return string
      */
-    public function getConditionType()
+    public function getConditionType(): string
     {
         return $this->conditionType;
     }
@@ -177,7 +177,7 @@ class CaseFinanceCondition
      * @param string $title
      * @return $this
      */
-    public function setTitle($title = '')
+    public function setTitle($title = ''): self
     {
         $this->title = $title;
         return $this;
@@ -186,7 +186,7 @@ class CaseFinanceCondition
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -195,7 +195,7 @@ class CaseFinanceCondition
      * @param string $model
      * @return $this
      */
-    public function setModel(string $model = '')
+    public function setModel(string $model = ''): self
     {
         $this->model = $model;
         return $this;
@@ -204,7 +204,7 @@ class CaseFinanceCondition
     /**
      * @return string
      */
-    public function getModel()
+    public function getModel(): string
     {
         return $this->model;
     }

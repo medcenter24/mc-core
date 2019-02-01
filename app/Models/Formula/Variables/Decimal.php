@@ -27,8 +27,11 @@ class Decimal implements Variable
      * @param $var
      * @param int $precision
      */
-    public function __construct($var, int $precision = 2)
+    public function __construct($var, int $precision = null)
     {
+        if ($precision === null) {
+            $precision = 2;
+        }
         $this->var = round((float) $var, $precision);
         $this->precision = $precision;
     }

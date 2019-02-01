@@ -21,7 +21,7 @@ interface Variable extends FormulaResultable
      * Return view (string) of this formatted variable
      * @return string
      */
-    public function varView();
+    public function varView(): string;
 
     /**
      * Return variable formatted to their type

@@ -17,10 +17,10 @@ use Illuminate\Support\Collection;
 class FormulaService
 {
     /**
-     * @param FormulaBuilder|null $parent
+     * @param FormulaBuilderInterface|null $parent
      * @return FormulaBuilder
      */
-    public function createFormula(FormulaBuilder $parent = null)
+    public function createFormula(FormulaBuilderInterface $parent = null): FormulaBuilderInterface
     {
         return new FormulaBuilder($parent);
     }
@@ -29,7 +29,7 @@ class FormulaService
      * @param Collection $conditions
      * @return FormulaBuilder
      */
-    public function createFormulaFromConditions(Collection $conditions)
+    public function createFormulaFromConditions(Collection $conditions): FormulaBuilderInterface
     {
         $builder = $this->createFormula();
         $conditions->each(function(FinanceCondition $condition) use ($builder) {
@@ -53,7 +53,7 @@ class FormulaService
      * @throws NotImplementedException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    private function currencyOp(FinanceCondition $condition, FormulaBuilderInterface &$builder)
+    private function currencyOp(FinanceCondition $condition, FormulaBuilderInterface $builder): void
     {
         switch ($condition->type) {
             case 'sub':
@@ -78,7 +78,7 @@ class FormulaService
      * @param FormulaBuilderInterface $builder
      * @throws NotImplementedException
      */
-    private function percentOp(FinanceCondition $condition, FormulaBuilderInterface &$builder)
+    private function percentOp(FinanceCondition $condition, FormulaBuilderInterface $builder): void
     {
         switch ($condition->type) {
             case 'sub':

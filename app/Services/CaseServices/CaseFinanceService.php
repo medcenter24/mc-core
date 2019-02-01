@@ -18,6 +18,7 @@ use App\DoctorService;
 use App\Exceptions\InconsistentDataException;
 use App\FinanceCondition;
 use App\FinanceStorage;
+use App\Hospital;
 use App\HospitalAccident;
 use App\Http\Requests\Api\FinanceRequest;
 use App\Models\Cases\Finance\CaseFinanceCondition;
@@ -58,6 +59,14 @@ class CaseFinanceService
         $this->formulaService = $formulaService;
         $this->accidentService = $accidentService;
         $this->financeConditionService = $financeConditionService;
+    }
+
+    /**
+     * @return FormulaBuilderContract
+     */
+    public function newFormula(): FormulaBuilderContract
+    {
+        return $this->formulaService->createFormula();
     }
 
     /**
@@ -116,56 +125,20 @@ class CaseFinanceService
     }
 
     /**
-     * Assistant's income minus doctor's payment or the hospitals' payment
-     * @param Accident $accident
-     * @return FormulaBuilder
-     * @throws InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
-     */
-    public function getIncomeFormula(Accident $accident): \App\Contract\Formula\FormulaBuilder
-    {
-        $formula = $this->formulaService->createFormula();
-        if ($payment = $accident->getIncomePayment) {
-            $formula->addFloat($payment->value);
-        } else {
-            $incomeFormula = $this->getFromAssistantPaymentFormula ($accident);
-            switch ($accident->caseable_type) {
-                case DoctorAccident::class :
-                    $caseablePayment = $this->getToDoctorPaymentFormula($accident);
-                    break;
-                case HospitalAccident::class :
-                    $caseablePayment = $this->getToHospitalPaymentFormula($accident);;
-                    break;
-                default:
-                    $caseablePayment = 0;
-            }
-
-            // income - caseablePayment
-            $formula
-                ->subNestedFormula()
-                    ->addFloat($incomeFormula)
-                ->closeNestedFormula()
-                ->subNestedFormula()
-                    ->addFloat($caseablePayment)
-                ->closeNestedFormula();
-        }
-        return $formula;
-    }
-
-    /**
      * Payment from the company to the doctor
      * @param Accident $accident
      * @return mixed
      * @throws InconsistentDataException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function getToDoctorPaymentFormula(Accident $accident)
+    public function getToDoctorFormula(Accident $accident): FormulaBuilderContract
     {
         if ($accident->getAttribute('caseable_type') !== DoctorAccident::class) {
             throw new InconsistentDataException('DoctorAccident only');
         }
 
-        $formula = $this->formulaService->createFormula();
+        /** @var FormulaBuilder $formula */
+        $formula = $this->newFormula();
         if ($payment = $accident->paymentToCaseable) {
             $formula->addFloat($payment->value);
         } else {
@@ -177,33 +150,33 @@ class CaseFinanceService
                 City::class => $accident->city_id,
                 DoctorService::class => $doctorServices ? $doctorServices->get('id') : false,
             ];
-            $conditions = $this->financeConditionService->findConditions($conditionProps);
+            $conditions = $this->financeConditionService->findConditions(Doctor::class, $conditionProps);
 
             // calculate formula by conditions
             if ($conditions->count()) {
                 $formula = $this->formulaService->createFormulaFromConditions($conditions);
             } else {
-                $formula->addFloat(0); // to have 0 instead of ''
+                $formula->addFloat(); // to have 0 instead of ''
             }
         }
         return $formula;
     }
 
     /**
+     * Static price or price from the invoice
      * @param Accident $accident
      * @return FormulaBuilder
      * @throws InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function getToHospitalPaymentFormula(Accident $accident)
+    public function getToHospitalFormula(Accident $accident): FormulaBuilderContract
     {
-        if ($accident->caseable_type != HospitalAccident::class) {
+        if ($accident->caseable_type !== HospitalAccident::class) {
             throw new InconsistentDataException('Hospital Case only');
         }
 
-        $formula = $this->formulaService->createFormula();
-        if ($payment = $accident->paymentToCaseable) {
-            $formula->addFloat($payment->value);
+        $formula = $this->newFormula();
+        if ($accident->paymentToCaseable && $accident->paymentToCaseable->fixed) {
+            $formula->addFloat($accident->paymentToCaseable->value);
         } else {
 
             $conditionProps = [
@@ -212,7 +185,7 @@ class CaseFinanceService
                 Assistant::class => $accident->assistant_id,
                 City::class => $accident->city_id,
             ];
-            $conditions = $this->financeConditionService->findConditions($conditionProps);
+            $conditions = $this->financeConditionService->findConditions(Hospital::class, $conditionProps);
 
             // calculate formula by conditions
             if ($conditions->count()) {
@@ -228,16 +201,15 @@ class CaseFinanceService
      * Price from the invoice
      * @param Accident $accident
      * @return FormulaBuilder
-     * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function getFromAssistantPaymentFormula(Accident $accident): FormulaBuilderContract
+    public function getFromAssistantFormula(Accident $accident): FormulaBuilderContract
     {
-        $formula = $this->formulaService->createFormula();
+        $formula = $this->newFormula();
         // check that the value was not stored yet
-        if ($payment = $accident->paymentFromAssistant) {
+        if ($accident->paymentFromAssistant && $accident->paymentFromAssistant->fixed) {
             // if stored then show this value
             // to do add currencies convert FinanceService::convert
-            $formula->addFloat($payment->value);
+            $formula->addFloat($accident->paymentFromAssistant->value);
         } else {
             // if doesn't stored - calculate
             // 1. take amount from the invoice from assistant
@@ -253,7 +225,7 @@ class CaseFinanceService
             if ($accident->getAttribute('handling_time')) {
                 $conditionProps[DatePeriod::class] = $accident->getAttribute('handling_time');
             }
-            $conditions = $this->financeConditionService->findConditions($conditionProps);
+            $conditions = $this->financeConditionService->findConditions(Assistant::class, $conditionProps);
             if ($conditions->count()) {
                 $formula = $this->formulaService->createFormulaFromConditions($conditions);
             }
@@ -261,6 +233,19 @@ class CaseFinanceService
         }
 
         return $formula;
+    }
+
+    /**
+     * @param Accident $accident
+     * @return FormulaBuilderContract
+     * @throws InconsistentDataException
+     * @throws \App\Models\Formula\Exception\FormulaException
+     */
+    public function getToCaseableFormula(Accident $accident): FormulaBuilderContract
+    {
+        return $accident->getAttribute('caseable_type') === DoctorAccident::class
+            ? $this->getToDoctorFormula($accident)
+            : $this->getToHospitalFormula($accident);
     }
 
     /**
@@ -296,7 +281,7 @@ class CaseFinanceService
      * @param $className
      * @param $jsonKey
      */
-    private function addCondition(CaseFinanceCondition &$toCondition, FinanceRequest $request, $className, $jsonKey): void
+    private function addCondition(CaseFinanceCondition $toCondition, FinanceRequest $request, $className, $jsonKey): void
     {
         $data = $request->json($jsonKey, []);
         if ($data && count($data)) {

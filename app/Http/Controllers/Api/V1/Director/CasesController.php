@@ -537,15 +537,24 @@ class CasesController extends ApiController
         foreach ($types as $type) {
             switch ($type) {
                 case 'income':
-                    $formula = $financeService->getIncomeFormula($accident);
+                    $formula = $financeService->newFormula();
+                    if ($accident->getIncomePayment && $accident->getIncomePayment->fixed) {
+                        $formula->addFloat($accident->getIncomePayment->value);
+                    } else {
+                        // I need to sub 2 different results instead of sub formula builders
+                        // to not get 1. big formula 2. data inconsistencies
+                        $formula
+                            ->subFloat($formulaResultService->calculate($financeService->getFromAssistantFormula($accident)))
+                            ->subFloat($formulaResultService->calculate($financeService->getToCaseableFormula($accident)));
+                    }
                     break;
                 case 'assistant':
-                    $formula = $financeService->getFromAssistantPaymentFormula($accident);
+                    $formula = $financeService->getFromAssistantFormula($accident);
                     break;
                 case 'caseable':
-                    $formula = $accident->getAttribute('caseable_type') === DoctorAccident::class
-                        ? $financeService->getToDoctorPaymentFormula($accident)
-                        : $financeService->getToHospitalPaymentFormula($accident);
+                    // answer: I need this formula just to use it for consistency
+                    // so in the formula I just need to set price from the invoice
+                    $formula = $financeService->getToCaseableFormula($accident);
                     break;
                 default:
                     $this->response->error('undefined finance type', 500);

@@ -380,6 +380,22 @@ class AbstractDataProvider extends TestCase
                 1,
                 'Avoid extra brackets and empty brackets 2',
             ],
+            [
+                (new FormulaBuilder())
+                    ->addNestedFormula()
+                        ->addFloat(
+                            (new FormulaBuilder())
+                                ->addFloat(10)
+                                ->addFloat(7)
+                                ->subPercent(1)
+                                ->getBaseFormula()
+                        )
+                    ->closeNestedFormula()
+                    ->getBaseFormula(),
+                '( ( ( 10.00 + 7.00 ) * 99% ) )',
+                16.83,
+                'Avoid extra brackets and empty brackets 2',
+            ]
         ];
     }
 }

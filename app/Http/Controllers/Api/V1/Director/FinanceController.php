@@ -12,6 +12,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\FinanceRequest;
 use App\Services\CaseServices\CaseFinanceService;
 use App\Transformers\FinanceConditionTransformer;
+use Dingo\Api\Http\Response;
 use Illuminate\Http\Request;
 
 class FinanceController extends ApiController
@@ -30,7 +31,7 @@ class FinanceController extends ApiController
         return new FinanceConditionTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return FinanceCondition::class;
     }
@@ -39,7 +40,7 @@ class FinanceController extends ApiController
      * @param $id
      * @return \Dingo\Api\Http\Response
      */
-    public function show($id)
+    public function show($id): Response
     {
         $finance = FinanceCondition::findOrFail($id);
         return $this->response->item($finance, new FinanceConditionTransformer());
@@ -52,7 +53,7 @@ class FinanceController extends ApiController
      * @return \Dingo\Api\Http\Response
      * @throws \App\Exceptions\InconsistentDataException
      */
-    public function store(FinanceRequest $request, CaseFinanceService $caseFinanceService)
+    public function store(FinanceRequest $request, CaseFinanceService $caseFinanceService): Response
     {
         $financeCondition = $caseFinanceService->updateFinanceConditionByRequest($request);
         $transformer = new FinanceConditionTransformer();

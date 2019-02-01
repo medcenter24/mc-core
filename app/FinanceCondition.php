@@ -8,6 +8,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -44,7 +45,7 @@ class FinanceCondition extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function conditions()
+    public function conditions(): HasMany
     {
         return $this->hasMany(FinanceStorage::class);
     }

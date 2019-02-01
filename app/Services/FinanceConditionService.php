@@ -8,7 +8,7 @@
 namespace App\Services;
 
 
-use App\Accident;
+use App\Assistant;
 use App\DatePeriod;
 use App\DatePeriodInterpretation;
 use App\Doctor;
@@ -16,6 +16,7 @@ use App\DoctorService;
 use App\FinanceCondition;
 use App\FinanceStorage;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class FinanceConditionService
@@ -63,14 +64,15 @@ class FinanceConditionService
     public function allowedModels(): array
     {
         return [
-            Accident::class,
+            Assistant::class,
             Doctor::class,
         ];
     }
 
     /**
      *
-     * @param array $models
+     * @param string $model - allowedModels
+     * @param array $filters
      *  [
      *      Doctor::class => 1
      *      DatePeriod::class => Carbon,
@@ -82,46 +84,100 @@ class FinanceConditionService
      *
      * @return Collection
      */
-    public function findConditions($models = []): Collection
+    public function findConditions($model, $filters = []): Collection
     {
-        $result = collect([]);
-        if (count($models)) {
-            $storageQuery = FinanceStorage::query();
-            foreach ($models as $key => $val) {
-                if (!$val) {
-                    continue;
-                }
-                switch ($key) {
-                    case DatePeriod::class :
-                        /** @var Carbon $date */
-                        $date = $val;
-                        $time = $date->toTimeString();
-                        $periodIds = DatePeriodInterpretation::query()
-                            ->where('day_of_week', $date->dayOfWeek)
-                            ->where('from', '>=', $time)
-                            ->where('to', '<=', $time)
-                            ->get(['date_period_id']);
-                        if ($periodIds->count()) {
-                            $storageQuery->where('model', $key)->whereIn('model_id', $periodIds->get('date_period_id'));
-                        }
-                        break;
-                    case DoctorService::class :
-                        if ($val && is_array($val) && count($val)) {
-                            $storageQuery->where('model', $key)->whereIn('model_id', $val);
-                        }
-                        break;
-                    default:
-                        $storageQuery->where('model', $key)->where('model_id', $val);
-                }
+        $transformedFilters = $this->getFilters($filters);
+        return $this->find($model, $transformedFilters);
+    }
+
+    /**\
+     * @param array $models
+     * @return Collection
+     */
+    private function getFilters(array $models = []): Collection
+    {
+        $filters = collect();
+        foreach ($models as $model => $val) {
+            if (!$val) {
+                continue;
             }
 
-            $stored = $storageQuery
+            switch ($model) {
+                // looking for periods where current time covered
+                case DatePeriod::class :
+                    /** @var Carbon $date */
+                    $date = $val;
+                    $time = $date->toTimeString();
+                    $periodIds = DatePeriodInterpretation::query()
+                        ->where('day_of_week', $date->dayOfWeek)
+                        ->where('from', '>=', $time)
+                        ->where('to', '<=', $time)
+                        ->get(['date_period_id']);
+                    if ($periodIds->count()) {
+                        $filters->put($model, $periodIds->get('date_period_id'));
+                    }
+
+                    break;
+
+                case DoctorService::class :
+                    // only arrays allowed
+                    if ($val && is_array($val) && count($val)) {
+                        $filters->put($model, $val);
+                    }
+
+                    break;
+                default:
+                    $filters->put($model, $val);
+            }
+        }
+
+        return $filters;
+    }
+
+    /**
+     * @param string $model
+     * @param Collection $filters
+     * @return Collection
+     */
+    private function find(string $model, Collection $filters): Collection
+    {
+        if ($filters->count()) {
+
+            // \Illuminate\Support\Facades\DB::enableQueryLog();
+
+            /** @var \Illuminate\Database\Eloquent\Builder $storageQuery */
+            $storageQuery = FinanceStorage::query();
+            $filters->each(function ($val, $key) use ($storageQuery) {
+                $storageQuery->orWhere(function(Builder $query) use ($val, $key) {
+                    $query->where('model', $key);
+                    if (is_array($val)) {
+                        $query->whereIn('model_id', $val);
+                    } else {
+                        $query->where('model_id', $val);
+                    }
+                });
+            });
+
+            $storedConditions = $storageQuery
                 ->groupBy('finance_condition_id')
                 ->get(['finance_condition_id']);
 
-            $result = FinanceCondition::query()->whereIn('id', $stored)->get();
+            // $query = \Illuminate\Support\Facades\DB::getQueryLog();
+            $conditions = FinanceCondition::query()
+                ->where(function ($q) use ($model, $storedConditions) {
+                    // founded by stored conditions
+                    $q->where('model', $model)
+                        ->whereIn('id', $storedConditions);
+                })->orWhere( function ($q) use ($model) {
+                    // general conditions for the $model (without stored conditions)
+                    $q->where('model', $model)->doesntHave('conditions');
+                })
+                ->withCount('conditions')
+                ->get();
+        } else {
+            $conditions = collect();
         }
 
-        return $result;
+        return $conditions;
     }
 }

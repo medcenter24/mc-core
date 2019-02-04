@@ -25,9 +25,6 @@ class CreateHospitalAccidentsTable extends Migration
             // link to the form
             $table->unsignedInteger('hospital_guarantee_id')->default(0)->index();
             $table->unsignedInteger('hospital_invoice_id')->default(0)->index();
-            $table->unsignedInteger('assistant_invoice_id')->default(0)->index();
-            // link to the form
-            $table->unsignedInteger('assistant_guarantee_id')->default(0)->index();
             $table->timestamps();
             $table->softDeletes();
         });

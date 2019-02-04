@@ -8,6 +8,10 @@
 namespace App;
 
 use App\Services\AccidentStatusesService;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * Case|Accident|...
@@ -73,7 +77,7 @@ class Accident extends AccidentAbstract
      */
     private $statusUpdating = false;
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
@@ -82,22 +86,25 @@ class Accident extends AccidentAbstract
         });
     }
 
-    public function isStatusUpdatingRunned()
+    public function isStatusUpdatingRun(): bool
     {
         return $this->statusUpdating;
     }
 
-    public function runStatusUpdating()
+    public function runStatusUpdating(): void
     {
         $this->statusUpdating = true;
     }
 
-    public function stopStatusUpdating()
+    public function stopStatusUpdating(): void
     {
         $this->statusUpdating = false;
     }
 
-    public function createdBy()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
@@ -106,16 +113,16 @@ class Accident extends AccidentAbstract
      * Payment either to doctor or hospital
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function paymentToCaseable()
+    public function paymentToCaseable(): BelongsTo
     {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(Payment::class, 'caseable_payment_id');
     }
 
     /**
      * Calculated income
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function getIncomePayment()
+    public function getIncomePayment(): BelongsTo
     {
         return $this->belongsTo(Payment::class);
     }
@@ -124,7 +131,7 @@ class Accident extends AccidentAbstract
      * Payment from the assistant
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function paymentFromAssistant()
+    public function paymentFromAssistant(): BelongsTo
     {
         return $this->belongsTo(Payment::class);
     }
@@ -134,7 +141,7 @@ class Accident extends AccidentAbstract
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function checkpoints()
+    public function checkpoints(): BelongsToMany
     {
         return $this->belongsToMany(AccidentCheckpoint::class);
     }
@@ -144,7 +151,7 @@ class Accident extends AccidentAbstract
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function history()
+    public function history(): MorphMany
     {
         return $this->morphMany(AccidentStatusHistory::class, 'historyable');
     }
@@ -153,7 +160,7 @@ class Accident extends AccidentAbstract
      * Assistant company
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function assistant()
+    public function assistant(): BelongsTo
     {
         return $this->belongsTo(Assistant::class);
     }
@@ -162,17 +169,17 @@ class Accident extends AccidentAbstract
      * Patient from the accident
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function patient()
+    public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
     }
 
-    public function city()
+    public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);
     }
 
-    public function type()
+    public function type(): BelongsTo
     {
         return $this->belongsTo(AccidentType::class, 'accident_type_id');
     }
@@ -180,7 +187,7 @@ class Accident extends AccidentAbstract
     /**
      * Accident report stored as a FormReport element (which use Assignment form template)
      */
-    public function formReport()
+    public function formReport(): BelongsTo
     {
         return $this->belongsTo(FormReport::class);
     }
@@ -188,25 +195,15 @@ class Accident extends AccidentAbstract
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function caseable()
+    public function caseable(): MorphTo
     {
         return $this->morphTo();
     }
 
     /**
-     * Photos of the documents from the patient
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function documents()
-    {
-        return $this->morphToMany(Document::class, 'documentable');
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function accidentStatus()
+    public function accidentStatus(): BelongsTo
     {
         return $this->belongsTo(AccidentStatus::class);
     }
@@ -214,7 +211,7 @@ class Accident extends AccidentAbstract
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function assistantInvoice()
+    public function assistantInvoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
     }
@@ -222,7 +219,7 @@ class Accident extends AccidentAbstract
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function assistantGuarantee()
+    public function assistantGuarantee(): BelongsTo
     {
         return $this->belongsTo(Upload::class);
     }

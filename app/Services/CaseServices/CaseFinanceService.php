@@ -139,8 +139,8 @@ class CaseFinanceService
 
         /** @var FormulaBuilder $formula */
         $formula = $this->newFormula();
-        if ($payment = $accident->paymentToCaseable) {
-            $formula->addFloat($payment->value);
+        if ($accident->paymentToCaseable && $accident->paymentToCaseable->fixed) {
+            $formula->addFloat($accident->paymentToCaseable->value);
         } else {
             $doctorServices = $this->accidentService->getAccidentServices($accident);
             $conditionProps = [
@@ -165,8 +165,9 @@ class CaseFinanceService
     /**
      * Static price or price from the invoice
      * @param Accident $accident
-     * @return FormulaBuilder
+     * @return FormulaBuilderContract
      * @throws InconsistentDataException
+     * @throws \App\Models\Formula\Exception\FormulaException
      */
     public function getToHospitalFormula(Accident $accident): FormulaBuilderContract
     {
@@ -178,7 +179,7 @@ class CaseFinanceService
         if ($accident->paymentToCaseable && $accident->paymentToCaseable->fixed) {
             $formula->addFloat($accident->paymentToCaseable->value);
         } else {
-
+            // maybe I need this to have a possibility to influence on the value?
             $conditionProps = [
                 DatePeriod::class => $accident->handling_time,
                 HospitalAccident::class => $accident->caseable_id,
@@ -190,6 +191,11 @@ class CaseFinanceService
             // calculate formula by conditions
             if ($conditions->count()) {
                 $formula = $this->formulaService->createFormulaFromConditions($conditions);
+            }
+
+            // Invoice amount
+            if ($accident->assistantInvoice && $accident->assistantInvoice->payment) {
+                $formula->addFloat($accident->assistantInvoice->payment->value);
             }
         }
 

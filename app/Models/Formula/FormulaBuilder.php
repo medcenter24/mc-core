@@ -355,4 +355,12 @@ class FormulaBuilder implements FormulaBuilderContract
     {
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasConditions(): bool
+    {
+        return (bool) $this->formula->count();
+    }
 }

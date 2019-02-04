@@ -147,4 +147,10 @@ interface FormulaBuilder
      * @return FormulaBuilder
      */
     public function getVar(): FormulaBuilder;
+
+    /**
+     * If formula has conditions
+     * @return bool
+     */
+    public function hasConditions(): bool;
 }

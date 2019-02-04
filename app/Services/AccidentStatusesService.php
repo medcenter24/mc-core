@@ -80,7 +80,7 @@ class AccidentStatusesService
      */
     public function updateAccidentStatus(Accident $accident, $comment = 'Accident updated')
     {
-        if ($accident->isStatusUpdatingRunned()) {
+        if ($accident->isStatusUpdatingRun()) {
             $accident->stopStatusUpdating();
             return; // skip saving of the status
         }

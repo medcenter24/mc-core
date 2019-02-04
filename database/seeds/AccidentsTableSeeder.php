@@ -58,6 +58,13 @@ class AccidentsTableSeeder extends Seeder
                 'city_id' => function () {
                     return factory(\App\City::class)->create();
                 },
+                /*'assistant_invoice_id' => function () {
+                    return factory(\App\Invoice::class)->create();
+                },
+                // link to the form
+                'assistant_guarantee_id' => function () {
+                    return factory(\App\Invoice::class)->create();
+                }*/
             ])->each(function (Accident $accident) {
                 $accident->checkpoints()->save(factory(AccidentCheckpoint::class)->create());
 

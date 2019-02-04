@@ -98,4 +98,8 @@ class FormulaBuilderUnit implements FormulaBuilder
     {
         return $this;
     }
+    public function hasConditions(): bool
+    {
+        return true;
+    }
 }

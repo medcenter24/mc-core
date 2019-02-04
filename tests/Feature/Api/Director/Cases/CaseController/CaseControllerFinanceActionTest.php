@@ -14,6 +14,10 @@ use App\Doctor;
 use App\FinanceCondition;
 use App\FinanceCurrency;
 use App\FinanceStorage;
+use App\Hospital;
+use App\HospitalAccident;
+use App\Invoice;
+use App\Payment;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Tests\Feature\Api\JwtHeaders;
@@ -126,7 +130,8 @@ class CaseControllerFinanceActionTest extends TestCase
 
         // condition
         // each accident has price 10
-        factory(FinanceCondition::class)->create([
+        FinanceCondition::create([
+            'title' => 'test',
             'type' => 'add',
             'value' => '10',
             'currency_id' => $currency->id,
@@ -135,34 +140,37 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // condition for the city
-        factory(FinanceStorage::class)->create([
-            'finance_condition_id' => factory(FinanceCondition::class)->create([
+        FinanceStorage::create([
+            'finance_condition_id' => FinanceCondition::create([
+                'title' => 'test',
                 'type' => 'sub',
                 'value' => '1',
                 'currency_id' => $currency->id,
                 'currency_mode' => 'percent',
                 'model' => Assistant::class,
-            ]),
+            ])->id,
             'model' => City::class,
             'model_id' => $city->id,
         ]);
 
         // condition for the city2
-        factory(FinanceStorage::class)->create([
-            'finance_condition_id' => factory(FinanceCondition::class)->create([
+        FinanceStorage::create([
+            'finance_condition_id' => FinanceCondition::create([
+                'title' => 'test',
                 'type' => 'add',
                 'value' => '500',
                 'currency_id' => $currency->id,
                 'currency_mode' => 'currency',
                 'model' => Assistant::class,
-            ]),
+            ])->id,
             'model' => City::class,
             'model_id' => $city2->id,
         ]);
 
         // second condition for the city
-        factory(FinanceStorage::class)->create([
-            'finance_condition_id' => factory(FinanceCondition::class)->create([
+        FinanceStorage::create([
+            'finance_condition_id' => FinanceCondition::create([
+                'title' => 'test',
                 'type' => 'add',
                 'value' => '7',
                 'currency_id' => $currency->id,
@@ -182,14 +190,14 @@ class CaseControllerFinanceActionTest extends TestCase
                     'loading' => false,
                     'value' => 16.83,
                     'currency' => [],
-                    'formula' => '( (10.00 + 0.00) ) - 0.07',
+                    'formula' => '16.83 - 0.00',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'value' => 10,
+                    'value' => 16.83,
                     'currency' => [],
-                    'formula' => '10.00 + 7.00',
+                    'formula' => '( 10.00 + 7.00 ) * 99%',
                 ],
                 [
                     'type' => 'caseable',
@@ -252,6 +260,111 @@ class CaseControllerFinanceActionTest extends TestCase
     public function testMixedConditions(): void
     {
         $accident = factory(Accident::class)->create();
+        $currency = factory(FinanceCurrency::class)->create();
+
+        // condition
+        // each accident has price 10
+        FinanceCondition::create([
+            'title' => 'test',
+            'type' => 'add',
+            'value' => '10',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'currency',
+            'model' => Assistant::class,
+        ]);
+
+        // each accident has price +3450
+        FinanceCondition::create([
+            'title' => 'test',
+            'type' => 'add',
+            'value' => '3450',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'currency',
+            'model' => Assistant::class,
+        ]);
+
+        // each doctor's case have to be smaller to 5%
+        FinanceCondition::create([
+            'title' => 'test',
+            'type' => 'add',
+            'value' => '5',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'percent',
+            'model' => Assistant::class,
+        ]);
+
+        // each doctor's case have to be smaller to +5%
+        FinanceCondition::create([
+            'title' => 'test',
+            'type' => 'add',
+            'value' => '5',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'percent',
+            'model' => Assistant::class,
+        ]);
+
+        // each doctor's case have to be paid by 4.99
+        FinanceCondition::create([
+            'title' => 'test',
+            'type' => 'add',
+            'value' => '4.991',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'currency',
+            'model' => Doctor::class,
+        ]);
+
+        // each doctor's case have to be also paid by 2039
+        FinanceCondition::create([
+            'title' => 'test',
+            'type' => 'add',
+            'value' => '2039',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'currency',
+            'model' => Doctor::class,
+        ]);
+
+        // each doctor's case have to be smaller to 5%
+        FinanceCondition::create([
+            'title' => 'test',
+            'type' => 'add',
+            'value' => '5',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'percent',
+            'model' => Doctor::class,
+        ]);
+
+        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'type'  => 'income',
+                    'loading' => false,
+                    'value' => 1659.81,
+                    'currency' => [],
+                    'formula' => '3806.00 - 2146.19',
+                ],
+                [
+                    'type' => 'assistant',
+                    'loading' => false,
+                    'value' => 3806.0000000000005,
+                    'currency' => [],
+                    'formula' => '( 10.00 + 3450.00 ) * 110%',
+                ],
+                [
+                    'type' => 'caseable',
+                    'loading' => false,
+                    'value' => 2146.1895,
+                    'currency' => [],
+                    'formula' => '( 4.99 + 2039.00 ) * 105%',
+                ],
+            ],
+        ]);
+    }
+
+    public function testMixedComplexCondition(): void
+    {
+        $accident = factory(Accident::class)->create();
         factory(FinanceCurrency::class)->create();
 
         // condition
@@ -300,11 +413,180 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
     }
 
-    // todo why do I need this hospital condition? if I could only pay the bill according to the invoice from the hospital
+    /**
+     * Checks that Hospital prices are taken from the invoices from the hospital or stored as a fixed payment
+     */
     public function testHospitalCondition(): void
     {
+        $caseable = factory(HospitalAccident::class)->create();
+        $accident = factory(Accident::class)->create([
+            'caseable_type' => HospitalAccident::class,
+            'caseable_id' => $caseable->id,
+        ]);
+        $currency = factory(FinanceCurrency::class)->create();
 
+        // condition
+        // each accident has price 10
+        factory(FinanceCondition::class)->create([
+            'type' => 'add',
+            'value' => '10',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'currency',
+            'model' => Hospital::class,
+        ]);
+
+        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'type'  => 'income',
+                    'loading' => false,
+                    'value' => -10,
+                    'currency' => [],
+                    'formula' => '0.00 - 10.00',
+                ],
+                [
+                    'type' => 'assistant',
+                    'loading' => false,
+                    'value' => 0,
+                    'currency' => [],
+                    'formula' => '0.00',
+                ],
+                [
+                    'type' => 'caseable',
+                    'loading' => false,
+                    'value' => 10,
+                    'currency' => [],
+                    'formula' => '10.00',
+                ],
+            ],
+        ]);
     }
 
-    // todo working here, writing scenarios to have correct results in the json
+    /**
+     * Checks that Hospital prices are taken from the invoices from the hospital or stored as a fixed payment
+     */
+    public function testHospitalInvoiceCondition(): void
+    {
+        $caseable = factory(HospitalAccident::class)->create();
+        $currency = factory(FinanceCurrency::class)->create();
+        $payment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 0,
+            'value' => 5
+        ]);
+        $invoice = factory(Invoice::class)->create([
+            'payment_id' => $payment->id,
+        ]);
+        $accident = factory(Accident::class)->create([
+            'caseable_type' => HospitalAccident::class,
+            'caseable_id' => $caseable->id,
+            'assistant_invoice_id' => $invoice->id,
+        ]);
+
+        // condition
+        // each accident has price 10
+        factory(FinanceCondition::class)->create([
+            'type' => 'add',
+            'value' => '10',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'currency',
+            'model' => Hospital::class,
+        ]);
+
+        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'type'  => 'income',
+                    'loading' => false,
+                    'value' => -15,
+                    'currency' => [],
+                    'formula' => '0.00 - 15.00',
+                ],
+                [
+                    'type' => 'assistant',
+                    'loading' => false,
+                    'value' => 0,
+                    'currency' => [],
+                    'formula' => '0.00',
+                ],
+                [
+                    'type' => 'caseable',
+                    'loading' => false,
+                    'value' => 15,
+                    'currency' => [],
+                    'formula' => '10.00 + 5.00',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Checks that Hospital prices are taken from the invoices from the hospital or stored as a fixed payment
+     */
+    public function testHospitalFixedPayment(): void
+    {
+        $caseable = factory(HospitalAccident::class)->create();
+        $currency = factory(FinanceCurrency::class)->create();
+        $payment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 0,
+            'value' => 5
+        ]);
+        $caseablePayment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 1,
+            'value' => -2
+        ]);
+        $invoice = factory(Invoice::class)->create([
+            'payment_id' => $payment->id,
+        ]);
+        $accident = factory(Accident::class)->create([
+            'caseable_type' => HospitalAccident::class,
+            'caseable_id' => $caseable->id,
+            'assistant_invoice_id' => $invoice->id,
+            'caseable_payment_id' => $caseablePayment->id,
+        ]);
+
+        // condition
+        // each accident has price 10
+        factory(FinanceCondition::class)->create([
+            'type' => 'add',
+            'value' => '10',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'currency',
+            'model' => Hospital::class,
+        ]);
+
+        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'type'  => 'income',
+                    'loading' => false,
+                    'value' => 2,
+                    'currency' => [],
+                    'formula' => '0.00 - -2.00',
+                ],
+                [
+                    'type' => 'assistant',
+                    'loading' => false,
+                    'value' => 0,
+                    'currency' => [],
+                    'formula' => '0.00',
+                ],
+                [
+                    'type' => 'caseable',
+                    'loading' => false,
+                    'value' => -2,
+                    'currency' => [],
+                    'formula' => '-2.00',
+                ],
+            ],
+        ]);
+    }
 }

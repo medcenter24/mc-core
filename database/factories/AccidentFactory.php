@@ -59,5 +59,7 @@ $factory->define(\App\Accident::class, function (Faker $faker) {
         'contacts' => $faker->company . "\n" . $faker->companyEmail . "\n" . $faker->phoneNumber,
         'symptoms' => $faker->paragraphs(4, true),
         'handling_time' => $faker->dateTime(),
+        'assistant_invoice_id' => 0,
+        'assistant_guarantee_id' => 0,
     ];
 });

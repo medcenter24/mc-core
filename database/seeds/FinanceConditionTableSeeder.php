@@ -13,6 +13,6 @@ class FinanceConditionTableSeeder extends Seeder
     public function run()
     {
         FinanceCondition::truncate();
-        factory(FinanceCondition::classz, 3)->create();
+        factory(FinanceCondition::class, 3)->create();
     }
 }

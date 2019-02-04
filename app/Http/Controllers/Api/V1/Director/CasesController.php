@@ -533,11 +533,11 @@ class CasesController extends ApiController
         $financeDataCollection = collect([]);
 
         $types = $request->json('types', ['income', 'assistant', 'caseable']);
-        $formula = null;
+
         foreach ($types as $type) {
+            $formula = $financeService->newFormula();
             switch ($type) {
                 case 'income':
-                    $formula = $financeService->newFormula();
                     if ($accident->getIncomePayment && $accident->getIncomePayment->fixed) {
                         $formula->addFloat($accident->getIncomePayment->value);
                     } else {
@@ -559,6 +559,13 @@ class CasesController extends ApiController
                 default:
                     $this->response->error('undefined finance type', 500);
             }
+
+            if (!$formula->hasConditions()) {
+                $formula->addFloat(0);
+            }
+
+            // to show full formula, not only the part of it
+            $formula = $formula->getBaseFormula();
 
             $typeResult = collect([
                 'type' => $type,

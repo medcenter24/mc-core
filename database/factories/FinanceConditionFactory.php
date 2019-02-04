@@ -16,10 +16,10 @@ $factory->define(FinanceCondition::class, function (Faker $faker) {
     return [
         'created_by' => 0, // default for the system
         'title' => 'Finance condition',
-        'value' => mt_rand(1, 999),
+        'value' => random_int(1, 999),
         'type' => $faker->randomElement($service->getTypes()),
         'currency_id' => 0,
-        'currency_mode' => 'percent',
+        'currency_mode' => $faker->randomElement(['percent', 'currency']),
         'model' => $faker->randomElement([Accident::class, Doctor::class]),
     ];
 });

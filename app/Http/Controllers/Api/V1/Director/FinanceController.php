@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Api\V1\Director;
 use App\FinanceCondition;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\FinanceRequest;
-use App\Services\CaseServices\CaseFinanceService;
+use App\Services\CaseServices\Finance\CaseFinanceService;
 use App\Transformers\FinanceConditionTransformer;
 use Dingo\Api\Http\Response;
 use Illuminate\Http\Request;

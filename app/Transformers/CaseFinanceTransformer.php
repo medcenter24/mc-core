@@ -37,6 +37,7 @@ class CaseFinanceTransformer extends TransformerAbstract
                 'value' => $item->get('value'),
                 'currency' => (new FinanceCurrencyTransformer())->transform($item->get('currency')),
                 'formula' => $item->get('formula'),
+                'fixed' => $item->get('fixed'),
             ];
 
             $iterator->next();

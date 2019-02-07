@@ -8,7 +8,7 @@
 namespace App\Providers;
 
 use App\Services\AccidentService;
-use App\Services\CaseServices\CaseFinanceService;
+use App\Services\CaseServices\Finance\CaseFinanceService;
 use App\Services\FinanceConditionService;
 use App\Services\Formula\FormulaResultService;
 use App\Services\Formula\FormulaService;

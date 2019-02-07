@@ -26,18 +26,17 @@ class FinanceControllerTest extends TestCase
     use JwtHeaders;
     use LoggedUser;
 
-    public function testStoreError()
+    public function testStoreError(): void
     {
         $newFinanceCondition = [];
         $response = $this->json('POST', '/api/director/finance', $newFinanceCondition, $this->headers($this->getUser()));
-
+        $response->assertStatus(422);
         self::assertArrayHasKey('title', $response->json('errors'), 'Error with `title` message exists');
         self::assertArrayHasKey('value', $response->json('errors'), 'Error with `value` message exists');
         self::assertArrayHasKey('currencyMode', $response->json('errors'), 'Error with `currencyMode` message exists');
-        $response->assertStatus(422);
     }
 
-    public function testStoreGlobalRule()
+    public function testStoreGlobalRule(): void
     {
         $newFinanceCondition = [
             'title' => 'feature_test',
@@ -53,7 +52,7 @@ class FinanceControllerTest extends TestCase
         $response->assertStatus(201);
     }
 
-    public function testUpdateGlobalRule()
+    public function testUpdateGlobalRule(): void
     {
         $condition = FinanceCondition::create([
             'title' => 'feature_test',
@@ -87,7 +86,7 @@ class FinanceControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testPreciseRule()
+    public function testPreciseRule(): void
     {
         $newFinanceCondition = [
             'title' => 'precisionRuleUnitTest',

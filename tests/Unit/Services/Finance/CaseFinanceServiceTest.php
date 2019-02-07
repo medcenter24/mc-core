@@ -15,7 +15,7 @@ use App\HospitalAccident;
 use App\Invoice;
 use App\Payment;
 use App\Services\AccidentService;
-use App\Services\CaseServices\CaseFinanceService;
+use App\Services\CaseServices\Finance\CaseFinanceService;
 use App\Services\FinanceConditionService;
 use App\Services\Formula\FormulaService;
 use Illuminate\Support\Collection;

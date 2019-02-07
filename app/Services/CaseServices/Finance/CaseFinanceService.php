@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright (c) 2018.
+ * Copyright (c) 2019.
  *
- * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ * Oleksandr Zagovorychev <zagovorichev@gmail.com>
  */
 
-namespace App\Services\CaseServices;
+namespace App\Services\CaseServices\Finance;
 
 
 use App\Accident;

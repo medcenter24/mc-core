@@ -20,12 +20,8 @@ use App\Http\Requests\Api\CaseRequest;
 use App\Models\Scenario\ScenarioModel;
 use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
-use App\Services\CaseServices\CaseFinanceService;
 use App\Services\CaseServices\CaseHistoryService;
-use App\Services\CurrencyService;
 use App\Services\DocumentService;
-use App\Services\Formula\FormulaResultService;
-use App\Services\Formula\FormulaViewService;
 use App\Services\PatientService;
 use App\Services\ReferralNumberService;
 use App\Services\RoleService;
@@ -34,7 +30,6 @@ use App\Services\Scenario\StoryService;
 use App\Transformers\AccidentCheckpointTransformer;
 use App\Transformers\AccidentStatusHistoryTransformer;
 use App\Transformers\CaseAccidentTransformer;
-use App\Transformers\CaseFinanceTransformer;
 use App\Transformers\DiagnosticTransformer;
 use App\Transformers\DirectorCaseTransformer;
 use App\Transformers\DoctorCaseTransformer;
@@ -60,7 +55,7 @@ class CasesController extends ApiController
      * Datatable model
      * @return string
      */
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Accident::class;
     }
@@ -505,80 +500,5 @@ class CasesController extends ApiController
 
         $transform = new MessageTransformer();
         return $this->response->created(null, $transform->transform($message));
-    }
-
-    /**
-     * @param Request $request
-     * @param int $id
-     * @param CaseFinanceService $financeService
-     * @param FormulaResultService $formulaResultService
-     * @param FormulaViewService $formulaViewService
-     * @param CurrencyService $currencyService
-     * @return Response
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
-     * @throws \Throwable
-     */
-    public function finance(
-        Request $request,
-        int $id,
-        CaseFinanceService $financeService,
-        FormulaResultService $formulaResultService,
-        FormulaViewService $formulaViewService,
-        CurrencyService $currencyService
-    ): Response
-    {
-        /** @var Accident $accident */
-        $accident = Accident::findOrFail($id);
-        $financeDataCollection = collect([]);
-
-        $types = $request->json('types', ['income', 'assistant', 'caseable']);
-
-        foreach ($types as $type) {
-            $formula = $financeService->newFormula();
-            switch ($type) {
-                case 'income':
-                    if ($accident->getIncomePayment && $accident->getIncomePayment->fixed) {
-                        $formula->addFloat($accident->getIncomePayment->value);
-                    } else {
-                        // I need to sub 2 different results instead of sub formula builders
-                        // to not get 1. big formula 2. data inconsistencies
-                        $formula
-                            ->subFloat($formulaResultService->calculate($financeService->getFromAssistantFormula($accident)))
-                            ->subFloat($formulaResultService->calculate($financeService->getToCaseableFormula($accident)));
-                    }
-                    break;
-                case 'assistant':
-                    $formula = $financeService->getFromAssistantFormula($accident);
-                    break;
-                case 'caseable':
-                    // answer: I need this formula just to use it for consistency
-                    // so in the formula I just need to set price from the invoice
-                    $formula = $financeService->getToCaseableFormula($accident);
-                    break;
-                default:
-                    $this->response->error('undefined finance type', 500);
-            }
-
-            if (!$formula->hasConditions()) {
-                $formula->addFloat(0);
-            }
-
-            // to show full formula, not only the part of it
-            $formula = $formula->getBaseFormula();
-
-            $typeResult = collect([
-                'type' => $type,
-                'loading' => false,
-                'value' => $formulaResultService->calculate($formula),
-                'currency' => $currencyService->getDefaultCurrency(),
-                'formula' => $formulaViewService->render($formula),
-            ]);
-            $financeDataCollection->push($typeResult);
-        }
-
-        $obj = new \stdClass();
-        $obj->collection = $financeDataCollection;
-        return $this->response->item($obj, new CaseFinanceTransformer());
     }
 }

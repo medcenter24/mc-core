@@ -13,7 +13,7 @@ use League\Fractal\TransformerAbstract;
 
 class FinanceCurrencyTransformer extends TransformerAbstract
 {
-    public function transform(FinanceCurrency $financeCurrency)
+    public function transform(FinanceCurrency $financeCurrency): array
     {
         return [
             'id' => $financeCurrency->id,

@@ -7,10 +7,12 @@
 
 namespace App\Providers;
 
+use App\Events\AccidentPaymentChangedEvent;
 use App\Events\AccidentStatusChangedEvent;
 use App\Events\DatePeriodChangedEvent;
 use App\Events\DoctorAccidentUpdatedEvent;
 use App\Events\HospitalAccidentUpdatedEvent;
+use App\Listeners\AccidentPaymentListener;
 use App\Listeners\AccidentStatusHistoryListener;
 use App\Listeners\DatePeriodInterpretationListener;
 use App\Listeners\SendTelegramMessageOnDocAssignment;
@@ -34,6 +36,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         DatePeriodChangedEvent::class => [
             DatePeriodInterpretationListener::class,
+        ],
+        AccidentPaymentChangedEvent::class => [
+            AccidentPaymentListener::class,
         ]
     ];
 

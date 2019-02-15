@@ -76,13 +76,13 @@ class CasesController extends ApiController
      * @param $id - accident id
      * @return \Dingo\Api\Http\Response
      */
-    public function show($id)
+    public function show($id): Response
     {
         $accident = Accident::findOrFail($id);
         return $this->response->item($accident, new DirectorCaseTransformer());
     }
 
-    public function getDoctorCase($id)
+    public function getDoctorCase($id): Response
     {
         $accident = Accident::findOrFail($id);
         if (!$accident->caseable) {
@@ -91,7 +91,7 @@ class CasesController extends ApiController
         return $this->response->item($accident->caseable, new DoctorCaseTransformer());
     }
 
-    public function getHospitalCase($id)
+    public function getHospitalCase($id): Response
     {
         $accident = Accident::findOrFail($id);
         if (!$accident->caseable) {
@@ -100,7 +100,7 @@ class CasesController extends ApiController
         return $this->response->item($accident->caseable, new HospitalCaseTransformer());
     }
 
-    public function getDiagnostics($id, RoleService $roleService)
+    public function getDiagnostics($id, RoleService $roleService): Response
     {
         $accident = Accident::findOrFail($id);
         $accidentDiagnostics = $accident->diagnostics;
@@ -115,7 +115,7 @@ class CasesController extends ApiController
         return $this->response->collection($accidentDiagnostics, new DiagnosticTransformer());
     }
 
-    public function getServices($id, RoleService $roleService, AccidentService $accidentServiceService)
+    public function getServices($id, RoleService $roleService, AccidentService $accidentServiceService): Response
     {
         $accident = Accident::findOrFail($id);
         $accidentServices = $accidentServiceService->getAccidentServices($accident);
@@ -127,7 +127,7 @@ class CasesController extends ApiController
         return $this->response->collection($accidentServices, new DoctorServiceTransformer());
     }
 
-    public function getSurveys($id, RoleService $roleService)
+    public function getSurveys($id, RoleService $roleService): Response
     {
         $accident = Accident::findOrFail($id);
         $accidentSurveys = $accident->surveys;
@@ -142,19 +142,19 @@ class CasesController extends ApiController
         return $this->response->collection($accidentSurveys, new DoctorSurveyTransformer());
     }
 
-    public function getCheckpoints($id)
+    public function getCheckpoints($id): Response
     {
         $accident = Accident::findOrFail($id);
         return $this->response->collection($accident->checkpoints, new AccidentCheckpointTransformer());
     }
 
-    public function documents($id, DocumentService $documentService)
+    public function documents($id, DocumentService $documentService): Response
     {
         $accident = Accident::findOrFail($id);
         return $this->response->collection($documentService->getDocuments($this->user(), $accident, 'accident'), new DocumentTransformer());
     }
 
-    public function createDocuments($id, Request $request, DocumentService $documentService)
+    public function createDocuments($id, Request $request, DocumentService $documentService): Response
     {
         $accident = Accident::findOrFail($id);
 
@@ -178,7 +178,8 @@ class CasesController extends ApiController
      * @param Accident $accident
      * @param Request $request
      */
-    private function createCaseableFromRequest(Accident $accident, Request $request) {
+    private function createCaseableFromRequest(Accident $accident, Request $request)
+    {
         $caseable = $accident->caseable_type == DoctorAccident::class
             ? DoctorAccident::create(['recommendation' => '', 'investigation' => ''])
             : HospitalAccident::create();
@@ -195,15 +196,13 @@ class CasesController extends ApiController
         if (!$accident->caseable) {
             $this->createCaseableFromRequest($accident, $request);
         } else {
-            $isDoc = true;
-            if ($accident->caseable_type == DoctorAccident::class) {
+            if ($accident->isDoctorCaseable()) {
                 $caseableAccidentData = $request->json('doctorAccident', []);
                 // attach services, surveys and diagnostics
                 $this->updateDoctorMorph($accident->caseable, $request, 'services');
                 $this->updateDoctorMorph($accident->caseable, $request, 'surveys');
                 $this->updateDoctorMorph($accident->caseable, $request, 'diagnostics');
             } else {
-                $isDoc = false;
                 $caseableAccidentData = $request->json('hospitalAccident', []);
             }
 
@@ -211,7 +210,7 @@ class CasesController extends ApiController
             $caseable = $this->setData($accident->caseable, $caseableAccidentData);
             $caseable->save();
 
-            if ($isDoc) {
+            if ($accident->isDoctorCaseable()) {
                 event(new DoctorAccidentUpdatedEvent($before, $caseable, 'Updated by the director'));
             } else {
                 event(new HospitalAccidentUpdatedEvent($before, $caseable, 'Updated by the director'));

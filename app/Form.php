@@ -37,5 +37,5 @@ class Form extends Model
     use SoftDeletes;
 
     protected $fillable = ['title', 'description', 'template', 'variables', 'formable_type'];
-    protected $visible = ['title', 'description', 'template', 'variables'];
+    protected $visible = ['title', 'description', 'template', 'variables', 'formable_type'];
 }

@@ -10,7 +10,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 
 /**
  * Insurance partners
@@ -26,5 +26,5 @@ class Assistant extends Model implements HasMedia
     use HasMediaTrait;
 
     protected $fillable = ['title', 'ref_key', 'email', 'comment'];
-    protected $visible = ['title', 'ref_key', 'email', 'comment'];
+    protected $visible = ['id', 'title', 'ref_key', 'email', 'comment'];
 }

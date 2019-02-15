@@ -44,7 +44,7 @@ class AccidentStatusChangedEvent
     /**
      * @return AccidentAbstract
      */
-    public function getAccident()
+    public function getAccident(): AccidentAbstract
     {
         return $this->accident;
     }
@@ -52,7 +52,7 @@ class AccidentStatusChangedEvent
     /**
      * @return string
      */
-    public function getCommentary()
+    public function getCommentary(): string
     {
         return $this->commentary;
     }
@@ -62,7 +62,7 @@ class AccidentStatusChangedEvent
      *
      * @return Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): Channel
     {
         return new PrivateChannel('channel-name');
     }

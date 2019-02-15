@@ -9,14 +9,20 @@ namespace App\Models\Formula\Operations;
 
 
 use App\Models\Formula\Exception\FormulaException;
-use App\Models\Formula\FormulaBuilderInterface;
-use App\Models\Formula\Operation;
-use App\Models\Formula\Variable;
+use App\Contract\Formula\FormulaBuilder;
+use App\Contract\Formula\Operation;
+use App\Contract\Formula\Variable;
 
 abstract class AbstractOperation implements Operation
 {
     /**
-     * @var FormulaBuilderInterface|Variable
+     * Weight of the action (mul|div|percent needs to be done firstly)
+     * @var int
+     */
+    protected $weight = 0;
+
+    /**
+     * @var FormulaBuilder|Variable
      */
     protected $variable;
 
@@ -27,24 +33,33 @@ abstract class AbstractOperation implements Operation
      */
     public function __construct($var)
     {
-        if ($var instanceof Variable || $var instanceof FormulaBuilderInterface) {
+        if ($var instanceof Variable || $var instanceof FormulaBuilder) {
             $this->variable = $var;
         } else {
             throw new FormulaException('Incorrect type of the variable for the operation');
         }
     }
 
+    public function getWeight(): int
+    {
+        return $this->weight;
+    }
+
     /**
      * @return string
+     * @throws \Throwable
      */
-    public function varView()
+    public function varView(): string
     {
         return $this->variable->varView();
     }
 
-    public function appendTo($result = false)
+    /**
+     * @return FormulaBuilder|Variable
+     */
+    public function getVar()
     {
-        return $result === false ? $this->variable->getResult() : $this->runOperation($result);
+        return $this->variable;
     }
 
     /**
@@ -52,23 +67,28 @@ abstract class AbstractOperation implements Operation
      * @param $result
      * @return mixed
      */
-    abstract protected function runOperation($result);
+    abstract public function runOperation($result);
 
-    public function rightSignView(bool $visible = true)
+    /**
+     * @param bool $visible
+     * @return string
+     */
+    public function rightSignView(bool $visible = true): string
     {
         return $visible ? $this->getRightSignView() : '';
     }
 
-    public function leftSignView(bool $visible = true)
+    public function leftSignView(bool $visible = true): string
     {
         return $visible ? $this->getLeftSignView() : '';
     }
 
-    protected function getLeftSignView() {
+    protected function getLeftSignView(): string
+    {
         return '';
     }
 
-    protected function getRightSignView()
+    protected function getRightSignView(): string
     {
         return '';
     }

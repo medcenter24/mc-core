@@ -8,6 +8,8 @@
 namespace App;
 
 
+use App\Services\AccidentStatusesService;
+
 /**
  * Accident that needs Doctor involvement
  *
@@ -23,65 +25,16 @@ class DoctorAccident extends AccidentAbstract
         'visit_time',
     ];
 
-    protected $fillable = ['city_id', 'doctor_id', 'recommendation', 'investigation', 'visit_time'];
-    protected $visible = ['city_id', 'doctor_id', 'recommendation', 'investigation', 'visit_time'];
+    protected $fillable = ['doctor_id', 'recommendation', 'investigation', 'visit_time'];
+    protected $visible = ['doctor_id', 'recommendation', 'investigation', 'visit_time'];
 
-    public function accident()
+    public static function boot()
     {
-        return $this->morphOne(Accident::class, 'caseable');
-    }
+        parent::boot();
 
-    /**
-     * Photos of the documents from the patient
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function documents()
-    {
-        return $this->morphToMany(Document::class, 'documentable');
-    }
-
-    /**
-     * Selected by doctor diagnostics
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function diagnostics()
-    {
-        return $this->morphToMany(Diagnostic::class, 'diagnosticable');
-    }
-
-    /**
-     * Assignment from the Doctor_Accident to the status action with comment
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function statusHistory()
-    {
-        return $this->morphMany(AccidentStatusHistory::class, 'historyable');
-    }
-
-    /**
-     * Each DoctorAccident is able to has own services, created by a doctor
-     * but by default it could be defined by the director
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function services()
-    {
-        return $this->morphToMany(DoctorService::class, 'doctor_serviceable');
-    }
-
-    /**
-     * As same as serviceable()
-     * each doctorAccident is able to has his own survey
-     * but by default it could be defined by the director
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function surveys()
-    {
-        return $this->morphToMany(DoctorSurvey::class, 'doctor_surveable');
+        self::saved( function (DoctorAccident $doctorAccident) {
+            (new AccidentStatusesService())->updateDoctorAccidentStatus($doctorAccident);
+        } );
     }
 
     /**
@@ -94,11 +47,52 @@ class DoctorAccident extends AccidentAbstract
     }
 
     /**
-     * City from the doctor
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * by default it could be defined by the director
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function city()
+    public function services()
     {
-        return $this->belongsTo(City::class);
+        return $this->morphToMany(DoctorService::class, 'doctor_serviceable');
+    }
+
+    /**
+     * by default it could be defined by the director
+     * Or director maybe want to create new case by them own
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function diagnostics()
+    {
+        return $this->morphToMany(Diagnostic::class, 'diagnosticable');
+    }
+
+    /**
+     * by default it could be defined by the director
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function surveys()
+    {
+        return $this->morphToMany(DoctorSurvey::class, 'doctor_surveable');
+    }
+
+    /**
+     * Visit time can be empty
+     * (when PR https://github.com/laravel/framework/pull/26525 will be merged, I can delete this)
+     * @param array $attributes
+     * @return array
+     */
+    protected function addDateAttributesToArray(array $attributes)
+    {
+        foreach ($this->getDates() as $key) {
+            if (! isset($attributes[$key])) {
+                continue;
+            }
+
+            $attributes[$key] = empty ($attributes[$key]) ? '' : $this->serializeDate(
+                $this->asDateTime($attributes[$key])
+            );
+        }
+
+        return $attributes;
     }
 }

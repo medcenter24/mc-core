@@ -12,15 +12,14 @@ use App\Services\LogoService;
 use Cmgmyr\Messenger\Traits\Messagable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\User as Authenticable;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
-use Spatie\MediaLibrary\Media;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\Models\Media;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConversions
+class User extends Authenticable implements JWTSubject, HasMedia
 {
     use Notifiable;
     use SoftDeletes;
@@ -74,11 +73,17 @@ class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConv
         return $this->belongsToMany(Role::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function doctor()
     {
         return $this->hasOne(Doctor::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function company()
     {
         return $this->belongsTo(Company::class);
@@ -124,7 +129,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia, HasMediaConv
 
     /**
      * assignment to the Telegram messenger
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function telegram()
     {

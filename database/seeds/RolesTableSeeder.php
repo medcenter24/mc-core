@@ -17,10 +17,10 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('APP_ENV') == 'production' && \App\Role::all()->count()) {
+        if (App::environment('production') && \App\Role::all()->count()) {
             return;
         }
-        if (env('APP_ENV') != 'production') {
+        if (!App::environment('production')) {
             Role::truncate();
         }
 

@@ -13,6 +13,9 @@ $factory->define(App\Invoice::class, function (Faker $faker) {
             return factory(\App\User::class)->create()->id;
         },
         'title' => $faker->text(30),
-        'price' => $faker->randomFloat(2, 0, 50000),
+        'payment_id' => function () {
+            return factory(\App\Payment::class)->create()->id;
+        },
+        'status' => 'new',
     ];
 });

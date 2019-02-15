@@ -178,6 +178,8 @@ return [
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
         // \App\Providers\CaseFinanceProvider::class,
         \App\Providers\FormulaServiceProvider::class,
+        \App\Providers\ValidatorServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
     ],
 
     /*
@@ -232,6 +234,7 @@ return [
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Telegram'  => Telegram\Bot\Laravel\Facades\Telegram::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],
 
 ];

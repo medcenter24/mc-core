@@ -13,9 +13,9 @@ class Sub extends AbstractOperation
     /**
      * @return string
      */
-    public function getLeftSignView()
+    public function getLeftSignView(): string
     {
-        return '-';
+        return ' - ';
     }
 
     public function runOperation($result)

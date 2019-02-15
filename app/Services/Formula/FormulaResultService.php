@@ -24,7 +24,9 @@ class FormulaResultService implements Result
     public function calculate(FormulaBuilder $formula)
     {
         $result = false;
-        $collection = $formula->getFormulaCollection();
+        // do not change the real formula, pls
+        $formulaC = clone $formula;
+        $collection = $formulaC->getFormulaCollection();
         $collection = $collection->sortByDesc(function (Operation $op, $key) {
             if (!$key) {
                 // first operation in the row doesn't have any sense - this is just a variable

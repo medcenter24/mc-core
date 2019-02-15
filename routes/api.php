@@ -105,6 +105,7 @@ $api->group([
                     $api->get('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@comments');
                     $api->put('{id}/comments', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@addComment');
                     $api->post('{id}/finance', \App\Http\Controllers\Api\V1\Director\Cases\CaseFinanceController::class . '@show');
+                    $api->put('{id}/finance/{type}', \App\Http\Controllers\Api\V1\Director\Cases\CaseFinanceController::class . '@save');
                     $api->put('{id}', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@update');
                     $api->delete('{id}', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@destroy');
                     $api->post('', \App\Http\Controllers\Api\V1\Director\CasesController::class . '@store');

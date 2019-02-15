@@ -25,10 +25,15 @@ class FormulaViewService
     {
         $strFormula = '';
         $selfObj = $this;
-        $formula->getFormulaCollection()->each(function (Operation $operation, $key) use (&$strFormula, $selfObj) {
+        // do not change real formula
+        $formulaC = clone $formula;
+        $formulaC->getFormulaCollection()->each(function (Operation $operation, $key) use (&$strFormula, $selfObj) {
             $var = $operation->getVar();
             if ($var instanceof FormulaBuilder) {
                 $part = $selfObj->render($var);
+                if ($part && !preg_match('/^[0-9\.\-]+$/', $part)) {
+                    $part = '( ' . $part . ' )';
+                }
             } else {
                 $part = $operation->varView();
             }
@@ -37,11 +42,12 @@ class FormulaViewService
                 $strFormula .= $operation->leftSignView();
             }
 
-            if ($part) {
+            $strFormula .= $part ?: '0';
+            /*if ($part) {
                 $strFormula .= preg_match('/^[0-9\.\-]+$/', $part) ? $part : '( ' . $part . ' )';
             } else {
                 $strFormula .= '0';
-            }
+            }*/
 
             if ($operation->rightSignView()) {
                 $strFormula .= $operation->rightSignView();

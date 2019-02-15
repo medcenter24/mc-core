@@ -7,6 +7,7 @@
 
 namespace App\Events;
 
+
 use App\HospitalAccident;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;

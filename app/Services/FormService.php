@@ -111,9 +111,14 @@ class FormService
      * @return string
      * @throws InconsistentDataException
      */
-    public function getHtml(Form $form, Model $source)
+    public function getHtml(Form $form, Model $source): string
     {
-        $variables = array_unique(json_decode($form->variables));
+        $variables = [];
+        if ($form->variables) {
+            $variables = json_decode($form->variables);
+            $variables = $variables ? : [];
+            $variables = array_unique($variables);
+        }
         $this->checkModel($form, $source);
         $this->checkVariables($variables, $form);
         $values = $this->getValues($source, $variables);

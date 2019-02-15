@@ -15,6 +15,16 @@ use App\Transformers\HospitalTransformer;
 
 class HospitalsController extends ApiController
 {
+    protected function getDataTransformer()
+    {
+        return new HospitalTransformer();
+    }
+
+    protected function getModelClass()
+    {
+        return Hospital::class;
+    }
+
     public function index()
     {
         $hospitals = Hospital::orderBy('title')->get();
@@ -34,7 +44,7 @@ class HospitalsController extends ApiController
             'description' => $request->json('description', ''),
             'address' => $request->json('address', ''),
             'phones' => $request->json('phones', ''),
-            'ref_key' => $request->json('ref_key', ''),
+            'ref_key' => $request->json('refKey', ''),
         ]);
         $transformer = new HospitalTransformer();
         return $this->response->created(null, $transformer->transform($hospital));
@@ -44,7 +54,7 @@ class HospitalsController extends ApiController
     {
         $hospital = Hospital::findOrFail($id);
         $hospital->title = $request->json('title', '');
-        $hospital->ref_key = $request->json('ref_key', '');
+        $hospital->ref_key = $request->json('refKey', '');
         $hospital->address = $request->json('address', '');
         $hospital->description = $request->json('description', '');
         $hospital->phones = $request->json('phones', '');

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright (c) 2018.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
 
 namespace App\Listeners;
 
@@ -60,7 +65,7 @@ class SendTelegramMessageOnDocAssignment
             \Log::warning('Doctor will not receive any messages to the telegram, because we do not have doctor', [
                 'doctorAccidentId' => $doctorAccident->id,
             ]);
-        } elseif($doctorAccident->doctor->user_id) {
+        } elseif(!$doctorAccident->doctor->user_id) {
             \Log::warning('Doctor will not receive any messages to the telegram, because he does not have assignment to user', [
                 'doctorAccidentId' => $doctorAccident->id,
                 'userId' => $doctorAccident->doctor->user_id,

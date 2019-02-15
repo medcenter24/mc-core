@@ -15,7 +15,7 @@ class Menu extends AbstractMenu
     /**
      * @return array
      */
-    protected function getMenu() {
+    protected function getMenu(): array {
         return [
             '1' => [
                 'name' => trans('content.users'),

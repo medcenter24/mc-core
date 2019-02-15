@@ -19,7 +19,7 @@ class StoreDoctor extends JsonRequest
         return [
             'name' => 'required|max:150',
             'description' => 'required|max:255',
-            'ref_key' => 'required|max:5|unique:doctors',
+            'refKey' => 'required|max:5|unique:doctors',
         ];
     }
 }

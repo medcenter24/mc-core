@@ -18,6 +18,17 @@ use Illuminate\Http\Request;
 
 class DoctorsController extends ApiController
 {
+
+    protected function getDataTransformer()
+    {
+        return new DoctorTransformer();
+    }
+
+    protected function getModelClass()
+    {
+        return Doctor::class;
+    }
+
     public function index()
     {
         $doctors = Doctor::orderBy('name')->get();
@@ -35,7 +46,8 @@ class DoctorsController extends ApiController
         $doctor = Doctor::create([
             'name' => $request->json('name', ''),
             'description' => $request->json('description', ''),
-            'ref_key' => $request->json('ref_key', ''),
+            'ref_key' => $request->json('refKey', ''),
+            'medical_board_num' => $request->json('medicalBoardNumber', ''),
         ]);
         $transformer = new DoctorTransformer();
         return $this->response->created(null, $transformer->transform($doctor));
@@ -45,10 +57,10 @@ class DoctorsController extends ApiController
     {
         $doctor = Doctor::findOrFail($id);
         $doctor->name = $request->json('name', '');
-        $doctor->ref_key = $request->json('ref_key', '');
-        $doctor->user_id = (int)$request->json('user_id', 0);
+        $doctor->ref_key = $request->json('refKey', '');
+        $doctor->user_id = (int)$request->json('userId', 0);
         $doctor->description = $request->json('description', '');
-        $doctor->medical_board_num = $request->json('medical_board_num', '');
+        $doctor->medical_board_num = $request->json('medicalBoardNumber', '');
         $doctor->save();
 
         \Log::info('Doctor updated', [$doctor]);

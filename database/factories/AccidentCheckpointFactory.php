@@ -9,7 +9,7 @@ use Faker\Generator as Faker;
 
 $factory->define(App\AccidentCheckpoint::class, function (Faker $faker) {
     return [
-        'title' => $faker->text(20),
+        'title' => $faker->title,
         'description' => $faker->text(),
     ];
 });

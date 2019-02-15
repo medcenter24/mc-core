@@ -18,10 +18,10 @@ class AccidentTypesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('APP_ENV') == 'production' && AccidentType::all()->count()) {
+        if (App::environment('production') && AccidentType::all()->count()) {
             return;
         }
-        if (env('APP_ENV') != 'production') {
+        if (!App::environment('production')) {
             AccidentType::truncate();
         }
         foreach (AccidentTypeService::ALLOWED_TYPES as $allowedType) {

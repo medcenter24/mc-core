@@ -32,7 +32,7 @@ class DoctorSurveyRequest extends JsonRequest
     public function rules()
     {
         return [
-            'title' => 'required|min:3',
+            'title' => 'required|min:3|max:255',
             'description' => 'required|max:250',
         ];
     }

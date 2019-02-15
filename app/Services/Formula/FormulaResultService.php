@@ -8,48 +8,56 @@
 namespace App\Services\Formula;
 
 
-use App\Models\Formula\FormulaBuilderInterface;
-use App\Models\Formula\Operation;
+use App\Contract\Formula\FormulaBuilder;
+use App\Contract\Formula\Operation;
+use App\Contract\Formula\Result;
+use App\Models\Formula\Variables\Decimal;
 
-class FormulaResultService
+class FormulaResultService implements Result
 {
     /**
      * Calculate and get result
-     * @param FormulaBuilderInterface $formula
+     * @param FormulaBuilder $formula
      * @return int|float
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function calculate(FormulaBuilderInterface $formula)
+    public function calculate(FormulaBuilder $formula)
     {
         $result = false;
-        $collection = $formula->getFormulaCollection()->getIterator();
-        while ($collection->valid()) {
+        // do not change the real formula, pls
+        $formulaC = clone $formula;
+        $collection = $formulaC->getFormulaCollection();
+        $collection = $collection->sortByDesc(function (Operation $op, $key) {
+            if (!$key) {
+                // first operation in the row doesn't have any sense - this is just a variable
+                // but it should be first in the row
+                return 1000;
+            }
+            return $op->getWeight();
+        });
+        $iterator = $collection->getIterator();
+        while ($iterator->valid()) {
             /** @var Operation $operation */
-            $operation = $collection->current();
-            $result = $operation->appendTo($result);
-            $collection->next();
+            $operation = $iterator->current();
+
+            $var = $operation->getVar();
+            if ($var instanceof FormulaBuilder) {
+                $partRes = $this->calculate($var);
+                if ($result === false) {
+                    $result = $partRes;
+                } else {
+                    $newOpClass = get_class($operation);
+                    /** @var Operation $newOp */
+                    $newOp = new $newOpClass(new Decimal($partRes));
+                    $result = $newOp->runOperation($result);
+                }
+            } else {
+                $result = $result === false ? $operation->getVar()->getResult() : $operation->runOperation($result);
+            }
+
+            $iterator->next();
         }
 
         return $result === false ? 0 : $result;
-    }
-
-    /**
-     * @param FormulaBuilderInterface $formula
-     * @return float
-     * @throws \App\Models\Formula\Exception\FormulaException
-     */
-    public function toFloat(FormulaBuilderInterface $formula)
-    {
-        return floatval($this->calculate($formula));
-    }
-
-    /**
-     * @param FormulaBuilderInterface $formula
-     * @return int
-     * @throws \App\Models\Formula\Exception\FormulaException
-     */
-    public function toInteger(FormulaBuilderInterface $formula)
-    {
-        return intval($this->calculate($formula));
     }
 }

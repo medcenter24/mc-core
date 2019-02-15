@@ -3,14 +3,11 @@
 namespace App\Events;
 
 use App\DoctorAccident;
-use ClassesWithParents\D;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class DoctorAccidentUpdatedEvent
 {
@@ -37,7 +34,10 @@ class DoctorAccidentUpdatedEvent
     /**
      * Create a new event instance.
      *
-     * @return void
+     * DoctorAccidentUpdatedEvent constructor.
+     * @param DoctorAccident|null $previousData
+     * @param DoctorAccident $doctorAccident
+     * @param string $commentary
      */
     public function __construct(DoctorAccident $previousData = null, DoctorAccident $doctorAccident, $commentary = '')
     {

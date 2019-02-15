@@ -22,5 +22,8 @@
     "popper.js": "^1.12",
     "vue": "^2.1.10",
     "vue-autosuggest": "^1.2.2"
+  },
+  "dependencies": {
+    "node-sass": "^4.9.0"
   }
 }

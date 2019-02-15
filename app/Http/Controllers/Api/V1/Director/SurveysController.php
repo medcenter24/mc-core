@@ -14,6 +14,16 @@ use App\Transformers\DoctorSurveyTransformer;
 
 class SurveysController extends ApiController
 {
+    protected function getDataTransformer()
+    {
+        return new DoctorSurveyTransformer();
+    }
+
+    protected function getModelClass()
+    {
+        return DoctorSurvey::class;
+    }
+
     public function index()
     {
         $services = DoctorSurvey::orderBy('title', 'desc')->get();

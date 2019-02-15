@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
         $this->call(RolesTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(AccidentTypesTableSeeder::class);
-
-        if (env('APP_ENV') != 'production') {
+        $this->call(FinanceCurrenciesTableSeeder::class);
+        if (!App::environment('production')) {
             $this->call(CitiesTableSeeder::class);
             $this->call(DiagnosticsTableSeeder::class);
             $this->call(DocumentsTableSeeder::class);
@@ -38,7 +38,9 @@ class DatabaseSeeder extends Seeder
             $this->call(AccidentsTableSeeder::class);
             $this->call(HospitalsTableSeeder::class);
             $this->call(InvoicesTableSeeder::class);
-            $this->call(DiscountsTableSeeder::class);
+            $this->call(DatePeriodTableSeeder::class);
+            $this->call(FinanceConditionTableSeeder::class);
+            $this->call(FinanceStorageTableSeeder::class);
         }
     }
 }

@@ -10,12 +10,14 @@ namespace App\Models\Formula\Operations;
 
 class Mul extends AbstractOperation
 {
+    protected $weight = 1;
+
     /**
      * @return string
      */
-    public function getLeftSignView()
+    public function getLeftSignView(): string
     {
-        return '*';
+        return ' * ';
     }
 
     public function runOperation($result)

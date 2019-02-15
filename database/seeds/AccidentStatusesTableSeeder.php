@@ -11,18 +11,6 @@ use Illuminate\Database\Seeder;
 
 class AccidentStatusesTableSeeder extends Seeder
 {
-    const TYPE_ACCIDENT = AccidentStatusesService::TYPE_ACCIDENT;
-    const TYPE_DOCTOR = AccidentStatusesService::TYPE_DOCTOR;
-    const TYPE_HOSPITAL = AccidentStatusesService::TYPE_HOSPITAL;
-
-    const STATUS_NEW = AccidentStatusesService::STATUS_NEW;
-    const STATUS_ASSIGNED = AccidentStatusesService::STATUS_ASSIGNED;
-    const STATUS_IN_PROGRESS = AccidentStatusesService::STATUS_IN_PROGRESS;
-    const STATUS_SENT = AccidentStatusesService::STATUS_SENT;
-    const STATUS_PAID = AccidentStatusesService::STATUS_PAID;
-    const STATUS_REJECT = AccidentStatusesService::STATUS_REJECT;
-    const STATUS_CLOSED = AccidentStatusesService::STATUS_CLOSED;
-
     /**
      * 1. new
      * Doctor case
@@ -37,37 +25,37 @@ class AccidentStatusesTableSeeder extends Seeder
      */
     const ACCIDENT_STATUSES = [
         [
-            'title' => self::STATUS_NEW,
-            'type' => self::TYPE_ACCIDENT,
+            'title' => AccidentStatusesService::STATUS_NEW,
+            'type' => AccidentStatusesService::TYPE_ACCIDENT,
         ],
         [
             // doctor got new case
-            'title' => self::STATUS_ASSIGNED,
-            'type' => self::TYPE_DOCTOR,
+            'title' => AccidentStatusesService::STATUS_ASSIGNED,
+            'type' => AccidentStatusesService::TYPE_DOCTOR,
         ],
         [
             // doctor has started this case
-            'title' => self::STATUS_IN_PROGRESS,
-            'type' => self::TYPE_DOCTOR,
+            'title' => AccidentStatusesService::STATUS_IN_PROGRESS,
+            'type' => AccidentStatusesService::TYPE_DOCTOR,
         ],
         [
             // doctor sent case to director
-            'title' => self::STATUS_SENT,
-            'type' => self::TYPE_DOCTOR,
+            'title' => AccidentStatusesService::STATUS_SENT,
+            'type' => AccidentStatusesService::TYPE_DOCTOR,
         ],
         [
             // doctor got his money
-            'title' => self::STATUS_PAID,
-            'type' => self::TYPE_DOCTOR,
+            'title' => AccidentStatusesService::STATUS_PAID,
+            'type' => AccidentStatusesService::TYPE_DOCTOR,
         ],
         [
             // doctor rejected the case
-            'title' => self::STATUS_REJECT,
-            'type' => self::TYPE_DOCTOR,
+            'title' => AccidentStatusesService::STATUS_REJECT,
+            'type' => AccidentStatusesService::TYPE_DOCTOR,
         ],
         [
-            'title' => self::STATUS_CLOSED,
-            'type' => self::TYPE_ACCIDENT,
+            'title' => AccidentStatusesService::STATUS_CLOSED,
+            'type' => AccidentStatusesService::TYPE_ACCIDENT,
         ]
     ];
 
@@ -79,10 +67,10 @@ class AccidentStatusesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (env('APP_ENV') == 'production' && \App\AccidentStatus::all()->count()) {
+        if (App::environment('production') && \App\AccidentStatus::all()->count()) {
             return;
         }
-        if (env('APP_ENV') != 'production') {
+        if (!App::environment('production')) {
             AccidentStatus::truncate();
         }
         foreach (self::ACCIDENT_STATUSES as $accidentStatus) {

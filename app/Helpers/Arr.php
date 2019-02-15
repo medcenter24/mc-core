@@ -30,7 +30,6 @@ class Arr
     /**
      * Create new array, where 'key' from first row and 'values' all other rows
      * @param $arr
-     * @param array $arr
      * @return array
      */
     public static function convertTableToKeyValue (array $arr)
@@ -59,5 +58,18 @@ class Arr
         }
 
         return $result;
+    }
+
+    /**
+     * Checks if an array has value and set default empty value if not
+     * @param array $arr
+     * @param string $key
+     * @param string $defaultEmpty
+     */
+    public static function setDefault(array &$arr, string $key, $defaultEmpty = '')
+    {
+        if (!isset($arr[$key]) || !$arr[$key]) {
+            $arr[$key] = $defaultEmpty;
+        }
     }
 }

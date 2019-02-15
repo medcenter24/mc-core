@@ -19,7 +19,7 @@ class StoreHospital extends JsonRequest
         return [
             'title' => 'required|max:150',
             'description' => 'max:255',
-            'ref_key' => 'required|max:5|unique:doctors',
+            'refKey' => 'required|max:5|unique:doctors',
             'address' => 'max:255',
             'phones' => 'max:200',
         ];

@@ -8,9 +8,10 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\DoctorService::class, function (Faker $faker) {
+    $refKey = $faker->toUpper(str_random(3));
     return [
-        'title' => $faker->text(20),
+        'title' => 'DoctorService ' . $refKey,
         'description' => $faker->text(),
-        'price' => $faker->randomFloat(2, 0, 10000),
+        'disease_code' => $refKey,
     ];
 });

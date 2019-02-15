@@ -18,7 +18,7 @@ class AssistantRequest extends JsonRequest
     {
         return [
             'title' => 'required|max:250',
-            'ref_key' => 'required|max:5',
+            'refKey' => 'required|max:5',
             'email' => 'required|email',
             ];
     }

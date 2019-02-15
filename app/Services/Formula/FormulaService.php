@@ -2,59 +2,92 @@
 /**
  * Copyright (c) 2018.
  *
- * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ * @author Oleksander Zagovorychev <zagovorichev@gmail.com>
  */
 
 namespace App\Services\Formula;
 
 
+use App\Contract\Formula\FormulaBuilder as FormulaBuilderInterface;
+use App\Exceptions\NotImplementedException;
+use App\FinanceCondition;
 use App\Models\Formula\FormulaBuilder;
-use App\Models\Formula\FormulaBuilderInterface;
+use Illuminate\Support\Collection;
 
 class FormulaService
 {
-
     /**
-     * @var FormulaViewService
+     * @param FormulaBuilderInterface|null $parent
+     * @return FormulaBuilder
      */
-    private $viewService;
-
-    /**
-     * @var FormulaResultService
-     */
-    private $resultService;
-
-    public function __construct(FormulaViewService $viewService, FormulaResultService $resultService)
+    public function createFormula(FormulaBuilderInterface $parent = null): FormulaBuilderInterface
     {
-        $this->viewService = $viewService;
-        $this->resultService = $resultService;
+        return new FormulaBuilder($parent);
     }
 
     /**
-     * @return FormulaBuilderInterface
+     * @param Collection $conditions
+     * @return FormulaBuilder
      */
-    public function formula()
+    public function createFormulaFromConditions(Collection $conditions): FormulaBuilderInterface
     {
-        return new FormulaBuilder(null, $this->viewService, $this->resultService);
+        $builder = $this->createFormula();
+        $conditions->each(function(FinanceCondition $condition) use ($builder) {
+            switch ($condition->currency_mode) {
+                case 'currency':
+                    $this->currencyOp($condition, $builder);
+                    break;
+                case 'percent':
+                    $this->percentOp($condition, $builder);
+                    break;
+                default: throw new NotImplementedException('Undefined currency mode');
+            }
+        });
+        return $builder;
     }
 
     /**
-     * @param FormulaBuilderInterface $formula
-     * @return int|float
+     * Operations with currencies
+     * @param FinanceCondition $condition
+     * @param FormulaBuilderInterface $builder
+     * @throws NotImplementedException
      * @throws \App\Models\Formula\Exception\FormulaException
      */
-    public function getResult(FormulaBuilderInterface $formula)
+    private function currencyOp(FinanceCondition $condition, FormulaBuilderInterface $builder): void
     {
-        return $this->resultService->calculate($formula);
+        switch ($condition->type) {
+            case 'sub':
+                $builder->subFloat($condition->value);
+                break;
+            case 'add':
+                $builder->addFloat($condition->value);
+                break;
+            case 'mul':
+                $builder->mulFloat($condition->value);
+                break;
+            case 'div':
+                $builder->divFloat($condition->value);
+                break;
+            default: throw new NotImplementedException('Undefined operation type');
+        }
     }
 
     /**
-     * @param FormulaBuilderInterface $formula
-     * @return string
-     * @throws \Throwable
+     * Operations with percents
+     * @param FinanceCondition $condition
+     * @param FormulaBuilderInterface $builder
+     * @throws NotImplementedException
      */
-    public function getFormulaView(FormulaBuilderInterface $formula)
+    private function percentOp(FinanceCondition $condition, FormulaBuilderInterface $builder): void
     {
-        return $this->viewService->render($formula);
+        switch ($condition->type) {
+            case 'sub':
+                $builder->subPercent($condition->value);
+                break;
+            case 'add':
+                $builder->addPercent($condition->value);
+                break;
+            default: throw new NotImplementedException('Undefined percent operation');
+        }
     }
 }

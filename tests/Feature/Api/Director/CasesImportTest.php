@@ -28,7 +28,7 @@ class CasesImportTest extends TestCase
 
         $response = $this->json('OPTIONS', '/api/director/cases/importer', [], $this->headers($user));
         $response->assertStatus(200)
-            ->assertHeader('Allow', 'GET,HEAD,POST,PUT,PATCH,DELETE');
+            ->assertHeader('Allow', 'GET,HEAD,POST,PUT,DELETE');
     }
 
     public function testUpload()
@@ -40,15 +40,13 @@ class CasesImportTest extends TestCase
             , $this->headers($this->getUser()));
 
         $response->assertStatus(200)
-            ->assertJsonStructure(['data' => [['path', 'name']]]);
+            ->assertJsonStructure(['data' => [['id', 'name']]]);
 
         $data = $response->json();
 
         // Assert the file was stored...
         self::assertEquals('imported.docx', $data['data'][0]['name']);
-        Storage::disk('imports')->assertExists(str_replace('imports/', '', $data['data'][0]['path']));
-
         self::assertCount(1, $this->getUser()->uploads()->get());
-        self::assertEquals($data['data'][0]['path'], $this->getUser()->uploads()->first()->path);
+        self::assertEquals($data['data'][0]['id'], $this->getUser()->uploads()->first()->id);
     }
 }

@@ -9,6 +9,7 @@ namespace App\Services;
 
 use App\Accident;
 use App\DoctorAccident;
+use App\HospitalAccident;
 use Carbon\Carbon;
 
 /**
@@ -71,9 +72,10 @@ class ReferralNumberService
 
             // skip duplicates
             $additionalPrefix = 0;
-            while ($this->exists($refNum = $ref
-                . ($additionalPrefix ? '^' . ++$additionalPrefix : ''))
-            ) { }
+            do {
+                $refNum = $ref . ($additionalPrefix ? '_' . $additionalPrefix : '');
+                $additionalPrefix++;
+            } while ($this->exists($refNum));
         }
 
         return $refNum;
@@ -85,7 +87,9 @@ class ReferralNumberService
         if ($caseable) {
             if ($caseable instanceof DoctorAccident) {
                 $ref = $caseable->doctor ? $caseable->doctor->ref_key : 'NA';
-            } // hospital accident not implemented yet = elseif ($caseable instanceof )
+            } elseif ($caseable instanceof HospitalAccident) {
+                $ref = $caseable->hospital ? $caseable->hospital->ref_key : 'NA';
+            }
         }
 
         return $ref;

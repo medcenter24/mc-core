@@ -8,7 +8,7 @@
 namespace App\Models\Formula\Variables;
 
 
-use App\Models\Formula\Variable;
+use App\Contract\Formula\Variable;
 
 class Decimal implements Variable
 {
@@ -27,9 +27,12 @@ class Decimal implements Variable
      * @param $var
      * @param int $precision
      */
-    public function __construct($var, int $precision = 2)
+    public function __construct($var, int $precision = null)
     {
-        $this->var = round(floatval($var), $precision);
+        if ($precision === null) {
+            $precision = 2;
+        }
+        $this->var = round((float) $var, $precision);
         $this->precision = $precision;
     }
 
@@ -43,7 +46,7 @@ class Decimal implements Variable
         return $this->getVar();
     }
 
-    public function varView()
+    public function varView(): string
     {
         return sprintf('%0.'.$this->precision.'f', $this->getVar());
     }

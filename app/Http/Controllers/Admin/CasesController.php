@@ -11,10 +11,7 @@ namespace App\Http\Controllers\Admin;
 use App\Accident;
 use App\Http\Controllers\AdminController;
 use App\Services\CaseServices\CaseHistoryService;
-use App\Services\CaseServices\CaseReportService;
 use Illuminate\Http\Request;
-use Mpdf\Mpdf;
-use Mpdf\Output\Destination;
 
 class CasesController extends AdminController
 {
@@ -37,7 +34,7 @@ class CasesController extends AdminController
         return response()->json($cases);
     }
 
-    public function report(Request $request, CaseReportService $service)
+    public function report(Request $request, FormService $service)
     {
         $accident = Accident::where('ref_num', $request->input('ref', false))->first();
         if (!$accident) {

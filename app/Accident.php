@@ -122,9 +122,9 @@ class Accident extends AccidentAbstract
      * Calculated income
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function getIncomePayment(): BelongsTo
+    public function incomePayment(): BelongsTo
     {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(Payment::class, 'income_payment_id');
     }
 
     /**
@@ -133,7 +133,7 @@ class Accident extends AccidentAbstract
      */
     public function paymentFromAssistant(): BelongsTo
     {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(Payment::class, 'assistant_payment_id');
     }
 
     /**
@@ -222,5 +222,15 @@ class Accident extends AccidentAbstract
     public function assistantGuarantee(): BelongsTo
     {
         return $this->belongsTo(Upload::class);
+    }
+
+    public function isDoctorCaseable(): bool
+    {
+        return $this->getAttribute('caseable_type') === DoctorAccident::class;
+    }
+
+    public function isHospitalCaseable(): bool
+    {
+        return $this->getAttribute('caseable_type') === HospitalAccident::class;
     }
 }

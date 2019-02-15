@@ -25,23 +25,17 @@ class CaseFinanceTransformer extends TransformerAbstract
     public function transform (\stdClass $obj) : array
     {
         $result = [];
-        $data = $obj->collection;
-        $iterator = $data->getIterator();
-        while ($iterator->valid()) {
-            /** @var Collection $item */
-            $item = $iterator->current();
-
+        $obj->collection->each(function (Collection $item) use (&$result) {
+            $payment = $item->get('payment');
             $result[] = [
                 'type' => $item->get('type'),
                 'loading' => false,
-                'value' => $item->get('value'),
-                'currency' => (new FinanceCurrencyTransformer())->transform($item->get('currency')),
-                'formula' => $item->get('formula'),
-                'fixed' => $item->get('fixed'),
+                'payment' => $payment ? (new PaymentTransformer())->transform($payment) : false,
+                'currency' => $item->get('currency') ? (new FinanceCurrencyTransformer())->transform($item->get('currency')) : null,
+                'formula' => $item->get('formulaView'),
+                'calculatedValue' => $item->get('calculatedValue'),
             ];
-
-            $iterator->next();
-        }
+        });
 
         return $result;
     }

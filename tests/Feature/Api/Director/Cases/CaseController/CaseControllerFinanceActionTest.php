@@ -45,21 +45,18 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'value' => 0,
                     'currency' => [],
                     'formula' => '0.00 - 0.00',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'value' => 0,
                     'currency' => [],
                     'formula' => '0.00',
                 ],
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'value' => 0,
                     'currency' => [],
                     'formula' => '0.00',
                 ],
@@ -93,21 +90,21 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'value' => 10,
+                    'calculatedValue' => 10,
                     'currency' => [],
                     'formula' => '10.00 - 0.00',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'value' => 10,
+                    'calculatedValue' => 10,
                     'currency' => [],
                     'formula' => '10.00',
                 ],
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'value' => 0,
+                    'calculatedValue' => 0,
                     'currency' => [],
                     'formula' => '0.00',
                 ],
@@ -188,21 +185,21 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'value' => 16.83,
+                    'calculatedValue' => 16.83,
                     'currency' => [],
                     'formula' => '16.83 - 0.00',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'value' => 16.83,
+                    'calculatedValue' => 16.83,
                     'currency' => [],
                     'formula' => '( 10.00 + 7.00 ) * 99%',
                 ],
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'value' => 0,
+                    'calculatedValue' => 0,
                     'currency' => [],
                     'formula' => '0.00',
                 ],
@@ -232,21 +229,21 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'value' => -10,
+                    'calculatedValue' => -10,
                     'currency' => [],
                     'formula' => '0.00 - 10.00',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'value' => 0,
+                    'calculatedValue' => 0,
                     'currency' => [],
                     'formula' => '0.00',
                 ],
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'value' => 10,
+                    'calculatedValue' => 10,
                     'currency' => [],
                     'formula' => '10.00',
                 ],
@@ -340,21 +337,21 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'value' => 1659.81,
+                    'calculatedValue' => 1659.81,
                     'currency' => [],
                     'formula' => '3806.00 - 2146.19',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'value' => 3806.0000000000005,
+                    'calculatedValue' => 3806.0000000000005,
                     'currency' => [],
                     'formula' => '( 10.00 + 3450.00 ) * 110%',
                 ],
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'value' => 2146.1895,
+                    'calculatedValue' => 2146.1895,
                     'currency' => [],
                     'formula' => '( 4.99 + 2039.00 ) * 105%',
                 ],
@@ -391,21 +388,21 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'value' => 5.01,
+                    'calculatedValue' => 5.01,
                     'currency' => [],
                     'formula' => '10.00 - 4.99',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'value' => 10,
+                    'calculatedValue' => 10,
                     'currency' => [],
                     'formula' => '10.00',
                 ],
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'value' => 4.99,
+                    'calculatedValue' => 4.99,
                     'currency' => [],
                     'formula' => '4.99',
                 ],
@@ -442,21 +439,21 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'value' => -10,
+                    'calculatedValue' => -10,
                     'currency' => [],
                     'formula' => '0.00 - 10.00',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'value' => 0,
+                    'calculatedValue' => 0,
                     'currency' => [],
                     'formula' => '0.00',
                 ],
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'value' => 10,
+                    'calculatedValue' => 10,
                     'currency' => [],
                     'formula' => '10.00',
                 ],
@@ -502,23 +499,23 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'value' => -15,
+                    'calculatedValue' => -10,
                     'currency' => [],
-                    'formula' => '0.00 - 15.00',
+                    'formula' => '0.00 - 10.00',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'value' => 0,
+                    'calculatedValue' => 0,
                     'currency' => [],
                     'formula' => '0.00',
                 ],
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'value' => 15,
+                    'calculatedValue' => 10,
                     'currency' => [],
-                    'formula' => '10.00 + 5.00',
+                    'formula' => '10.00',
                 ],
             ],
         ]);
@@ -568,23 +565,270 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'value' => 2,
+                    'calculatedValue' => 2,
                     'currency' => [],
                     'formula' => '0.00 - -2.00',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'value' => 0,
+                    'calculatedValue' => 0,
                     'currency' => [],
                     'formula' => '0.00',
                 ],
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'value' => -2,
                     'currency' => [],
-                    'formula' => '-2.00',
+                    'payment' =>
+                        array (
+                            'id' => 2,
+                            'createdBy' => '0',
+                            'value' => '-2',
+                            'currency_id' => $currency->id,
+                            'fixed' => '1',
+                            'description' => 'Faker factory',
+                        ),
+                    'formula' => 'fixed',
+                    'calculatedValue' => 0,
+                ],
+            ],
+        ]);
+    }
+
+    public function testFixedIncome(): void
+    {
+        $caseable = factory(HospitalAccident::class)->create();
+        $currency = factory(FinanceCurrency::class)->create();
+        $payment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 0,
+            'value' => 5
+        ]);
+        $caseablePayment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 1,
+            'value' => -2
+        ]);
+        $invoice = factory(Invoice::class)->create([
+            'payment_id' => $payment->id,
+        ]);
+        $incomePayment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 1,
+            'value' => 700,
+        ]);
+        $accident = factory(Accident::class)->create([
+            'caseable_type' => HospitalAccident::class,
+            'caseable_id' => $caseable->id,
+            'assistant_invoice_id' => $invoice->id,
+            'caseable_payment_id' => $caseablePayment->id,
+            'income_payment_id' => $incomePayment->id,
+        ]);
+
+        // condition
+        // each accident has price 10
+        factory(FinanceCondition::class)->create([
+            'type' => 'add',
+            'value' => '10',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'currency',
+            'model' => Hospital::class,
+        ]);
+
+        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'type'  => 'income',
+                    'loading' => false,
+                    'calculatedValue' => 0,
+                    'currency' => [],
+                    'formula' => 'fixed',
+                    'payment' => [
+                        'id' => $incomePayment->id,
+                    ]
+                ],
+                [
+                    'type' => 'assistant',
+                    'loading' => false,
+                    'calculatedValue' => 0,
+                    'currency' => [],
+                    'formula' => '0.00',
+                ],
+                [
+                    'type' => 'caseable',
+                    'loading' => false,
+                    'payment' => [
+                            'id' => $caseablePayment->id,
+                        ],
+                    'formula' => 'fixed',
+                    'calculatedValue' => 0,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * FixedFromAssistant - FixedToTheCaseable
+     */
+    public function testIncomeFromFixed(): void
+    {
+        $caseable = factory(HospitalAccident::class)->create();
+        $currency = factory(FinanceCurrency::class)->create();
+        $payment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 0,
+            'value' => 5
+        ]);
+        $caseablePayment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 1,
+            'value' => 5
+        ]);
+        $invoice = factory(Invoice::class)->create([
+            'payment_id' => $payment->id,
+        ]);
+        $incomePayment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 0,
+            'value' => 700,
+        ]);
+        $assistantPayment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 1,
+            'value' => 20,
+        ]);
+        $accident = factory(Accident::class)->create([
+            'caseable_type' => HospitalAccident::class,
+            'caseable_id' => $caseable->id,
+            'assistant_invoice_id' => $invoice->id,
+            'caseable_payment_id' => $caseablePayment->id,
+            'income_payment_id' => $incomePayment->id,
+            'assistant_payment_id' => $assistantPayment->id,
+        ]);
+
+        // condition
+        // each accident has price 10
+        factory(FinanceCondition::class)->create([
+            'type' => 'add',
+            'value' => '10',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'currency',
+            'model' => Assistant::class,
+        ]);
+
+        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'type'  => 'income',
+                    'loading' => false,
+                    'calculatedValue' => 15,
+                    'formula' => '20.00 - 5.00',
+                    'payment' => [
+                        'id' => $incomePayment->id,
+                    ]
+                ],
+                [
+                    'type' => 'assistant',
+                    'loading' => false,
+                    'calculatedValue' => 0,
+                    'formula' => 'fixed',
+                    'payment' => ['id' => $assistantPayment->id],
+                ],
+                [
+                    'type' => 'caseable',
+                    'loading' => false,
+                    'payment' => [
+                        'id' => $caseablePayment->id,
+                    ],
+                    'formula' => 'fixed',
+                    'calculatedValue' => 0,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Conditions of the Assistant - Conditions of the caseable
+     */
+    public function testIncomeFromCounted(): void
+    {
+        $caseable = factory(HospitalAccident::class)->create();
+        $currency = factory(FinanceCurrency::class)->create();
+        $payment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 0,
+            'value' => 5
+        ]);
+        $caseablePayment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 0,
+            'value' => 5
+        ]);
+        $invoice = factory(Invoice::class)->create([
+            'payment_id' => $payment->id,
+        ]);
+        $incomePayment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 0,
+            'value' => 700,
+        ]);
+        $assistantPayment = factory(Payment::class)->create([
+            'currency_id' => $currency->id,
+            'fixed' => 0,
+            'value' => 20,
+        ]);
+        $accident = factory(Accident::class)->create([
+            'caseable_type' => HospitalAccident::class,
+            'caseable_id' => $caseable->id,
+            'assistant_invoice_id' => $invoice->id,
+            'caseable_payment_id' => $caseablePayment->id,
+            'income_payment_id' => $incomePayment->id,
+            'assistant_payment_id' => $assistantPayment->id,
+        ]);
+
+        // condition
+        // each accident has price 10
+        factory(FinanceCondition::class)->create([
+            'type' => 'add',
+            'value' => '10',
+            'currency_id' => $currency->id,
+            'currency_mode' => 'currency',
+            'model' => Assistant::class,
+        ]);
+
+        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'type'  => 'income',
+                    'loading' => false,
+                    'calculatedValue' => 10,
+                    'formula' => '10.00 - 0.00',
+                    'payment' => [
+                        'id' => $incomePayment->id,
+                    ]
+                ],
+                [
+                    'type' => 'assistant',
+                    'loading' => false,
+                    'calculatedValue' => 10,
+                    'formula' => '10.00',
+                    'payment' => ['id' => $assistantPayment->id],
+                ],
+                [
+                    'type' => 'caseable',
+                    'loading' => false,
+                    'payment' => [
+                        'id' => $caseablePayment->id,
+                    ],
+                    'formula' => '0.00',
+                    'calculatedValue' => 0,
                 ],
             ],
         ]);

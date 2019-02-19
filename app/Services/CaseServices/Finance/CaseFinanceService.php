@@ -177,8 +177,16 @@ class CaseFinanceService
             DoctorAccident::class => $accident->caseable_id,
             Assistant::class => $accident->assistant_id,
             City::class => $accident->city_id,
-            DoctorService::class => $doctorServices ? $doctorServices->get('id') : false,
         ];
+
+        if ($accident->caseable) {
+            $conditionProps[Doctor::class] = $accident->caseable->doctor_id;
+        }
+
+        if ($doctorServices->count()) {
+            $conditionProps[DoctorService::class] = $doctorServices->pluck('id')->all();
+        }
+
         return $this->generateFormula(Doctor::class, $conditionProps);
     }
 

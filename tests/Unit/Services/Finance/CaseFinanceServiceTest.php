@@ -67,26 +67,28 @@ class CaseFinanceServiceTest extends TestCase
             if (array_key_exists(DoctorAccident::class, $args[1])) {
                 if (!$args[1][DoctorAccident::class]) {
                     return collect([]);
-                } else {
-                    return collect([1]);
                 }
-            } elseif (array_key_exists(HospitalAccident::class, $args[1])) {
+                return collect([1]);
+            }
+
+            if (array_key_exists(HospitalAccident::class, $args[1])) {
                 if (!$args[1][HospitalAccident::class]) {
                     return collect([]);
-                } else {
-                    return collect([1]);
                 }
-            } else {
-                return collect([]);
+                return collect([1]);
             }
+
+            return collect([]);
         });
 
         /** @var FinanceConditionService $financeConditionService */
         $financeConditionService = $financeConditionServiceMock->reveal();
 
         $currencyServiceMock = $this->prophesize(CurrencyService::class);
+        /** @var CurrencyService $currencyService */
+        $currencyService = $currencyServiceMock->reveal();
 
-        return new CaseFinanceService($formulaService, $accidentService, $financeConditionService, $currencyServiceMock->reveal());
+        return new CaseFinanceService($formulaService, $accidentService, $financeConditionService, $currencyService);
     }
 
     private function getAccidentMock(): ObjectProphecy

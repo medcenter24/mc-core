@@ -11,6 +11,8 @@ use App\Accident;
 use App\Assistant;
 use App\City;
 use App\Doctor;
+use App\DoctorAccident;
+use App\DoctorService;
 use App\FinanceCondition;
 use App\FinanceCurrency;
 use App\FinanceStorage;
@@ -254,7 +256,7 @@ class CaseControllerFinanceActionTest extends TestCase
     /**
      * Both doctors and assistant conditions
      */
-    public function testMixedConditions(): void
+    public function testIncomeAssistantDoctorConditions(): void
     {
         $accident = factory(Accident::class)->create();
         $currency = factory(FinanceCurrency::class)->create();
@@ -359,7 +361,7 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
     }
 
-    public function testMixedComplexCondition(): void
+    public function testAssistantDoctorComplexCondition(): void
     {
         $accident = factory(Accident::class)->create();
         factory(FinanceCurrency::class)->create();
@@ -373,6 +375,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'currency_mode' => 'currency',
             'model' => Assistant::class,
         ]);
+        // each doctor will be paid for 4.99
         factory(FinanceCondition::class)->create([
             'type' => 'add',
             'value' => '4.991',
@@ -405,6 +408,94 @@ class CaseControllerFinanceActionTest extends TestCase
                     'calculatedValue' => 4.99,
                     'currency' => [],
                     'formula' => '4.99',
+                ],
+            ],
+        ]);
+    }
+
+    public function testAssistantPlusDoctorFromStorageCondition(): void
+    {
+        $doctor = factory(Doctor::class)->create();
+        $service = factory(DoctorService::class)->create();
+
+        $caseable = factory(DoctorAccident::class)->create([
+            'doctor_id' => $doctor->id,
+        ]);
+
+        $caseable->services()->attach([$service->id]);
+
+        $accident = factory(Accident::class)->create([
+            'caseable_type' => DoctorAccident::class,
+            'caseable_id' => $caseable->id,
+        ]);
+        factory(FinanceCurrency::class)->create();
+
+        // condition
+        // each accident has price 10
+        factory(FinanceCondition::class)->create([
+            'type' => 'add',
+            'value' => '10',
+            'currency_id' => 1,
+            'currency_mode' => 'currency',
+            'model' => Assistant::class,
+        ]);
+
+        // only defined doctor will be paid for 4.99
+        $condition = factory(FinanceCondition::class)->create([
+            'type' => 'add',
+            'value' => '4.991',
+            'currency_id' => 1,
+            'currency_mode' => 'currency',
+            'model' => Doctor::class,
+        ]);
+
+        // for the defined doctor
+        factory(FinanceStorage::class)->create([
+            'finance_condition_id' => $condition->id,
+            'model' => Doctor::class,
+            'model_id' => $doctor->id,
+        ]);
+
+        // only defined service will be paid for 1
+        $condition = factory(FinanceCondition::class)->create([
+            'type' => 'add',
+            'value' => '1',
+            'currency_id' => 1,
+            'currency_mode' => 'currency',
+            'model' => Doctor::class,
+        ]);
+
+        // with defined services
+        factory(FinanceStorage::class)->create([
+            'finance_condition_id' => $condition->id,
+            'model' => DoctorService::class,
+            'model_id' => $service->id,
+        ]);
+
+        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'type'  => 'income',
+                    'loading' => false,
+                    'calculatedValue' => 4.01,
+                    'currency' => [],
+                    'formula' => '10.00 - 5.99',
+                ],
+                [
+                    'type' => 'assistant',
+                    'loading' => false,
+                    'calculatedValue' => 10,
+                    'currency' => [],
+                    'formula' => '10.00',
+                ],
+                [
+                    'type' => 'caseable',
+                    'loading' => false,
+                    'calculatedValue' => 5.99,
+                    'currency' => [],
+                    'formula' => '4.99 + 1.00',
                 ],
             ],
         ]);

@@ -127,10 +127,10 @@ class CaseFinanceCondition
 
     /**
      * Define percent mode
-     * @param bool $value
+     * @param string $value
      * @return $this
      */
-    public function setCurrencyMode($value = true): self
+    public function setCurrencyMode(string $value): self
     {
         $this->currencyMode = $value;
         return $this;
@@ -138,9 +138,9 @@ class CaseFinanceCondition
 
     /**
      * Checks if the current mode is a percent mode
-     * @return bool
+     * @return string
      */
-    public function getCurrencyMode(): bool
+    public function getCurrencyMode(): string
     {
         return $this->currencyMode;
     }

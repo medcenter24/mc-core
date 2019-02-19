@@ -61,7 +61,7 @@ class AccidentService
      * @param Accident $accident
      * @return Collection
      */
-    public function getAccidentServices(Accident $accident)
+    public function getAccidentServices(Accident $accident): Collection
     {
         $accidentServices = $accident->services;
         if ($accident->caseable) {

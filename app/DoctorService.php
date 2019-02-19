@@ -10,6 +10,7 @@ namespace App;
 
 use App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -26,7 +27,7 @@ class DoctorService extends Model
     protected $fillable = ['title', 'description', 'created_by', 'disease_code'];
     protected $visible = ['id', 'title', 'description', 'created_by', 'disease_code'];
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }

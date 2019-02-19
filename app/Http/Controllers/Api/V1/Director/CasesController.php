@@ -178,7 +178,7 @@ class CasesController extends ApiController
      * @param Accident $accident
      * @param Request $request
      */
-    private function createCaseableFromRequest(Accident $accident, Request $request)
+    private function createCaseableFromRequest(Accident $accident, Request $request): void
     {
         $caseable = $accident->caseable_type == DoctorAccident::class
             ? DoctorAccident::create(['recommendation' => '', 'investigation' => ''])
@@ -191,7 +191,12 @@ class CasesController extends ApiController
         $this->updateCaseableData($accident, $request);
     }
 
-    private function updateCaseableData(Accident $accident, Request $request)
+    /**
+     * Updating caseable
+     * @param Accident $accident
+     * @param Request $request
+     */
+    private function updateCaseableData(Accident $accident, Request $request): void
     {
         if (!$accident->caseable) {
             $this->createCaseableFromRequest($accident, $request);
@@ -222,7 +227,6 @@ class CasesController extends ApiController
      * New case accident
      * @param CaseRequest $request
      * @param ReferralNumberService $referralNumberService
-     * @param AccidentStatusesService $statusesService
      * @param AccidentService $accidentService
      * @param PatientService $patientService
      * @return \Dingo\Api\Http\Response
@@ -230,10 +234,9 @@ class CasesController extends ApiController
     public function store(
         CaseRequest $request,
         ReferralNumberService $referralNumberService,
-        AccidentStatusesService $statusesService,
         AccidentService $accidentService,
         PatientService $patientService
-    ) {
+    ): Response {
 
         $accidentData = $accidentService->getFormattedAccidentData(
             $this->convertIndexes(
@@ -248,7 +251,7 @@ class CasesController extends ApiController
             $patient = $patientService->findOrCreate($request->json('patient', []));
             $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
         } else {
-            $accident->patient_id = intval($accidentData['patientId']);
+            $accident->patient_id = (int) $accidentData['patientId'];
         }
 
         $accident->created_by = $this->user()->id;
@@ -273,19 +276,24 @@ class CasesController extends ApiController
      * Updated morphed data (services, diagnostics, surveys)
      * @param DoctorAccident $doctorAccident
      * @param Request $request
-     * @param $morphName
+     * @param string $morphName
      */
-    private function updateDoctorMorph(DoctorAccident $doctorAccident, Request $request, $morphName)
+    private function updateDoctorMorph(DoctorAccident $doctorAccident, Request $request, string $morphName): void
     {
-        $morphData = $request->json($morphName, []);
-        $morphs = [];
-        if ($doctorAccident->$morphName()) {
+        $morphs = $request->json($morphName, []);
+        // $morphs = [];
+        /*
+         * I need to go through the new parameters, not the already stored
+         * (definitely for the services)
+         *
+         * not clear why do I need it at all
+         * if ($doctorAccident->$morphName()) {
             foreach ($doctorAccident->$morphName() as $morph) {
-                if ($morph && in_array($morph->id, $morphData) ) {
+                if ($morph && in_array($morph->id, $morphData, false) ) {
                     $morphs[] = $morph->id;
                 }
             }
-        }
+        }*/
         $doctorAccident->$morphName()->detach();
         $doctorAccident->$morphName()->attach($morphs);
     }
@@ -302,7 +310,7 @@ class CasesController extends ApiController
         CaseRequest $request,
         AccidentService $accidentService,
         PatientService $patientService
-    ) {
+    ): Response {
         /** @var Accident $accident */
         try {
             $accident = Accident::findOrFail($id);
@@ -325,7 +333,7 @@ class CasesController extends ApiController
             $this->response->errorBadRequest('Accident data should be provided in the request data');
         }
 
-        if ($accident->id != $requestedAccident['id']) {
+        if ($accident->id !== $requestedAccident['id']) {
             \Log::error('Can not update the case: incorrect requested accident', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
@@ -333,7 +341,7 @@ class CasesController extends ApiController
             $this->response->errorBadRequest('Requested accident did not match to updated one');
         }
 
-        if (!key_exists('patientId', $requestedAccident)) {
+        if (!array_key_exists('patientId', $requestedAccident)) {
             $patient = $patientService->findOrCreate($request->json('patient', []));
             $newPatientId = $patient && $patient->id ? $patient->id : 0;
             if ($newPatientId) {
@@ -364,7 +372,7 @@ class CasesController extends ApiController
      * @param $data
      * @return array
      */
-    private function convertIndexes($data)
+    private function convertIndexes(array $data): array
     {
         $converted = [];
         foreach ($data as $key => $val) {
@@ -379,7 +387,7 @@ class CasesController extends ApiController
      * @param $data
      * @return Model
      */
-    private function setData(Model $model, $data): Model
+    private function setData(Model $model, array $data): Model
     {
         $data = $this->convertIndexes($data);
         foreach ($model->getVisible() as $item) {

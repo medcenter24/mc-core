@@ -9,6 +9,7 @@ namespace App;
 
 
 use App\Services\AccidentStatusesService;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Accident that needs Doctor involvement
@@ -28,7 +29,7 @@ class DoctorAccident extends AccidentAbstract
     protected $fillable = ['doctor_id', 'recommendation', 'investigation', 'visit_time'];
     protected $visible = ['doctor_id', 'recommendation', 'investigation', 'visit_time'];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
@@ -41,38 +42,9 @@ class DoctorAccident extends AccidentAbstract
      * Doctor of this accident
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function doctor()
+    public function doctor(): BelongsTo
     {
         return $this->belongsTo(Doctor::class);
-    }
-
-    /**
-     * by default it could be defined by the director
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function services()
-    {
-        return $this->morphToMany(DoctorService::class, 'doctor_serviceable');
-    }
-
-    /**
-     * by default it could be defined by the director
-     * Or director maybe want to create new case by them own
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function diagnostics()
-    {
-        return $this->morphToMany(Diagnostic::class, 'diagnosticable');
-    }
-
-    /**
-     * by default it could be defined by the director
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function surveys()
-    {
-        return $this->morphToMany(DoctorSurvey::class, 'doctor_surveable');
     }
 
     /**
@@ -81,7 +53,7 @@ class DoctorAccident extends AccidentAbstract
      * @param array $attributes
      * @return array
      */
-    protected function addDateAttributesToArray(array $attributes)
+    protected function addDateAttributesToArray(array $attributes): array
     {
         foreach ($this->getDates() as $key) {
             if (! isset($attributes[$key])) {

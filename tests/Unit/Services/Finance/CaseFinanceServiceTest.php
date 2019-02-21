@@ -56,6 +56,9 @@ class CaseFinanceServiceTest extends TestCase
         $formulaService = $formulaServiceMock->reveal();
 
         $accidentServiceMock = $this->prophesize(AccidentService::class);
+
+        $accidentServiceMock->getAccidentServices(Argument::type(Accident::class))->willReturn(collect());
+
         /** @var AccidentService $accidentService */
         $accidentService = $accidentServiceMock->reveal();
 

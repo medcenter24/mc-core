@@ -67,8 +67,7 @@ class AccidentService
         if ($accident->caseable) {
             $accidentServices = $accidentServices->merge($accident->caseable->services);
         }
-
-        return $accidentServices;
+        return $accidentServices ?: collect([]);
     }
 
     /**
@@ -76,7 +75,7 @@ class AccidentService
      * @param array $accidentData
      * @return array
      */
-    public function getFormattedAccidentData(array $accidentData = [])
+    public function getFormattedAccidentData(array $accidentData = []): array
     {
         foreach ([
             'handling_time' => null,

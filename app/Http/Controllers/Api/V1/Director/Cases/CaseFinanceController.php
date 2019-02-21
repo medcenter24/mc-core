@@ -32,6 +32,9 @@ class CaseFinanceController extends ApiController
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
         $types = $request->json('types', CaseFinanceViewService::FINANCE_TYPES);
+        if (!count($types)) {
+            $types = CaseFinanceViewService::FINANCE_TYPES;
+        }
         return $this->getResponse($types, $accident, $caseFinanceViewService);
     }
 

@@ -20,7 +20,7 @@ class PaymentTransformer extends TransformerAbstract
             'createdBy' => $payment->getAttribute('created_by'),
             'value' => $payment->getAttribute('value'),
             'currency_id' => $payment->getAttribute('currency_id'),
-            'fixed' => $payment->getAttribute('fixed'),
+            'fixed' => (int)$payment->getAttribute('fixed') ? true : false,
             'description' => $payment->getAttribute('description'),
         ];
     }

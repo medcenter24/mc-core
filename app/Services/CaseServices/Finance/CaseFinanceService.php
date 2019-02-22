@@ -320,7 +320,7 @@ class CaseFinanceService
         if ($payment) {
             $oldPayment = clone $payment;
             $payment->value = $data['price'];
-            $payment->fixed = $data['fixed'];
+            $payment->fixed = (int) $data['fixed'] ? true : false;
             $payment->save();
         } else {
             $oldPayment = null;
@@ -328,7 +328,7 @@ class CaseFinanceService
                 'created_by' => auth()->user()->id,
                 'value' => $data['price'],
                 'currency_id' => $this->currencyService->getDefaultCurrency()->getAttribute('id'),
-                'fixed' => $data['fixed'] ? 1 : 0,
+                'fixed' => (int)$data['fixed'] ? true : false,
                 'description' => 'Created from CaseFinanceService',
             ]);
             $accident->$relationName()->associate($payment->id);

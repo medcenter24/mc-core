@@ -11,15 +11,16 @@ use App\DoctorSurvey;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\DoctorSurveyRequest;
 use App\Transformers\DoctorSurveyTransformer;
+use League\Fractal\TransformerAbstract;
 
 class SurveysController extends ApiController
 {
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new DoctorSurveyTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return DoctorSurvey::class;
     }

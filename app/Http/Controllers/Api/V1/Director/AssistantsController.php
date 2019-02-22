@@ -12,15 +12,16 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\AssistantRequest;
 use App\Transformers\AssistantTransformer;
 use App\Transformers\ModelTransformer;
+use League\Fractal\TransformerAbstract;
 
 class AssistantsController extends ApiController
 {
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new AssistantTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Assistant::class;
     }

@@ -12,15 +12,16 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\StoreHospital;
 use App\Http\Requests\Api\UpdateHospital;
 use App\Transformers\HospitalTransformer;
+use League\Fractal\TransformerAbstract;
 
 class HospitalsController extends ApiController
 {
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new HospitalTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Hospital::class;
     }

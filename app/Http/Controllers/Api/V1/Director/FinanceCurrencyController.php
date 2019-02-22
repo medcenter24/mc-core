@@ -11,25 +11,30 @@ use App\FinanceCurrency;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\FinanceCurrencyRequest;
 use App\Transformers\FinanceCurrencyTransformer;
+use Dingo\Api\Http\Response;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use League\Fractal\TransformerAbstract;
 
 class FinanceCurrencyController extends ApiController
 {
-    protected function applyCondition($eloquent, Request $request = null)
+    protected function applyCondition($eloquent, Request $request = null): Builder
     {
-        $id = (int)$request->json('id', false);
-        if ($id) {
-            $eloquent->where('id', $id);
+        if ($request) {
+            $id = (int) $request->json('id', false);
+            if ($id) {
+                $eloquent->where('id', $id);
+            }
         }
         return $eloquent;
     }
 
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new FinanceCurrencyTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return FinanceCurrency::class;
     }
@@ -38,7 +43,7 @@ class FinanceCurrencyController extends ApiController
      * @param $id
      * @return \Dingo\Api\Http\Response
      */
-    public function show($id)
+    public function show($id): Response
     {
         $currency = FinanceCurrency::findOrFail($id);
         return $this->response->item($currency, new FinanceCurrencyTransformer());
@@ -49,7 +54,7 @@ class FinanceCurrencyController extends ApiController
      * @param FinanceCurrencyRequest $request
      * @return \Dingo\Api\Http\Response
      */
-    public function store(FinanceCurrencyRequest $request)
+    public function store(FinanceCurrencyRequest $request): Response
     {
         $currency = FinanceCurrency::create([
             'title' => $request->json('title', ''),
@@ -66,7 +71,7 @@ class FinanceCurrencyController extends ApiController
      * @param FinanceCurrencyRequest $request
      * @return \Dingo\Api\Http\Response
      */
-    public function update($id, FinanceCurrencyRequest $request)
+    public function update($id, FinanceCurrencyRequest $request): Response
     {
         $currency = FinanceCurrency::findOrFail($id);
         $currency->title = $request->json('title', '');
@@ -81,7 +86,8 @@ class FinanceCurrencyController extends ApiController
      * @param $id
      * @return \Dingo\Api\Http\Response
      */
-    public function destroy($id) {
+    public function destroy($id): Response
+    {
         $currency = FinanceCurrency::findOrFail($id);
         \Log::info('Currency deleted', [$currency, $this->user()]);
         $currency->delete();

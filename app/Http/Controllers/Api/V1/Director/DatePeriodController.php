@@ -12,15 +12,16 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\DatePeriodRequest;
 use App\Services\DatePeriod\DatePeriodService;
 use App\Transformers\DatePeriodTransformer;
+use League\Fractal\TransformerAbstract;
 
 class DatePeriodController extends ApiController
 {
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new DatePeriodTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return DatePeriod::class;
     }

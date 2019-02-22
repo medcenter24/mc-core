@@ -11,15 +11,16 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\PatientRequest;
 use App\Patient;
 use App\Transformers\PatientTransformer;
+use League\Fractal\TransformerAbstract;
 
 class PatientsController extends ApiController
 {
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new PatientTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Patient::class;
     }

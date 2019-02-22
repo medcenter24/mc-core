@@ -15,16 +15,17 @@ use App\Http\Requests\Api\UpdateDoctor;
 use App\Transformers\CityTransformer;
 use App\Transformers\DoctorTransformer;
 use Illuminate\Http\Request;
+use League\Fractal\TransformerAbstract;
 
 class DoctorsController extends ApiController
 {
 
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new DoctorTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Doctor::class;
     }

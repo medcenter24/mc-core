@@ -11,15 +11,16 @@ use App\AccidentCheckpoint;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\AccidentCheckpointRequest;
 use App\Transformers\AccidentCheckpointTransformer;
+use League\Fractal\TransformerAbstract;
 
 class AccidentCheckpointsController extends ApiController
 {
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new AccidentCheckpointTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return new AccidentCheckpoint();
     }

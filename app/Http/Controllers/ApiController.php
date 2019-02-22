@@ -9,6 +9,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\NotImplementedException;
 use Dingo\Api\Routing\Helpers;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -50,7 +51,7 @@ class ApiController extends Controller
      * @param Request $request
      * @return mixed
      */
-    protected function applyCondition($eloquent, Request $request = null)
+    protected function applyCondition($eloquent, Request $request = null): Builder
     {
         return $eloquent;
     }
@@ -61,7 +62,7 @@ class ApiController extends Controller
      * @return \Dingo\Api\Http\Response
      * @throws NotImplementedException
      */
-    public function search(Request $request)
+    public function search(Request $request): Response
     {
         // first
         $first = (int)$request->json('first', false);
@@ -95,7 +96,7 @@ class ApiController extends Controller
      * @return string Class with Eloquent Model
      * @throws NotImplementedException
      */
-    protected function getModelClass() {
+    protected function getModelClass(): string {
         throw new NotImplementedException('ApiController::getModelClass needs to be rewrote by the child');
     }
 
@@ -103,7 +104,7 @@ class ApiController extends Controller
      * @return TransformerAbstract
      * @throws NotImplementedException
      */
-    protected function getDataTransformer() {
+    protected function getDataTransformer(): TransformerAbstract {
         throw new NotImplementedException('ApiController::getDataTransformer needs to be rewrote by the child');
     }
 
@@ -112,7 +113,7 @@ class ApiController extends Controller
      * @return string
      * @throws NotImplementedException
      */
-    private function getSortField($fieldName)
+    private function getSortField($fieldName): string
     {
         $field = '';
         $fields = [];

@@ -13,15 +13,16 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\FormRequest;
 use App\Services\FormService;
 use App\Transformers\FormTransformer;
+use League\Fractal\TransformerAbstract;
 
 class FormsController extends ApiController
 {
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new FormTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Form::class;
     }

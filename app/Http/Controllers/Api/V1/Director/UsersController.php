@@ -15,6 +15,8 @@ use App\Services\LogoService;
 use App\Transformers\UserTransformer;
 use App\User;
 use Hash;
+use Illuminate\Database\Eloquent\Builder;
+use League\Fractal\TransformerAbstract;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded;
 use Illuminate\Http\Request;
 
@@ -26,19 +28,19 @@ class UsersController extends ApiController
      * @param $request
      * @return mixed
      */
-    protected function applyCondition($eloquent, Request $request = null)
+    protected function applyCondition($eloquent, Request $request = null): Builder
     {
         return $eloquent->whereHas('roles', function ($query) {
             $query->where('title', 'doctor');
         });
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return User::class;
     }
 
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new UserTransformer();
     }

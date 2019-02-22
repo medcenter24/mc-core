@@ -18,6 +18,7 @@ use App\Transformers\FormTransformer;
 use App\Transformers\InvoiceTransformer;
 use App\Transformers\UploadedFileTransformer;
 use App\Upload;
+use League\Fractal\TransformerAbstract;
 
 class InvoiceController extends ApiController
 {
@@ -25,12 +26,12 @@ class InvoiceController extends ApiController
     /**
      * @return InvoiceTransformer|\League\Fractal\TransformerAbstract
      */
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new InvoiceTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Invoice::class;
     }

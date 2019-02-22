@@ -13,11 +13,13 @@ use App\Http\Requests\Api\FinanceRequest;
 use App\Services\CaseServices\Finance\CaseFinanceService;
 use App\Transformers\FinanceConditionTransformer;
 use Dingo\Api\Http\Response;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use League\Fractal\TransformerAbstract;
 
 class FinanceController extends ApiController
 {
-    protected function applyCondition($eloquent, Request $request = null)
+    protected function applyCondition($eloquent, Request $request = null): Builder
     {
         $id = (int)$request->json('id', false);
         if ($id) {
@@ -26,7 +28,7 @@ class FinanceController extends ApiController
         return $eloquent;
     }
 
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new FinanceConditionTransformer();
     }

@@ -11,16 +11,17 @@ use App\DiagnosticCategory;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\DiagnosticCategoryUpdate;
 use App\Transformers\CategoryTransformer;
+use League\Fractal\TransformerAbstract;
 
 class CategoriesController extends ApiController
 {
 
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new CategoryTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return DiagnosticCategory::class;
     }

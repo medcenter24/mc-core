@@ -11,15 +11,16 @@ use App\Diagnostic;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\DiagnosticRequest;
 use App\Transformers\DiagnosticTransformer;
+use League\Fractal\TransformerAbstract;
 
 class DiagnosticsController extends ApiController
 {
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new DiagnosticTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Diagnostic::class;
     }

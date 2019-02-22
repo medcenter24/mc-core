@@ -47,6 +47,7 @@ use Dingo\Api\Http\Response;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use League\Fractal\TransformerAbstract;
 
 
 class CasesController extends ApiController
@@ -64,7 +65,7 @@ class CasesController extends ApiController
      * Datatable transformer
      * @return CaseAccidentTransformer|\League\Fractal\TransformerAbstract
      */
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new CaseAccidentTransformer();
     }

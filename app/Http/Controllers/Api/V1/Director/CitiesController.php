@@ -11,15 +11,16 @@ use App\City;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\CityRequest;
 use App\Transformers\CityTransformer;
+use League\Fractal\TransformerAbstract;
 
 class CitiesController extends ApiController
 {
-    protected function getDataTransformer()
+    protected function getDataTransformer(): TransformerAbstract
     {
         return new CityTransformer();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return City::class;
     }

@@ -11,7 +11,7 @@ use App\Assistant;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\AssistantRequest;
 use App\Transformers\AssistantTransformer;
-use App\Transformers\ModelTransformer;
+use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
 class AssistantsController extends ApiController
@@ -26,19 +26,19 @@ class AssistantsController extends ApiController
         return Assistant::class;
     }
 
-    public function index()
+    public function index(): Response
     {
         $assistants = Assistant::orderBy('title')->get();
         return $this->response->collection($assistants, new AssistantTransformer());
     }
 
-    public function show($id)
+    public function show($id): Response
     {
         $assistant = Assistant::findOrFail($id);
         return $this->response->item($assistant, new AssistantTransformer());
     }
 
-    public function store(AssistantRequest $request)
+    public function store(AssistantRequest $request): Response
     {
         $assistant = Assistant::create([
             'title' => $request->json('title', ''),
@@ -50,7 +50,7 @@ class AssistantsController extends ApiController
         return $this->response->created(null, $transformer->transform($assistant));
     }
 
-    public function update($id, AssistantRequest $request)
+    public function update($id, AssistantRequest $request): Response
     {
         $assistant = Assistant::findOrFail($id);
         $assistant->title = $request->json('title', '');
@@ -59,10 +59,10 @@ class AssistantsController extends ApiController
         $assistant->comment = $request->json('commentary', '');
         $assistant->save();
         \Log::info('Assistant updated', [$assistant, $this->user()]);
-        $this->response->item($assistant, new AssistantTransformer());
+        return $this->response->item($assistant, new AssistantTransformer());
     }
 
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $assistant = Assistant::findOrFail($id);
         \Log::info('Assistant deleted', [$assistant, $this->user()]);

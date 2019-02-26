@@ -11,13 +11,18 @@ namespace App\Services\Export;
 use App\Accident;
 use App\DoctorAccident;
 use App\Services\AccidentService;
-use Maatwebsite\Excel\Writers\LaravelExcelWriter;
+use Maatwebsite\Excel\Facades\Excel;
 
+/**
+ * Class Form1ExportService
+ * @package App\Services\Export
+ * @deprecated moved to the Exports/CasesExport
+ */
 class Form1ExportService
 {
     public function excel(array $filters)
     {
-        return \Excel::create('CasesExportForm1', function(LaravelExcelWriter $excel) use ($filters) {
+        return Excel::create('CasesExportForm1', function(LaravelExcelWriter $excel) use ($filters) {
             // Set the title
             $excel->setTitle('Export Form 1');
             // Chain the setters

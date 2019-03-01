@@ -60,6 +60,7 @@ class Accident extends AccidentAbstract
         'accident_status_id',
         'assistant_id',
         'assistant_ref_num',
+        'assistant_invoice_id',
         'assistant_guarantee_id',
         'ref_num',
         'title',

@@ -14,6 +14,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\InvoiceRequest;
 use App\Invoice;
 use App\Payment;
+use App\Services\CurrencyService;
 use App\Transformers\FormTransformer;
 use App\Transformers\InvoiceTransformer;
 use App\Transformers\UploadedFileTransformer;
@@ -40,9 +41,10 @@ class InvoiceController extends ApiController
     /**
      * @param $id
      * @param InvoiceRequest $request
+     * @param CurrencyService $currencyService
      * @return \Dingo\Api\Http\Response
      */
-    public function update($id, InvoiceRequest $request): Response
+    public function update($id, InvoiceRequest $request, CurrencyService $currencyService): Response
     {
         $invoice = Invoice::findOrFail($id);
         if (!$invoice) {
@@ -55,7 +57,7 @@ class InvoiceController extends ApiController
         $invoice->save();
 
         $price = $request->json('price', 0);
-        $this->assignPayment($invoice, $price);
+        $this->assignPayment($invoice, $price, $currencyService->getDefaultCurrency());
 
         $this->assignInvoiceTypeResource($invoice, $request);
 
@@ -80,7 +82,7 @@ class InvoiceController extends ApiController
         }
     }
 
-    public function store(InvoiceRequest $request): Response
+    public function store(InvoiceRequest $request, CurrencyService $currencyService): Response
     {
         $invoice = Invoice::create([
             'title' => $request->json('title', ''),
@@ -90,7 +92,7 @@ class InvoiceController extends ApiController
         ]);
 
         $price = $request->json('price', 0);
-        $this->assignPayment($invoice, $price);
+        $this->assignPayment($invoice, $price, $currencyService->getDefaultCurrency());
 
         $this->assignInvoiceTypeResource($invoice, $request);
 
@@ -98,14 +100,15 @@ class InvoiceController extends ApiController
         return $this->response->created(null, $transformer->transform($invoice));
     }
 
-    private function assignPayment(Invoice $invoice, $price = 0, FinanceCurrency $currency = null): void
+    private function assignPayment(Invoice $invoice, int $price, FinanceCurrency $currency): void
     {
         $payment = Payment::create([
             'value' => $price,
-            'currency_id' => 0,
+            'currency_id' => $currency->id,
             'fixed' => 0,
+            'description' => '',
         ]);
-        $invoice->payment = $payment;
+        $invoice->payment()->associate($payment);
         $invoice->save();
     }
 

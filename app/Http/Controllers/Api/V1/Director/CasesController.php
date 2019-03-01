@@ -351,7 +351,7 @@ class CasesController extends ApiController
                 $requestedAccident['patientId'] = $accident->patient_id;
             }
         } else {
-            $requestedAccident['patientId'] = intval($requestedAccident['patientId']);
+            $requestedAccident['patientId'] = (int) $requestedAccident['patientId'];
         }
         // I don't need to update all data only to update provided, so I don't need use `getFormattedAccidentData`
         $accident = $this->setData($accident, $requestedAccident);

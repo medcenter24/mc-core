@@ -8,9 +8,7 @@
 namespace App\Providers;
 
 
-use App\AccidentStatus;
-use App\HospitalAccident;
-use App\Services\AccidentStatusesService;
+use App;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,11 +25,12 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        if ($this->app->environment() !== 'production') {
-            // fyi needs full path, because I don't have this lib on the prod
-            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+        if (App::environment() !== 'production') {
+            App::register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+            App::register(\Barryvdh\Debugbar\ServiceProvider::class);
+            App::register(\Nwidart\Modules\LaravelModulesServiceProvider::class);
         }
     }
 }

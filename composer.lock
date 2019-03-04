@@ -319,12 +319,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dingo/api.git",
-                "reference": "fccd3859fec3efa1604b1d835be0b4f8a21b46ec"
+                "reference": "756b7f505388cfecf9d402994ef5296ee60dd601"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dingo/api/zipball/fccd3859fec3efa1604b1d835be0b4f8a21b46ec",
-                "reference": "fccd3859fec3efa1604b1d835be0b4f8a21b46ec",
+                "url": "https://api.github.com/repos/dingo/api/zipball/756b7f505388cfecf9d402994ef5296ee60dd601",
+                "reference": "756b7f505388cfecf9d402994ef5296ee60dd601",
                 "shasum": ""
             },
             "require": {
@@ -393,7 +393,7 @@
                 "laravel",
                 "restful"
             ],
-            "time": "2019-02-20T13:38:05+00:00"
+            "time": "2019-02-26T12:36:05+00:00"
         },
         {
             "name": "dingo/blueprint",
@@ -897,12 +897,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "6c50a6299b2465053d317bd32845ede91db62393"
+                "reference": "fa745406c2f48210693ba05f11280a1473037b2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/6c50a6299b2465053d317bd32845ede91db62393",
-                "reference": "6c50a6299b2465053d317bd32845ede91db62393",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/fa745406c2f48210693ba05f11280a1473037b2f",
+                "reference": "fa745406c2f48210693ba05f11280a1473037b2f",
                 "shasum": ""
             },
             "require": {
@@ -955,7 +955,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2019-01-14T15:11:47+00:00"
+            "time": "2019-02-26T17:21:14+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -1314,12 +1314,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "2e5101a11601142e9452afdbdf4d8af27935a51e"
+                "reference": "8ab09fb6377eb5b6dab45ab38b0a62446b08e8ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/2e5101a11601142e9452afdbdf4d8af27935a51e",
-                "reference": "2e5101a11601142e9452afdbdf4d8af27935a51e",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/8ab09fb6377eb5b6dab45ab38b0a62446b08e8ae",
+                "reference": "8ab09fb6377eb5b6dab45ab38b0a62446b08e8ae",
                 "shasum": ""
             },
             "require": {
@@ -1452,7 +1452,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2019-02-26T01:30:11+00:00"
+            "time": "2019-02-26T20:30:06+00:00"
         },
         {
             "name": "laravel/nexmo-notification-channel",
@@ -1574,12 +1574,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/tinker.git",
-                "reference": "287645a2e2387b2c2529cc89e3fe77af933b7a75"
+                "reference": "46c1866cd74b35b52a2ad0e5649dfaa76bad0212"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/tinker/zipball/287645a2e2387b2c2529cc89e3fe77af933b7a75",
-                "reference": "287645a2e2387b2c2529cc89e3fe77af933b7a75",
+                "url": "https://api.github.com/repos/laravel/tinker/zipball/46c1866cd74b35b52a2ad0e5649dfaa76bad0212",
+                "reference": "46c1866cd74b35b52a2ad0e5649dfaa76bad0212",
                 "shasum": ""
             },
             "require": {
@@ -1629,7 +1629,7 @@
                 "laravel",
                 "psysh"
             ],
-            "time": "2019-02-15T16:32:15+00:00"
+            "time": "2019-02-26T13:57:08+00:00"
         },
         {
             "name": "lcobucci/jwt",
@@ -1951,25 +1951,26 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maatwebsite/Laravel-Excel.git",
-                "reference": "ebdc6344552301ab89c7296c1461e8a7c4349e89"
+                "reference": "e115760c879a7b647adf38006be015badd2ffbdd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maatwebsite/Laravel-Excel/zipball/ebdc6344552301ab89c7296c1461e8a7c4349e89",
-                "reference": "ebdc6344552301ab89c7296c1461e8a7c4349e89",
+                "url": "https://api.github.com/repos/Maatwebsite/Laravel-Excel/zipball/e115760c879a7b647adf38006be015badd2ffbdd",
+                "reference": "e115760c879a7b647adf38006be015badd2ffbdd",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "illuminate/support": "5.5.*|5.6.*|5.7.*|5.8.*",
+                "opis/closure": "^3.1",
                 "php": "^7.0",
                 "phpoffice/phpspreadsheet": "^1.6"
             },
             "require-dev": {
                 "mockery/mockery": "^1.1",
-                "orchestra/database": "^3.7",
-                "orchestra/testbench": "^3.7",
-                "phpunit/phpunit": "^7.5",
+                "orchestra/database": "^3.8",
+                "orchestra/testbench": "^3.8",
+                "phpunit/phpunit": "^8.0",
                 "predis/predis": "^1.1"
             },
             "type": "library",
@@ -2010,7 +2011,7 @@
                 "php",
                 "phpspreadsheet"
             ],
-            "time": "2019-02-22T09:42:21+00:00"
+            "time": "2019-02-28T14:43:36+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -3730,24 +3731,24 @@
         },
         {
             "name": "spatie/laravel-medialibrary",
-            "version": "7.5.5",
+            "version": "7.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-medialibrary.git",
-                "reference": "a50e59d1eec7c2e161942ffd0d13860759e4760d"
+                "reference": "bced3ce9ed69a1060fa978842c7fb5f87a5f7f67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/a50e59d1eec7c2e161942ffd0d13860759e4760d",
-                "reference": "a50e59d1eec7c2e161942ffd0d13860759e4760d",
+                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/bced3ce9ed69a1060fa978842c7fb5f87a5f7f67",
+                "reference": "bced3ce9ed69a1060fa978842c7fb5f87a5f7f67",
                 "shasum": ""
             },
             "require": {
-                "illuminate/bus": "~5.5.0|~5.6.0|~5.7.0",
-                "illuminate/console": "~5.5.0|~5.6.0|~5.7.0",
-                "illuminate/database": "~5.5.0|~5.6.0|~5.7.0",
-                "illuminate/pipeline": "~5.5.0|~5.6.0|~5.7.0",
-                "illuminate/support": "~5.5.0|~5.6.0|~5.7.0",
+                "illuminate/bus": "~5.5.0|~5.6.0|~5.7.0|~5.8.0",
+                "illuminate/console": "~5.5.0|~5.6.0|~5.7.0|~5.8.0",
+                "illuminate/database": "~5.5.0|~5.6.0|~5.7.0|~5.8.0",
+                "illuminate/pipeline": "~5.5.0|~5.6.0|~5.7.0|~5.8.0",
+                "illuminate/support": "~5.5.0|~5.6.0|~5.7.0|~5.8.0",
                 "league/flysystem": "^1.0.8",
                 "maennchen/zipstream-php": "~0.4",
                 "php": "^7.1",
@@ -3764,9 +3765,9 @@
                 "guzzlehttp/guzzle": "^6.3",
                 "league/flysystem-aws-s3-v3": "^1.0.13",
                 "mockery/mockery": "^1.0.0",
-                "orchestra/testbench": "~3.5.0|~3.6.0|~3.7.0",
-                "phpunit/phpunit": "^7.0",
-                "spatie/phpunit-snapshot-assertions": "^1.2"
+                "orchestra/testbench": "~3.5.0|~3.6.0|~3.7.0|~3.8.0",
+                "phpunit/phpunit": "^7.0|^8.0",
+                "spatie/phpunit-snapshot-assertions": "^2.0"
             },
             "suggest": {
                 "league/flysystem-aws-s3-v3": "Required to use AWS S3 file storage",
@@ -3809,7 +3810,7 @@
                 "media",
                 "spatie"
             ],
-            "time": "2019-01-05T14:06:46+00:00"
+            "time": "2019-02-27T07:27:31+00:00"
         },
         {
             "name": "spatie/pdf-to-image",
@@ -3962,12 +3963,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "c2100aa5bf9acd57e712f208030f1e5e32e420c5"
+                "reference": "a7eb054083599802e9a48acc85b9746c7c650599"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/c2100aa5bf9acd57e712f208030f1e5e32e420c5",
-                "reference": "c2100aa5bf9acd57e712f208030f1e5e32e420c5",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/a7eb054083599802e9a48acc85b9746c7c650599",
+                "reference": "a7eb054083599802e9a48acc85b9746c7c650599",
                 "shasum": ""
             },
             "require": {
@@ -4016,7 +4017,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2019-01-30T06:37:50+00:00"
+            "time": "2019-02-27T08:53:38+00:00"
         },
         {
             "name": "symfony/console",
@@ -5609,18 +5610,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "f78618a0ea1110aedfcbb98db7fecf657945baa2"
+                "reference": "b1fe6d2342a735ad5915db1912fe8458692ead39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/f78618a0ea1110aedfcbb98db7fecf657945baa2",
-                "reference": "f78618a0ea1110aedfcbb98db7fecf657945baa2",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/b1fe6d2342a735ad5915db1912fe8458692ead39",
+                "reference": "b1fe6d2342a735ad5915db1912fe8458692ead39",
                 "shasum": ""
             },
             "require": {
-                "illuminate/routing": "5.5.x|5.6.x|5.7.x",
-                "illuminate/session": "5.5.x|5.6.x|5.7.x",
-                "illuminate/support": "5.5.x|5.6.x|5.7.x",
+                "illuminate/routing": "5.5.x|5.6.x|5.7.x|5.8.x",
+                "illuminate/session": "5.5.x|5.6.x|5.7.x|5.8.x",
+                "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x",
                 "maximebf/debugbar": "~1.15.0",
                 "php": ">=7.0",
                 "symfony/debug": "^3|^4",
@@ -5669,7 +5670,7 @@
                 "profiler",
                 "webprofiler"
             ],
-            "time": "2019-02-18T19:51:47+00:00"
+            "time": "2019-02-26T20:02:18+00:00"
         },
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -5856,12 +5857,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "60f198c17d99728b0c1adb5b17e581fe274e34e8"
+                "reference": "ba1e5c213c2932093ee3d8aa3ee1591ffa35e877"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/60f198c17d99728b0c1adb5b17e581fe274e34e8",
-                "reference": "60f198c17d99728b0c1adb5b17e581fe274e34e8",
+                "url": "https://api.github.com/repos/composer/composer/zipball/ba1e5c213c2932093ee3d8aa3ee1591ffa35e877",
+                "reference": "ba1e5c213c2932093ee3d8aa3ee1591ffa35e877",
                 "shasum": ""
             },
             "require": {
@@ -5928,7 +5929,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2019-02-21T13:06:41+00:00"
+            "time": "2019-02-27T14:07:33+00:00"
         },
         {
             "name": "composer/semver",
@@ -6186,12 +6187,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "8cba2b09b7f802fd3bb3236050ea1bd47b56a6ff"
+                "reference": "d3d09e29d86efb9a7ea39ac9d5e0ae172b354f83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/8cba2b09b7f802fd3bb3236050ea1bd47b56a6ff",
-                "reference": "8cba2b09b7f802fd3bb3236050ea1bd47b56a6ff",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/d3d09e29d86efb9a7ea39ac9d5e0ae172b354f83",
+                "reference": "d3d09e29d86efb9a7ea39ac9d5e0ae172b354f83",
                 "shasum": ""
             },
             "require": {
@@ -6260,7 +6261,7 @@
                 "php",
                 "queryobject"
             ],
-            "time": "2019-02-25T16:53:17+00:00"
+            "time": "2019-02-26T17:13:59+00:00"
         },
         {
             "name": "doctrine/event-manager",

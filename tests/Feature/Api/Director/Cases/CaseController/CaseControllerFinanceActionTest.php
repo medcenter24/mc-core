@@ -502,9 +502,9 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'calculatedValue' => -10,
+                    'calculatedValue' => -15,
                     'currency' => [],
-                    'formula' => '0.00 - 10.00',
+                    'formula' => '0.00 - 15.00',
                 ],
                 [
                     'type' => 'assistant',
@@ -516,9 +516,9 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'calculatedValue' => 10,
+                    'calculatedValue' => 15,
                     'currency' => [],
-                    'formula' => '10.00',
+                    'formula' => '10.00 + 5.00',
                 ],
             ],
         ]);

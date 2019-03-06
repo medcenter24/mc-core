@@ -115,5 +115,5 @@ return [
     */
 
     'attributes' => [],
-
+    'period' => 'Incorrect period format',
 ];

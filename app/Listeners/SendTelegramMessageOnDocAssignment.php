@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright (c) 2018.
+ *
+ * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ */
 
 namespace App\Listeners;
 
@@ -39,10 +44,12 @@ class SendTelegramMessageOnDocAssignment
             \App::setLocale($doctorUser->lang);
             $keyboard = new Keyboard([
                 'keyboard' => [
-                    [new Button([
-                        'text' => trans('content.pickup_case', ['ref_num' => $doctorAccident->accident->ref_num]),
-                        // 'request_location' => true, not implemented yet (on telegrams side)
-                    ])]
+                    [
+                        new Button([
+                            'text' => trans('content.pickup_case', ['ref_num' => $doctorAccident->accident->ref_num]),
+                            // 'request_location' => true, not implemented yet (on telegrams side)
+                        ])
+                    ]
                 ],
                 'resize_keyboard' => true,
                 'one_time_keyboard' => true,
@@ -53,6 +60,10 @@ class SendTelegramMessageOnDocAssignment
                 'text' => view('case.info', compact('doctorAccident'))->render(),
                 'parse_mode' => 'HTML',
                 'reply_markup' => $keyboard,
+            ]);
+        } elseif (!$doctorAccident->doctor) {
+            \Log::warning('Doctor will not receive any messages to the telegram, because we do not have doctor', [
+                'doctorAccidentId' => $doctorAccident->id,
             ]);
         } elseif(!$doctorAccident->doctor->user_id) {
             \Log::warning('Doctor will not receive any messages to the telegram, because he does not have assignment to user', [

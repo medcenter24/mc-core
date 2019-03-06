@@ -11,9 +11,20 @@ use App\DoctorService;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\DoctorServiceRequest;
 use App\Transformers\DoctorServiceTransformer;
+use League\Fractal\TransformerAbstract;
 
 class DoctorServicesController extends ApiController
 {
+    protected function getDataTransformer(): TransformerAbstract
+    {
+        return new DoctorServiceTransformer();
+    }
+
+    protected function getModelClass(): string
+    {
+        return DoctorService::class;
+    }
+
     public function index()
     {
         $services = DoctorService::orderBy('title', 'desc')->get();
@@ -29,7 +40,7 @@ class DoctorServicesController extends ApiController
 
         $doctorService->title= $request->json('title', '');
         $doctorService->description = $request->json('description', '');
-        $doctorService->price = $request->json('price', 0);
+        $doctorService->disease_code = $request->json('diseaseCode', '');
         $doctorService->created_by = $this->user()->id;
         $doctorService->save();
 
@@ -42,7 +53,7 @@ class DoctorServicesController extends ApiController
         $doctorService = DoctorService::create([
             'title' => $request->json('title', ''),
             'description' => $request->json('description', ''),
-            'price' => $request->json('price', 0),
+            'disease_code' => $request->json('diseaseCode', ''),
             'created_by' => $this->user()->id,
         ]);
         $transformer = new DoctorServiceTransformer();

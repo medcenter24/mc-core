@@ -18,8 +18,10 @@ use App\User;
  */
 class RoleService
 {
+    const LOGIN_ROLE = 'login';
     const DIRECTOR_ROLE = 'director';
     const DOCTOR_ROLE = 'doctor';
+    const ADMIN_ROLE = 'admin';
 
     /**
      * Check that user has role permissions

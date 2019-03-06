@@ -5,7 +5,7 @@
  * @author Alexander Zagovorichev <zagovorichev@gmail.com>
  */
 
-return [
+$app = [
 
     /*
     |--------------------------------------------------------------------------
@@ -176,6 +176,9 @@ return [
         \App\Services\Messenger\LocMessengerServiceProvider::class,
         BackupManager\Laravel\Laravel55ServiceProvider::class,
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
+        // \App\Providers\CaseFinanceProvider::class,
+        \App\Providers\FormulaServiceProvider::class,
+        \App\Providers\ValidatorServiceProvider::class,
     ],
 
     /*
@@ -233,3 +236,5 @@ return [
     ],
 
 ];
+
+return $app;

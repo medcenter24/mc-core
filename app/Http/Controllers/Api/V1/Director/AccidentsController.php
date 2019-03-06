@@ -14,11 +14,22 @@ use App\Http\Requests\StoreAccident;
 use App\Http\Requests\UpdateAccident;
 use App\Services\AccidentStatusesService;
 use App\Transformers\AccidentTransformer;
+use Dingo\Api\Http\Response;
+use League\Fractal\TransformerAbstract;
 
 class AccidentsController extends ApiController
 {
+    protected function getDataTransformer(): TransformerAbstract
+    {
+        return new AccidentTransformer();
+    }
 
-    public function index()
+    protected function getModelClass(): string
+    {
+        return Accident::class;
+    }
+
+    public function index(): Response
     {
         $accidents = Accident::orderBy('created_at', 'desc')->get();
         return $this->response->collection($accidents, new AccidentTransformer());
@@ -35,7 +46,7 @@ class AccidentsController extends ApiController
         return $accident;
     }
 
-    public function show($id)
+    public function show($id): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
@@ -45,7 +56,7 @@ class AccidentsController extends ApiController
         return $this->response->item($accident, new AccidentTransformer());
     }
 
-    public function update(UpdateAccident $request, $id)
+    public function update(UpdateAccident $request, $id): array
     {
         /** @var \Eloquent $accident */
         $accident = Accident::findOrFail($id);
@@ -59,7 +70,7 @@ class AccidentsController extends ApiController
         return ['success' => true];
     }
 
-    public function destroy($id)
+    public function destroy($id): array
     {
         Accident::destroy($id);
         return ['success' => true];

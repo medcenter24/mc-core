@@ -11,9 +11,20 @@ use App\City;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\CityRequest;
 use App\Transformers\CityTransformer;
+use League\Fractal\TransformerAbstract;
 
 class CitiesController extends ApiController
 {
+    protected function getDataTransformer(): TransformerAbstract
+    {
+        return new CityTransformer();
+    }
+
+    protected function getModelClass(): string
+    {
+        return City::class;
+    }
+
     public function index()
     {
         $cities = City::orderBy('title')->get();

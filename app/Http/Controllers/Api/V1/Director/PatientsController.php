@@ -11,15 +11,26 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\PatientRequest;
 use App\Patient;
 use App\Transformers\PatientTransformer;
+use League\Fractal\TransformerAbstract;
 
 class PatientsController extends ApiController
 {
+    protected function getDataTransformer(): TransformerAbstract
+    {
+        return new PatientTransformer();
+    }
+
+    protected function getModelClass(): string
+    {
+        return Patient::class;
+    }
+
     public function index()
     {
-        $patient = Patient::orderBy('name')->get();
-        return $this->response->collection($patient, new PatientTransformer());
+        $patients = Patient::orderBy('name')->get();
+        return $this->response->collection($patients, new PatientTransformer());
     }
-    
+
     public function show($id)
     {
         return $this->response->item(
@@ -32,7 +43,7 @@ class PatientsController extends ApiController
     {
         $patient = Patient::create($this->getJsonData($request));
         $transformer = new PatientTransformer();
-        return $this->response->created(null, $transformer->transform($patient));
+        return $this->response->created(url("/api/director/patients/{$patient->id}"), $transformer->transform($patient));
     }
 
     public function update($id, PatientRequest $request)
@@ -46,7 +57,7 @@ class PatientsController extends ApiController
         $patient->comment = $data['comment'];
         $patient->save();
         \Log::info('Patient updated', [$patient, $this->user()]);
-        $this->response->item($patient, new PatientTransformer());
+        return $this->response->item($patient, new PatientTransformer());
     }
 
     private function getJsonData(PatientRequest $request) {

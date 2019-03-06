@@ -10,7 +10,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 
 class Doctor extends Model implements HasMedia
 {
@@ -18,7 +18,7 @@ class Doctor extends Model implements HasMedia
     use HasMediaTrait;
 
     protected $fillable = ['name', 'description', 'ref_key', 'gender', 'medical_board_num'];
-    protected $visible  = ['name', 'description', 'ref_key', 'gender', 'medical_board_num'];
+    protected $visible  = ['id', 'name', 'description', 'ref_key', 'gender', 'medical_board_num'];
 
     public function user()
     {

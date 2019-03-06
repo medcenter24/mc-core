@@ -7,15 +7,16 @@
 
 namespace App\Http\Controllers\Api\V1\Director;
 
+use App\Exports\CasesExport;
 use App\Http\Controllers\ApiController;
-use App\Services\Export\Form1ExportService;
+// use App\Services\Export\Form1ExportService;
 use Illuminate\Http\Request;
 
 class CasesExporterController extends ApiController
 {
     public function export(string $form, Request $request)
     {
-        $service = null;
+        /*$service = null;
         switch ($form) {
             case 'form1':
                 $service = new Form1ExportService();
@@ -27,6 +28,8 @@ class CasesExporterController extends ApiController
         return $service->excel($request->all())->export('xlsx', [
             'Access-Control-Allow-Credentials' => true,
             'Access-Control-Allow-Origin' => env('CORS_ALLOW_ORIGIN_DIRECTOR'),
-        ]);
+        ]);*/
+
+        return (new CasesExport())->download('aaa.xlsx');
     }
 }

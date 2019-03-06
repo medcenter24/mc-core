@@ -41,7 +41,6 @@ class UsersControllerTest extends TestCase
             ['file' => UploadedFile::fake()->image('photo.jpg', 100, 100)]
             , $this->headers($this->getUser())
         );
-
         $response->assertStatus(200);
     }
 }

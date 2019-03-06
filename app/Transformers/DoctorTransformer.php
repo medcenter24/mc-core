@@ -19,9 +19,9 @@ class DoctorTransformer extends TransformerAbstract
             'id' => $doctor->id,
             'name' => $doctor->name,
             'description' => $doctor->description,
-            'ref_key' => $doctor->ref_key,
-            'user_id' => $doctor->user_id,
-            'medical_board_num' => $doctor->medical_board_num,
+            'refKey' => $doctor->ref_key,
+            'userId' => $doctor->user_id,
+            'medicalBoardNumber' => $doctor->medical_board_num,
         ];
     }
 }

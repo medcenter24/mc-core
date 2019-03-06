@@ -8,27 +8,25 @@
 namespace App\Http\Controllers\Api\V1\Director;
 
 use App\Accident;
-use App\AccidentStatus;
 use App\Diagnostic;
-use App\Discount;
 use App\DoctorAccident;
 use App\DoctorService;
 use App\DoctorSurvey;
 use App\Events\DoctorAccidentUpdatedEvent;
+use App\Events\HospitalAccidentUpdatedEvent;
+use App\HospitalAccident;
 use App\Http\Controllers\ApiController;
-use App\Patient;
+use App\Http\Requests\Api\CaseRequest;
+use App\Models\Scenario\ScenarioModel;
 use App\Services\AccidentService;
 use App\Services\AccidentStatusesService;
 use App\Services\CaseServices\CaseHistoryService;
-use App\Services\CaseServices\CaseReportService;
 use App\Services\DocumentService;
-use App\Services\Messenger\ThreadService;
+use App\Services\PatientService;
 use App\Services\ReferralNumberService;
 use App\Services\RoleService;
-use App\Services\Scenario\DoctorScenarioService;
 use App\Services\Scenario\ScenarioService;
 use App\Services\Scenario\StoryService;
-use App\Services\ScenarioInterface;
 use App\Transformers\AccidentCheckpointTransformer;
 use App\Transformers\AccidentStatusHistoryTransformer;
 use App\Transformers\CaseAccidentTransformer;
@@ -38,18 +36,40 @@ use App\Transformers\DoctorCaseTransformer;
 use App\Transformers\DoctorServiceTransformer;
 use App\Transformers\DoctorSurveyTransformer;
 use App\Transformers\DocumentTransformer;
+use App\Transformers\HospitalCaseTransformer;
 use App\Transformers\MessageTransformer;
 use App\Transformers\ScenarioTransformer;
-use App\User;
 use Carbon\Carbon;
 use Cmgmyr\Messenger\Models\Message;
 use Cmgmyr\Messenger\Models\Participant;
 use Cmgmyr\Messenger\Models\Thread;
+use Dingo\Api\Http\Response;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use League\Fractal\TransformerAbstract;
+
 
 class CasesController extends ApiController
 {
+    /**
+     * Datatable model
+     * @return string
+     */
+    protected function getModelClass(): string
+    {
+        return Accident::class;
+    }
+
+    /**
+     * Datatable transformer
+     * @return CaseAccidentTransformer|\League\Fractal\TransformerAbstract
+     */
+    protected function getDataTransformer(): TransformerAbstract
+    {
+        return new CaseAccidentTransformer();
+    }
+
     /**
      * Maybe onetime it would be helpful for optimization, but for now I need a lot of queries
      * Load all data that needed by director for the case editing
@@ -57,41 +77,31 @@ class CasesController extends ApiController
      * @param $id - accident id
      * @return \Dingo\Api\Http\Response
      */
-    public function show($id)
+    public function show($id): Response
     {
         $accident = Accident::findOrFail($id);
         return $this->response->item($accident, new DirectorCaseTransformer());
     }
 
-    public function index(Request $request, AccidentService $service)
-    {
-        $rows = $request->get('rows', 10);
-        $accidents = $service->getCasesQuery($request->all())
-            ->paginate($rows, $columns = ['*'], $pageName = 'page', $request->get('page', null)+1);
-
-        return $this->response->paginator($accidents, new CaseAccidentTransformer());
-    }
-
-    public function getDoctorCase($id)
+    public function getDoctorCase($id): Response
     {
         $accident = Accident::findOrFail($id);
-        if(!$accident->caseable) {
-            $doctorAccident = DoctorAccident::create();
-            $accident->caseable_id = $doctorAccident->id;
-            $accident->caseable_type = DoctorAccident::class;
-            $accident->save();
+        if (!$accident->caseable) {
+            $this->response->errorNotFound('Doctor case not found');
         }
         return $this->response->item($accident->caseable, new DoctorCaseTransformer());
     }
 
-    public function getHospitalCase($id)
+    public function getHospitalCase($id): Response
     {
-        /*$accident = Accident::findOrCreate($id);
-        return $this->response->item($accident->hospitalCase, new HospitalCaseTransformer());*/
-        $this->response->errorMethodNotAllowed('Not implemented, yet');
+        $accident = Accident::findOrFail($id);
+        if (!$accident->caseable) {
+            $this->response->errorNotFound('Hospital case not found');
+        }
+        return $this->response->item($accident->caseable, new HospitalCaseTransformer());
     }
 
-    public function getDiagnostics($id, RoleService $roleService)
+    public function getDiagnostics($id, RoleService $roleService): Response
     {
         $accident = Accident::findOrFail($id);
         $accidentDiagnostics = $accident->diagnostics;
@@ -106,13 +116,10 @@ class CasesController extends ApiController
         return $this->response->collection($accidentDiagnostics, new DiagnosticTransformer());
     }
 
-    public function getServices($id, RoleService $roleService)
+    public function getServices($id, RoleService $roleService, AccidentService $accidentServiceService): Response
     {
         $accident = Accident::findOrFail($id);
-        $accidentServices = $accident->services;
-        if ($accident->caseable) {
-            $accidentServices = $accidentServices->merge($accident->caseable->services);
-        }
+        $accidentServices = $accidentServiceService->getAccidentServices($accident);
         $accidentServices->each(function (DoctorService $doctorService) use ($roleService) {
             if ($doctorService->created_by && $roleService->hasRole($doctorService->creator, 'doctor')) {
                 $doctorService->markAsDoctor();
@@ -121,7 +128,7 @@ class CasesController extends ApiController
         return $this->response->collection($accidentServices, new DoctorServiceTransformer());
     }
 
-    public function getSurveys($id, RoleService $roleService)
+    public function getSurveys($id, RoleService $roleService): Response
     {
         $accident = Accident::findOrFail($id);
         $accidentSurveys = $accident->surveys;
@@ -136,19 +143,19 @@ class CasesController extends ApiController
         return $this->response->collection($accidentSurveys, new DoctorSurveyTransformer());
     }
 
-    public function getCheckpoints($id)
+    public function getCheckpoints($id): Response
     {
         $accident = Accident::findOrFail($id);
         return $this->response->collection($accident->checkpoints, new AccidentCheckpointTransformer());
     }
 
-    public function documents($id, DocumentService $documentService)
+    public function documents($id, DocumentService $documentService): Response
     {
         $accident = Accident::findOrFail($id);
         return $this->response->collection($documentService->getDocuments($this->user(), $accident, 'accident'), new DocumentTransformer());
     }
 
-    public function createDocuments($id, Request $request, DocumentService $documentService)
+    public function createDocuments($id, Request $request, DocumentService $documentService): Response
     {
         $accident = Accident::findOrFail($id);
 
@@ -168,214 +175,228 @@ class CasesController extends ApiController
     }
 
     /**
-     * New case accident
+     * Creating caseable
+     * @param Accident $accident
      * @param Request $request
+     */
+    private function createCaseableFromRequest(Accident $accident, Request $request): void
+    {
+        $caseable = $accident->caseable_type == DoctorAccident::class
+            ? DoctorAccident::create(['recommendation' => '', 'investigation' => ''])
+            : HospitalAccident::create();
+
+        $accident->caseable_id = $caseable->id;
+        $accident->caseable_type = get_class($caseable);
+        $accident->save();
+        $accident->refresh();
+        $this->updateCaseableData($accident, $request);
+    }
+
+    /**
+     * Updating caseable
+     * @param Accident $accident
+     * @param Request $request
+     */
+    private function updateCaseableData(Accident $accident, Request $request): void
+    {
+        if (!$accident->caseable) {
+            $this->createCaseableFromRequest($accident, $request);
+        } else {
+            if ($accident->isDoctorCaseable()) {
+                $caseableAccidentData = $request->json('doctorAccident', []);
+                // attach services, surveys and diagnostics
+                $this->updateDoctorMorph($accident->caseable, $request, 'services');
+                $this->updateDoctorMorph($accident->caseable, $request, 'surveys');
+                $this->updateDoctorMorph($accident->caseable, $request, 'diagnostics');
+            } else {
+                $caseableAccidentData = $request->json('hospitalAccident', []);
+            }
+
+            $before = clone $accident->caseable;
+            $caseable = $this->setData($accident->caseable, $caseableAccidentData);
+            $caseable->save();
+
+            if ($accident->isDoctorCaseable()) {
+                event(new DoctorAccidentUpdatedEvent($before, $caseable, 'Updated by the director'));
+            } else {
+                event(new HospitalAccidentUpdatedEvent($before, $caseable, 'Updated by the director'));
+            }
+        }
+    }
+
+    /**
+     * New case accident
+     * @param CaseRequest $request
      * @param ReferralNumberService $referralNumberService
-     * @param AccidentStatusesService $statusesService
+     * @param AccidentService $accidentService
+     * @param PatientService $patientService
      * @return \Dingo\Api\Http\Response
      */
-    public function store(Request $request, ReferralNumberService $referralNumberService, AccidentStatusesService $statusesService)
-    {
-        $accidentData = $request->json('accident', []);
-        if (!isset($accidentData['handling_time']) || !$accidentData['handling_time']) {
-            $accidentData['handling_time'] = NULL;
-        }
-        $accidentData = array_merge(['contacts' => '', 'symptoms' => ''], $accidentData);
+    public function store(
+        CaseRequest $request,
+        ReferralNumberService $referralNumberService,
+        AccidentService $accidentService,
+        PatientService $patientService
+    ): Response {
+
+        $accidentData = $accidentService->getFormattedAccidentData(
+            $this->convertIndexes(
+                $request->json('accident', [])
+            )
+        );
+
         $accident = Accident::create($accidentData);
+        $this->createCaseableFromRequest($accident, $request);
 
-        $doctorAccidentData = $request->json('doctorAccident', []);
-        if (!isset($doctorAccidentData['visit_time']) || !$doctorAccidentData['visit_time']) {
-            $doctorAccidentData['visit_time'] = NULL;
-        }
-        $doctorAccidentData = array_merge(['recommendation' => '', 'investigation' => ''], $doctorAccidentData);
-        $doctorAccident = DoctorAccident::create($doctorAccidentData);
-
-        $patientData = $request->json('patient', []);
-        if (!isset($patientData['birthday']) || !$patientData['birthday']) {
-            $patientData['birthday'] = null;
-        }
-
-        $patient = null;
-        if (!isset($patientData['id']) || !$patientData['id']) {
-            if (isset($patientData['name']) && $patientData['name']) {
-                $patient = Patient::create($patientData);
-            }
+        if (!array_key_exists('patientId', $accidentData)) {
+            $patient = $patientService->findOrCreate($request->json('patient', []));
+            $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
         } else {
-            $patient = Patient::findOrFail($patientData['id']);
+            $accident->patient_id = (int) $accidentData['patientId'];
         }
-        $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
-        $accident->caseable_id = $doctorAccident->id;
-        $accident->caseable_type = DoctorAccident::class;
+
         $accident->created_by = $this->user()->id;
+
         if (empty($accident->ref_num)) {
             $accident->ref_num = $referralNumberService->generate($accident);
         }
         $accident->save();
 
-        $statusesService->set($accident, AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusesService::STATUS_NEW,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT,
-        ]), 'Created by director');
-
-        $accident->diagnostics()->attach($request->json('diagnostics', []));
-        $accident->services()->attach($request->json('services', []));
-        $accident->surveys()->attach($request->json('surveys', []));
+        // I can provide list of documents to assign them to the accident directly
+        $accident->documents()->detach();
         $accident->documents()->attach($request->json('documents', []));
+
+        $accident->checkpoints()->detach();
         $accident->checkpoints()->attach($request->json('checkpoints', []));
 
-        event(new DoctorAccidentUpdatedEvent(null, $doctorAccident, 'Created by director'));
         $transformer = new DirectorCaseTransformer();
         return $this->response->created($accident->id, $transformer->transform($accident));
     }
 
     /**
-     * @param $id
+     * Updated morphed data (services, diagnostics, surveys)
+     * @param DoctorAccident $doctorAccident
      * @param Request $request
+     * @param string $morphName
      */
-    public function update($id, Request $request)
+    private function updateDoctorMorph(DoctorAccident $doctorAccident, Request $request, string $morphName): void
     {
-        $accident = Accident::findOrFail($id);
+        $morphs = $request->json($morphName, []);
+        // $morphs = [];
+        /*
+         * I need to go through the new parameters, not the already stored
+         * (definitely for the services)
+         *
+         * not clear why do I need it at all
+         * if ($doctorAccident->$morphName()) {
+            foreach ($doctorAccident->$morphName() as $morph) {
+                if ($morph && in_array($morph->id, $morphData, false) ) {
+                    $morphs[] = $morph->id;
+                }
+            }
+        }*/
+        $doctorAccident->$morphName()->detach();
+        $doctorAccident->$morphName()->attach($morphs);
+    }
+
+    /**
+     * @param $id
+     * @param CaseRequest $request
+     * @param AccidentService $accidentService
+     * @param PatientService $patientService
+     * @return \Dingo\Api\Http\Response
+     */
+    public function update(
+        $id,
+        CaseRequest $request,
+        AccidentService $accidentService,
+        PatientService $patientService
+    ): Response {
+        /** @var Accident $accident */
+        try {
+            $accident = Accident::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            $this->response->errorForbidden('Accident not found');
+        }
 
         // if it needed then status for this accident would be reset by the administrator
-        $status = $accident->accidentStatus;
-
-        if (
-            $status
-            && $status->title == AccidentStatusesService::STATUS_CLOSED
-            && $status->type == AccidentStatusesService::TYPE_ACCIDENT) {
-                $this->response->errorForbidden('Already closed');
+        if ($accidentService->isClosed($accident)) {
+            $this->response->errorForbidden('Already closed');
         }
 
         $requestedAccident = $request->json('accident', false);
 
         if (!$requestedAccident['id']) {
-            \Log::error('Undefined request accident', [
+            \Log::error('Can not update the case: undefined request accident', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
             ]);
             $this->response->errorBadRequest('Accident data should be provided in the request data');
         }
 
-        if (!$requestedAccident['handling_time']) {
-            \Log::error('Undefined handling time', [
-                'accidentId' => $id,
-                'requestedAccident' => $requestedAccident
-            ]);
-            $this->response->errorBadRequest('Handling time should be provided');
-        }
-
-        if ($accident->id != $requestedAccident['id']) {
-            \Log::error('Incorrect requested accident', [
+        if ($accident->id !== $requestedAccident['id']) {
+            \Log::error('Can not update the case: incorrect requested accident', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
             ]);
             $this->response->errorBadRequest('Requested accident did not match to updated one');
         }
 
-        $patientData = $request->json('patient', []);
-        if (!$patientData['birthday']) {
-            $patientData['birthday'] = null;
-        }
-
-        $patient = null;
-        if (!$patientData['id']) {
-            if ($patientData['name']) {
-                $patient = Patient::create($patientData);
+        if (!array_key_exists('patientId', $requestedAccident)) {
+            $patient = $patientService->findOrCreate($request->json('patient', []));
+            $newPatientId = $patient && $patient->id ? $patient->id : 0;
+            if ($newPatientId) {
+                $requestedAccident['patientId'] = $newPatientId;
+            } elseif ($accident->patient_id) {
+                $requestedAccident['patientId'] = $accident->patient_id;
             }
         } else {
-            $patient = Patient::findOrFail($patientData['id']);
+            $requestedAccident['patientId'] = (int) $requestedAccident['patientId'];
         }
-
-        $requestedAccident['patient_id'] = $patient && $patient->id ? $patient->id : 0;
+        // I don't need to update all data only to update provided, so I don't need use `getFormattedAccidentData`
         $accident = $this->setData($accident, $requestedAccident);
         $accident->save();
 
-        $doctorAccidentData = $request->json('doctorAccident', false);
-        if ($doctorAccidentData) {
-            if (!$accident->caseable) {
-                $doctorAccident = DoctorAccident::create(
-                    array_merge(['recommendation' => '', 'investigation' => ''],
-                        $request->json('doctorAccident', []))
-                );
-                $accident->caseable_id = $doctorAccident->id;
-                $accident->caseable_type = DoctorAccident::class;
-                $accident->save();
-
-                event(new DoctorAccidentUpdatedEvent(null, $doctorAccident, 'Created by director'));
-            } else {
-                $before = clone $accident->caseable;
-                $doctorAccident = $this->setData($accident->caseable, $doctorAccidentData);
-                $doctorAccident->save();
-
-                event(new DoctorAccidentUpdatedEvent($before, $doctorAccident, 'Updated by director'));
-            }
-        }
-
-        $discountData = $request->json('discount', false);
-        if ($discountData) {
-            $accident->discount_value = floatval($discountData['value']);
-            $discount = Discount::find($discountData['type']['id']);
-            $accident->discount_id = $discount->id ?: 1;
-            $accident->save();
-        }
-
-        // Services ==========================
-        $services = $request->json('services', []);
-        $docServices = [];
-        foreach ($accident->caseable->services() as $service) {
-            if ($service && in_array($service->id, $services) ) {
-                $docServices[] = $services->id;
-            }
-        }
-        $accidentServices = array_diff($services, $docServices);
-        $accident->caseable->services()->detach();
-        $accident->caseable->services()->attach($docServices);
-        $accident->services()->detach();
-        $accident->services()->attach($accidentServices);
-
-        // Surveys ==========================
-        $surveys = $request->json('surveys', []);
-        $docSurveys = [];
-        foreach ($accident->caseable->surveys() as $survey) {
-            if ($survey && in_array($survey->id, $surveys) ) {
-                $docSurveys[] = $surveys->id;
-            }
-        }
-        $accidentSurveys = array_diff($surveys, $docSurveys);
-        $accident->caseable->surveys()->detach();
-        $accident->caseable->surveys()->attach($docSurveys);
-        $accident->surveys()->detach();
-        $accident->surveys()->attach($accidentSurveys);
-
-        // Diagnostics ======================
-        $diagnostics = $request->json('diagnostics', []);
-        $docDiagnostics = [];
-        foreach ($accident->caseable->diagnostics() as $diagnostic) {
-            if ($diagnostic && in_array($diagnostic->id, $diagnostics) ) {
-                $docDiagnostics[] = $diagnostic->id;
-            }
-        }
-        $accidentDiagnostics = array_diff($diagnostics, $docDiagnostics);
-        $accident->caseable->diagnostics()->detach();
-        $accident->caseable->diagnostics()->attach($docDiagnostics);
-        $accident->diagnostics()->detach();
-        $accident->diagnostics()->attach($accidentDiagnostics);
+        $this->updateCaseableData($accident, $request);
 
         $accident->documents()->detach();
         $accident->documents()->attach($request->json('documents', []));
 
         $accident->checkpoints()->detach();
         $accident->checkpoints()->attach($request->json('checkpoints', []));
+
+        return $this->response->item($accident, new DirectorCaseTransformer());
     }
 
-    private function setData(Model $model, $data)
+    /**
+     * Makes indexes snake_case because frontend works with camelCase
+     * @param $data
+     * @return array
+     */
+    private function convertIndexes(array $data): array
     {
+        $converted = [];
+        foreach ($data as $key => $val) {
+            $converted[snake_case($key)] = $val;
+        }
+        return $converted;
+    }
+
+    /**
+     * Set provided data to the visible properties of the model
+     * @param Model $model
+     * @param $data
+     * @return Model
+     */
+    private function setData(Model $model, array $data): Model
+    {
+        $data = $this->convertIndexes($data);
         foreach ($model->getVisible() as $item) {
-            if (isset($data[$item])) {
-                if (in_array($item, $model->getDates())) {
-                    $model->$item = Carbon::parse($data[$item])->format('Y-m-d H:i:s');
+            if (array_key_exists($item, $data)) {
+                if (in_array($item, $model->getDates(), true)) {
+                    $model->$item = $data[$item] ? Carbon::parse($data[$item])->format('Y-m-d H:i:s') : null;
                 } else {
-                    $model->$item = $data[$item];
+                    $model->$item = $data[$item] ?: '';
                 }
             }
         }
@@ -391,21 +412,19 @@ class CasesController extends ApiController
      * @param ScenarioService $scenariosService
      * @return \Dingo\Api\Http\Response
      */
-    public function story(int $id, StoryService $storyService, AccidentStatusesService $accidentStatusesService, ScenarioService $scenariosService)
+    public function story(
+        int $id,
+        StoryService $storyService,
+        AccidentStatusesService $accidentStatusesService,
+        ScenarioService $scenariosService
+    ) : Response
     {
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
-        $scenarioService = null;
-        if ($accident->caseable_type == DoctorAccident::class) {
-            $scenarioService = new DoctorScenarioService($accidentStatusesService, $scenariosService);
-        }
-
-        if ( !($scenarioService instanceof ScenarioInterface) ) {
-            $this->response->errorNotFound('Story has not been found for that accident');
-        }
+        $scenario = new ScenarioModel($accidentStatusesService, $scenariosService->getScenarioByTag($accident->caseable_type));
 
         return $this->response->collection(
-            $storyService->init($accident->history, $scenarioService)->getStory(),
+            $storyService->init($accident->history, $scenario)->getStory(),
             new ScenarioTransformer()
         );
     }
@@ -416,15 +435,10 @@ class CasesController extends ApiController
      * @param AccidentStatusesService $statusesService
      * @return \Dingo\Api\Http\Response
      */
-    public function close(int $id, AccidentStatusesService $statusesService)
+    public function close(int $id, AccidentStatusesService $statusesService): Response
     {
         $accident = Accident::findOrFail($id);
-
-        $statusesService->set($accident, AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusesService::STATUS_CLOSED,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT,
-        ]), 'Closed by director');
-
+        $statusesService->closeAccident($accident, 'Closed by director');
         return $this->response->noContent();
     }
 
@@ -433,29 +447,11 @@ class CasesController extends ApiController
      * @param $id
      * @return \Dingo\Api\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $accident = Accident::findOrFail($id);
         $accident->delete();
         return $this->response->noContent();
-    }
-
-    public function reportHtml($id, CaseReportService $service)
-    {
-        $accident = Accident::find($id);
-        if (!$accident) {
-            abort(404);
-        }
-        return response()->json(['data' => $service->generate($accident)->toHtml()]);
-    }
-
-    public function downloadPdf($id, CaseReportService $service)
-    {
-        $accident = Accident::find($id);
-        if (!$accident) {
-            abort(404);
-        }
-        return response()->download($service->generate($accident)->getPdfPath());
     }
 
     public function history(int $id, CaseHistoryService $service)
@@ -469,7 +465,7 @@ class CasesController extends ApiController
         );
     }
 
-    public function comments(int $id)
+    public function comments(int $id): Response
     {
         // I need to be sure that there is such accident
         /** @var Accident $accident */
@@ -491,7 +487,7 @@ class CasesController extends ApiController
      * @return \Dingo\Api\Http\Response
      * @throws \ErrorException
      */
-    public function addComment(Request $request, int $id)
+    public function addComment(Request $request, int $id): Response
     {
         $accident = Accident::findOrFail($id);
         $thread = Thread::firstOrCreate(['subject' => 'Accident_'.$accident->id]);

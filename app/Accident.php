@@ -7,6 +7,12 @@
 
 namespace App;
 
+use App\Services\AccidentStatusesService;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+
 /**
  * Case|Accident|...
  *
@@ -15,6 +21,30 @@ namespace App;
  */
 class Accident extends AccidentAbstract
 {
+    protected $fillable = [
+        'parent_id',
+        'patient_id',
+        'accident_type_id',
+        'accident_status_id',
+        'assistant_id',
+        'assistant_ref_num',
+        'assistant_invoice_id',
+        'assistant_guarantee_id',
+        'form_report_id',
+        'city_id',
+        'caseable_payment_id',
+        'income_payment_id',
+        'assistant_payment_id',
+        'caseable_id',
+        'caseable_type',
+        'ref_num',
+        'title',
+        'address',
+        'handling_time',
+        'contacts',
+        'symptoms',
+    ];
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -22,57 +52,97 @@ class Accident extends AccidentAbstract
         'handling_time',
     ];
 
-    protected $fillable = [
-        'created_by',
+    protected $visible = [
+        'id',
         'parent_id',
         'patient_id',
         'accident_type_id',
         'accident_status_id',
         'assistant_id',
         'assistant_ref_num',
-        'caseable_id',
-        'caseable_type',
-        'caseable_cost',
+        'assistant_invoice_id',
+        'assistant_guarantee_id',
         'ref_num',
         'title',
         'city_id',
         'address',
         'contacts',
         'symptoms',
-        'discount_id',
-        'discount_value',
-        'fixed_income',
-        'income',
         'handling_time',
+        'form_report_id',
     ];
 
-    protected $visible = [
-        'parent_id',
-        'patient_id',
-        'accident_type_id',
-        'accident_status_id',
-        'assistant_id',
-        'assistant_ref_num',
-        'ref_num',
-        'title',
-        'city_id',
-        'address',
-        'contacts',
-        'symptoms',
-        'discount_id',
-        'discount_value',
-        'caseable_cost',
-        'fixed_income',
-        'income',
-        'handling_time',
-    ];
+    /**
+     * On the save action we need to change status (if it is not status changing action only)
+     * @var bool
+     */
+    private $statusUpdating = false;
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        self::saved( function(Accident $accident) {
+            (new AccidentStatusesService())->updateAccidentStatus($accident);
+        });
+    }
+
+    public function isStatusUpdatingRun(): bool
+    {
+        return $this->statusUpdating;
+    }
+
+    public function runStatusUpdating(): void
+    {
+        $this->statusUpdating = true;
+    }
+
+    public function stopStatusUpdating(): void
+    {
+        $this->statusUpdating = false;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Payment either to doctor or hospital
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function paymentToCaseable(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class, 'caseable_payment_id');
+    }
+
+    /**
+     * Calculated income
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function incomePayment(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class, 'income_payment_id');
+    }
+
+    /**
+     * Payment from the assistant
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function paymentFromAssistant(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class, 'assistant_payment_id');
+    }
 
     /**
      * Case checkpoints - statuses which could be selected in different order
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function checkpoints()
+    public function checkpoints(): BelongsToMany
     {
         return $this->belongsToMany(AccidentCheckpoint::class);
     }
@@ -82,25 +152,16 @@ class Accident extends AccidentAbstract
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function history()
+    public function history(): MorphMany
     {
         return $this->morphMany(AccidentStatusHistory::class, 'historyable');
-    }
-
-    /**
-     * Discount which should be used for this accident
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function discount()
-    {
-        return $this->belongsTo(Discount::class);
     }
 
     /**
      * Assistant company
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function assistant()
+    public function assistant(): BelongsTo
     {
         return $this->belongsTo(Assistant::class);
     }
@@ -109,17 +170,17 @@ class Accident extends AccidentAbstract
      * Patient from the accident
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function patient()
+    public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
     }
 
-    public function city()
+    public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);
     }
 
-    public function type()
+    public function type(): BelongsTo
     {
         return $this->belongsTo(AccidentType::class, 'accident_type_id');
     }
@@ -127,63 +188,50 @@ class Accident extends AccidentAbstract
     /**
      * Accident report stored as a FormReport element (which use Assignment form template)
      */
-    public function formReport()
+    public function formReport(): BelongsTo
     {
         return $this->belongsTo(FormReport::class);
     }
 
     /**
-     * by default it could be defined by the director
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function services()
-    {
-        return $this->morphToMany(DoctorService::class, 'doctor_serviceable');
-    }
-
-    /**
-     * by default it could be defined by the director
-     * Or director maybe want to create new case by them own
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function diagnostics()
-    {
-        return $this->morphToMany(Diagnostic::class, 'diagnosticable');
-    }
-
-    /**
-     * by default it could be defined by the director
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function surveys()
-    {
-        return $this->morphToMany(DoctorSurvey::class, 'doctor_surveable');
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function caseable()
+    public function caseable(): MorphTo
     {
         return $this->morphTo();
     }
 
     /**
-     * Photos of the documents from the patient
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function documents()
+    public function accidentStatus(): BelongsTo
     {
-        return $this->morphToMany(Document::class, 'documentable');
+        return $this->belongsTo(AccidentStatus::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function accidentStatus()
+    public function assistantInvoice(): BelongsTo
     {
-        return $this->belongsTo(AccidentStatus::class);
+        return $this->belongsTo(Invoice::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assistantGuarantee(): BelongsTo
+    {
+        return $this->belongsTo(Upload::class);
+    }
+
+    public function isDoctorCaseable(): bool
+    {
+        return $this->getAttribute('caseable_type') === DoctorAccident::class;
+    }
+
+    public function isHospitalCaseable(): bool
+    {
+        return $this->getAttribute('caseable_type') === HospitalAccident::class;
     }
 }

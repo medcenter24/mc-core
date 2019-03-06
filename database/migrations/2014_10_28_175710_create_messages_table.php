@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright (c) 2018.
+ *
+ * @author Oleksander Zagovorychev <zagovorichev@gmail.com>
+ */
 
 use Cmgmyr\Messenger\Models\Models;
 use Illuminate\Database\Migrations\Migration;
@@ -20,6 +25,7 @@ class CreateMessagesTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->text('body');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -23,9 +23,11 @@ class UploaderService extends Configurable
     const CONF_DISK = 'disk';
     const CONF_FOLDER = 'folder';
 
+    const CONF_DEFAULT = 'uploads';
+
     private $_defaults = [
-        self::CONF_DISK => 'media',
-        self::CONF_FOLDER => 'anonymous',
+        self::CONF_DISK => self::CONF_DEFAULT,
+        self::CONF_FOLDER => self::CONF_DEFAULT,
     ];
 
     /**
@@ -42,7 +44,7 @@ class UploaderService extends Configurable
     public function upload(UploadedFile $file)
     {
         return new Upload([
-            'path' => Storage::disk($this->getOption(self::CONF_DISK))->putFile($this->getOption(self::CONF_FOLDER), $file),
+            'path' => Storage::disk($this->getOption(self::CONF_DISK))->putFile($this->randDir($this->getOption(self::CONF_FOLDER)), $file),
             'file_name' => $file->getClientOriginalName(),
             'storage' => $this->getOption(self::CONF_FOLDER),
         ]);
@@ -59,5 +61,16 @@ class UploaderService extends Configurable
         $upload = Upload::findOrFail($uploadId);
         Storage::disk($this->getOption(self::CONF_DISK))->delete($upload->path);
         $upload->forceDelete();
+    }
+
+    /**
+     * Generates directory structures
+     * @param $rootFolderName
+     * @return string
+     */
+    private function randDir($rootFolderName)
+    {
+        $nested = sprintf("%02x" . DIRECTORY_SEPARATOR . "%02x", mt_rand(0, 255), mt_rand(0, 255));
+        return $rootFolderName . DIRECTORY_SEPARATOR . $nested;
     }
 }

@@ -22,7 +22,7 @@ class ScenarioTransformer extends TransformerAbstract
             'mode' => $scenario->mode,
             'accident_status_id' => $scenario->accident_status_id,
             'status' => $scenario->status ?: '',
-            'title' => $scenario->accidentStatus->title
+            'title' => $scenario->accidentStatus->title,
         ];
     }
 }

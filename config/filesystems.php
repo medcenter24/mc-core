@@ -84,9 +84,14 @@ return [
             'root' => storage_path(\App\Services\SignatureService::FOLDER),
         ],
 
-        \App\Services\CaseServices\CaseReportService::PDF_DISK => [
+        \App\Services\FormService::PDF_DISK => [
             'driver' => 'local',
-            'root' => storage_path(\App\Services\CaseServices\CaseReportService::PDF_FOLDER),
+            'root' => storage_path(\App\Services\FormService::PDF_FOLDER),
+        ],
+
+        \App\Services\UploaderService::CONF_DEFAULT => [
+            'driver' => 'local',
+            'root' => storage_path(\App\Services\UploaderService::CONF_DEFAULT),
         ],
 
         /*

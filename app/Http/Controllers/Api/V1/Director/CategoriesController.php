@@ -11,9 +11,21 @@ use App\DiagnosticCategory;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\DiagnosticCategoryUpdate;
 use App\Transformers\CategoryTransformer;
+use League\Fractal\TransformerAbstract;
 
 class CategoriesController extends ApiController
 {
+
+    protected function getDataTransformer(): TransformerAbstract
+    {
+        return new CategoryTransformer();
+    }
+
+    protected function getModelClass(): string
+    {
+        return DiagnosticCategory::class;
+    }
+
     public function index()
     {
         $categories = DiagnosticCategory::orderBy('title')->get();

@@ -12,4 +12,9 @@ use Illuminate\Database\Eloquent\Model;
 class Upload extends Model
 {
     protected $fillable = ['path', 'file_name', 'storage'];
+
+    public function uploadable()
+    {
+        return $this->morphTo();
+    }
 }

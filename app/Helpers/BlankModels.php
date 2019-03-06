@@ -11,6 +11,12 @@ namespace App\Helpers;
 use App\Accident;
 use App\DoctorAccident;
 
+/**
+ * Class BlankModels
+ * @package App\Helpers
+ * @deprecated not the best way to do it, try to use Services
+ * maybe AccidentService::getFormattedAccidentData()
+ */
 class BlankModels
 {
     /**
@@ -29,13 +35,13 @@ class BlankModels
             'assistant_ref_num' => '',
             'caseable_id' => 0,
             'caseable_type' => '',
-            'caseable_cost' => 0,
             'ref_num' => '',
             'title' => '',
             'city_id' => 0,
             'address' => '',
             'contacts' => '',
             'symptoms' => '',
+            'handlingTime' => ''
         ]);
     }
 
@@ -46,7 +52,6 @@ class BlankModels
     {
         return DoctorAccident::create([
             'doctor_id' => 0,
-            'city_id' => 0,
             'recommendation' => '',
             'investigation' => '',
         ]);

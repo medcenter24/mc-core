@@ -479,7 +479,7 @@ class Dhv24Docx2017Provider extends DataProvider
 
         $this->doctorAccident->visit_time = date('Y-m-d H:i:s', strtotime($dateTime));
         $city = City::firstOrCreate(['title' => $place]);
-        $this->doctorAccident->city_id = $city->id;
+        $this->accident->city_id = $city->id;
     }
 
     private function loadDiagnostics(array $data)

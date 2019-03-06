@@ -15,10 +15,11 @@ class UpdateHospital extends JsonRequest
     {
         $data = parent::validationData();
 
+        // do not allow to change ref key
         if(isset($data['id'])) {
             $hospital = Hospital::find($data['id']);
-            if (isset($data['ref_key']) && $hospital->ref_key == $data['ref_key']) {
-                unset($data['ref_key']);
+            if (isset($data['refKey']) && $hospital->ref_key == $data['refKey']) {
+                unset($data['refKey']);
             }
         }
         return $data;
@@ -34,7 +35,7 @@ class UpdateHospital extends JsonRequest
         return [
             'title' => 'min:1|max:150',
             'description' => 'max:255',
-            'ref_key' => 'min:1|max:5|unique:doctors',
+            'refKey' => 'min:1|max:5|unique:doctors',
             'address' => 'max:255',
             'phones' => 'max:200',
         ];

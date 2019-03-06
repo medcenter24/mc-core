@@ -48,6 +48,7 @@ class UserStore extends JsonRequest
             'email' => 'required|email|unique:users',
             'name' => 'max:120',
             'phone' => 'max:30',
+            'password' => 'required',
         ];
     }
 }

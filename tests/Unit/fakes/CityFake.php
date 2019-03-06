@@ -14,6 +14,6 @@ class CityFake implements Fake
 {
     public static function make(array $params = [], array $additionalParams = [])
     {
-        return factory(City::class)->make($params);
+        return factory(City::class)->create($params);
     }
 }

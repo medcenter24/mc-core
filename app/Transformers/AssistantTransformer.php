@@ -19,9 +19,8 @@ class AssistantTransformer extends TransformerAbstract
             'id' => $assistant->id,
             'title' => $assistant->title,
             'email' => $assistant->email,
-            'comment' => $assistant->comment,
-            'ref_key' => $assistant->ref_key,
-            'picture' => 'pic_path'
+            'commentary' => $assistant->comment,
+            'refKey' => $assistant->ref_key,
         ];
     }
 }

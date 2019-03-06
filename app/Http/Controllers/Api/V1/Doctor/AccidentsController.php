@@ -78,10 +78,10 @@ class AccidentsController extends ApiController
             ->leftJoin('cities', 'accidents.city_id', '=', 'cities.id')
             ->where('accidents.caseable_type', DoctorAccident::class)
             ->whereIn('accidents.caseable_id', DoctorAccident::where('doctor_id', $this->getDoctor()->id)->pluck('id')->toArray())
-            ->where('accident_statuses.type', \AccidentStatusesTableSeeder::TYPE_DOCTOR)
+            ->where('accident_statuses.type', AccidentStatusesService::TYPE_DOCTOR)
             ->whereIn('accident_statuses.title', [
-                \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
-                \AccidentStatusesTableSeeder::STATUS_ASSIGNED
+                AccidentStatusesService::STATUS_IN_PROGRESS,
+                AccidentStatusesService::STATUS_ASSIGNED
             ])
             ->orderBy($sort[0], $sort[1])
             ->paginate($request->get('per_page', 10),
@@ -95,6 +95,7 @@ class AccidentsController extends ApiController
      *
      * @param  int  $id
      * @param DoctorsService $doctorService
+     * @param AccidentStatusesService $accidentStatusesService
      *
      * @return \Illuminate\Http\Response
      */
@@ -109,17 +110,7 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
-        if ($accident->accidentStatus->title == AccidentStatusesService::STATUS_ASSIGNED
-            && $accident->accidentStatus->type == AccidentStatusesService::TYPE_DOCTOR) {
-
-            $status = AccidentStatus::firstOrCreate([
-                'title' => AccidentStatusesService::STATUS_IN_PROGRESS,
-                'type' => AccidentStatusesService::TYPE_DOCTOR,
-            ]);
-
-            $accidentStatusesService->set($accident, $status, 'Updated by doctor');
-        }
-
+        $accidentStatusesService->moveDoctorAccidentToInProgressState($accident, 'Updated by doctor');
         return $this->response->item($accident, new DoctorAccidentTransformer());
     }
 
@@ -416,11 +407,11 @@ class AccidentsController extends ApiController
         }
 
         if (
-            !$accident->accidentStatus->type == \AccidentStatusesTableSeeder::TYPE_DOCTOR
+            !$accident->accidentStatus->type == AccidentStatusesService::TYPE_DOCTOR
             || (
                 !in_array($accident->accidentStatus->title, [
-                    \AccidentStatusesTableSeeder::STATUS_ASSIGNED,
-                    \AccidentStatusesTableSeeder::STATUS_IN_PROGRESS,
+                    AccidentStatusesService::STATUS_ASSIGNED,
+                    AccidentStatusesService::STATUS_IN_PROGRESS,
                 ])
             )) {
 
@@ -449,10 +440,11 @@ class AccidentsController extends ApiController
 
     /**
      * Load documents into the accident
-     * @param int $id
+     * @param $id
      * @param Request $request
      * @param DocumentService $documentService
      * @return \Dingo\Api\Http\Response
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded
      */
     public function createDocument($id, Request $request, DocumentService $documentService)
     {
@@ -485,12 +477,7 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
-        $status = AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusesService::STATUS_REJECT,
-            'type' => AccidentStatusesService::TYPE_DOCTOR,
-        ]);
-
-        $accidentStatusesService->set($accident, $status, $request->get('comment', 'Updated by doctor without commentary'));
+        $accidentStatusesService->rejectDoctorAccident($accident, $request->get('comment', 'Updated by doctor without commentary'));
 
         return $this->response->noContent();
     }

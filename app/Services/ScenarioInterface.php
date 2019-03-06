@@ -21,13 +21,13 @@ interface ScenarioInterface
      * Current position in the scenario
      * @return int
      */
-    public function current();
+    // public function current();
 
     /**
      * Next step Id
      * @return int
      */
-    public function next();
+    // public function next();
 
     /**
      * Current scenario
@@ -38,7 +38,7 @@ interface ScenarioInterface
     /**
      * @param int
      */
-    public function setCurrentStepId($step = 0);
+    //public function setCurrentStepId($step = 0);
 
     /**
      * @param int|array|AccidentStatus $step

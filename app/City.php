@@ -16,7 +16,7 @@ class City extends Model
     use SoftDeletes;
 
     protected $fillable = ['title'];
-    protected $visible = ['title'];
+    protected $visible = ['id', 'title'];
 
     public function doctors()
     {

@@ -9,7 +9,7 @@ namespace App\Helpers;
 
 
 
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 
 class MediaHelper
 {
@@ -31,7 +31,7 @@ class MediaHelper
     }
 
     /**
-     *
+     * If no image available
      * @return string
      */
     public static function getB64Gag()

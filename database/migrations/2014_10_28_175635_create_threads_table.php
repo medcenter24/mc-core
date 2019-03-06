@@ -18,6 +18,7 @@ class CreateThreadsTable extends Migration
             $table->increments('id');
             $table->string('subject');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

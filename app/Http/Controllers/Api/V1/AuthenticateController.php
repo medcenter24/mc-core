@@ -18,6 +18,7 @@ use App\Transformers\UserTransformer;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Log;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 
 class AuthenticateController extends ApiController
@@ -60,7 +61,7 @@ class AuthenticateController extends ApiController
 
         // attempt to verify the credentials and create a token for the user
         if ($token = $this->guard()->attempt($credentials->only('email', 'password')->toArray())) {
-            \Log::info('User logged in', ['email' => $credentials->get('email')]);
+            Log::info('User logged in', ['email' => $credentials->get('email')]);
 
             // check roles for the allowed origin
             $hasAccess = false;
@@ -76,7 +77,7 @@ class AuthenticateController extends ApiController
             if ($hasAccess) {
                 return $this->respondWithToken($token);
             } else {
-                \Log::warning('User does not have required access role', ['email' => $credentials->get('email')]);
+                Log::warning('User does not have required access role', ['email' => $credentials->get('email')]);
             }
         }
 
@@ -111,7 +112,7 @@ class AuthenticateController extends ApiController
          try {
              return $this->respondWithToken($this->guard()->refresh());
         } catch (TokenBlacklistedException $e) {
-             \Log::debug('Token can not be updated for user', [$this->guard()->user()]);
+             Log::debug('Token can not be updated for user', [$this->guard()->user()]);
              return response()->json(['error' => 'Invalid token'], 401);
         }
     }

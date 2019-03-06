@@ -171,6 +171,7 @@ class CaseFinanceService
         if (!$accident->isDoctorCaseable()) {
             throw new InconsistentDataException('DoctorAccident only');
         }
+
         $doctorServices = $this->accidentService->getAccidentServices($accident);
         $conditionProps = [
             DatePeriod::class => $accident->handling_time,
@@ -186,7 +187,6 @@ class CaseFinanceService
         if ($doctorServices->count()) {
             $conditionProps[DoctorService::class] = $doctorServices->pluck('id')->all();
         }
-
         return $this->generateFormula(Doctor::class, $conditionProps);
     }
 
@@ -202,6 +202,7 @@ class CaseFinanceService
         if (!$accident->isHospitalCaseable()) {
             throw new InconsistentDataException('Hospital Case only');
         }
+
         // maybe I need this to have a possibility to influence on the value?
         $conditionProps = [
             DatePeriod::class => $accident->handling_time,
@@ -209,12 +210,7 @@ class CaseFinanceService
             Assistant::class => $accident->assistant_id,
             City::class => $accident->city_id,
         ];
-        $formula = $this->generateFormula(Hospital::class, $conditionProps);
-        // add invoice amount
-        if ($accident->caseable && $accident->caseable->hospitalInvoice && $accident->caseable->hospitalInvoice->payment) {
-            $formula->addFloat($accident->caseable->hospitalInvoice->payment->value);
-        }
-        return $formula;
+        return $this->generateFormula(Hospital::class, $conditionProps);
     }
 
     /**
@@ -227,11 +223,6 @@ class CaseFinanceService
     {
         // 1. take amount from the invoice from assistant
         // todo add currencies convert FinanceService::convert
-        // I don't need to include invoice to the calculation, because invoice must have this calculations result
-        /*$invoiceValue = $accident->assistantInvoice ? $accident->assistantInvoice->payment->value : 0;
-        if ($invoiceValue) {
-            $formula->addFloat($invoiceValue);
-        }*/
         // 2. apply formula, which bind to this Assistant and has type Assistant
         $conditionProps = [
             HospitalAccident::class => $accident->caseable_id,

@@ -9,8 +9,8 @@ use Faker\Generator as Faker;
 
 $factory->define(App\HospitalAccident::class, function (Faker $faker) {
     return [
-        'hospital_id' => $faker->numberBetween(1, 10),
-        'hospital_guarantee_id' => $faker->numberBetween(1, 10),
-        'hospital_invoice_id' => $faker->numberBetween(1, 10),
+        'hospital_id' => 0,
+        'hospital_guarantee_id' => 0, //
+        'hospital_invoice_id' => 0, // don't need to be set for unittests
     ];
 });

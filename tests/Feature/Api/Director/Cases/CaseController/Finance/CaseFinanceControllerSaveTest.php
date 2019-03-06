@@ -28,6 +28,7 @@ class CaseFinanceControllerSaveTest extends TestCase
             [
                 // accident data
                 [],
+
                 // payments data
                 [
                     'incomePayment' => [
@@ -46,6 +47,7 @@ class CaseFinanceControllerSaveTest extends TestCase
                         'fixed' => 1,
                     ],
                 ],
+
                 // new data for rewriting
                 [
                     'income' => [
@@ -53,6 +55,7 @@ class CaseFinanceControllerSaveTest extends TestCase
                         'price' => 2,
                     ],
                 ],
+
                 // results
                 [
                     'income' => [

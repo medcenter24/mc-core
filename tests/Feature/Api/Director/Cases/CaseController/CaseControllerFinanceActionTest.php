@@ -465,7 +465,8 @@ class CaseControllerFinanceActionTest extends TestCase
     }
 
     /**
-     * Checks that Hospital prices are taken from the invoices from the hospital or stored as a fixed payment
+     * Checks that Hospital prices are taken from the invoice only
+     * If invoice provided it needs to be paid, nothing more can be added there
      */
     public function testHospitalInvoiceCondition(): void
     {
@@ -486,7 +487,7 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // condition
-        // each accident has price 10
+        // each accident costs for the hospital 10
         factory(FinanceCondition::class)->create([
             'type' => 'add',
             'value' => '10',
@@ -497,28 +498,33 @@ class CaseControllerFinanceActionTest extends TestCase
 
         $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
         $response->assertStatus(200);
+
+
         $response->assertJson([
             'data' => [
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'calculatedValue' => -15,
+                    'calculatedValue' => -5,
                     'currency' => [],
-                    'formula' => '0.00 - 15.00',
+                    'formula' => '5.00 - 10.00',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
                     'calculatedValue' => 0,
                     'currency' => [],
-                    'formula' => '0.00',
+                    'payment' => [
+                        'value' => '5',
+                    ],
+                    'formula' => 'invoice',
                 ],
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'calculatedValue' => 15,
+                    'calculatedValue' => 10,
                     'currency' => [],
-                    'formula' => '10.00 + 5.00',
+                    'formula' => '10.00',
                 ],
             ],
         ]);
@@ -527,9 +533,9 @@ class CaseControllerFinanceActionTest extends TestCase
     /**
      * Checks that Hospital prices are taken from the invoices from the hospital or stored as a fixed payment
      */
-    public function testHospitalFixedPayment(): void
+    public function testHositalFixedPayment(): void
     {
-        $caseable = factory(HospitalAccident::class)->create();
+        $caseable = factory(HospitalAccident::class)->create(['hospital_invoice_id' => 0]);
         $currency = factory(FinanceCurrency::class)->create();
         $payment = factory(Payment::class)->create([
             'currency_id' => $currency->id,
@@ -568,16 +574,19 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'calculatedValue' => 2,
+                    'calculatedValue' => 7,
                     'currency' => [],
-                    'formula' => '0.00 - -2.00',
+                    'formula' => '5.00 - -2.00',
                 ],
                 [
                     'type' => 'assistant',
                     'loading' => false,
                     'calculatedValue' => 0,
                     'currency' => [],
-                    'formula' => '0.00',
+                    'payment' => [
+                        'value' => $payment->value.'',
+                    ],
+                    'formula' => 'invoice',
                 ],
                 [
                     'type' => 'caseable',
@@ -589,7 +598,7 @@ class CaseControllerFinanceActionTest extends TestCase
                             'createdBy' => '0',
                             'value' => '-2',
                             'currency_id' => $currency->id,
-                            'fixed' => '1',
+                            'fixed' => true,
                             'description' => 'Faker factory',
                         ),
                     'formula' => 'fixed',
@@ -640,6 +649,7 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -658,7 +668,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'loading' => false,
                     'calculatedValue' => 0,
                     'currency' => [],
-                    'formula' => '0.00',
+                    'formula' => 'invoice',
                 ],
                 [
                     'type' => 'caseable',
@@ -729,8 +739,8 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'calculatedValue' => 15,
-                    'formula' => '20.00 - 5.00',
+                    'calculatedValue' => 0,
+                    'formula' => '5.00 - 5.00',
                     'payment' => [
                         'id' => $incomePayment->id,
                     ]
@@ -739,8 +749,11 @@ class CaseControllerFinanceActionTest extends TestCase
                     'type' => 'assistant',
                     'loading' => false,
                     'calculatedValue' => 0,
-                    'formula' => 'fixed',
-                    'payment' => ['id' => $assistantPayment->id],
+                    'formula' => 'invoice',
+                    'payment' => [
+                        'id' => $invoice->payment->id,
+                        'value' => $invoice->payment->value
+                    ],
                 ],
                 [
                     'type' => 'caseable',
@@ -762,18 +775,10 @@ class CaseControllerFinanceActionTest extends TestCase
     {
         $caseable = factory(HospitalAccident::class)->create();
         $currency = factory(FinanceCurrency::class)->create();
-        $payment = factory(Payment::class)->create([
-            'currency_id' => $currency->id,
-            'fixed' => 0,
-            'value' => 5
-        ]);
         $caseablePayment = factory(Payment::class)->create([
             'currency_id' => $currency->id,
             'fixed' => 0,
             'value' => 5
-        ]);
-        $invoice = factory(Invoice::class)->create([
-            'payment_id' => $payment->id,
         ]);
         $incomePayment = factory(Payment::class)->create([
             'currency_id' => $currency->id,
@@ -788,7 +793,7 @@ class CaseControllerFinanceActionTest extends TestCase
         $accident = factory(Accident::class)->create([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
-            'assistant_invoice_id' => $invoice->id,
+            'assistant_invoice_id' => 0,
             'caseable_payment_id' => $caseablePayment->id,
             'income_payment_id' => $incomePayment->id,
             'assistant_payment_id' => $assistantPayment->id,

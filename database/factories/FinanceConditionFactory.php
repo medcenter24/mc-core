@@ -16,7 +16,7 @@ $factory->define(FinanceCondition::class, function (Faker $faker) {
     return [
         'created_by' => 0, // default for the system
         'title' => 'Finance condition',
-        'value' => random_int(1, 999),
+        'value' => 0, // it shouldn't influence to the other payment tests needs to be 0
         'type' => $faker->randomElement($service->getTypes()),
         'currency_id' => 0,
         'currency_mode' => $faker->randomElement(['percent', 'currency']),

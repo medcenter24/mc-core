@@ -1,12 +1,12 @@
 {
     "name": "mydocs24/md-core",
     "description": "Backend for the MedCenter24 project",
-    "keywords": ["api", "mydoctors24", "medcenter24", "backoffice"],
+    "keywords": ["api", "mydoctors24", "medcenter24", "backoffice", "medicine"],
     "license": "GPL-2.0-only",
     "minimum-stability": "dev",
     "type": "mydoctors24-extension",
     "extra": {
-        "mydoctors24-extension-name": "mdCore24"
+        "mydoctors24-extension-name": "mdCore"
     },
     "require": {
         "ext-json": "*",

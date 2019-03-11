@@ -19,10 +19,12 @@ class DatabaseSeeder extends Seeder
         $this->call(AccidentStatusesTableSeeder::class);
         $this->call(ScenariosTableSeeder::class);
         $this->call(RolesTableSeeder::class);
-        $this->call(UsersTableSeeder::class);
+        // use command artisan add:user --role=login,admin --email=mail@mail.com --password=word
+        // $this->call(UsersTableSeeder::class);
         $this->call(AccidentTypesTableSeeder::class);
         $this->call(FinanceCurrenciesTableSeeder::class);
-        if (!App::environment('production')) {
+        /*if (App::environment('production')) {
+            $this->call(UsersTableSeeder::class);
             $this->call(CitiesTableSeeder::class);
             $this->call(DiagnosticsTableSeeder::class);
             $this->call(DocumentsTableSeeder::class);
@@ -41,6 +43,6 @@ class DatabaseSeeder extends Seeder
             $this->call(DatePeriodTableSeeder::class);
             $this->call(FinanceConditionTableSeeder::class);
             $this->call(FinanceStorageTableSeeder::class);
-        }
+        }*/
     }
 }

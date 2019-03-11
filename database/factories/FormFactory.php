@@ -14,7 +14,7 @@ $factory->define(Form::class, function (Faker $faker) {
         'title' => $faker->text(20),
         'description' => $faker->text(200),
         'template' => '<p>Hello :firstName, :lastName</p><p>Some text in here with :param</p>',
-        'variables' => [':firstName',':lastName',[':param']],
+        'variables' => ':firstName, :lastName, :param',
         'formable_type' => Accident::class,
     ];
 });

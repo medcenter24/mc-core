@@ -17,6 +17,7 @@
                     <thead>
                     <tr>
                         <th>@lang('content.name')</th>
+                        <th>@lang('content.email')</th>
                         <th>@lang('content.role')</th>
                         <th></th>
                     </tr>
@@ -25,6 +26,7 @@
                     @foreach($users as $user)
                         <tr>
                             <td><strong>{{ $user->name }}</strong></td>
+                            <td>{{ $user->email }}</td>
                             <td>@foreach($user->roles as $role){{$role->title}} @endforeach</td>
                             <td>
                                 <a href="{{ url('admin/users/'.$user->id.'/edit') }}">@lang('content.edit')</a>

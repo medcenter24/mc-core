@@ -20,16 +20,15 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $loginRoleId = Role::firstOrCreate(['title' => Role::ROLE_LOGIN])->id;
-        $adminRoleId = Role::firstOrCreate(['title' => Role::ROLE_ADMIN])->id;
-        $directorRoleId = Role::firstOrCreate(['title' => Role::ROLE_DIRECTOR])->id;
-
         if (App::environment('production') && \App\User::all()->count()) {
             return;
         } elseif (!App::environment('production')) {
             User::truncate();
-            DB::table('role_user')->delete();
-            factory(User::class, 10)->create();
+            // DB::table('role_user')->delete();
+            // $loginRoleId = Role::firstOrCreate(['title' => Role::ROLE_LOGIN])->id;
+            // $adminRoleId = Role::firstOrCreate(['title' => Role::ROLE_ADMIN])->id;
+            // $directorRoleId = Role::firstOrCreate(['title' => Role::ROLE_DIRECTOR])->id;
+            // factory(User::class, 10)->create();
 
             $director = factory(User::class)->create([
                 'email' => 'director@mail.com',
@@ -37,14 +36,14 @@ class UsersTableSeeder extends Seeder
             ]);
 
             $director->roles()->attach([$loginRoleId, $directorRoleId]);
+
+            $admin = User::firstOrCreate([
+                'email' => 'zagovorichev@gmail.com',
+                'name' => 'Alexander Zagovorichev',
+                'password' => bcrypt('secret')
+            ]);
+
+            $admin->roles()->attach([$loginRoleId, $adminRoleId]);
         }
-
-        $admin = User::firstOrCreate([
-            'email' => 'zagovorichev@gmail.com',
-            'name' => 'Alexander Zagovorichev',
-            'password' => bcrypt('secret')
-        ]);
-
-        $admin->roles()->attach([$loginRoleId, $adminRoleId]);
     }
 }

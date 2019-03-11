@@ -1,5 +1,5 @@
 {
-    "name": "mydocs24/md-core",
+    "name": "medcenter24/md-core",
     "description": "Backend for the MedCenter24 project",
     "keywords": ["api", "mydoctors24", "medcenter24", "backoffice", "medicine"],
     "license": "GPL-2.0-only",
@@ -22,7 +22,7 @@
         "laravel/tinker": "~1.0",
         "maatwebsite/excel": "~3.1.7",
         "mpdf/mpdf": "~7.1.9",
-        "mydocs24/lib-installer": "~0.0.1",
+        "medcenter24/lib-installer": "~0.0.1",
         "phpdocumentor/reflection-common": "1.0",
         "spatie/laravel-medialibrary": "~7.5.5",
         "srmklive/flysystem-dropbox-v2": "dev-master",

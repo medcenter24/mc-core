@@ -1,12 +1,12 @@
 {
     "name": "medcenter24/md-core",
     "description": "Backend for the MedCenter24 project",
-    "keywords": ["api", "mydoctors24", "medcenter24", "backoffice", "medicine"],
+    "keywords": ["api", "medcenter24", "backoffice", "medicine"],
     "license": "GPL-2.0-only",
     "minimum-stability": "dev",
     "type": "medcenter24-extension",
     "extra": {
-        "medcenter24-extension-name": "mdCore"
+        "medcenter24-extension-name": "mcCore"
     },
     "require": {
         "ext-json": "*",
@@ -22,7 +22,7 @@
         "laravel/tinker": "~1.0",
         "maatwebsite/excel": "~3.1.7",
         "mpdf/mpdf": "~7.1.9",
-        "medcenter24/lib-installer": "~0.1",
+        "medcenter24/lib-installer": "~1.0",
         "phpdocumentor/reflection-common": "1.0",
         "spatie/laravel-medialibrary": "~7.5.5",
         "srmklive/flysystem-dropbox-v2": "dev-master",

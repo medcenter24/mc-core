@@ -4,9 +4,9 @@
     "keywords": ["api", "mydoctors24", "medcenter24", "backoffice", "medicine"],
     "license": "GPL-2.0-only",
     "minimum-stability": "dev",
-    "type": "mydoctors24-extension",
+    "type": "medcenter24-extension",
     "extra": {
-        "mydoctors24-extension-name": "mdCore"
+        "medcenter24-extension-name": "mdCore"
     },
     "require": {
         "ext-json": "*",

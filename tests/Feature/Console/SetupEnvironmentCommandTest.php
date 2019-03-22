@@ -23,6 +23,7 @@ use App\Contract\General\Environment;
 use App\Helpers\FileHelper;
 use App\Services\EnvironmentService;
 use App\Services\Installer\InstallerService;
+use http\Env;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -51,11 +52,17 @@ class SetupEnvironmentCommandTest extends TestCase
         $confFile = 'generis.conf.php';
         $envFile = '.env';
         $dataDir = __DIR__ . '/samples/sandbox/data';
+
+        // clean test dir before the test
+        FileHelper::delete($configDir);
+        FileHelper::delete($dataDir);
+
         $this->artisan('setup:environment', [
             '--' . InstallerService::PROP_CONFIG_DIR => $configDir,
             '--' . InstallerService::PROP_CONFIG_FILE_NAME => $confFile,
             '--' . InstallerService::PROP_ENV_FILE_NAME => $envFile,
             '--' . InstallerService::PROP_DATA_DIR => $dataDir,
+            '--' . EnvironmentService::PROP_API_DEBUG => true,
         ])
             ->expectsQuestion('Are you sure want to install application with these parameters?', 'yes')
             ->assertExitCode(0);
@@ -70,6 +77,7 @@ class SetupEnvironmentCommandTest extends TestCase
         self::assertEquals($dataDir, $checkConf[Environment::DATA_DIR]);
         self::assertFileExists($configDir.DIRECTORY_SEPARATOR.$confFile);
 
+        // clean dir when test completed
         FileHelper::delete($configDir);
         FileHelper::delete($dataDir);
     }

@@ -68,12 +68,14 @@ class FileHelper
      */
     public static function delete($target): bool
     {
-        $di = new RecursiveDirectoryIterator($target, FilesystemIterator::SKIP_DOTS);
-        $ri = new RecursiveIteratorIterator($di, RecursiveIteratorIterator::CHILD_FIRST);
-        foreach ( $ri as $file ) {
-            $file->isDir() ?  rmdir($file) : unlink($file);
+        if (file_exists($target)) {
+            $di = new RecursiveDirectoryIterator($target, FilesystemIterator::SKIP_DOTS);
+            $ri = new RecursiveIteratorIterator($di, RecursiveIteratorIterator::CHILD_FIRST);
+            foreach ( $ri as $file ) {
+                $file->isDir() ?  rmdir($file) : unlink($file);
+            }
+            $di->isDir() ? rmdir($target) : unlink($target);
         }
-        $di->isDir() ? rmdir($target) : unlink($target);
         return true;
     }
 }

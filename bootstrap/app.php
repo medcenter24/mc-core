@@ -26,30 +26,28 @@
 | the IoC container for the system binding all of the various parts.
 |
 */
-
-$app = new \App\Foundation\Application(
-    realpath(__DIR__.'/../')
+$app = new App\Foundation\Application(
+    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
-// if it is deployment then file will be above the laravel root
-if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
-    $app->useEnvironmentPath(realpath(__DIR__.'/../../config'));
-    $app->loadEnvironmentFrom('.laravel.env');
+/*
+|--------------------------------------------------------------------------
+| To use LaravelInstaller data (artisan setup:environment)
+|--------------------------------------------------------------------------
+|
+| Automatizator for the installation process
+| Default place for the config is on the up of the project dir
+| but you could change this if pass APP_CONFIG_PATH from the server configurator
+|
+ */
 
-    // replace storage path if provided
-    $app->useStoragePath( realpath(__DIR__ . '/../../data/laravel') );
-
-    if (!function_exists('vendor_path')) {
-        function vendor_path ($path = '') {
-            return realpath(__DIR__ . '/../../vendor') . ($path ? DIRECTORY_SEPARATOR.$path : $path);
-        }
-    }
-}
-
-// vendor path needed for some of the serviceProviders ie MessengerServiceProvider
-if (!function_exists('vendor_path')) {
-    function vendor_path ($path = '') {
-        return realpath(__DIR__ . '/../vendor') . ($path ? DIRECTORY_SEPARATOR.$path : $path);
+try {
+    \App\Services\EnvironmentService::init(
+        $_ENV['APP_CONFIG_PATH'] ?? dirname(__DIR__, 2) . '/config/generis.conf.php'
+    );
+} catch (\App\Exceptions\NotImplementedException $e) {
+    if (isset($isIndex)) {
+        die($e->getMessage());
     }
 }
 

@@ -20,31 +20,25 @@ namespace App\Services\Installer\Params;
 
 
 use App\Services\Installer\ConfigurableParam;
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
 /**
- * Class EnvDbDatabaseParam
  * @package App\Services\Installer\Params
  */
-class EnvDbPortParam extends ConfigurableParam
+class EnvDbUserNameParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_DB_PORT;
+        return EnvironmentService::PROP_DB_USERNAME;
     }
 
     public function defaultValue(): string
     {
-        return '3306';
+        return 'mcuser';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
-        return !empty($value);
-    }
-
-    public function question(string $value = ''): string
-    {
-        return 'Database port';
+        return !empty($this->getValue());
     }
 }

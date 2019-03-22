@@ -16,13 +16,6 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-/**
- * Created by PhpStorm.
- * User: zagovorychev
- * Date: 2019-03-21
- * Time: 18:25
- */
-
 namespace App\Services\Installer\Params;
 
 

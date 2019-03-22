@@ -19,37 +19,24 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Helpers\FileHelper;
 use App\Services\Installer\ConfigurableParam;
 
-abstract class WritableDirParam extends ConfigurableParam
+abstract class EnumParam extends ConfigurableParam
 {
     /**
      * Check that dir exists/could be created and writable
-     * @param string $value
      * @return bool
      */
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
-        return FileHelper::isDirExists($value) && FileHelper::isWritable($value)
-            && count(scandir($value, 1)) === 2; // dir is empty
+        return in_array($this->getValue(), $this->getValues(), false);
     }
 
     public function question(string $value = ''): string
     {
-        $value = $value ?: $this->getValue();
-        return 'Check directory "' . $value .'" [that it exists, has correct rules and empty]"';
+        return 'Choose a value of the ' . $this->getParamName()
+            . ' from the list [' . implode(',', $this->getValues()) . ']';
     }
 
-    public function defaultValue(): string
-    {
-        return dirname(__DIR__
-            . DIRECTORY_SEPARATOR . '..'
-            . DIRECTORY_SEPARATOR . '..'
-            . DIRECTORY_SEPARATOR . '..'
-            . DIRECTORY_SEPARATOR . '..'
-            . DIRECTORY_SEPARATOR . '..'
-            . DIRECTORY_SEPARATOR . '/env.store'
-        );
-    }
+    abstract protected function getValues(): array;
 }

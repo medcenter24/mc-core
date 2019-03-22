@@ -19,22 +19,22 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvSessionDriverParam extends EnumParam
+class EnvQueueDriverParam extends EnumParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_SESSION_DRIVER;
+        return EnvironmentService::PROP_QUEUE_DRIVER;
     }
 
     public function defaultValue(): string
     {
-        return 'file';
+        return 'sync';
     }
 
     public function getValues(): array
     {
-        return ['memcached', 'redis', 'file', 'database', 'cookie', 'array'];
+        return ['redis', 'sync', 'database'];
     }
 }

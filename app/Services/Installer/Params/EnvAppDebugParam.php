@@ -19,28 +19,12 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
-use App\Services\Installer\ConfigurableParam;
+use App\Services\EnvironmentService;
 
-class EnvAppKeyParam extends ConfigurableParam
+class EnvAppDebugParam extends BoolParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_APP_KEY;
-    }
-
-    public function defaultValue(): string
-    {
-        return str_random(32);
-    }
-
-    public function isValid(string $value): bool
-    {
-        return !empty($value) && mb_strlen($value) >=3;
-    }
-
-    public function question(): string
-    {
-        return 'At least 3 symbols, or use default';
+        return EnvironmentService::PROP_APP_DEBUG;
     }
 }

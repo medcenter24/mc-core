@@ -19,22 +19,22 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvBroadcastDriverParam extends EnumParam
+class EnvCacheDriverParam extends EnumParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_BROADCAST_DRIVER;
+        return EnvironmentService::PROP_CACHE_DRIVER;
     }
 
     public function defaultValue(): string
     {
-        return 'log';
+        return 'file';
     }
 
     public function getValues(): array
     {
-        return ['Pusher', 'Redis', 'log', 'null'];
+        return ['memcached', 'redis', 'file', 'database'];
     }
 }

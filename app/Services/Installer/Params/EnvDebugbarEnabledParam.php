@@ -19,12 +19,12 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvApiDebugParam extends BoolParam
+class EnvDebugbarEnabledParam extends BoolParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_API_DEBUG;
+        return EnvironmentService::PROP_DEBUGBAR_ENABLED;
     }
 }

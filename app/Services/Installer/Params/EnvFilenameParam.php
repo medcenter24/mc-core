@@ -22,7 +22,7 @@ namespace App\Services\Installer\Params;
 use App\Services\Installer\ConfigurableParam;
 use App\Services\Installer\InstallerService;
 
-class EnvFilenameParam extends ConfigurableParam implements EnvParam
+class EnvFilenameParam extends ConfigurableParam
 {
     public function getParamName(): string
     {

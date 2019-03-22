@@ -16,17 +16,66 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-/**
- * Created by PhpStorm.
- * User: zagovorychev
- * Date: 2019-03-18
- * Time: 17:49
- */
-
 namespace App\Services\Installer;
 
 
-class ConfigurableParam
-{
+use App\Exceptions\InconsistentDataException;
 
+/**
+ * Class ConfigurableParam
+ * @package App\Services\Installer
+ */
+abstract class ConfigurableParam
+{
+    /**
+     * @var string
+     */
+    private $value;
+
+    /**
+     * Set new parameter
+     * @param string $value
+     * @throws InconsistentDataException
+     */
+    public function setValue(string $value): void
+    {
+        $this->value = $value;
+        if (!$this->isValid()) {
+            throw new InconsistentDataException('Incorrect parameters value');
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue(): string
+    {
+        if ($this->value === null) {
+            $this->value = $this->defaultValue();
+        }
+        return $this->value;
+    }
+
+    abstract public function getParamName(): string;
+
+    /**
+     * Check if parameter is correct
+     * @return bool
+     */
+    abstract public function isValid(): bool;
+
+    /**
+     * @return string
+     */
+    abstract public function defaultValue(): string;
+
+    public function question(): string
+    {
+        return 'Enter the value for the param `' . $this->getParamName() . '`';
+    }
+
+    public function isRequired(): bool
+    {
+        return false;
+    }
 }

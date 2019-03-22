@@ -16,11 +16,60 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Installer;
+namespace App\Services;
 
 
+use App\Contract\General\Environment;
 use App\Exceptions\InconsistentDataException;
 use App\Exceptions\NotImplementedException;
+use App\Services\Installer\Params\ConfigDirParam;
+use App\Services\Installer\Params\ConfigFilenameParam;
+use App\Services\Installer\Params\DataDirParam;
+use App\Services\Installer\Params\EnvApiDebugParam;
+use App\Services\Installer\Params\EnvApiNameParam;
+use App\Services\Installer\Params\EnvApiPrefixParam;
+use App\Services\Installer\Params\EnvApiStrictParam;
+use App\Services\Installer\Params\EnvApiSubtypeParam;
+use App\Services\Installer\Params\EnvApiVersionParam;
+use App\Services\Installer\Params\EnvAppDebugParam;
+use App\Services\Installer\Params\EnvAppEnvParam;
+use App\Services\Installer\Params\EnvAppKeyParam;
+use App\Services\Installer\Params\EnvAppLogLevelParam;
+use App\Services\Installer\Params\EnvAppModeParam;
+use App\Services\Installer\Params\EnvAppUrlParam;
+use App\Services\Installer\Params\EnvBroadcastDriverParam;
+use App\Services\Installer\Params\EnvCacheDriverParam;
+use App\Services\Installer\Params\EnvCorsAllowOriginDirectorParam;
+use App\Services\Installer\Params\EnvCorsAllowOriginDoctorParam;
+use App\Services\Installer\Params\EnvCustomerNameParam;
+use App\Services\Installer\Params\EnvDbConnectionParam;
+use App\Services\Installer\Params\EnvDbDatabaseParam;
+use App\Services\Installer\Params\EnvDbHostParam;
+use App\Services\Installer\Params\EnvDbPasswordParam;
+use App\Services\Installer\Params\EnvDbPortParam;
+use App\Services\Installer\Params\EnvDbUserNameParam;
+use App\Services\Installer\Params\EnvDebugbarEnabledParam;
+use App\Services\Installer\Params\EnvDropboxBackupAppParam;
+use App\Services\Installer\Params\EnvDropboxBackupKeyParam;
+use App\Services\Installer\Params\EnvDropboxBackupRootParam;
+use App\Services\Installer\Params\EnvDropboxBackupSecretParam;
+use App\Services\Installer\Params\EnvDropboxBackupTokenParam;
+use App\Services\Installer\Params\EnvFilenameParam;
+use App\Services\Installer\Params\EnvImageDriverParam;
+use App\Services\Installer\Params\EnvMailDriverParam;
+use App\Services\Installer\Params\EnvMailEncryptionParam;
+use App\Services\Installer\Params\EnvMailHostParam;
+use App\Services\Installer\Params\EnvMailPasswordParam;
+use App\Services\Installer\Params\EnvMailPortParam;
+use App\Services\Installer\Params\EnvMailUsernameParam;
+use App\Services\Installer\Params\EnvPusherAppIdParam;
+use App\Services\Installer\Params\EnvPusherAppKeyParam;
+use App\Services\Installer\Params\EnvPusherAppSecretParam;
+use App\Services\Installer\Params\EnvQueueDriverParam;
+use App\Services\Installer\Params\EnvRedisHostParam;
+use App\Services\Installer\Params\EnvRedisPasswordParam;
+use App\Services\Installer\Params\EnvRedisPortParam;
+use App\Services\Installer\Params\EnvSessionDriverParam;
 use App\Support\Core\Configurable;
 
 /**
@@ -28,55 +77,8 @@ use App\Support\Core\Configurable;
  * Class EnvironmentService
  * @package App\Services
  */
-class EnvironmentService extends Configurable
+class EnvironmentService extends Configurable implements Environment
 {
-
-    public const PROP_CUSTOMER_NAME = 'CUSTOMER_NAME';
-    public const PROP_APP_ENV = 'APP_ENV';
-    public const PROP_APP_KEY = 'APP_KEY';
-    public const PROP_APP_DEBUG = 'APP_DEBUG';
-    public const PROP_APP_LOG_LEVEL = 'APP_LOG_LEVEL';
-    public const PROP_APP_URL = 'APP_URL';
-    // todo to move it from the nginx config
-    public const PROP_APP_MODE = 'PROP_APP_MODE';
-    public const PROP_DB_CONNECTION = 'DB_CONNECTION';
-    public const PROP_DB_DATABASE = 'DB_DATABASE';
-    public const PROP_DB_HOST = 'DB_HOST';
-    public const PROP_DB_PORT = 'DB_PORT';
-    public const PROP_DB_USERNAME = 'DB_USERNAME';
-    public const PROP_DB_PASSWORD = 'DB_PASSWORD';
-    public const PROP_BROADCAST_DRIVER = 'BROADCAST_DRIVER';
-    public const PROP_CACHE_DRIVER = 'CACHE_DRIVER';
-    public const PROP_SESSION_DRIVER = 'SESSION_DRIVER';
-    public const PROP_QUEUE_DRIVER = 'QUEUE_DRIVER';
-    public const PROP_REDIS_HOST = 'REDIS_HOST';
-    public const PROP_REDIS_PASSWORD = 'REDIS_PASSWORD';
-    public const PROP_REDIS_PORT = 'REDIS_PORT';
-    public const PROP_MAIL_DRIVER = 'MAIL_DRIVER';
-    public const PROP_MAIL_HOST = 'MAIL_HOST';
-    public const PROP_MAIL_PORT = 'MAIL_PORT';
-    public const PROP_MAIL_USERNAME = 'MAIL_USERNAME';
-    public const PROP_MAIL_PASSWORD = 'MAIL_PASSWORD';
-    public const PROP_MAIL_ENCRYPTION = 'MAIL_ENCRYPTION';
-    public const PROP_PUSHER_APP_ID = 'PUSHER_APP_ID';
-    public const PROP_PUSHER_APP_KEY = 'PUSHER_APP_KEY';
-    public const PROP_PUSHER_APP_SECRET = 'PUSHER_APP_SECRET';
-    public const PROP_API_SUBTYPE = 'API_SUBTYPE';
-    public const PROP_API_PREFIX = 'API_PREFIX';
-    public const PROP_API_VERSION = 'API_VERSION';
-    public const PROP_API_NAME = 'API_NAME';
-    public const PROP_API_STRICT = 'API_STRICT';
-    public const PROP_API_DEBUG = 'API_DEBUG';
-    public const PROP_CORS_ALLOW_ORIGIN_DIRECTOR = 'CORS_ALLOW_ORIGIN_DIRECTOR';
-    public const PROP_CORS_ALLOW_ORIGIN_DOCTOR = 'CORS_ALLOW_ORIGIN_DOCTOR';
-    public const PROP_IMAGE_DRIVER = 'IMAGE_DRIVER';
-    public const PROP_DROPBOX_BACKUP_TOKEN = 'DROPBOX_BACKUP_TOKEN';
-    public const PROP_DROPBOX_BACKUP_KEY = 'DROPBOX_BACKUP_KEY';
-    public const PROP_DROPBOX_BACKUP_SECRET = 'DROPBOX_BACKUP_SECRET';
-    public const PROP_DROPBOX_BACKUP_APP = 'DROPBOX_BACKUP_APP';
-    public const PROP_DROPBOX_BACKUP_ROOT = 'DROPBOX_BACKUP_ROOT';
-    public const PROP_DEBUGBAR_ENABLED = 'DEBUGBAR_ENABLED';
-
     /**
      * @var self
      */
@@ -98,12 +100,71 @@ class EnvironmentService extends Configurable
         return self::instance();
     }
 
+    public static function isInstalled(): bool
+    {
+        return self::$instance !== null;
+    }
+
     /**
      * @return EnvironmentService
      */
     public static function instance(): self
     {
         return self::$instance;
+    }
+
+    public static function getConfigParams(): array
+    {
+        return [
+            new ConfigDirParam(),
+            new ConfigFilenameParam(),
+            new EnvFilenameParam(),
+            new DataDirParam(),
+            new EnvApiDebugParam(),
+            new EnvApiNameParam(),
+            new EnvApiPrefixParam(),
+            new EnvApiStrictParam(),
+            new EnvApiSubtypeParam(),
+            new EnvApiVersionParam(),
+            new EnvAppDebugParam(),
+            new EnvAppEnvParam(),
+            new EnvAppKeyParam(),
+            new EnvAppLogLevelParam(),
+            new EnvAppModeParam(),
+            new EnvAppUrlParam(),
+            new EnvBroadcastDriverParam(),
+            new EnvCacheDriverParam(),
+            new EnvCorsAllowOriginDirectorParam(),
+            new EnvCorsAllowOriginDoctorParam(),
+            new EnvCustomerNameParam(),
+            new EnvDbConnectionParam(),
+            new EnvDbDatabaseParam(),
+            new EnvDbHostParam(),
+            new EnvDbPasswordParam(),
+            new EnvDbPortParam(),
+            new EnvDbUserNameParam(),
+            new EnvDebugbarEnabledParam(),
+            new EnvDropboxBackupAppParam(),
+            new EnvDropboxBackupKeyParam(),
+            new EnvDropboxBackupRootParam(),
+            new EnvDropboxBackupSecretParam(),
+            new EnvDropboxBackupTokenParam(),
+            new EnvImageDriverParam(),
+            new EnvMailDriverParam(),
+            new EnvMailEncryptionParam(),
+            new EnvMailHostParam(),
+            new EnvMailPasswordParam(),
+            new EnvMailPortParam(),
+            new EnvMailUsernameParam(),
+            new EnvPusherAppIdParam(),
+            new EnvPusherAppKeyParam(),
+            new EnvPusherAppSecretParam(),
+            new EnvQueueDriverParam(),
+            new EnvRedisHostParam(),
+            new EnvRedisPasswordParam(),
+            new EnvRedisPortParam(),
+            new EnvSessionDriverParam(),
+        ];
     }
 
     /**
@@ -126,9 +187,6 @@ class EnvironmentService extends Configurable
     {
         if (file_exists($path) && is_readable($path)) {
             $config = include($path);
-            if (!is_array($config) || !array_key_exists(self::PROP_ENV_NAME, $config)) {
-                throw new NotImplementedException('Configuration file is incorrect [use setup:environment]');
-            }
         } else {
             throw new NotImplementedException('Configuration file not found [use setup:environment]');
         }

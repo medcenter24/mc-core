@@ -16,9 +16,6 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-/**
- * Created by PhpStorm.
- * User: zagovorychev
- * Date: 2019-03-20
- * Time: 18:15
- */
+return [
+
+];

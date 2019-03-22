@@ -41,7 +41,6 @@ class AppServiceProvider extends ServiceProvider
         if (App::environment() !== 'production') {
             App::register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
             App::register(\Barryvdh\Debugbar\ServiceProvider::class);
-            App::register(\Nwidart\Modules\LaravelModulesServiceProvider::class);
         }
     }
 }

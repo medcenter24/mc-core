@@ -20,6 +20,10 @@ namespace App\Services\Messenger;
 
 use Cmgmyr\Messenger\MessengerServiceProvider;
 
+/**
+ * Class LocMessengerServiceProvider
+ * @package App\Services\Messenger
+ */
 class LocMessengerServiceProvider extends MessengerServiceProvider
 {
 
@@ -31,7 +35,7 @@ class LocMessengerServiceProvider extends MessengerServiceProvider
     protected function configure()
     {
         $this->mergeConfigFrom(
-            vendor_path('cmgmyr/messenger/config/config.php'),
+            $this->configPath(),
             'messenger'
         );
     }
@@ -39,18 +43,54 @@ class LocMessengerServiceProvider extends MessengerServiceProvider
     /**
      * Setup the resource publishing groups for Messenger.
      *
-     * @return void
+     * @throws \ReflectionException
      */
     protected function offerPublishing()
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                vendor_path('cmgmyr/messenger/config/config.php') => config_path('messenger.php'),
+                $this->getConfigPath() => config_path('messenger.php'),
             ], 'config');
 
             $this->publishes([
-                vendor_path('cmgmyr/messenger/migrations') => base_path('database/migrations'),
+                $this->getMigrationsPath() => base_path('database/migrations'),
             ], 'migrations');
         }
+    }
+
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    protected function getConfigPath(): string
+    {
+        return $this->getParentDir() .'../config/config.php';
+    }
+
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    protected function getMigrationsPath(): string
+    {
+        return $this->getParentDir() .'../migrations';
+    }
+
+    /**
+     * @var string
+     */
+    private static $parentDir = '';
+
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    private function getParentDir(): string
+    {
+        if (!self::$parentDir) {
+            $reflection = new \ReflectionClass(parent::class);
+            self::$parentDir = dirname($reflection->getFileName());
+        }
+        return self::$parentDir;
     }
 }

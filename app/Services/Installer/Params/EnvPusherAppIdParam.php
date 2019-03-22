@@ -20,13 +20,13 @@ namespace App\Services\Installer\Params;
 
 
 use App\Services\Installer\ConfigurableParam;
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvMailEncryptionParam extends ConfigurableParam
+class EnvPusherAppIdParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_MAIL_ENCRYPTION;
+        return EnvironmentService::PROP_PUSHER_APP_ID;
     }
 
     public function defaultValue(): string
@@ -34,7 +34,7 @@ class EnvMailEncryptionParam extends ConfigurableParam
         return '';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
         return true;
     }

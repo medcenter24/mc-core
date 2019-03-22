@@ -19,14 +19,14 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 use App\Services\Installer\ConfigurableParam;
 
-class EnvDropboxBackupTokenParam extends ConfigurableParam
+class EnvDropboxBackupKeyParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_DROPBOX_BACKUP_TOKEN;
+        return EnvironmentService::PROP_DROPBOX_BACKUP_KEY;
     }
 
     public function defaultValue(): string
@@ -34,7 +34,7 @@ class EnvDropboxBackupTokenParam extends ConfigurableParam
         return '';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
         return true;
     }

@@ -19,13 +19,13 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvCacheDriverParam extends EnumParam
+class EnvSessionDriverParam extends EnumParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_CACHE_DRIVER;
+        return EnvironmentService::PROP_SESSION_DRIVER;
     }
 
     public function defaultValue(): string
@@ -35,6 +35,6 @@ class EnvCacheDriverParam extends EnumParam
 
     public function getValues(): array
     {
-        return ['memcached', 'redis', 'file', 'database'];
+        return ['memcached', 'redis', 'file', 'database', 'cookie', 'array'];
     }
 }

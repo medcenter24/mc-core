@@ -20,22 +20,27 @@ namespace App\Services\Installer\Params;
 
 
 use App\Services\Installer\ConfigurableParam;
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvRedisPortParam extends ConfigurableParam
+class EnvRedisHostParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_REDIS_PORT;
+        return EnvironmentService::PROP_REDIS_HOST;
     }
 
     public function defaultValue(): string
     {
-        return '6379';
+        return 'null';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
-        return !empty($value);
+        return !empty($this->getValue());
+    }
+
+    public function question(): string
+    {
+        return 'Redis host [127.0.0.1 or null for non-redis]';
     }
 }

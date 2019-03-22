@@ -19,17 +19,23 @@
 namespace App\Services\Installer\Params;
 
 
+use App\Services\Installer\ConfigurableParam;
 use App\Services\Installer\InstallerService;
 
-class ConfigDirParam extends WritableDirParam
+class ConfigFilenameParam extends ConfigurableParam
 {
     public function getParamName(): string
     {
-        return InstallerService::PROP_CONFIG_DIR;
+        return InstallerService::PROP_CONFIG_FILE_NAME;
     }
 
     public function defaultValue(): string
     {
-        return parent::defaultValue() . 'config';
+        return 'generis.conf.php';
+    }
+
+    public function isValid(): bool
+    {
+        return !empty($this->getValue());
     }
 }

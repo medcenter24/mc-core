@@ -20,13 +20,13 @@ namespace App\Services\Installer\Params;
 
 
 use App\Services\Installer\ConfigurableParam;
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvPusherAppIdParam extends ConfigurableParam
+class EnvPusherAppKeyParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_PUSHER_APP_ID;
+        return EnvironmentService::PROP_PUSHER_APP_KEY;
     }
 
     public function defaultValue(): string
@@ -34,7 +34,7 @@ class EnvPusherAppIdParam extends ConfigurableParam
         return '';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
         return true;
     }

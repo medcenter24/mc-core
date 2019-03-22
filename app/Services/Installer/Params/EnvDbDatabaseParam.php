@@ -19,22 +19,32 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\Installer\ConfigurableParam;
+use App\Services\EnvironmentService;
 
-class EnvDbConnectionParam extends EnumParam
+/**
+ * Class EnvDbDatabaseParam
+ * @package App\Services\Installer\Params
+ */
+class EnvDbDatabaseParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_DB_CONNECTION;
+        return EnvironmentService::PROP_DB_DATABASE;
     }
 
     public function defaultValue(): string
     {
-        return 'mysql';
+        return 'medcenter24';
     }
 
-    public function getValues(): array
+    public function isValid(): bool
     {
-        return ['sqlite', 'mysql', 'pgsql'];
+        return !empty($this->getValue());
+    }
+
+    public function question(string $value = ''): string
+    {
+        return 'Database name or path to db file';
     }
 }

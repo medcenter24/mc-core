@@ -19,22 +19,22 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvAppLogLevelParam extends EnumParam
+class EnvAppModeParam extends EnumParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_APP_LOG_LEVEL;
+        return EnvironmentService::PROP_APP_MODE;
     }
 
     public function defaultValue(): string
     {
-        return 'error';
+        return 'api+web';
     }
 
     public function getValues(): array
     {
-        return ['debug', 'warning', 'error', 'info'];
+        return ['api', 'web', 'api+web'];
     }
 }

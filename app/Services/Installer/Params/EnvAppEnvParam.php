@@ -19,28 +19,22 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
-use App\Services\Installer\ConfigurableParam;
+use App\Services\EnvironmentService;
 
-class EnvCustomerNameParam extends ConfigurableParam
+class EnvAppEnvParam extends EnumParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_CUSTOMER_NAME;
+        return EnvironmentService::PROP_APP_ENV;
     }
 
     public function defaultValue(): string
     {
-        return 'MedCenter24';
+        return 'production';
     }
 
-    public function isValid(string $value): bool
+    public function getValues(): array
     {
-        return true;
-    }
-
-    public function question(): string
-    {
-        return 'Company name';
+        return ['production', 'local', 'testing'];
     }
 }

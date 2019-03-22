@@ -20,22 +20,27 @@ namespace App\Services\Installer\Params;
 
 
 use App\Services\Installer\ConfigurableParam;
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvMailEncryptionParam extends ConfigurableParam
+class EnvApiSubtypeParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_MAIL_ENCRYPTION;
+        return EnvironmentService::PROP_API_SUBTYPE;
     }
 
     public function defaultValue(): string
     {
-        return '';
+        return 'MC24';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
-        return true;
+        return !empty($this->getValue());
+    }
+
+    public function question(): string
+    {
+        return 'Uniq API key';
     }
 }

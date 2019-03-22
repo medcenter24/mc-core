@@ -16,27 +16,31 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-/**
- * Created by PhpStorm.
- * User: zagovorychev
- * Date: 2019-03-18
- * Time: 18:05
- */
-
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\InstallerService;
+use App\Services\EnvironmentService;
+use App\Services\Installer\ConfigurableParam;
 
-class ConfigDirParam extends WritableDirParam
+class EnvCustomerNameParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return InstallerService::PROP_CONFIG_DIR;
+        return EnvironmentService::PROP_CUSTOMER_NAME;
     }
 
     public function defaultValue(): string
     {
-        return parent::defaultValue() . 'config';
+        return 'MedCenter24';
+    }
+
+    public function isValid(): bool
+    {
+        return true;
+    }
+
+    public function question(): string
+    {
+        return 'Company name';
     }
 }

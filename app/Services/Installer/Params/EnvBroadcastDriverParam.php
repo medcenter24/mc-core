@@ -19,22 +19,22 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvDbConnectionParam extends EnumParam
+class EnvBroadcastDriverParam extends EnumParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_DB_CONNECTION;
+        return EnvironmentService::PROP_BROADCAST_DRIVER;
     }
 
     public function defaultValue(): string
     {
-        return 'mysql';
+        return 'log';
     }
 
     public function getValues(): array
     {
-        return ['sqlite', 'mysql', 'pgsql'];
+        return ['Pusher', 'Redis', 'log', 'null'];
     }
 }

@@ -20,31 +20,30 @@ namespace App\Services\Installer\Params;
 
 
 use App\Services\Installer\ConfigurableParam;
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
 /**
- * Class EnvDbDatabaseParam
  * @package App\Services\Installer\Params
  */
-class EnvDbDatabaseParam extends ConfigurableParam
+class EnvDbHostParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_DB_DATABASE;
+        return EnvironmentService::PROP_DB_HOST;
     }
 
     public function defaultValue(): string
     {
-        return 'medcenter24';
+        return 'localhost';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
-        return !empty($value);
+        return !empty($this->getValue());
     }
 
     public function question(string $value = ''): string
     {
-        return 'Database name or path to db file';
+        return 'Database host';
     }
 }

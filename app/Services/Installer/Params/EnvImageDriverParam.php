@@ -19,22 +19,22 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvSessionDriverParam extends EnumParam
+class EnvImageDriverParam extends EnumParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_SESSION_DRIVER;
+        return EnvironmentService::PROP_IMAGE_DRIVER;
     }
 
     public function defaultValue(): string
     {
-        return 'file';
+        return 'gd';
     }
 
     public function getValues(): array
     {
-        return ['memcached', 'redis', 'file', 'database', 'cookie', 'array'];
+        return ['gd', 'imagick'];
     }
 }

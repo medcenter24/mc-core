@@ -16,17 +16,40 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-/**
- * Created by PhpStorm.
- * User: zagovorychev
- * Date: 2019-03-18
- * Time: 18:06
- */
-
 namespace App\Services\Installer\Params;
 
 
-class WritableDirParam
-{
+use App\Helpers\FileHelper;
+use App\Services\Installer\ConfigurableParam;
 
+abstract class WritableDirParam extends ConfigurableParam
+{
+    /**
+     * Check that dir exists/could be created and writable
+     * @return bool
+     */
+    public function isValid(): bool
+    {
+        return !FileHelper::isDirExists($this->getValue()) || // not exists
+            (FileHelper::isWritable($this->getValue())
+              && count(scandir($this->getValue(), 1)) === 2); // dir is empty
+    }
+
+    public function question(): string
+    {
+        return 'Check directory "' . $this->getValue() .'" [that it exists, has correct rules and empty]"';
+    }
+
+    public function defaultValue(): string
+    {
+        return dirname(__DIR__
+            . DIRECTORY_SEPARATOR . '..'
+            . DIRECTORY_SEPARATOR . '..'
+            . DIRECTORY_SEPARATOR . '..'
+            . DIRECTORY_SEPARATOR . '..'
+            . DIRECTORY_SEPARATOR . '..'
+            . DIRECTORY_SEPARATOR . '..'
+            . DIRECTORY_SEPARATOR
+        ) . DIRECTORY_SEPARATOR;
+    }
 }

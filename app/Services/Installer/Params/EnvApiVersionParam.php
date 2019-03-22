@@ -20,22 +20,22 @@ namespace App\Services\Installer\Params;
 
 
 use App\Services\Installer\ConfigurableParam;
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvApiPrefixParam extends ConfigurableParam
+class EnvApiVersionParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_API_PREFIX;
+        return EnvironmentService::PROP_API_VERSION;
     }
 
     public function defaultValue(): string
     {
-        return 'api';
+        return 'v1';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
-        return !empty($value);
+        return !empty($this->getValue());
     }
 }

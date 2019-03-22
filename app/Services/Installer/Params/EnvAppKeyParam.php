@@ -19,28 +19,28 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 use App\Services\Installer\ConfigurableParam;
 
-class EnvCustomerNameParam extends ConfigurableParam
+class EnvAppKeyParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_CUSTOMER_NAME;
+        return EnvironmentService::PROP_APP_KEY;
     }
 
     public function defaultValue(): string
     {
-        return 'MedCenter24';
+        return str_random(32);
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
-        return true;
+        return !empty($this->getValue()) && mb_strlen($this->getValue()) >=3;
     }
 
     public function question(): string
     {
-        return 'Company name';
+        return 'At least 3 symbols, or use default';
     }
 }

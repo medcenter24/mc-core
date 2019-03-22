@@ -16,11 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace App\Services\Installer;
 
 
 use App\Exceptions\InconsistentDataException;
 use App\Helpers\FileHelper;
+use App\Services\EnvironmentService;
+use App\Services\Installer\Params\ConfigDirParam;
+use App\Services\Installer\Params\DataDirParam;
+use App\Services\Installer\Params\EnvParam;
+use App\Services\Installer\Params\NullParam;
 use App\Support\Core\Configurable;
 
 /**
@@ -35,15 +40,37 @@ class InstallerService extends Configurable
     /**
      * The path to json to load configuration from
      */
-    private const OPTION_PRE_CONFIG_PATH = 'pre-config-path';
+    public const OPTION_PRE_CONFIG_PATH = 'pre-config-path';
     /**
      * Logger to show state of the installation process
      */
-    private const OPTION_LOGGER = 'logger';
+    public const OPTION_LOGGER = 'logger';
     /**
      * array with configuration
      */
-    private const OPTION_CONFIG = 'config';
+    public const OPTION_CONFIG = 'config';
+
+    /**
+     * $config['config-dir']
+     */
+    public const PROP_CONFIG_DIR = 'config-dir';
+
+    /**
+     * Config file name
+     * generis.conf
+     */
+    public const PROP_CONFIG_FILE_NAME = 'config-filename';
+
+    /**
+     * .env file name
+     * .laravel.env
+     */
+    public const PROP_ENV_FILE_NAME = 'env-filename';
+
+    /**
+     * $config['data-dir']
+     */
+    public const PROP_DATA_DIR = 'data-dir';
 
     /**
      * Prepared configuration
@@ -52,91 +79,258 @@ class InstallerService extends Configurable
     private $config = [];
 
     /**
-     * Logger or printer which allow us to show state
-     * @var
+     * @var bool
      */
-    private $logger;
+    private $requiresMoreParams = false;
 
     /**
      * @throws InconsistentDataException
      */
-    public function run(): void
+    public function generateConfig(): void
     {
-        $this->readConfig();
-        $this->checkConfiguration();
-        $this->installApp();
+        $conf = $this->readConfig();
+        $this->fillConfig($conf);
+    }
+
+    /**
+     * @param array $conf
+     */
+    private function fillConfig(array $conf = []): void
+    {
+        $this->config = EnvironmentService::getConfigParams();
+        /** @var ConfigurableParam $configParam */
+        foreach ($conf as $configParam) {
+            /** @var ConfigurableParam $item */
+            foreach ($this->config as $key => $item) {
+                if ($item->getParamName() === $configParam->getParamName()) {
+                    $this->config[$key] = $configParam;
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * If Installer needs more required params
+     * @return bool
+     */
+    public function requiresAdditionalParams(): bool
+    {
+        return $this->requiresMoreParams;
+    }
+
+    /**
+     * Linear array with configurations
+     * @return array
+     */
+    public function configAsArray(): array
+    {
+        $arr = [];
+        /** @var ConfigurableParam $param */
+        foreach ($this->config as $param) {
+            $arr[] = [$param->getParamName(), $param->getValue()];
+        }
+        return $arr;
     }
 
     /**
      * @throws InconsistentDataException
      */
-    private function readConfig(): void
+    public function install(): void
     {
-        if ($this->hasOption(self::OPTION_CONFIG)) {
-            $this->config = $this->getOption(self::OPTION_CONFIG);
-        } else {
-            $this->readConfigFromFile($this->getOption(self::OPTION_PRE_CONFIG_PATH));
+        if (!$this->canBeInstalled()) {
+            throw new InconsistentDataException('Incorrect configuration for the installer');
         }
+
+        $this->createConfigDir();
+        $this->createDataDir();
+
+        $this->writeConfigFile();
+        $this->envFileSetUp();
+
+        // folders for the data storing
+        // $this->createStores();
+    }
+
+    public function canBeInstalled(): bool
+    {
+        return !EnvironmentService::isInstalled() && $this->isValidConfig();
+    }
+
+    private function isValidConfig(): bool
+    {
+        $valid = true;
+        /** @var ConfigurableParam $param */
+        foreach ($this->config as $param) {
+            if (!$param->isValid() && $param->isRequired()) {
+                return false;
+            }
+        }
+        return $valid;
+    }
+
+    /**
+     * @throws InconsistentDataException
+     */
+    private function readConfig(): array
+    {
+        $conf = [];
+        if ($this->hasOption(self::OPTION_CONFIG)) {
+            $conf = $this->getOption(self::OPTION_CONFIG);
+        } elseif($this->hasOption(self::OPTION_PRE_CONFIG_PATH)) {
+            $conf = $this->readConfigFromFile($this->getOption(self::OPTION_PRE_CONFIG_PATH));
+        }
+        return $conf;
     }
 
     /**
      * @param string $path
-     * @return array
      * @throws InconsistentDataException
+     * @return array
      */
-    private function readConfigFromFile(string $path): array 
+    private function readConfigFromFile(string $path): array
     {
-        if ($this->hasOption(self::OPTION_PRE_CONFIG_PATH) && FileHelper::isReadableFile($path)) {
+        $conf = [];
+        if ($this->hasOption(self::OPTION_PRE_CONFIG_PATH) && FileHelper::isReadable($path)) {
             $this->status('Loading from the file "' . $path . '"...');
-                $this->config = json_decode(FileHelper::getContent($path), true);
-                if (!$this->config) {
+                $conf = json_decode(FileHelper::getContent($path), true);
+                if (!$conf) {
                     throw new InconsistentDataException('Incorrect file format: ' . $path);
                 }
             $this->status('Configuration loaded');
         }
+        return $conf;
     }
 
     /**
      * Show the status or write it to the log
      * @param string $message
-     * @param string $type
      */
-    private function status(string $message, string $type = 'info'): void
+    private function status(string $message): void
     {
         if ($this->hasOption(self::OPTION_LOGGER)) {
-            $this->logger = $this->getOption(self::OPTION_LOGGER);
+            $this->getOption(self::OPTION_LOGGER)($message);
+        }
+    }
+
+    private function getParam(string $paramKey): ConfigurableParam
+    {
+        /** @var ConfigurableParam $param */
+        foreach ($this->config as $param) {
+            if ($param->getParamName() === $paramKey) {
+                return $param;
+            }
+        }
+        return new NullParam();
+    }
+
+    // !--------  installation
+
+    /**
+     * @throws InconsistentDataException
+     */
+    private function createConfigDir(): void
+    {
+        $param = $this->getParam(self::PROP_CONFIG_DIR);
+        $created = $param && $param instanceof ConfigDirParam
+            && $param->isValid()
+            && (
+                FileHelper::isDirExists($param->getValue())
+                    || FileHelper::createDir($param->getValue())
+            );
+
+        if (!$created) {
+            throw new InconsistentDataException('Configuration directory can not be created');
+        }
+
+        // on the finalization I need to write this path to the db storage?
+        // @see @todo place in the code where path will be written (finalized)
+        // maybe if directory is not on the top of the project dir - then write to db or to the static file
+        // and it needs to be chosen by user
+
+        $this->status('Configuration directory created.');
+    }
+
+    /**
+     * @throws InconsistentDataException
+     */
+    private function createDataDir(): void
+    {
+        $param = $this->getParam(self::PROP_DATA_DIR);
+        $created = $param && $param instanceof DataDirParam
+            && $param->isValid()
+            && (
+                FileHelper::isDirExists($param->getValue())
+                || FileHelper::createDir($param->getValue())
+            );
+
+        if (!$created) {
+            throw new InconsistentDataException('Configuration directory can not be created');
+        }
+
+        $this->status('Data directory created.');
+    }
+
+    /**
+     * @throws InconsistentDataException
+     */
+    private function writeConfigFile(): void
+    {
+        $created = false;
+        /** @var ConfigurableParam $param */
+        if ($paramConfigDir = $this->getParam(self::PROP_CONFIG_DIR)) {
+            $confDir = $paramConfigDir->getValue();
+            $created = $paramConfigDir instanceof ConfigDirParam
+                && $paramConfigDir->isValid()
+                && is_writable($confDir)
+                && FileHelper::writeConfig($confDir . DIRECTORY_SEPARATOR . $this->getParam(self::PROP_CONFIG_FILE_NAME)->getValue(),
+                    [
+                        EnvironmentService::ENV_FILE => $confDir . DIRECTORY_SEPARATOR . $this->getParam(self::PROP_ENV_FILE_NAME)->getValue(),
+                        EnvironmentService::DATA_DIR => $this->getParam(self::PROP_DATA_DIR)->getValue(),
+                    ]);
+        }
+
+        if (!$created) {
+            throw new InconsistentDataException('Config File can not be created');
         }
     }
 
     /**
      * @throws InconsistentDataException
      */
-    private function checkConfiguration(): void
+    private function envFileSetup(): void
     {
-        if (!$this->config || !count($this->config)) {
-            throw new InconsistentDataException('Config is not provided');
+        $created = false;
+        /** @var ConfigurableParam $param */
+        if ($paramConfigDir = $this->getParam(self::PROP_CONFIG_DIR)) {
+            $confDir = $paramConfigDir->getValue();
+            $created = $paramConfigDir instanceof ConfigDirParam
+                && is_writable($confDir)
+                && FileHelper::writeFile($confDir . DIRECTORY_SEPARATOR . $this->getParam(self::PROP_ENV_FILE_NAME)->getValue(), $this->getEnvData());
         }
 
-        $this->checkRequiredPaths();
-        $this->checkEnvConfig();
+        if (!$created) {
+            throw new InconsistentDataException('Config File can not be created');
+        }
     }
 
-    /**
-     * Checks that all system directories provided and could be used
-     */
-    private function checkRequiredPaths(): void
+    private function getEnvData(): string
     {
-
+        $data = '';
+        /** @var ConfigurableParam $param */
+        foreach ($this->config as $param) {
+            if ($param instanceof EnvParam) {
+                $data .= $param->getParamName() . '="' . $param->getValue() . "\"\n";
+            }
+        }
+        return $data;
     }
 
-    /**
-     * Checks that provided all required parameters for the .env
-     */
-    private function checkEnvConfig(): void
+    // -----> if something went wrong
+
+    public function rollback(): void
     {
-
+        // @todo delete all created files on exception
+        die('not implemented yet');
     }
-
-    private function installApp(): void
-    {}
 }

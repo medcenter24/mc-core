@@ -20,27 +20,22 @@ namespace App\Services\Installer\Params;
 
 
 use App\Services\Installer\ConfigurableParam;
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvApiSubtypeParam extends ConfigurableParam
+class EnvApiPrefixParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_API_SUBTYPE;
+        return EnvironmentService::PROP_API_PREFIX;
     }
 
     public function defaultValue(): string
     {
-        return 'MC24';
+        return 'api';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
-        return !empty($value);
-    }
-
-    public function question(): string
-    {
-        return 'Uniq API key';
+        return !empty($this->getValue());
     }
 }

@@ -20,21 +20,21 @@ namespace App\Services\Installer\Params;
 
 
 use App\Services\Installer\ConfigurableParam;
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 
-class EnvMailPortParam extends ConfigurableParam
+class EnvMailUsernameParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_MAIL_PORT;
+        return EnvironmentService::PROP_MAIL_USERNAME;
     }
 
     public function defaultValue(): string
     {
-        return '2525';
+        return '';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
         return true;
     }

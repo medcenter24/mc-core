@@ -16,17 +16,29 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-/**
- * Created by PhpStorm.
- * User: zagovorychev
- * Date: 2019-03-15
- * Time: 16:19
- */
-
 namespace App\Services;
 
 
-class UserService
-{
+use App\Support\Core\Configurable;
 
+class UserService extends Configurable
+{
+    // We can define rule in the configuration maybe
+    /**
+     * @param string $email
+     * @return bool
+     */
+    public function isValidEmail(string $email): bool
+    {
+        return !empty($email);
+    }
+
+    /**
+     * @param string $password
+     * @return bool
+     */
+    public function isValidPassword(string $password): bool
+    {
+        return !empty($password);
+    }
 }

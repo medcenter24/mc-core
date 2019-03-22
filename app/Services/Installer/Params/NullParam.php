@@ -19,17 +19,20 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\InstallerService;
-
-class ConfigDirParam extends WritableDirParam
+class NullParam extends WritableDirParam
 {
     public function getParamName(): string
     {
-        return InstallerService::PROP_CONFIG_DIR;
+        return 'NullParam';
     }
 
     public function defaultValue(): string
     {
-        return parent::defaultValue() . 'config';
+        return '';
+    }
+
+    public function getValue(): string
+    {
+        return '';
     }
 }

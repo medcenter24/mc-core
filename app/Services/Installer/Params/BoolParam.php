@@ -19,25 +19,15 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\ConfigurableParam;
-
-abstract class EnumParam extends ConfigurableParam
+abstract class BoolParam extends EnumParam
 {
-    /**
-     * Check that dir exists/could be created and writable
-     * @param string $value
-     * @return bool
-     */
-    public function isValid(string $value): bool
+    protected function getValues(): array
     {
-        return in_array($value, $this->getValues(), false);
+        return [true, false];
     }
 
-    public function question(string $value = ''): string
+    public function defaultValue(): string
     {
-        return 'Choose a value of the ' . $this->getParamName()
-            . ' from the list [' . implode(',', $this->getValues()) . ']';
+        return false;
     }
-
-    abstract protected function getValues(): array;
 }

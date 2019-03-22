@@ -19,28 +19,23 @@
 namespace App\Services\Installer\Params;
 
 
-use App\Services\Installer\EnvironmentService;
+use App\Services\EnvironmentService;
 use App\Services\Installer\ConfigurableParam;
 
-class EnvCorsAllowOriginDirectorParam extends ConfigurableParam
+class EnvDropboxBackupTokenParam extends ConfigurableParam implements EnvParam
 {
     public function getParamName(): string
     {
-        return EnvironmentService::PROP_CORS_ALLOW_ORIGIN_DIRECTOR;
+        return EnvironmentService::PROP_DROPBOX_BACKUP_TOKEN;
     }
 
     public function defaultValue(): string
     {
-        return 'http://localhost:4200';
+        return '';
     }
 
-    public function isValid(string $value): bool
+    public function isValid(): bool
     {
         return true;
-    }
-
-    public function question(): string
-    {
-        return 'CORS director URL';
     }
 }

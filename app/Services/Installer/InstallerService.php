@@ -146,10 +146,13 @@ class InstallerService extends Configurable
         $this->createDataDir();
 
         $this->writeConfigFile();
-        $this->envFileSetUp();
+        $this->envFileSetup();
 
         // folders for the data storing
-        // $this->createStores();
+        $this->createStores();
+
+        // create default super admin
+        $this->createSuperuser();
     }
 
     public function canBeInstalled(): bool
@@ -243,11 +246,6 @@ class InstallerService extends Configurable
             throw new InconsistentDataException('Configuration directory can not be created');
         }
 
-        // on the finalization I need to write this path to the db storage?
-        // @see @todo place in the code where path will be written (finalized)
-        // maybe if directory is not on the top of the project dir - then write to db or to the static file
-        // and it needs to be chosen by user
-
         $this->status('Configuration directory created.');
     }
 
@@ -324,6 +322,44 @@ class InstallerService extends Configurable
             }
         }
         return $data;
+    }
+
+    /**
+     * generates needed folders for the environment
+     */
+    private function createStores(): void
+    {
+        $foldersMap = [
+            'app' => ['public'],
+            'debugbar' => [],
+            'documents' => [],
+            'exports' => [],
+            'framework' => ['cache', 'sessions', 'testing', 'views'],
+            'imports' => ['cases'],
+            'logs' => [],
+            'medialibrary' => [],
+            'pdfCaseReports' => [],
+            'pdfForms' => [],
+            'signature' => [],
+            'tmp' => [],
+            'uploads' => [],
+        ];
+
+        $param = $this->getParam(self::PROP_DATA_DIR);
+        $rootDir = $param->getValue();
+        foreach ($foldersMap as $key => $val) {
+            FileHelper::createDir($rootDir. '/'. $key);
+            foreach ($val as $item) {
+                FileHelper::createDir($rootDir. '/'. $key .'/' . $item);
+            }
+        }
+
+        $this->status('Stores created.');
+    }
+
+    private function createSuperuser(): void
+    {
+        $this->status('Please use artisan user:add to create your superuser');
     }
 
     // -----> if something went wrong

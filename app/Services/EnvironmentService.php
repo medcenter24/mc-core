@@ -71,6 +71,7 @@ use App\Services\Installer\Params\EnvRedisPasswordParam;
 use App\Services\Installer\Params\EnvRedisPortParam;
 use App\Services\Installer\Params\EnvSessionDriverParam;
 use App\Support\Core\Configurable;
+use Illuminate\Support\Facades\App;
 
 /**
  * Core environment configuration
@@ -107,9 +108,13 @@ class EnvironmentService extends Configurable implements Environment
 
     /**
      * @return EnvironmentService
+     * @throws NotImplementedException
      */
     public static function instance(): self
     {
+        if (!self::$instance) {
+            throw new NotImplementedException('You need to initialise your application before EnvironmentService::init($configPath)');
+        }
         return self::$instance;
     }
 
@@ -176,6 +181,8 @@ class EnvironmentService extends Configurable implements Environment
     {
         $options = $this->readConfig($configPath);
         parent::__construct($options);
+
+        $this->setUpApplication();
     }
 
     /**
@@ -183,13 +190,23 @@ class EnvironmentService extends Configurable implements Environment
      * @return array
      * @throws NotImplementedException
      */
-    public function readConfig(string $path): array
+    private function readConfig(string $path): array
     {
-        if (file_exists($path) && is_readable($path)) {
+        if (file_exists($path) && is_readable($path) && !is_dir($path)) {
             $config = include($path);
         } else {
             throw new NotImplementedException('Configuration file not found [use setup:environment]');
         }
         return $config;
+    }
+
+    private function setUpApplication(): void
+    {
+        $envFile = realpath($this->getOption(self::ENV_FILE));
+        $dir = dirname($envFile);
+        $fileName = str_replace($dir, '', $envFile);
+        \app()->useEnvironmentPath($dir);
+        \app()->loadEnvironmentFrom($fileName);
+        \app()->useStoragePath($this->getOption(self::DATA_DIR));
     }
 }

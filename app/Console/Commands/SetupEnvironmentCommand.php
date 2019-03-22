@@ -33,7 +33,7 @@ class SetupEnvironmentCommand extends Command
      * @var string
      */
     protected $signature = 'setup:environment
-        {--json-config-path : Pre-configured static .json file}
+        {--json-config-path= : Pre-configured static .json file}
     ';
 
     public function __construct()
@@ -41,7 +41,7 @@ class SetupEnvironmentCommand extends Command
         // extend signatures to have possibility to set any of environment params
         /** @var ConfigurableParam $param */
         foreach (EnvironmentService::getConfigParams() as $param) {
-            $this->signature .= "\n{ --" .$param->getParamName().' : '.$param->question().' }';
+            $this->signature .= "\n{ --" .$param->getParamName().'= : '.$param->question().' }';
         }
 
         parent::__construct();

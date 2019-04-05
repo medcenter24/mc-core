@@ -36,14 +36,15 @@ abstract class Menu
     /**
      * @return array
      */
-    abstract protected function getMenu();
+    abstract protected function getMenu(): array;
 
     /**
      * get selected menu
      * @return string
      */
-    public function get_current_menu()
+    public function get_current_menu(): string
     {
+        echo 'here';
         if (empty($this->current_menu)) {
             $this->set_current_menu();
         }
@@ -55,7 +56,7 @@ abstract class Menu
      * highlight current menu
      * @param string $current_menu [may be '1.10.10' - that mean: highlight all menu and submenu]
      */
-    private function set_current_menu($current_menu = '')
+    private function set_current_menu($current_menu = ''): void
     {
         $this->current_menu = '';
         $_m = $this->getMenu();
@@ -95,7 +96,7 @@ abstract class Menu
         }
     }
 
-    private function path_by_url($menu)
+    private function path_by_url($menu): string
     {
         foreach ($menu as $key => $cell) {
 
@@ -115,7 +116,7 @@ abstract class Menu
             }
         }
 
-        return false;
+        return '';
     }
 
     /**
@@ -138,7 +139,7 @@ abstract class Menu
      * @param $menu
      * @return void
      */
-    private function filterMenu(&$menu)
+    private function filterMenu(&$menu): void
     {
         foreach ($menu as $key => $item) {
             if (isset($item['role'])) {

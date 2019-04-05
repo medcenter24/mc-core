@@ -23,13 +23,17 @@ use \App\Helpers\Menu as AbstractMenu;
 class Menu extends AbstractMenu
 {
 
+    protected $excluded = ['admin'];
+
     /**
      * @return array
      */
-    protected function getMenu(): array {
+    protected function getMenu(): array
+    {
         return [
-            '1' => [
+            1 => [
                 'name' => trans('content.users'),
+                'role' => 'admin',
                 'submenu' => [
                     '10' => [
                         'name' => trans('content.list'),
@@ -44,9 +48,8 @@ class Menu extends AbstractMenu
                         'slug' => 'admin/invites',
                     ]
                 ],
-                'role' => 'admin'
             ],
-            '2' => [
+            2 => [
                 'name' => trans('content.preview'),
                 'submenu' => [
                     '10' => [
@@ -63,11 +66,12 @@ class Menu extends AbstractMenu
                     ],
                 ],
             ],
-            '3' => [
+            3 => [
                 'name' => trans('content.translate'),
                 'slug' => 'admin/translation',
             ],
-            '4' => [
+            4 => [
+                'role' => 'admin',
                 'name' => trans('content.telegram'),
                 'submenu' => [
                     '10' => [

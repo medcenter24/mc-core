@@ -26,30 +26,12 @@
 | the IoC container for the system binding all of the various parts.
 |
 */
+
+use App\Services\EnvironmentService;
+
 $app = new App\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
-
-/*
-|--------------------------------------------------------------------------
-| To use LaravelInstaller data (artisan setup:environment)
-|--------------------------------------------------------------------------
-|
-| Automatizator for the installation process
-| Default place for the config is on the up of the project dir
-| but you could change this if pass APP_CONFIG_PATH from the server configurator
-|
- */
-
-try {
-    \App\Services\EnvironmentService::init(
-        $_ENV['APP_CONFIG_PATH'] ?? dirname(__DIR__, 2) . '/config/generis.conf.php'
-    );
-} catch (\App\Exceptions\NotImplementedException $e) {
-    if (isset($isIndex)) {
-        die($e->getMessage());
-    }
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +58,29 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+
+/*
+|--------------------------------------------------------------------------
+| To use LaravelInstaller data (artisan setup:environment)
+|--------------------------------------------------------------------------
+|
+| Automatizator for the installation process
+| Default place for the config is on the up of the project dir
+| but you could change this if pass APP_CONFIG_PATH from the server configurator
+|
+| Notice: EnvironmentService requires initialized application
+|
+ */
+
+try {
+    EnvironmentService::init(
+        $_ENV['APP_CONFIG_PATH'] ?? dirname(__DIR__, 2) . '/config/generis.conf.php'
+    );
+} catch (Exception $e) {
+    if (!$app->isBooted() || !$app->environment('production')) {
+        echo $e->getMessage();
+    }
+}
 
 /*
 |--------------------------------------------------------------------------

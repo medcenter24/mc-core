@@ -23,24 +23,41 @@ use App\Contract\General\Environment;
 use App\Helpers\FileHelper;
 use App\Services\EnvironmentService;
 use App\Services\Installer\InstallerService;
-use http\Env;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Tests\SamplePath;
 use Tests\TestCase;
 
 class SetupEnvironmentCommandTest extends TestCase
 {
     use DatabaseMigrations;
+    use SamplePath;
 
     public function test_installing_generate_config(): void
     {
+        $_ENV['APP_CONFIG_PATH'] = 'exception';
         $this->artisan('setup:environment')
             ->expectsQuestion('Are you sure want to install application with these parameters?', 'no')
             ->assertExitCode(0);
     }
 
-    public function test_install_on_the_installed(): void
+    /**
+     * @throws \App\Exceptions\InconsistentDataException
+     * @throws \App\Exceptions\NotImplementedException
+     *
+     * @expectedException \ReflectionException
+     * @expectedExceptionMessage Class path.storage does not exist
+     */
+    public function test_exception_on_the_wrong_config(): void
     {
         EnvironmentService::init(realpath(__DIR__ . '/samples/default.conf.php'));
+        $this->artisan('setup:environment')
+            ->expectsOutput('Environment already configured')
+            ->assertExitCode(0);
+    }
+
+    public function test_install_on_the_installed(): void
+    {
+        EnvironmentService::init($this->getTopAppSamplePath() . '/settings/default.conf.php');
         $this->artisan('setup:environment')
             ->expectsOutput('Environment already configured')
             ->assertExitCode(0);

@@ -40,7 +40,7 @@ class CaseControllerScenarioActionTest extends TestCase
     use JwtHeaders;
     use LoggedUser;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         // adding scenarios to the storage

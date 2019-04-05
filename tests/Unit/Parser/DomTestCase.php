@@ -34,7 +34,7 @@ abstract class DomTestCase extends TestCase
      */
     private $dom;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $path = __DIR__ . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR . 'structure.xml';

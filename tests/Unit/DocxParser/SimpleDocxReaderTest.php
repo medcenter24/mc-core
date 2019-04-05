@@ -23,31 +23,34 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RegexIterator;
+use Tests\SamplePath;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class SimpleDocxReaderTest extends TestCase
 {
+    use SamplePath;
+
     /**
      * Path to the folder with docx examples
      * @var string
      */
-    private $samplePath = '';
+    // private $samplePath = '';
 
     /**
      * @var SimpleDocxReaderService
      */
     private $service;
 
-    protected function getSamplePath()
+    /*protected function getSamplePath():
     {
         if (!$this->samplePath) {
             $this->samplePath = __DIR__ . DIRECTORY_SEPARATOR . 'samples';
         }
 
         return $this->samplePath;
-    }
+    }*/
 
     protected function getService()
     {

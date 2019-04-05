@@ -21,32 +21,36 @@ namespace Tests\Feature\Admin;
 
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\TestResponse;
 use Tests\TestCase;
 
 class AuthorizationTest extends TestCase
 {
     use DatabaseMigrations;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->startSession();
     }
 
-    public function testUnauthorizedRedirect()
+    public function testUnauthorizedRedirect(): void
     {
+        echo env('APP_MODE');
+        /** @var TestResponse $response */
         $response = $this->get('/admin');
         $response->assertRedirect('login');
     }
 
-    public function testWrongCredentialsAuthorization()
+    public function testWrongCredentialsAuthorization(): void
     {
+        /** @var TestResponse $response */
         $response = $this->post('login', [
             'email' => 'mail@example.com',
             'password' => '234234secureing...',
             '_token' => csrf_token(),
         ]);
-        if ($response->getStatusCode() != 302) {
+        if ($response->getStatusCode() !== 302) {
             // why am I here?
             $this->assertTrue(false, 'I have to get correct Status Code 302 but '
                 . $response->getStatusCode());
@@ -56,7 +60,7 @@ class AuthorizationTest extends TestCase
         $response->assertStatus(302);
     }
 
-    public function testAuthorization()
+    public function testAuthorization(): void
     {
         $mail = 'mail@example.com';
         $passwd = 'secure';
@@ -79,7 +83,7 @@ class AuthorizationTest extends TestCase
         $r2->assertSee('Forbidden');
     }
 
-    public function testAdminsAuthorization()
+    public function testAdminsAuthorization(): void
     {
         $mail = 'mail@example.com';
         $passwd = 'secure';
@@ -106,6 +110,6 @@ class AuthorizationTest extends TestCase
 
         $r2 = $this->get('admin'); //->assertRedirect('login');
         $r2->assertStatus(200);
-        $r2->assertSee('MyDoctor 24');
+        $r2->assertSee(trans('content.project_name'));
     }
 }

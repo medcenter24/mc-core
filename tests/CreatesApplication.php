@@ -19,18 +19,25 @@
 namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Hash;
 
 trait CreatesApplication
 {
+
     /**
      * Creates the application.
      *
-     * @return \Illuminate\Foundation\Application
+     * @return Application
+     * @throws \ReflectionException
      */
-    public function createApplication()
+    public function createApplication(): Application
     {
         putenv('DB_CONNECTION=sqliteTests');
+
+        if ( !array_key_exists('APP_CONFIG_PATH', $_ENV) ) {
+            $_ENV['APP_CONFIG_PATH'] = __DIR__ . '/settings/default.conf.php';
+        }
 
         $app = require __DIR__.'/../bootstrap/app.php';
 

@@ -40,7 +40,7 @@ class FinancesTest extends TestCase
      */
     protected $financeData;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

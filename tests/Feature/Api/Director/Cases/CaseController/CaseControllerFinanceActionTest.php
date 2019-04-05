@@ -22,8 +22,6 @@ use App\Accident;
 use App\Assistant;
 use App\City;
 use App\Doctor;
-use App\DoctorAccident;
-use App\DoctorService;
 use App\FinanceCondition;
 use App\FinanceCurrency;
 use App\FinanceStorage;

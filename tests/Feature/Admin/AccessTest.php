@@ -26,8 +26,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AccessTest extends TestCase
 {
-
-    public function testMain()
+    public function testMain(): void
     {
         \Roles::shouldReceive('hasRole')->times(0);
 
@@ -38,7 +37,7 @@ class AccessTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testAdmin()
+    public function testAdmin(): void
     {
         \Roles::shouldReceive('hasRole')
             ->times(3)
@@ -53,7 +52,7 @@ class AccessTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testDoctor()
+    public function testDoctor(): void
     {
         \Roles::shouldReceive('hasRole')
             ->times(1)
@@ -68,7 +67,7 @@ class AccessTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testDirector()
+    public function testDirector(): void
     {
         \Roles::shouldReceive('hasRole')
             ->times(1)

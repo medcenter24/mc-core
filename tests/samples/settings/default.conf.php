@@ -16,27 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Console;
-
-use PHPUnit\Framework\TestCase;
-
-class UsagesOfInstalledEnvironmentTest extends TestCase
-{
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    public function testEnvSettings(): void
-    {
-
-    }
-
-    public function testStorage(): void
-    {}
-
-    public function tearDown()
-    {
-        parent::tearDown();
-    }
-}
+return [
+    'env' => realpath(__DIR__ . '/config/.testenv'),
+    'data' => realpath(__DIR__ . '/config/data'),
+];

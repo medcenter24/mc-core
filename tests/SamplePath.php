@@ -27,7 +27,11 @@ trait SamplePath
      */
     private $samplePath = '';
 
-    protected function getSamplePath()
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    protected function getSamplePath(): string
     {
         if (!$this->samplePath) {
             $reflector = new \ReflectionClass(get_class($this));
@@ -40,7 +44,17 @@ trait SamplePath
         return $this->samplePath;
     }
 
-    protected function getSampleFile($file='')
+    protected function getTopAppSamplePath(): string
+    {
+        return __DIR__ . '/samples';
+    }
+
+    /**
+     * @param string $file
+     * @return string
+     * @throws \ReflectionException
+     */
+    protected function getSampleFile($file=''): string
     {
         return $this->getSamplePath() . $file;
     }

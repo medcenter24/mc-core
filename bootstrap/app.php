@@ -1,4 +1,20 @@
 <?php
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2019 (original work) MedCenter24.com;
+ */
 
 /*
 |--------------------------------------------------------------------------
@@ -11,31 +27,11 @@
 |
 */
 
-$app = new \App\Foundation\Application(
-    realpath(__DIR__.'/../')
+use App\Services\EnvironmentService;
+
+$app = new App\Foundation\Application(
+    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
-
-// if it is deployment then file will be above the laravel root
-if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
-    $app->useEnvironmentPath(realpath(__DIR__.'/../../config'));
-    $app->loadEnvironmentFrom('.laravel.env');
-
-    // replace storage path if provided
-    $app->useStoragePath( realpath(__DIR__ . '/../../data/laravel') );
-
-    if (!function_exists('vendor_path')) {
-        function vendor_path ($path = '') {
-            return realpath(__DIR__ . '/../../vendor') . ($path ? DIRECTORY_SEPARATOR.$path : $path);
-        }
-    }
-}
-
-// vendor path needed for some of the serviceProviders ie MessengerServiceProvider
-if (!function_exists('vendor_path')) {
-    function vendor_path ($path = '') {
-        return realpath(__DIR__ . '/../vendor') . ($path ? DIRECTORY_SEPARATOR.$path : $path);
-    }
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +58,29 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+
+/*
+|--------------------------------------------------------------------------
+| To use LaravelInstaller data (artisan setup:environment)
+|--------------------------------------------------------------------------
+|
+| Automatizator for the installation process
+| Default place for the config is on the up of the project dir
+| but you could change this if pass APP_CONFIG_PATH from the server configurator
+|
+| Notice: EnvironmentService requires initialized application
+|
+ */
+
+try {
+    EnvironmentService::init(
+        $_ENV['APP_CONFIG_PATH'] ?? dirname(__DIR__, 2) . '/config/generis.conf.php'
+    );
+} catch (Exception $e) {
+    if (!$app->isBooted() || !$app->environment('production')) {
+        echo $e->getMessage();
+    }
+}
 
 /*
 |--------------------------------------------------------------------------

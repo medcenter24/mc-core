@@ -1,8 +1,19 @@
 <?php
 /**
- * Copyright (c) 2017.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
  *
- * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
 namespace Tests\Feature\Admin;
@@ -15,8 +26,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AccessTest extends TestCase
 {
-
-    public function testMain()
+    public function testMain(): void
     {
         \Roles::shouldReceive('hasRole')->times(0);
 
@@ -27,7 +37,7 @@ class AccessTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testAdmin()
+    public function testAdmin(): void
     {
         \Roles::shouldReceive('hasRole')
             ->times(3)
@@ -42,7 +52,7 @@ class AccessTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testDoctor()
+    public function testDoctor(): void
     {
         \Roles::shouldReceive('hasRole')
             ->times(1)
@@ -57,7 +67,7 @@ class AccessTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testDirector()
+    public function testDirector(): void
     {
         \Roles::shouldReceive('hasRole')
             ->times(1)

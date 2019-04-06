@@ -1,8 +1,19 @@
 <?php
 /**
- * Copyright (c) 2017.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
  *
- * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
 namespace Tests\Feature\Admin;
@@ -10,32 +21,36 @@ namespace Tests\Feature\Admin;
 
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\TestResponse;
 use Tests\TestCase;
 
 class AuthorizationTest extends TestCase
 {
     use DatabaseMigrations;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->startSession();
     }
 
-    public function testUnauthorizedRedirect()
+    public function testUnauthorizedRedirect(): void
     {
+        echo env('APP_MODE');
+        /** @var TestResponse $response */
         $response = $this->get('/admin');
         $response->assertRedirect('login');
     }
 
-    public function testWrongCredentialsAuthorization()
+    public function testWrongCredentialsAuthorization(): void
     {
+        /** @var TestResponse $response */
         $response = $this->post('login', [
             'email' => 'mail@example.com',
             'password' => '234234secureing...',
             '_token' => csrf_token(),
         ]);
-        if ($response->getStatusCode() != 302) {
+        if ($response->getStatusCode() !== 302) {
             // why am I here?
             $this->assertTrue(false, 'I have to get correct Status Code 302 but '
                 . $response->getStatusCode());
@@ -45,7 +60,7 @@ class AuthorizationTest extends TestCase
         $response->assertStatus(302);
     }
 
-    public function testAuthorization()
+    public function testAuthorization(): void
     {
         $mail = 'mail@example.com';
         $passwd = 'secure';
@@ -68,7 +83,7 @@ class AuthorizationTest extends TestCase
         $r2->assertSee('Forbidden');
     }
 
-    public function testAdminsAuthorization()
+    public function testAdminsAuthorization(): void
     {
         $mail = 'mail@example.com';
         $passwd = 'secure';
@@ -95,6 +110,6 @@ class AuthorizationTest extends TestCase
 
         $r2 = $this->get('admin'); //->assertRedirect('login');
         $r2->assertStatus(200);
-        $r2->assertSee('MyDoctor 24');
+        $r2->assertSee(trans('content.project_name'));
     }
 }

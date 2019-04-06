@@ -1,14 +1,29 @@
 <?php
 /**
- * Copyright (c) 2018.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
  *
- * @author Alexander Zagovorichev <zagovorichev@gmail.com>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
 namespace App\Services\Messenger;
 
 use Cmgmyr\Messenger\MessengerServiceProvider;
 
+/**
+ * Class LocMessengerServiceProvider
+ * @package App\Services\Messenger
+ */
 class LocMessengerServiceProvider extends MessengerServiceProvider
 {
 
@@ -20,7 +35,7 @@ class LocMessengerServiceProvider extends MessengerServiceProvider
     protected function configure()
     {
         $this->mergeConfigFrom(
-            vendor_path('cmgmyr/messenger/config/config.php'),
+            $this->configPath(),
             'messenger'
         );
     }
@@ -28,18 +43,54 @@ class LocMessengerServiceProvider extends MessengerServiceProvider
     /**
      * Setup the resource publishing groups for Messenger.
      *
-     * @return void
+     * @throws \ReflectionException
      */
     protected function offerPublishing()
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                vendor_path('cmgmyr/messenger/config/config.php') => config_path('messenger.php'),
+                $this->getConfigPath() => config_path('messenger.php'),
             ], 'config');
 
             $this->publishes([
-                vendor_path('cmgmyr/messenger/migrations') => base_path('database/migrations'),
+                $this->getMigrationsPath() => base_path('database/migrations'),
             ], 'migrations');
         }
+    }
+
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    protected function getConfigPath(): string
+    {
+        return $this->getParentDir() .'../config/config.php';
+    }
+
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    protected function getMigrationsPath(): string
+    {
+        return $this->getParentDir() .'../migrations';
+    }
+
+    /**
+     * @var string
+     */
+    private static $parentDir = '';
+
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    private function getParentDir(): string
+    {
+        if (!self::$parentDir) {
+            $reflection = new \ReflectionClass(parent::class);
+            self::$parentDir = dirname($reflection->getFileName());
+        }
+        return self::$parentDir;
     }
 }

@@ -16,5 +16,18 @@ Description of the features and tools for the application.
 ### Telegram settings
 To generate new cert: `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nodes`
 
-# v2.0 Changes:
-`php artisan storage:link`
+# Installation
+
+We created artisan command to make it simple: `artisan setup:environment`
+
+## Quick local installation
+```
+php artisan setup:environment
+    --API_DEBUG=true
+    --APP_DEBUG=true
+    --APP_ENV=local 
+    --APP_LOG_LEVEL=debug
+    --DB_CONNECTION=sqlite
+    --DB_DATABASE=/private/var/www/sandbox/projects/medcenter24/develop/mcCore/database/db.sqlite
+    --DEBUGBAR_ENABLED=true
+```

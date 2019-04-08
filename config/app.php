@@ -184,8 +184,8 @@ $app = [
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         \Maatwebsite\Excel\ExcelServiceProvider::class,
-        // \App\Services\Messenger\LocMessengerServiceProvider::class,
-        \Cmgmyr\Messenger\MessengerServiceProvider::class,
+        // I need this to have possibility to use vendor path in the other direction than default
+        \App\Services\Messenger\LocMessengerServiceProvider::class,
         BackupManager\Laravel\Laravel55ServiceProvider::class,
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
         // \App\Providers\CaseFinanceProvider::class,

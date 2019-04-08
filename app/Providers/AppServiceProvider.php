@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if (App::environment() !== 'production') {
+        if (App::environment() === 'local') {
             App::register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
             App::register(\Barryvdh\Debugbar\ServiceProvider::class);
         }

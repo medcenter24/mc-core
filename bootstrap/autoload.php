@@ -30,10 +30,10 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
-if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+if (!file_exists(dirname(__DIR__, 3).'/vendor/autoload.php')) {
     // default place
-    require __DIR__.'/../vendor/autoload.php';
+    require dirname(__DIR__, 2).'/vendor/autoload.php';
 } else {
     // if installed within other packages for the medCenter CRM
-    require __DIR__.'/../../vendor/autoload.php';
+    require dirname(__DIR__, 3).'/vendor/autoload.php';
 }

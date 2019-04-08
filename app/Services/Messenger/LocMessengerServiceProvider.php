@@ -31,11 +31,12 @@ class LocMessengerServiceProvider extends MessengerServiceProvider
      * Setup the configuration for Messenger.
      *
      * @return void
+     * @throws \ReflectionException
      */
-    protected function configure()
+    protected function configure(): void
     {
-        $this->mergeConfigFrom(
-            $this->configPath(),
+        $this->mergeConfigFrom (
+            $this->getConfigPath(),
             'messenger'
         );
     }
@@ -45,7 +46,7 @@ class LocMessengerServiceProvider extends MessengerServiceProvider
      *
      * @throws \ReflectionException
      */
-    protected function offerPublishing()
+    protected function offerPublishing(): void
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -64,7 +65,7 @@ class LocMessengerServiceProvider extends MessengerServiceProvider
      */
     protected function getConfigPath(): string
     {
-        return $this->getParentDir() .'../config/config.php';
+        return $this->getParentDir() .'/../config/config.php';
     }
 
     /**
@@ -73,7 +74,7 @@ class LocMessengerServiceProvider extends MessengerServiceProvider
      */
     protected function getMigrationsPath(): string
     {
-        return $this->getParentDir() .'../migrations';
+        return $this->getParentDir() .'/../migrations';
     }
 
     /**

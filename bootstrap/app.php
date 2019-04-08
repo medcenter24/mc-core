@@ -78,7 +78,9 @@ try {
     );
 } catch (Exception $e) {
     if (!$app->isBooted() || !$app->environment('production')) {
-        echo $e->getMessage();
+        echo "/**********************************/\n";
+        echo "\t" . $e->getMessage() . "\n";
+        echo "/**********************************/\n\n";
     }
 }
 

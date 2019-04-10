@@ -21,13 +21,15 @@ To generate new cert: `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out c
 We created artisan command to make it simple: `artisan setup:environment`
 
 ## Quick local installation
+
+But you need to take into an account that to use the local Environment you need to do `composer install` in the mcCore folder 
 ```
-php artisan setup:environment
-    --API_DEBUG=true
-    --APP_DEBUG=true
-    --APP_ENV=local 
-    --APP_LOG_LEVEL=debug
-    --DB_CONNECTION=sqlite
-    --DB_DATABASE=/private/var/www/sandbox/projects/medcenter24/develop/mcCore/database/db.sqlite
+php artisan setup:environment \
+    --API_DEBUG=true \
+    --APP_DEBUG=true \
+    --APP_ENV=local \
+    --APP_LOG_LEVEL=debug \
+    --DB_CONNECTION=sqlite \
+    --DB_DATABASE=/private/var/www/sandbox/projects/medcenter24/develop/mcCore/database/db.sqlite \
     --DEBUGBAR_ENABLED=true
 ```

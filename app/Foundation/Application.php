@@ -69,23 +69,10 @@ class Application extends BaseApplication
     {
         if (!EnvironmentService::isInstalled()) {
             $dir = sys_get_temp_dir();
-            $this->createDirectories([$dir, 'bootstrap', 'cache']);
-            FileHelper::createDir($dir.'/bootstrap/cache/');
+            FileHelper::createDirRecursive([$dir, 'bootstrap', 'cache']);
         } else {
             $dir = $this->storagePath() . '/bootstrap/cache/';
         }
         return $dir . $path;
-    }
-
-    private function createDirectories(array $map): void
-    {
-        $dirPath = '';
-        // create all directories
-        foreach ($map as $item) {
-            $dirPath .= '/'.$item;
-            if (!FileHelper::isDirExists($dirPath)) {
-                FileHelper::createDir($dirPath);
-            }
-        }
     }
 }

@@ -32,7 +32,27 @@ class FileHelper
 
     public static function createDir(string $path): bool
     {
-        return mkdir($path, 0764, true);
+        return self::isDirExists($path) ? true : mkdir($path, 0764, true);
+    }
+
+    /**
+     * creates directories recursively
+     * @example to create `/www/data/log` => $path = [www, data, log]
+     *
+     * @param array $paths
+     * @return bool
+     */
+    public static function createDirRecursive(array $paths = []): bool
+    {
+        $dir = '';
+        foreach ($paths as $path) {
+            $dir .= DIRECTORY_SEPARATOR . $path;
+            if (!self::isDirExists($dir)) {
+                self::createDir($dir);
+            }
+        }
+
+        return true;
     }
 
     public static function isWritable(string $path): bool

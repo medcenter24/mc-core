@@ -79,11 +79,6 @@ class InstallerService extends Configurable
     private $config = [];
 
     /**
-     * @var bool
-     */
-    private $requiresMoreParams = false;
-
-    /**
      * @throws InconsistentDataException
      */
     public function generateConfig(): void
@@ -108,15 +103,6 @@ class InstallerService extends Configurable
                 }
             }
         }
-    }
-
-    /**
-     * If Installer needs more required params
-     * @return bool
-     */
-    public function requiresAdditionalParams(): bool
-    {
-        return $this->requiresMoreParams;
     }
 
     /**
@@ -150,9 +136,6 @@ class InstallerService extends Configurable
 
         // folders for the data storing
         $this->createStores();
-
-        // create default super admin
-        $this->createSuperuser();
     }
 
     public function canBeInstalled(): bool
@@ -343,6 +326,7 @@ class InstallerService extends Configurable
             'signature' => [],
             'tmp' => [],
             'uploads' => [],
+            'bootstrap' => ['cache'],
         ];
 
         $param = $this->getParam(self::PROP_DATA_DIR);
@@ -355,18 +339,5 @@ class InstallerService extends Configurable
         }
 
         $this->status('Stores created.');
-    }
-
-    private function createSuperuser(): void
-    {
-        $this->status('Please use artisan user:add to create your superuser');
-    }
-
-    // -----> if something went wrong
-
-    public function rollback(): void
-    {
-        // @todo delete all created files on exception
-        die('not implemented yet');
     }
 }

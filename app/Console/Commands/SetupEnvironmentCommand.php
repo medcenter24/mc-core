@@ -145,7 +145,8 @@ class SetupEnvironmentCommand extends Command
         EnvironmentService::init(
             $_ENV['APP_CONFIG_PATH'] ?? dirname(__DIR__, 4) . '/config/generis.conf.php'
         );
-        with(new Dotenv(app()->environmentPath(), app()->environmentFile()))->overload();
+        $dot = Dotenv::create(app()->environmentPath(), app()->environmentFile());
+        with($dot)->overload();
         with(new LoadConfiguration())->bootstrap(app());
     }
 

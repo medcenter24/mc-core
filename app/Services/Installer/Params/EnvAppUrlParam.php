@@ -31,7 +31,7 @@ class EnvAppUrlParam extends ConfigurableParam implements EnvParam
 
     public function defaultValue(): string
     {
-        return 'MedCenter24';
+        return 'http://127.0.0.1:8000';
     }
 
     public function isValid(): bool

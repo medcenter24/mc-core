@@ -19,60 +19,73 @@
 namespace App\Foundation;
 
 
-class Application extends \Illuminate\Foundation\Application
+use App\Helpers\FileHelper;
+use App\Services\EnvironmentService;
+use Illuminate\Foundation\Application as BaseApplication;
+
+class Application extends BaseApplication
 {
-
-
-    /*private function isDeploy()
-    {
-        return !file_exists(__DIR__.'/../../vendor/autoload.php');
-    }*/
-
-    /*private function getDeployedBootstrapPath($path = '')
-    {
-        $bsPath = $this->isDeploy() ? realpath(__DIR__ . '/../../../data/bootstrap/')
-            : $this->bootstrapPath();
-
-        return $path ? str_replace($this->bootstrapPath(), $this->getDeployedBootstrapPath(), $path) : $bsPath;
-    }*/
-
     /**
      * Get the path to the cached services.php file.
      *
      * @return string
      */
-    /*public function getCachedServicesPath()
+    public function getCachedServicesPath(): string
     {
-        return $this->getDeployedBootstrapPath(parent::getCachedServicesPath());
-    }*/
+        return $_ENV['APP_SERVICES_CACHE'] ?? $this->getBootstrapCachePath('services.php');
+    }
 
     /**
      * Get the path to the cached packages.php file.
      *
      * @return string
      */
-    /*public function getCachedPackagesPath()
+    public function getCachedPackagesPath(): string
     {
-        return $this->getDeployedBootstrapPath(parent::getCachedPackagesPath());
-    }*/
+        return $_ENV['APP_PACKAGES_CACHE'] ?? $this->getBootstrapCachePath('packages.php');
+    }
 
     /**
      * Get the path to the configuration cache file.
      *
      * @return string
      */
-    /*public function getCachedConfigPath()
+    public function getCachedConfigPath(): string
     {
-        return $this->getDeployedBootstrapPath(parent::getCachedConfigPath());
-    }*/
+        return $_ENV['APP_CONFIG_CACHE'] ?? $this->getBootstrapCachePath('config.php');
+    }
 
     /**
      * Get the path to the routes cache file.
      *
      * @return string
      */
-    /*public function getCachedRoutesPath()
+    public function getCachedRoutesPath(): string
     {
-        return $this->getDeployedBootstrapPath(parent::getCachedRoutesPath());
-    }*/
+        return $_ENV['APP_ROUTES_CACHE'] ?? $this->getBootstrapCachePath('routes.php');
+    }
+
+    protected function getBootstrapCachePath($path = ''): string
+    {
+        if (!EnvironmentService::isInstalled()) {
+            $dir = sys_get_temp_dir();
+            $this->createDirectories([$dir, 'bootstrap', 'cache']);
+            FileHelper::createDir($dir.'/bootstrap/cache/');
+        } else {
+            $dir = $this->storagePath() . '/bootstrap/cache/';
+        }
+        return $dir . $path;
+    }
+
+    private function createDirectories(array $map): void
+    {
+        $dirPath = '';
+        // create all directories
+        foreach ($map as $item) {
+            $dirPath .= '/'.$item;
+            if (!FileHelper::isDirExists($dirPath)) {
+                FileHelper::createDir($dirPath);
+            }
+        }
+    }
 }

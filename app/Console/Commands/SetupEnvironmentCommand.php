@@ -23,7 +23,9 @@ use App\Helpers\FileHelper;
 use App\Services\EnvironmentService;
 use App\Services\Installer\ConfigurableParam;
 use App\Services\Installer\InstallerService;
+use Dotenv\Dotenv;
 use Illuminate\Console\Command;
+use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 
 class SetupEnvironmentCommand extends Command
 {
@@ -32,9 +34,7 @@ class SetupEnvironmentCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'setup:environment
-        {--json-config-path= : Pre-configured static .json file}
-    ';
+    protected $signature = 'setup:environment';
 
     public function __construct()
     {
@@ -60,16 +60,6 @@ class SetupEnvironmentCommand extends Command
     private $installerService;
 
     /**
-     * @var string
-     */
-    private $configFilePath;
-
-    /**
-     * @var string
-     */
-    private $envFileName;
-
-    /**
      * Execute the console command.
      * @param InstallerService $installerService
      * @throws InconsistentDataException
@@ -87,9 +77,6 @@ class SetupEnvironmentCommand extends Command
 
         try {
             $this->installerService->generateConfig();
-            if ($this->installerService->requiresAdditionalParams()) {
-                $this->requireAdditionalParams();
-            }
             if (!$this->installerService->canBeInstalled()) {
                 throw new InconsistentDataException('Incorrect configuration for the installer');
             }
@@ -135,7 +122,7 @@ class SetupEnvironmentCommand extends Command
     private function initProgressLogger(): void
     {
         $self = $this;
-        $this->installerService->setOption(InstallerService::OPTION_LOGGER, function ($msg) use($self) {$self->info($msg);});
+        $this->installerService->setOption(InstallerService::OPTION_LOGGER, static function ($msg) use($self) {$self->info($msg);});
     }
 
     /**
@@ -145,86 +132,53 @@ class SetupEnvironmentCommand extends Command
     {
         if ($this->confirm('Are you sure want to install application with these parameters?')) {
             $this->installerService->install();
+
+            $this->reloadApp();
+            $this->migrate();
+        } else {
+            $this->error('Aborted');
         }
     }
 
-    /**
-     * Ask user about more params for installer
-     * @throws InconsistentDataException
-     */
-    public function requireAdditionalParams(): array
+    private function reloadApp(): void
     {
-        /** @var ConfigurableParam $requiredParam */
-        foreach ($this->installerService->getRequiredParams() as $requiredParam) {
-            do {
-                $requiredParam->setValue( (string) $this->ask($requiredParam->question(), $requiredParam->defaultValue()) );
-            } while(!$requiredParam->isValid());
+        EnvironmentService::init(
+            $_ENV['APP_CONFIG_PATH'] ?? dirname(__DIR__, 4) . '/config/generis.conf.php'
+        );
+        with(new Dotenv(app()->environmentPath(), app()->environmentFile()))->overload();
+        with(new LoadConfiguration())->bootstrap(app());
+    }
+
+    private function migrate(): void 
+    {
+        if ($this->confirm('Do you want to migrate DB?')) {
+
+            if (env('DB_CONNECTION') === 'sqlite') {
+                // create new file for the DB
+                $file = env('DB_DATABASE');
+                $path = mb_substr($file, 0, mb_strrpos($file, DIRECTORY_SEPARATOR));
+                $dirs = explode(DIRECTORY_SEPARATOR, $path);
+                FileHelper::createDirRecursive($dirs);
+                FileHelper::writeFile($file, '');
+            }
+
+            $this->call('migrate');
+            $this->seed();
         }
     }
-
-
-    private function setUp(): void
+    
+    private function seed(): void
     {
-        $this->createConfigFile();
-        $this->envFileSetUp();
-
-        // folders for the data storing
-        $this->createStorage();
-    }
-
-    private function createConfigFile(): void
-    {
-        do {
-            $this->configFilePath = (string)$this->ask('Configuration file name [for paths and constants]:', ['generis.conf']);
-        } while(
-                !FileHelper::isFileAvailable($this->configFilePath)
-                || !is_writable($this->configFilePath)
-                || !FileHelper::writeConfig($this->configFilePath)
-            );
-    }
-
-    private function envFileSetUp(): void
-    {
-        $this->createEnvFile();
-        $this->fillEnvFileProperties();
-    }
-
-    private function createEnvFile(): void
-    {
-        do {
-            $this->envFileName = (string)$this->ask('New name for the laravel environment file', '.env');
-        } while(!FileHelper::isFileAvailable($this->envFileName)
-                || !FileHelper::writeFile($this->envFileName, ''));
-    }
-
-    private function fillEnvFileProperties(): void
-    {
-        $env = (string) $this->argument('env');
-        switch ($env) {
-            case 'production':
-                $this->info('Production environment');
-                $properties = $this->installerService->getProdEnvProps();
-                $properties = array_merge($properties,
-                    $this->installerService->getRequiredInteractive($this->installerService->getProdInteractiveKeys()));
-                break;
-            case 'development':
-                $this->info('Development environment');
-                $properties = $this->installerService->getDevEnvProps();
-                break;
-            default: $properties = $this->getInteractiveEnvProps();
+        if ($this->confirm('Do you want to seed DB?')) {
+            $this->call('db:seed');
+            $this->addSuperAdmin();
         }
-
-        FileHelper::writeFile($this->envFileName, $properties);
-        $this->info('Environment configuration saved.');
     }
-
-    private function getInteractiveEnvProps(array $props = []): string
+    
+    private function addSuperAdmin(): void
     {
-
-    }
-
-    private function createStorage(): void
-    {
-        $this->info('todo');
+        if ($this->confirm('Do you want to create Super Admin?')) {
+            $this->call('user:add', ['roles' => 'login,admin']);
+        }
     }
 }

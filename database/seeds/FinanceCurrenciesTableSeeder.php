@@ -29,7 +29,7 @@ class FinanceCurrenciesTableSeeder extends Seeder
     public function run(): void
     {
         FinanceCurrency::truncate();
-        factory(FinanceCurrency::class)->create([
+        FinanceCurrency::firstOrCreate([
             'title' => 'Euro',
             'code' => 'eur',
             'ico' => 'fa fa-euro',

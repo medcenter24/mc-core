@@ -63,6 +63,7 @@ class SetupEnvironmentCommand extends Command
      * Execute the console command.
      * @param InstallerService $installerService
      * @throws InconsistentDataException
+     * @throws \App\Exceptions\NotImplementedException
      */
     public function handle(InstallerService $installerService): void
     {
@@ -127,6 +128,7 @@ class SetupEnvironmentCommand extends Command
 
     /**
      * @throws InconsistentDataException
+     * @throws \App\Exceptions\NotImplementedException
      */
     private function install(): void
     {
@@ -140,12 +142,17 @@ class SetupEnvironmentCommand extends Command
         }
     }
 
+    /**
+     * @throws InconsistentDataException
+     * @throws \App\Exceptions\NotImplementedException
+     */
     private function reloadApp(): void
     {
         EnvironmentService::init(
             $_ENV['APP_CONFIG_PATH'] ?? dirname(__DIR__, 4) . '/config/generis.conf.php'
         );
-        with(new Dotenv(app()->environmentPath(), app()->environmentFile()))->overload();
+        $dot = Dotenv::create(app()->environmentPath(), app()->environmentFile());
+        with($dot)->overload();
         with(new LoadConfiguration())->bootstrap(app());
     }
 

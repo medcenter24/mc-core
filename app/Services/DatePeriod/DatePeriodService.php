@@ -22,14 +22,14 @@ namespace App\Services\DatePeriod;
 use App\DatePeriod;
 use App\Events\DatePeriodChangedEvent;
 use App\Exceptions\InconsistentDataException;
-use Auth;
+use Illuminate\Support\Facades\Log;
 
 class DatePeriodService
 {
-    CONST TIME = 'time';
-    CONST DOW = 'dow'; // day of week
+    public CONST TIME = 'time';
+    public CONST DOW = 'dow'; // day of week
 
-    protected $dow = [
+    protected static $dow = [
         0 => 'sun',
         1 => 'mon',
         2 => 'tues',
@@ -44,7 +44,7 @@ class DatePeriodService
      * @param string $val
      * @return bool
      */
-    public function isPeriod(string $val = '')
+    public function isPeriod(string $val = ''): bool
     {
         $isPeriod = false;
         try {
@@ -60,7 +60,7 @@ class DatePeriodService
      * @return array
      * @throws InconsistentDataException
      */
-    public function parsePeriod(string $val = '')
+    public function parsePeriod(string $val = ''): array
     {
         $res = [
             self::TIME => '',
@@ -92,9 +92,9 @@ class DatePeriodService
     /**
      * Returns list of day of week
      */
-    public function getDow()
+    public function getDow(): array
     {
-        return $this->dow;
+        return self::$dow;
     }
 
     /**
@@ -102,9 +102,9 @@ class DatePeriodService
      * @param string $val
      * @return bool
      */
-    protected function isDow (string $val = '')
+    protected function isDow (string $val = ''): bool
     {
-        return in_array($val, $this->dow);
+        return in_array($val, self::$dow, false);
     }
 
     /**
@@ -112,16 +112,16 @@ class DatePeriodService
      * @param string $val
      * @return bool
      */
-    protected function isTime (string $val = '')
+    protected function isTime (string $val = ''): bool
     {
         $isTime = false;
 
         $time = explode(':', $val);
-        if (count($time) == 2) {
+        if (count($time) === 2) {
             $hr = trim(array_shift($time));
             $min = trim(array_shift($time));
 
-            if (!preg_match('/[^0-9]+/', $hr) && !preg_match('/[^0-9]+/', $min)) {
+            if (!preg_match('/\D+/', $hr) && !preg_match('/\D+/', $min)) {
                 if ($hr < 24 && $min < 60) {
                     $isTime = true;
                 }
@@ -138,13 +138,17 @@ class DatePeriodService
      */
     public function save(array $data = [])
     {
+        if (!array_key_exists('day_of_week', $data)) {
+            $data['day_of_week'] = 0;
+        }
+        
         if (array_key_exists('id', $data) && $data['id']) {
             $datePeriod = DatePeriod::findOrFail($data['id']);
             $datePeriod->update($data);
-            \Log::info('Period updated', [$datePeriod, Auth::user()]);
+            Log::info('Period updated', [$datePeriod, auth()->user()]);
         } else {
             $datePeriod = DatePeriod::create($data);
-            \Log::info('Period created', [$datePeriod, Auth::user()]);
+            Log::info('Period created', [$datePeriod, auth()->user()]);
         }
 
         event(new DatePeriodChangedEvent($datePeriod));

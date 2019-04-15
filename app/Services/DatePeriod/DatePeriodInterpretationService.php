@@ -44,7 +44,7 @@ class DatePeriodInterpretationService
      * @return array
      * @throws \App\Exceptions\InconsistentDataException
      */
-    public function interpret(DatePeriod $datePeriod)
+    public function interpret(DatePeriod $datePeriod): array
     {
         $from = $this->datePeriodService->parsePeriod($datePeriod->from);
         $to = $this->datePeriodService->parsePeriod($datePeriod->to);
@@ -57,7 +57,7 @@ class DatePeriodInterpretationService
 
         $result = [];
         $this->addFirstDate($from, $result);
-        if ($from[DatePeriodService::DOW] != $to[DatePeriodService::DOW]) {
+        if ($from[DatePeriodService::DOW] !== $to[DatePeriodService::DOW]) {
             // adding all the days between dates
             $this->addBetweenDates($from, $to, $result);
         } else {
@@ -119,8 +119,8 @@ class DatePeriodInterpretationService
         $data = [];
         foreach ($days as $day) {
             $data[] = [
-                'date_period_id' => $datePeriod->id,
-                'day_of_week' => $day[0],
+                'date_period_id' => (int)$datePeriod->id,
+                'day_of_week' => (int)$day[0],
                 'from' => $day[1],
                 'to' => $day[2],
             ];

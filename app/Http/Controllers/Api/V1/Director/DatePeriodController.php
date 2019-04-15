@@ -23,6 +23,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\Api\DatePeriodRequest;
 use App\Services\DatePeriod\DatePeriodService;
 use App\Transformers\DatePeriodTransformer;
+use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
 class DatePeriodController extends ApiController
@@ -41,9 +42,9 @@ class DatePeriodController extends ApiController
      * Store a newly created resource in storage.
      * @param DatePeriodRequest $request
      * @param DatePeriodService $service
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function store(DatePeriodRequest $request, DatePeriodService $service)
+    public function store(DatePeriodRequest $request, DatePeriodService $service): Response
     {
         if ($request->json('id', false)) {
             $this->response->errorBadRequest();
@@ -57,9 +58,9 @@ class DatePeriodController extends ApiController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function show($id)
+    public function show($id): Response
     {
         return $this->response->item(DatePeriod::findOrFail($id), new DatePeriodTransformer());
     }
@@ -70,9 +71,9 @@ class DatePeriodController extends ApiController
      * @param DatePeriodRequest $request
      * @param $id
      * @param DatePeriodService $service
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function update(DatePeriodRequest $request, $id, DatePeriodService $service)
+    public function update(DatePeriodRequest $request, $id, DatePeriodService $service): Response
     {
         $datePeriod = $service->save($request->json()->all());
         return $this->response->item($datePeriod, new DatePeriodTransformer());
@@ -82,10 +83,10 @@ class DatePeriodController extends ApiController
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $datePeriod = DatePeriod::findOrFail($id);
         $datePeriod->delete();

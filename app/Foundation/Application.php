@@ -70,9 +70,22 @@ class Application extends BaseApplication
         if (!EnvironmentService::isInstalled()) {
             $dir = sys_get_temp_dir();
             FileHelper::createDirRecursive([$dir, 'bootstrap', 'cache']);
+            EnvironmentService::isTmp(true);
+            EnvironmentService::setTmp($dir);
         } else {
-            $dir = $this->storagePath() . '/bootstrap/cache/';
+            $dir = $this->storagePath();
         }
+        $dir .= '/bootstrap/cache/';
         return $dir . $path;
+    }
+
+    public function terminate(): void
+    {
+        parent::terminate();
+
+        // drop tmp dirs for the cache
+        if (EnvironmentService::isTmp()) {
+            FileHelper::delete(EnvironmentService::getTmp() . '/bootstrap');
+        }
     }
 }

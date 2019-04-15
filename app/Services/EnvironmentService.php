@@ -71,7 +71,6 @@ use App\Services\Installer\Params\EnvRedisPasswordParam;
 use App\Services\Installer\Params\EnvRedisPortParam;
 use App\Services\Installer\Params\EnvSessionDriverParam;
 use App\Support\Core\Configurable;
-use Illuminate\Support\Facades\App;
 
 /**
  * Core environment configuration
@@ -84,6 +83,20 @@ class EnvironmentService extends Configurable implements Environment
      * @var self
      */
     private static $instance;
+
+    /**
+     * State of the environment
+     * (true - we don't have a configuration for the environment
+     *  false - environment was configured and it's stable)
+     * @var bool
+     */
+    private static $isTmpEnv = false;
+
+    /**
+     * Temporary directory which needs to be deleted after the tmp action
+     * @var string
+     */
+    private static $tmpDir = '';
 
     /**
      * @param string $configPath
@@ -104,6 +117,36 @@ class EnvironmentService extends Configurable implements Environment
     public static function isInstalled(): bool
     {
         return self::$instance !== null;
+    }
+
+    /**
+     * Checks or sets current state of environment
+     * @param bool $state
+     * @return bool
+     */
+    public static function isTmp(bool $state = false): bool
+    {
+        if ($state) {
+            self::$isTmpEnv = true;
+        }
+
+        return self::$isTmpEnv;
+    }
+
+    /**
+     * @param string $path
+     */
+    public static function setTmp(string $path = ''): void
+    {
+        self::$tmpDir = $path;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getTmp(): string
+    {
+        return self::$tmpDir;
     }
 
     /**

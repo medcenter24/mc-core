@@ -46,7 +46,7 @@ class FileHelper
     {
         $dir = '';
         foreach ($paths as $path) {
-            $dir .= DIRECTORY_SEPARATOR . $path;
+            $dir .= DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR);
             if (!self::isDirExists($dir)) {
                 self::createDir($dir);
             }

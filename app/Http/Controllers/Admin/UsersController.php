@@ -59,7 +59,6 @@ class UsersController extends AdminController
     {
         $this->validate($request, [
             'password' => 'required',
-            'username' => 'unique:users',
             'email' => 'unique:users',
         ]);
 
@@ -77,21 +76,18 @@ class UsersController extends AdminController
         $user->email = $request->input('email');
         $user->name = $request->input('name');
 
-        if (!empty($request->input('name', ''))) {
-            $user->password = $request->input('password');
-        }
-
         $this->saveAssignments($user, $request);
 
         return redirect('admin/users/' . $user->id);
     }
 
-    public function saveAssignments(User $user, UserRequest $request)
+    public function saveAssignments(User $user, UserRequest $request): void
     {
         if ($request->has('password') && !empty($request->input('password'))) {
             $user->password = bcrypt($request->input('password'));
-            $user->save();
         }
+
+        $user->save();
 
         $user->roles()->detach();
         $user->roles()->attach($request->input('roles'));

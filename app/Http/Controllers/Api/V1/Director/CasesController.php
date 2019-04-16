@@ -58,6 +58,7 @@ use Dingo\Api\Http\Response;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 
 
@@ -192,7 +193,7 @@ class CasesController extends ApiController
      */
     private function createCaseableFromRequest(Accident $accident, Request $request): void
     {
-        $caseable = $accident->caseable_type == DoctorAccident::class
+        $caseable = $accident->caseable_type === DoctorAccident::class
             ? DoctorAccident::create(['recommendation' => '', 'investigation' => ''])
             : HospitalAccident::create();
 
@@ -315,7 +316,7 @@ class CasesController extends ApiController
      * @param CaseRequest $request
      * @param AccidentService $accidentService
      * @param PatientService $patientService
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function update(
         $id,
@@ -338,7 +339,7 @@ class CasesController extends ApiController
         $requestedAccident = $request->json('accident', false);
 
         if (!$requestedAccident['id']) {
-            \Log::error('Can not update the case: undefined request accident', [
+            Log::error('Can not update the case: undefined request accident', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
             ]);
@@ -346,7 +347,7 @@ class CasesController extends ApiController
         }
 
         if ($accident->id !== $requestedAccident['id']) {
-            \Log::error('Can not update the case: incorrect requested accident', [
+            Log::error('Can not update the case: incorrect requested accident', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
             ]);
@@ -407,7 +408,11 @@ class CasesController extends ApiController
                 if (in_array($item, $model->getDates(), true)) {
                     $model->$item = $data[$item] ? Carbon::parse($data[$item])->format('Y-m-d H:i:s') : null;
                 } else {
-                    $model->$item = $data[$item] ?: '';
+                    if (mb_strstr($item, 'id')) {
+                        $model->$item = (int)$data[$item];
+                    } else {
+                        $model->$item = $data[$item] ?: '';
+                    }
                 }
             }
         }

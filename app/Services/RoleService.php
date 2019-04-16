@@ -48,7 +48,7 @@ class RoleService
      * @param string $role
      * @return mixed
      */
-    public function hasRole(User $user = null, string $role)
+    public function hasRole(User $user = null, string $role = ''): bool
     {
         return $user ? $user->roles()->where('title', $role)->count() : false;
     }

@@ -46,10 +46,7 @@ class FormulaServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(FormulaService::class, function($app) {
-            return new FormulaService(
-                $app->make(FormulaViewService::class),
-                $app->make(FormulaResultService::class)
-            );
+            return new FormulaService();
         });
     }
 

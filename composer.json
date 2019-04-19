@@ -14,12 +14,12 @@
         "backup-manager/laravel": "dev-master",
         "barryvdh/laravel-cors": "0.11.3",
         "cmgmyr/messenger": "~2.17",
-        "dingo/api": "~2.2.2",
+        "dingo/api": "~2.2.3",
         "intervention/image": "^2.4",
         "irazasyed/telegram-bot-sdk": "3.0.*",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "~1.0",
-        "maatwebsite/excel": "~3.1.10",
+        "maatwebsite/excel": "~3.1.11",
         "mpdf/mpdf": "~8.0.0",
         "medcenter24/lib-installer": "~1.0",
         "spatie/laravel-medialibrary": "~7.6.0",
@@ -27,13 +27,15 @@
         "tymon/jwt-auth": "1.0.0-rc.4.1"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "~3.2.2",
-        "barryvdh/laravel-ide-helper": "^2.5",
+        "barryvdh/laravel-debugbar": "~3.2.3",
+        "barryvdh/laravel-ide-helper": "^2.6.2",
         "doctrine/dbal": "^2.9.2",
         "fzaninotto/faker": "~1.8",
         "mockery/mockery": "1.2.*",
         "nunomaduro/collision": "^3.0.1",
-        "phpunit/phpunit": "~7.5"
+        "phpunit/phpunit": "~7.5",
+        "nwidart/laravel-modules": "5.0.0",
+        "roave/security-advisories": "dev-master"
     },
     "autoload": {
         "classmap": [

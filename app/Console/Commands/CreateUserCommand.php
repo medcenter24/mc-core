@@ -26,7 +26,7 @@ use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
 
 /**
- * sudo -u dhv24 /usr/bin/php7.2 artisan user:add mail@mail.com login,admin passWord
+ * sudo -u www-data /usr/bin/php7.2 artisan user:add mail@mail.com login,admin passWord
  *
  * Class CreateUserCommand
  * @package App\Console\Commands

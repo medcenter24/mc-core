@@ -1,0 +1,28 @@
+{
+    "name": "$VENDOR$/extension-$LOWER_NAME$",
+    "type": "medcenter24-extension",
+    "description": "",
+    "keywords": ["medcenter24", "extension", "module", "package", "$LOWER_NAME$"],
+    "authors": [
+        {
+            "name": "$AUTHOR_NAME$",
+            "email": "$AUTHOR_EMAIL$"
+        }
+    ],
+    "extra": {
+        "medcenter24-extension-name": "$STUDLY_NAME$",
+        "laravel": {
+            "providers": [
+                "$MODULE_NAMESPACE$\\$STUDLY_NAME$\\Providers\\$STUDLY_NAME$ServiceProvider"
+            ],
+            "aliases": {
+                
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "$MODULE_NAMESPACE$\\$STUDLY_NAME$\\": ""
+        }
+    }
+}

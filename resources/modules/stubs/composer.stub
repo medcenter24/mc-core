@@ -1,6 +1,7 @@
 {
     "name": "$VENDOR$/extension-$LOWER_NAME$",
     "type": "medcenter24-extension",
+    "license": "GPL-2.0-only",
     "description": "",
     "keywords": ["medcenter24", "extension", "module", "package", "$LOWER_NAME$"],
     "authors": [

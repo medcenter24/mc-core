@@ -19,16 +19,16 @@
 if (!function_exists('getRandomAccidentStatus')) {
     /**
      * @param \Faker\Generator $faker
-     * @return \ medcenter24\mcCore\App;AccidentStatus
+     * @return \medcenter24\mcCore\App\AccidentStatus
      */
     function getRandomAccidentStatus(\Faker\Generator $faker)
     {
         $status = $faker->randomElement(AccidentStatusesTableSeeder::ACCIDENT_STATUSES);
 
-        $_status = \ medcenter24\mcCore\App;AccidentStatus::where('title', $status['title'])
+        $_status = \medcenter24\mcCore\App\AccidentStatus::where('title', $status['title'])
             ->where('type', $status['type'])
             ->first();
 
-        return $_status && $_status->id ? $_status : factory(\ medcenter24\mcCore\App;AccidentStatus::class)->create($status);
+        return $_status && $_status->id ? $_status : factory(\medcenter24\mcCore\App\AccidentStatus::class)->create($status);
     }
 }

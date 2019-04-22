@@ -37,7 +37,7 @@ class Comment extends Model
 
     public function user()
     {
-        return $this->belongsTo(' medcenter24\mcCore\App;User', 'created_by');
+        return $this->belongsTo('medcenter24\mcCore\App\User', 'created_by');
     }
 
     /**

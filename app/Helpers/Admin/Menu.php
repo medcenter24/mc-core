@@ -18,7 +18,7 @@
 
 namespace medcenter24\mcCore\App\Helpers\Admin;
 
-use \ medcenter24\mcCore\App;Helpers\Menu as AbstractMenu;
+use \medcenter24\mcCore\App\Helpers\Menu as AbstractMenu;
 
 class Menu extends AbstractMenu
 {

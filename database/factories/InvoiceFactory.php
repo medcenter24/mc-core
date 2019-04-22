@@ -18,14 +18,14 @@
 
 use Faker\Generator as Faker;
 
-$factory->define( medcenter24\mcCore\App;Invoice::class, function (Faker $faker) {
+$factory->define(medcenter24\mcCore\App\Invoice::class, function (Faker $faker) {
     return [
         'created_by' => function () {
-            return factory(\ medcenter24\mcCore\App;User::class)->create()->id;
+            return factory(\medcenter24\mcCore\App\User::class)->create()->id;
         },
         'title' => $faker->text(30),
         'payment_id' => function () {
-            return factory(\ medcenter24\mcCore\App;Payment::class)->create()->id;
+            return factory(\medcenter24\mcCore\App\Payment::class)->create()->id;
         },
         'status' => 'new',
     ];

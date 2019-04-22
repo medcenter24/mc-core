@@ -46,7 +46,7 @@ class DatePeriodInterpretationListener
      *
      * @param DatePeriodChangedEvent $event
      * @param DatePeriodInterpretationService $service
-     * @throws \ medcenter24\mcCore\App;Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function handle(DatePeriodChangedEvent $event)
     {

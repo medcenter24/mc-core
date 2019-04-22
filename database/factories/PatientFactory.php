@@ -18,7 +18,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define( medcenter24\mcCore\App;Patient::class, function (Faker $faker) {
+$factory->define(medcenter24\mcCore\App\Patient::class, function (Faker $faker) {
     return [
         'name' => $faker->toUpper($faker->firstName . ' ' . $faker->lastName),
         'address' => $faker->address,

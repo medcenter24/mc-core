@@ -42,7 +42,7 @@ class DatePeriodInterpretationService
     /**
      * @param DatePeriod $datePeriod
      * @return array
-     * @throws \ medcenter24\mcCore\App;Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function interpret(DatePeriod $datePeriod): array
     {
@@ -109,7 +109,7 @@ class DatePeriodInterpretationService
     /**
      * Updating interpreted data
      * @param DatePeriod $datePeriod
-     * @throws \ medcenter24\mcCore\App;Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function update(DatePeriod $datePeriod)
     {

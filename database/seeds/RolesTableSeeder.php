@@ -28,7 +28,7 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment('production') && \App\Role::all()->count()) {
+        if (App::environment('production') &&medcenter24\mcCore\App\Role::all()->count()) {
             return;
         }
         if (!App::environment('production')) {

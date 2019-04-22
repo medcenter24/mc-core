@@ -52,7 +52,7 @@ class AccidentsTableSeeder extends Seeder
                         ? factory(AccidentType::class)->create()
                         : AccidentType::first();
                 },
-                'accident_status_id' => \App\AccidentStatus::firstOrCreate(AccidentStatusesTableSeeder::ACCIDENT_STATUSES[0]), // new
+                'accident_status_id' =>medcenter24\mcCore\App\AccidentStatus::firstOrCreate(AccidentStatusesTableSeeder::ACCIDENT_STATUSES[0]), // new
                 'assistant_id' => function () {
                     return factory(Assistant::class)->create();
                 },

@@ -30,6 +30,7 @@ use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Patient;
 use medcenter24\mcCore\App\Payment;
 use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\AccidentTypeService;
 use medcenter24\mcCore\App\Upload;
 use medcenter24\mcCore\App\User;
 use Carbon\Carbon;
@@ -207,7 +208,7 @@ class CasesControllerUpdateActionTest extends TestCase
         $accident = factory(Accident::class)->create([
             'created_by' => $createdBy = '' . factory(User::class)->create()->id,
             'accident_type_id' => $accidentType = factory(AccidentType::class)->create([
-                'title' => \App\Services\AccidentTypeService::ALLOWED_TYPES[1],
+                'title' => AccidentTypeService::ALLOWED_TYPES[1],
             ])->id,
             'caseable_id' => $caseable->id,
             'caseable_type' => get_class($caseable),
@@ -219,7 +220,7 @@ class CasesControllerUpdateActionTest extends TestCase
         $data = [
             'accident' => [
                 'accidentTypeId' => $accidentType = factory(AccidentType::class)->create([
-                    'title' => \App\Services\AccidentTypeService::ALLOWED_TYPES[0]
+                    'title' => AccidentTypeService::ALLOWED_TYPES[0]
                 ])->id,
                 'address' => $address = 'address string',
                 'assistantId' => $assistant = factory(Assistant::class)->create()->id,

@@ -40,7 +40,7 @@ class AccessTest extends TestCase
     public function testAdmin(): void
     {
         \Roles::shouldReceive('hasRole')
-            ->times(3)
+            ->times(5)
             ->andReturnUsing(function ($user, $role) {
                 return true;
             });

@@ -59,7 +59,7 @@ class UsersController extends AdminController
     /**
      * Display the specified resource.
      *
-     * @param  \medcenter24/mcCore\TelegramUser  $telegramUser
+     * @param  \ medcenter24\mcCore\App;TelegramUser  $telegramUser
      * @return \Illuminate\Http\Response
      */
     public function show(TelegramUser $telegramUser)
@@ -70,7 +70,7 @@ class UsersController extends AdminController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \medcenter24/mcCore\TelegramUser  $telegramUser
+     * @param  \ medcenter24\mcCore\App;TelegramUser  $telegramUser
      * @return \Illuminate\Http\Response
      */
     public function edit(TelegramUser $telegramUser)
@@ -82,7 +82,7 @@ class UsersController extends AdminController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \medcenter24/mcCore\TelegramUser  $telegramUser
+     * @param  \ medcenter24\mcCore\App;TelegramUser  $telegramUser
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, TelegramUser $telegramUser)
@@ -93,7 +93,7 @@ class UsersController extends AdminController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \medcenter24/mcCore\TelegramUser  $telegramUser
+     * @param  \ medcenter24\mcCore\App;TelegramUser  $telegramUser
      * @return \Illuminate\Http\Response
      */
     public function destroy(TelegramUser $telegramUser)

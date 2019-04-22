@@ -151,7 +151,7 @@ class CaseFinanceService
      * @param string $model
      * @param $conditionProps
      * @return FormulaBuilderContract
-     * @throws \medcenter24/mcCore\Models\Formula\Exception\FormulaException
+     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
      */
     private function generateFormula(string $model, $conditionProps): FormulaBuilderContract {
         /** @var FormulaBuilder $formula */
@@ -175,7 +175,7 @@ class CaseFinanceService
      * @param Accident $accident
      * @return mixed
      * @throws InconsistentDataException
-     * @throws \medcenter24/mcCore\Models\Formula\Exception\FormulaException
+     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
      */
     public function getToDoctorFormula(Accident $accident): FormulaBuilderContract
     {
@@ -206,7 +206,7 @@ class CaseFinanceService
      * @param Accident $accident
      * @return FormulaBuilderContract
      * @throws InconsistentDataException
-     * @throws \medcenter24/mcCore\Models\Formula\Exception\FormulaException
+     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
      */
     public function getToHospitalFormula(Accident $accident): FormulaBuilderContract
     {
@@ -228,7 +228,7 @@ class CaseFinanceService
      * Payment from the assistant to the company
      * @param Accident $accident
      * @return FormulaBuilderContract
-     * @throws \medcenter24/mcCore\Models\Formula\Exception\FormulaException
+     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
      */
     public function getFromAssistantFormula(Accident $accident): FormulaBuilderContract
     {

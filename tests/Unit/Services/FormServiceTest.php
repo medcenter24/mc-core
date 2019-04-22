@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services;
+namespace medcenter24\mcCore\Tests\Unit\Services;
 
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Doctor;
@@ -27,7 +27,7 @@ use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Patient;
 use medcenter24\mcCore\App\Services\FormService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\TestCase;
 
 class FormServiceTest extends TestCase
 {

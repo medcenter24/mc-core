@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services\Formula;
+namespace medcenter24\mcCore\Tests\Unit\Services\Formula;
 
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use medcenter24\mcCore\App\FinanceCondition;
 use medcenter24\mcCore\App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
 use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use Illuminate\Support\Collection;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\TestCase;
 
 class FormulaServiceTest extends TestCase
 {

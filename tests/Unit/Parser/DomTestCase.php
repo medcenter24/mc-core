@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Parser;
+namespace medcenter24\mcCore\Tests\Unit\Parser;
 
 
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\TestCase;
 
 /**
  * Provide default DOMDocument

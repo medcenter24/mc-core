@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services\Finance;
+namespace medcenter24\mcCore\Tests\Unit\Services\Finance;
 
 
 use medcenter24\mcCore\App\Accident;
@@ -33,7 +33,7 @@ use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use Illuminate\Support\Collection;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\TestCase;
 
 class CaseFinanceServiceTest extends TestCase
 {
@@ -175,8 +175,8 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * Case without anything should return 0 for all valuable variables
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testEmptyHospitalCase(): void
     {
@@ -193,10 +193,10 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @expectedException \App\Exceptions\InconsistentDataException
+     * @expectedException \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      * @expectedExceptionMessage Hospital Case only
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testWrongHospitalCaseException(): void
     {
@@ -206,10 +206,10 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @expectedException \App\Exceptions\InconsistentDataException
+     * @expectedException \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      * @expectedExceptionMessage DoctorAccident only
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testWrongDoctorCaseException(): void
     {
@@ -220,7 +220,7 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * When the payment already stored (when we had static digit in the DB) - Doesn't need to calculate again
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testStoredFromAssistantPayment(): void
     {
@@ -243,7 +243,7 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * This is payment that needs to be calculated according to the conditions
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testCalculateFromAssistantEmptyPayment(): void
     {
@@ -258,7 +258,7 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * This is payment that needs to be calculated according to the conditions
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testCalculateFromAssistantPaymentWithCondition(): void
     {
@@ -292,8 +292,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testCalculateToDoctorPayment(): void
     {
@@ -316,8 +316,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testCalculateToDoctorPaymentWithCondition(): void
     {
@@ -343,8 +343,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testStoredToDoctorPayment(): void
     {
@@ -372,8 +372,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testCalculateToHospitalPayment(): void
     {
@@ -405,8 +405,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testCalculateToHospitalPaymentWithCondition(): void
     {
@@ -439,8 +439,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testStoredToHospitalPayment(): void
     {

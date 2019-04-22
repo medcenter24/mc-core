@@ -25,34 +25,17 @@ use RecursiveRegexIterator;
 use RegexIterator;
 use medcenter24\mcCore\Tests\SamplePath;
 use medcenter24\mcCore\Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class SimpleDocxReaderTest extends TestCase
 {
     use SamplePath;
 
     /**
-     * Path to the folder with docx examples
-     * @var string
-     */
-    // private $samplePath = '';
-
-    /**
      * @var SimpleDocxReaderService
      */
     private $service;
 
-    /*protected function getSamplePath():
-    {
-        if (!$this->samplePath) {
-            $this->samplePath = __DIR__ . DIRECTORY_SEPARATOR . 'samples';
-        }
-
-        return $this->samplePath;
-    }*/
-
-    protected function getService()
+    protected function getService(): SimpleDocxReaderService
     {
         if (!$this->service){
             $this->service = new SimpleDocxReaderService();
@@ -75,8 +58,9 @@ class SimpleDocxReaderTest extends TestCase
     /**
      * Array with files for test
      * @return array
+     * @throws \ReflectionException
      */
-    public function getSamples()
+    public function getSamples(): array
     {
         $directory = new RecursiveDirectoryIterator($this->getSamplePath());
         $iterator = new RecursiveIteratorIterator($directory);
@@ -92,16 +76,11 @@ class SimpleDocxReaderTest extends TestCase
     /**
      * test file iterator
      */
-    public function testIterator()
+    public function testIterator(): void
     {
         $directory = new RecursiveDirectoryIterator($this->getSamplePath());
         $iterator = new RecursiveIteratorIterator($directory);
         $regEx = new RegexIterator($iterator, '/^.+\.docx$/ui', RecursiveRegexIterator::ALL_MATCHES);
-        $cnt = 0;
-        foreach ($regEx as $item) {
-            $cnt++;
-        }
-
-        self::assertEquals(3, $cnt, 'Files counted correctly');
+        self::assertCount(3, $regEx, 'Files counted correctly');
     }
 }

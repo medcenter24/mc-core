@@ -16,18 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\Tests\Unit\fakes;
-
-
-use medcenter24\mcCore\App\HospitalAccident;
-
-class HospitalAccidentFake implements Fake
-{
-    public static function make(array $params = [], array $additionalParams = [])
-    {
-        $hospitalAccident = factory(HospitalAccident::class)->make($params);
-        $hospital = HospitalFake::make($additionalParams['hospital']);
-        $hospitalAccident->hospital = $hospital;
-        return $hospitalAccident;
-    }
-}
+return [
+    'env' => __DIR__ . '/.env.testing',
+    'data' => __DIR__ . '/storage',
+];

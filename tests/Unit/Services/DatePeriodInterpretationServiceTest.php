@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services;
+namespace medcenter24\mcCore\Tests\Unit\Services;
 
 
 use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodInterpretationService;
 use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
-use Tests\Unit\fakes\DatePeriodFake;
+use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Unit\fakes\DatePeriodFake;
 
 class DatePeriodInterpretationServiceTest extends TestCase
 {

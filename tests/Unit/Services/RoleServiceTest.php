@@ -16,15 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services;
+namespace medcenter24\mcCore\Tests\Unit\Services;
 
 use medcenter24\mcCore\App\Role;
 use medcenter24\mcCore\App\Services\RoleService;
 use medcenter24\mcCore\App\User;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use medcenter24\mcCore\Tests\TestCase;
 
 class RoleServiceTest extends TestCase
 {

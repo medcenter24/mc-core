@@ -31,7 +31,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment('production') && \App\User::all()->count()) {
+        if (App::environment('production') &&medcenter24\mcCore\App\User::all()->count()) {
             return;
         } elseif (!App::environment('production')) {
             User::truncate();

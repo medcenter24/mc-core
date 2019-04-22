@@ -18,7 +18,6 @@
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
-use medcenter24\mcCore\App\Services\CaseImporterService;
 use medcenter24\mcCore\App\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -26,6 +25,7 @@ use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
 use medcenter24\mcCore\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use medcenter24\McDhv24\Services\Import\CaseImporterService;
 
 class CasesImportTest extends TestCase
 {

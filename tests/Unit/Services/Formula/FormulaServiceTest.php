@@ -50,7 +50,7 @@ class FormulaServiceTest extends TestCase
      * in the CaseFinanceService (or somewhere higher)
      *
      * @return array
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throwsmedcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function dataProvider()
     {

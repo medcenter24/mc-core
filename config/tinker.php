@@ -45,7 +45,7 @@ return [
     */
 
     'dont_alias' => [
-        'App\Nova',
+        'medcenter24\mcCore\App\Nova',
     ],
 
 ];

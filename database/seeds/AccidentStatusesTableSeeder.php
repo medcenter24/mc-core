@@ -78,7 +78,7 @@ class AccidentStatusesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment('production') && \App\AccidentStatus::all()->count()) {
+        if (App::environment('production') &&medcenter24\mcCore\App\AccidentStatus::all()->count()) {
             return;
         }
         if (!App::environment('production')) {

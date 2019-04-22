@@ -16,6 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use medcenter24\mcCore\App\Services\Messenger\LocMessengerServiceProvider;
+
 $app = [
 
     /*
@@ -185,7 +187,7 @@ $app = [
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         \Maatwebsite\Excel\ExcelServiceProvider::class,
         // I need this to have possibility to use vendor path in the other direction than default
-        \App\Services\Messenger\LocMessengerServiceProvider::class,
+        LocMessengerServiceProvider::class,
         BackupManager\Laravel\Laravel55ServiceProvider::class,
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
         // \medcenter24\mcCore\App\Providers\CaseFinanceProvider::class,

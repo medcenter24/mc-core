@@ -42,11 +42,7 @@
             "database"
         ],
         "psr-4": {
-            "medcenter24\\mcCore\\App\\": "app"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
+            "medcenter24\\mcCore\\App\\": "app",
             "medcenter24\\mcCore\\Tests\\": "tests"
         }
     },

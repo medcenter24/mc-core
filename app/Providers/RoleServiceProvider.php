@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\Providers;
+namespace medcenter24\mcCore\App\Providers;
 
 use medcenter24\mcCore\App\Services\RoleService;
 use Illuminate\Support\ServiceProvider;

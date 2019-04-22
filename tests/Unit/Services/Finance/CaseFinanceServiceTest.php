@@ -155,8 +155,8 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * Case without anything should return 0 for all valuable variables
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throwsmedcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throwsmedcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testEmptyDoctorCase(): void
     {

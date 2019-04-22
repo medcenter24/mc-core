@@ -92,7 +92,7 @@ class DatePeriodInterpretationServiceTest extends TestCase
      *
      * @param array $period
      * @param array $expected
-     * @throws \App\Exceptions\InconsistentDataException
+     * @throwsmedcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function testInterpreter(array $period, array $expected)
     {

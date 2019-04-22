@@ -59,7 +59,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     [
                         'id' => 8,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '1',
                         'mode' => 'step',
                         'accident_status_id' => '1',
@@ -68,7 +68,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 9,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '2',
                         'mode' => 'step',
                         'accident_status_id' => '8',
@@ -77,7 +77,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 10,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '3',
                         'mode' => 'step',
                         'accident_status_id' => '9',
@@ -86,7 +86,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 11,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '4',
                         'mode' => 'step',
                         'accident_status_id' => '10',
@@ -95,7 +95,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 12,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '5',
                         'mode' => 'step',
                         'accident_status_id' => '11',
@@ -104,7 +104,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 13,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '6',
                         'mode' => 'step',
                         'accident_status_id' => '12',
@@ -113,7 +113,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 14,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '7',
                         'mode' => 'step',
                         'accident_status_id' => '13',
@@ -122,7 +122,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 15,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '8',
                         'mode' => 'step',
                         'accident_status_id' => '7',
@@ -146,7 +146,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     [
                         'id' => 8,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '1',
                         'mode' => 'step',
                         'accident_status_id' => '1',
@@ -155,7 +155,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 9,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '2',
                         'mode' => 'step',
                         'accident_status_id' => '8',
@@ -164,7 +164,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 10,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '3',
                         'mode' => 'step',
                         'accident_status_id' => '9',
@@ -173,7 +173,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 11,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '4',
                         'mode' => 'step',
                         'accident_status_id' => '10',
@@ -182,7 +182,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 12,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '5',
                         'mode' => 'step',
                         'accident_status_id' => '11',
@@ -191,7 +191,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 13,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '6',
                         'mode' => 'step',
                         'accident_status_id' => '12',
@@ -200,7 +200,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 14,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '7',
                         'mode' => 'step',
                         'accident_status_id' => '13',
@@ -209,7 +209,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 15,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '8',
                         'mode' => 'step',
                         'accident_status_id' => '7',
@@ -248,7 +248,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     [
                         'id' => 8,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '1',
                         'mode' => 'step',
                         'accident_status_id' => '1',
@@ -257,7 +257,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 9,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '2',
                         'mode' => 'step',
                         'accident_status_id' => '8',
@@ -266,7 +266,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 10,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '3',
                         'mode' => 'step',
                         'accident_status_id' => '9',
@@ -275,7 +275,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 11,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '4',
                         'mode' => 'step',
                         'accident_status_id' => '10',
@@ -284,7 +284,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 12,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '5',
                         'mode' => 'step',
                         'accident_status_id' => '11',
@@ -293,7 +293,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 13,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '6',
                         'mode' => 'step',
                         'accident_status_id' => '12',
@@ -302,7 +302,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 14,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '7',
                         'mode' => 'step',
                         'accident_status_id' => '13',
@@ -311,7 +311,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 15,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '8',
                         'mode' => 'step',
                         'accident_status_id' => '7',
@@ -340,7 +340,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     [
                         'id' => 8,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '1',
                         'mode' => 'step',
                         'accident_status_id' => '1',
@@ -349,7 +349,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 9,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '2',
                         'mode' => 'step',
                         'accident_status_id' => '8',
@@ -358,7 +358,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 10,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '3',
                         'mode' => 'step',
                         'accident_status_id' => '9',
@@ -367,7 +367,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 11,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '4',
                         'mode' => 'step',
                         'accident_status_id' => '10',
@@ -376,7 +376,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 12,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '5',
                         'mode' => 'step',
                         'accident_status_id' => '11',
@@ -385,7 +385,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 13,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '6',
                         'mode' => 'step',
                         'accident_status_id' => '12',
@@ -394,7 +394,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 14,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '7',
                         'mode' => 'step',
                         'accident_status_id' => '13',
@@ -403,7 +403,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 15,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '8',
                         'mode' => 'step',
                         'accident_status_id' => '7',
@@ -442,7 +442,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     [
                         'id' => 8,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '1',
                         'mode' => 'step',
                         'accident_status_id' => '1',
@@ -451,7 +451,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 9,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '2',
                         'mode' => 'step',
                         'accident_status_id' => '8',
@@ -460,7 +460,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 10,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '3',
                         'mode' => 'step',
                         'accident_status_id' => '9',
@@ -469,7 +469,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 11,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '4',
                         'mode' => 'step',
                         'accident_status_id' => '10',
@@ -478,7 +478,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 12,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '5',
                         'mode' => 'step',
                         'accident_status_id' => '11',
@@ -487,7 +487,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 13,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '6',
                         'mode' => 'step',
                         'accident_status_id' => '12',
@@ -496,7 +496,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 14,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '7',
                         'mode' => 'step',
                         'accident_status_id' => '13',
@@ -505,7 +505,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 15,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                         'order' => '8',
                         'mode' => 'step',
                         'accident_status_id' => '7',
@@ -527,7 +527,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'data' => [
                 [
                     'id' => 1,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '1',
                     'mode' => 'step',
                     'accident_status_id' => '1',
@@ -536,7 +536,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 2,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '2',
                     'mode' => 'step',
                     'accident_status_id' => '2',
@@ -545,7 +545,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 3,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '3',
                     'mode' => 'step',
                     'accident_status_id' => '3',
@@ -554,7 +554,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 4,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '4',
                     'mode' => 'step',
                     'accident_status_id' => '4',
@@ -563,7 +563,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 5,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '5',
                     'mode' => 'step',
                     'accident_status_id' => '5',
@@ -572,7 +572,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 7,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '7',
                     'mode' => 'step',
                     'accident_status_id' => '7',
@@ -611,7 +611,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'data' => [
                 [
                     'id' => 1,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '1',
                     'mode' => 'step',
                     'accident_status_id' => '1',
@@ -620,7 +620,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 2,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '2',
                     'mode' => 'step',
                     'accident_status_id' => '2',
@@ -629,7 +629,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 3,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '3',
                     'mode' => 'step',
                     'accident_status_id' => '3',
@@ -638,7 +638,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 4,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '4',
                     'mode' => 'step',
                     'accident_status_id' => '4',
@@ -647,7 +647,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 5,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '5',
                     'mode' => 'step',
                     'accident_status_id' => '5',
@@ -656,7 +656,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 7,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '7',
                     'mode' => 'step',
                     'accident_status_id' => '7',
@@ -691,7 +691,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'data' => [
                 [
                     'id' => 1,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '1',
                     'mode' => 'step',
                     'accident_status_id' => '1',
@@ -700,7 +700,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 6,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '6',
                     'mode' => 'skip:doctor',
                     'accident_status_id' => '6',
@@ -709,7 +709,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 7,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '7',
                     'mode' => 'step',
                     'accident_status_id' => '7',
@@ -747,7 +747,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'data' => [
                 [
                     'id' => 1,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '1',
                     'mode' => 'step',
                     'accident_status_id' => '1',
@@ -756,7 +756,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 6,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '6',
                     'mode' => 'skip:doctor',
                     'accident_status_id' => '6',
@@ -765,7 +765,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 7,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                     'order' => '7',
                     'mode' => 'step',
                     'accident_status_id' => '7',

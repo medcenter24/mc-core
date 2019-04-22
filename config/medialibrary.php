@@ -58,7 +58,7 @@ return [
      *
      * generator turned off because for now I don't need any optimizations
      */
-    // 'custom_path_generator_class' => \App\Helpers\MediaLibrary\DocPathGenerator::class,
+    // 'custom_path_generator_class' =>medcenter24\mcCore\App\Helpers\MediaLibrary\DocPathGenerator::class,
 
     's3' => [
         /*

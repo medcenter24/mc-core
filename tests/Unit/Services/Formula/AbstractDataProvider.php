@@ -26,7 +26,7 @@ class AbstractDataProvider extends TestCase
 {
     /**
      * @return array
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throwsmedcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function dataProviders(): array
     {

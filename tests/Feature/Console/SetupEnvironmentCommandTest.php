@@ -41,8 +41,8 @@ class SetupEnvironmentCommandTest extends TestCase
     }
 
     /**
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Exceptions\NotImplementedException
+     * @throwsmedcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throwsmedcenter24\mcCore\App\Exceptions\NotImplementedException
      *
      * @expectedException \ReflectionException
      * @expectedExceptionMessage Class path.storage does not exist

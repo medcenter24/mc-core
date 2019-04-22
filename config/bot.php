@@ -21,7 +21,7 @@ return [
         'default' => 'telegram',
         'telegram' => [
             'active' => true,
-            'class' => \App\Services\Bot\Drivers\TelegramBot::class,
+            'class' =>medcenter24\mcCore\App\Services\Bot\Drivers\TelegramBot::class,
             'config' => config('telegram', []),
         ],
         'slack' => [

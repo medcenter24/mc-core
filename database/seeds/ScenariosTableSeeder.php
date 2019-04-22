@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\AccidentStatus;
-use App\DoctorAccident;
-use App\HospitalAccident;
-use App\Scenario;
-use App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Scenario;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use Illuminate\Database\Seeder;
 
 class ScenariosTableSeeder extends Seeder

@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
-use App\Helpers\MediaHelper;
-use App\Services\LogoService;
-use App\User;
+use medcenter24\mcCore\App\Helpers\MediaHelper;
+use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\User;
 use Cmgmyr\Messenger\Models\Message;
 use League\Fractal\TransformerAbstract;
 

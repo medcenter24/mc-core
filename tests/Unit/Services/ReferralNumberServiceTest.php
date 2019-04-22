@@ -18,10 +18,10 @@
 
 namespace Tests\Unit\Services;
 
-use App\DoctorAccident;
-use App\HospitalAccident;
-use App\Services\AccidentService;
-use App\Services\ReferralNumberService;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\ReferralNumberService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;

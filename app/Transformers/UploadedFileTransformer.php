@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
-use App\Upload;
+use medcenter24\mcCore\App\Upload;
 use League\Fractal\TransformerAbstract;
 
 class UploadedFileTransformer extends TransformerAbstract

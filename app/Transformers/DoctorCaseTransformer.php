@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
-use App\DoctorAccident;
+use medcenter24\mcCore\App\DoctorAccident;
 use InvalidArgumentException;
 use League\Fractal\TransformerAbstract;
 

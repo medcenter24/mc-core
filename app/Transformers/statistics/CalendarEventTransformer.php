@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers\statistics;
+namespace medcenter24\mcCore\App\Transformers\statistics;
 
 
-use App\Accident;
+use medcenter24\mcCore\App\Accident;
 use League\Fractal\TransformerAbstract;
 
 class CalendarEventTransformer extends TransformerAbstract

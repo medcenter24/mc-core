@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director\Cases;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases;
 
 
-use App\Accident;
-use App\Http\Controllers\ApiController;
-use App\Services\CaseServices\Finance\CaseFinanceService;
-use App\Services\CaseServices\Finance\CaseFinanceViewService;
-use App\Transformers\CaseFinanceTransformer;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
+use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceViewService;
+use medcenter24\mcCore\App\Transformers\CaseFinanceTransformer;
 use Illuminate\Http\Request;
 use Dingo\Api\Http\Response;
 
@@ -34,8 +34,8 @@ class CaseFinanceController extends ApiController
      * @param int $id
      * @param CaseFinanceViewService $caseFinanceViewService
      * @return Response
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @throws \Throwable
      */
     public function show(Request $request, int $id, CaseFinanceViewService $caseFinanceViewService): Response
@@ -56,8 +56,8 @@ class CaseFinanceController extends ApiController
      * @param Request $request
      * @param CaseFinanceViewService $caseFinanceViewService
      * @return Response
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @throws \Throwable
      */
     public function save(
@@ -78,8 +78,8 @@ class CaseFinanceController extends ApiController
      * @param Accident $accident
      * @param CaseFinanceViewService $caseFinanceViewService
      * @return Response
-     * @throws \App\Exceptions\InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @throws \Throwable
      */
     private function getResponse($types, Accident $accident, CaseFinanceViewService $caseFinanceViewService): Response

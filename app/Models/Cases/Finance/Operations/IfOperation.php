@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Cases\Finance\Operations;
+namespace medcenter24\mcCore\App\Models\Cases\Finance\Operations;
 
 
 class IfOperation

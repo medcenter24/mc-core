@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\FinanceCondition;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\FinanceRequest;
-use App\Services\CaseServices\Finance\CaseFinanceService;
-use App\Transformers\FinanceConditionTransformer;
+use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\FinanceRequest;
+use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
+use medcenter24\mcCore\App\Transformers\FinanceConditionTransformer;
 use Dingo\Api\Http\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;

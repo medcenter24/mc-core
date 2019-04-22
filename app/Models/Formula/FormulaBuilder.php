@@ -16,23 +16,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Formula;
+namespace medcenter24\mcCore\App\Models\Formula;
 
 
-use App\Contract\Formula\FormulaBuilder as FormulaBuilderContract;
-use App\Models\Formula\Operations\Add;
-use App\Models\Formula\Operations\Div;
-use App\Models\Formula\Operations\Mul;
-use App\Models\Formula\Operations\Percent;
-use App\Models\Formula\Operations\Sub;
-use App\Models\Formula\Variables\Decimal;
-use App\Models\Formula\Variables\Integer as VarInt;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder as FormulaBuilderContract;
+use medcenter24\mcCore\App\Models\Formula\Operations\Add;
+use medcenter24\mcCore\App\Models\Formula\Operations\Div;
+use medcenter24\mcCore\App\Models\Formula\Operations\Mul;
+use medcenter24\mcCore\App\Models\Formula\Operations\Percent;
+use medcenter24\mcCore\App\Models\Formula\Operations\Sub;
+use medcenter24\mcCore\App\Models\Formula\Variables\Decimal;
+use medcenter24\mcCore\App\Models\Formula\Variables\Integer as VarInt;
 use Illuminate\Support\Collection;
 
 /**
  * Generates mathematical formulas and allows to previews and execute them
  * Class Formula
- * @package App\Models\Formula
+ * @package medcenter24\mcCore\App\Models\Formula
  */
 class FormulaBuilder implements FormulaBuilderContract
 {

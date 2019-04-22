@@ -16,17 +16,17 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1;
 
 
-use App\Company;
-use App\Helpers\MediaHelper;
-use App\Http\Controllers\ApiController;
-use App\Services\LogoService;
-use App\Services\RoleService;
-use App\Transformers\CompanyTransformer;
-use App\Transformers\UserTransformer;
-use App\User;
+use medcenter24\mcCore\App\Company;
+use medcenter24\mcCore\App\Helpers\MediaHelper;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Transformers\CompanyTransformer;
+use medcenter24\mcCore\App\Transformers\UserTransformer;
+use medcenter24\mcCore\App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Log;

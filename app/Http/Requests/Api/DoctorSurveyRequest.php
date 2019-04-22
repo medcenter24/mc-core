@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Requests\Api;
+namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use App\Role;
+use medcenter24\mcCore\App\Role;
 
 class DoctorSurveyRequest extends JsonRequest
 {

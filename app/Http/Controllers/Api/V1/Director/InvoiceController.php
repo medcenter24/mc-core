@@ -16,20 +16,20 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 
-use App\FinanceCurrency;
-use App\Form;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\InvoiceRequest;
-use App\Invoice;
-use App\Payment;
-use App\Services\CurrencyService;
-use App\Transformers\FormTransformer;
-use App\Transformers\InvoiceTransformer;
-use App\Transformers\UploadedFileTransformer;
-use App\Upload;
+use medcenter24\mcCore\App\FinanceCurrency;
+use medcenter24\mcCore\App\Form;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\InvoiceRequest;
+use medcenter24\mcCore\App\Invoice;
+use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Services\CurrencyService;
+use medcenter24\mcCore\App\Transformers\FormTransformer;
+use medcenter24\mcCore\App\Transformers\InvoiceTransformer;
+use medcenter24\mcCore\App\Transformers\UploadedFileTransformer;
+use medcenter24\mcCore\App\Upload;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 

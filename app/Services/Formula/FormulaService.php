@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Formula;
+namespace medcenter24\mcCore\App\Services\Formula;
 
 
-use App\Contract\Formula\FormulaBuilder as FormulaBuilderInterface;
-use App\Exceptions\NotImplementedException;
-use App\FinanceCondition;
-use App\Models\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder as FormulaBuilderInterface;
+use medcenter24\mcCore\App\Exceptions\NotImplementedException;
+use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\Models\Formula\FormulaBuilder;
 use Illuminate\Support\Collection;
 
 class FormulaService
@@ -62,7 +62,7 @@ class FormulaService
      * @param FinanceCondition $condition
      * @param FormulaBuilderInterface $builder
      * @throws NotImplementedException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     private function currencyOp(FinanceCondition $condition, FormulaBuilderInterface $builder): void
     {

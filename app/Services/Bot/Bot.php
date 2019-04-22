@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Bot;
+namespace medcenter24\mcCore\App\Services\Bot;
 
 /**
  * Defines bot interface and things that it should do
  * Interface Bot
- * @package App\Services\Bot
+ * @package medcenter24\mcCore\App\Services\Bot
  */
 interface Bot
 {

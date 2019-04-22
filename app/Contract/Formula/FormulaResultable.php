@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Contract\Formula;
+namespace medcenter24\mcCore\App\Contract\Formula;
 
 
 interface FormulaResultable

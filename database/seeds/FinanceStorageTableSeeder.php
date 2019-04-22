@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\FinanceStorage;
+use medcenter24\mcCore\App\FinanceStorage;
 use Illuminate\Database\Seeder;
 
 

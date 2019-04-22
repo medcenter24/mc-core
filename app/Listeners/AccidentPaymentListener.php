@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Listeners;
+namespace medcenter24\mcCore\App\Listeners;
 
 
-use App\Events\AccidentPaymentChangedEvent;
+use medcenter24\mcCore\App\Events\AccidentPaymentChangedEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

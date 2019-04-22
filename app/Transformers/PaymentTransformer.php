@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
-use App\Payment;
+use medcenter24\mcCore\App\Payment;
 use League\Fractal\TransformerAbstract;
 
 class PaymentTransformer extends TransformerAbstract

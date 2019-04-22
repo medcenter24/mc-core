@@ -18,9 +18,9 @@
 
 namespace Tests\Unit\Services;
 
-use App\Role;
-use App\Services\RoleService;
-use App\User;
+use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;

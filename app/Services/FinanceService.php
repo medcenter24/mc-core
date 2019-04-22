@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\FinanceCurrency;
-use App\Payment;
+use medcenter24\mcCore\App\FinanceCurrency;
+use medcenter24\mcCore\App\Payment;
 
 class FinanceService
 {

@@ -16,17 +16,17 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
-use App\Accident;
-use App\DoctorAccident;
-use App\HospitalAccident;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\HospitalAccident;
 use Carbon\Carbon;
 
 /**
  * Generator of the referral numbers for the accidents
  * Class ReferralNumberService
- * @package App\Services
+ * @package medcenter24\mcCore\App\Services
  */
 class ReferralNumberService
 {

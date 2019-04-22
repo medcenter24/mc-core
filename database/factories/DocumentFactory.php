@@ -19,7 +19,7 @@
 use medcenter24\mcCore\App\User;
 use Faker\Generator as Faker;
 
-$factory->define(medcenter24/mcCore\Document::class, function (Faker $faker) {
+$factory->define( medcenter24\mcCore\App;Document::class, function (Faker $faker) {
     return [
         'created_by' => function () {
             return factory(User::class)->create()->id;

@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'medcenter24/mcCore\Model' => 'medcenter24/mcCore\Policies\ModelPolicy',
+        ' medcenter24\mcCore\App;Model' => ' medcenter24\mcCore\App;Policies\ModelPolicy',
     ];
 
     /**

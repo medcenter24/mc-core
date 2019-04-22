@@ -25,7 +25,7 @@ interface Result
      * Calculate and get result
      * @param FormulaBuilder $formulaBuilder
      * @return int|float
-     * @throws \medcenter24/mcCore\Models\Formula\Exception\FormulaException
+     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
      */
     public function calculate(FormulaBuilder $formulaBuilder);
 }

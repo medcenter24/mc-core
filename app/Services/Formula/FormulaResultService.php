@@ -30,7 +30,7 @@ class FormulaResultService implements Result
      * Calculate and get result
      * @param FormulaBuilder $formula
      * @return int|float
-     * @throws \medcenter24/mcCore\Models\Formula\Exception\FormulaException
+     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
      */
     public function calculate(FormulaBuilder $formula)
     {

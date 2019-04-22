@@ -46,7 +46,7 @@ return [
     ],
 
     'stripe' => [
-        'model' => App\User::class,
+        'model' => medcenter24\mcCore\App\User::class,
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],

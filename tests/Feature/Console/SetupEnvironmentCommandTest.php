@@ -16,16 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Console;
+namespace medcenter24\mcCore\Tests\Feature\Console;
 
 
-use App\Contract\General\Environment;
-use App\Helpers\FileHelper;
-use App\Services\EnvironmentService;
-use App\Services\Installer\InstallerService;
+use medcenter24\mcCore\App\Contract\General\Environment;
+use medcenter24\mcCore\App\Helpers\FileHelper;
+use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Installer\InstallerService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\SamplePath;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\SamplePath;
+use medcenter24\mcCore\Tests\TestCase;
 
 class SetupEnvironmentCommandTest extends TestCase
 {

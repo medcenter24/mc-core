@@ -16,23 +16,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director\Cases\CaseController;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
-use App\Accident;
-use App\Assistant;
-use App\City;
-use App\Doctor;
-use App\FinanceCondition;
-use App\FinanceCurrency;
-use App\FinanceStorage;
-use App\Hospital;
-use App\HospitalAccident;
-use App\Invoice;
-use App\Payment;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\FinanceCurrency;
+use medcenter24\mcCore\App\FinanceStorage;
+use medcenter24\mcCore\App\Hospital;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Invoice;
+use medcenter24\mcCore\App\Payment;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
 
 class CaseControllerFinanceActionTest extends TestCase
 {

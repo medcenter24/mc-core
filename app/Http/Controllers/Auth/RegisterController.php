@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Auth;
+namespace medcenter24\mcCore\App\Http\Controllers\Auth;
 
-use App\User;
-use App\Http\Controllers\Controller;
+use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;

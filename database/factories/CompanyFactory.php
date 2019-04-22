@@ -18,7 +18,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(App\Company::class, function (Faker $faker) {
+$factory->define(medcenter24\mcCore\App\Company::class, function (Faker $faker) {
     return [
         'title' => $faker->company,
     ];

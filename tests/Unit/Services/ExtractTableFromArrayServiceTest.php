@@ -18,7 +18,7 @@
 
 namespace Tests\Unit\Services;
 
-use App\Services\ExtractTableFromArrayService;
+use medcenter24\mcCore\App\Services\ExtractTableFromArrayService;
 use Tests\TestCase;
 
 class ExtractTableFromArrayServiceTest extends TestCase

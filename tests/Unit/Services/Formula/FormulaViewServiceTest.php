@@ -18,9 +18,9 @@
 
 namespace Tests\Unit\Services\Formula;
 
-use App\Contract\Formula\FormulaBuilder;
-use App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
-use App\Services\Formula\FormulaViewService;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
+use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
 
 class FormulaViewServiceTest extends AbstractDataProvider
 {

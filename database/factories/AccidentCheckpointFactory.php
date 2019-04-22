@@ -18,7 +18,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(App\AccidentCheckpoint::class, function (Faker $faker) {
+$factory->define(medcenter24\mcCore\App\AccidentCheckpoint::class, function (Faker $faker) {
     return [
         'title' => $faker->title,
         'description' => $faker->text(),

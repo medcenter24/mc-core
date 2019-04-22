@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Formula\Exception;
+namespace medcenter24\mcCore\App\Models\Formula\Exception;
 
 
 class FormulaException extends \Exception

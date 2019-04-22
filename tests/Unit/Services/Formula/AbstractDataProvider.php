@@ -19,7 +19,7 @@
 namespace Tests\Unit\Services\Formula;
 
 
-use App\Models\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\Models\Formula\FormulaBuilder;
 use Tests\TestCase;
 
 class AbstractDataProvider extends TestCase

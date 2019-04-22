@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Events;
+namespace medcenter24\mcCore\App\Events;
 
 
-use App\Accident;
-use App\Payment;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Payment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;

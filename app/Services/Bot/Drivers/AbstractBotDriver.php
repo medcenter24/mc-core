@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Bot\Drivers;
+namespace medcenter24\mcCore\App\Services\Bot\Drivers;
 
 
-use App\Services\Bot\Bot;
+use medcenter24\mcCore\App\Services\Bot\Bot;
 
 abstract class AbstractBotDriver implements Bot
 {

@@ -16,15 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\UserStore;
-use App\Http\Requests\Api\UserUpdate;
-use App\Role;
-use App\Services\LogoService;
-use App\Transformers\UserTransformer;
-use App\User;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\UserStore;
+use medcenter24\mcCore\App\Http\Requests\Api\UserUpdate;
+use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\Transformers\UserTransformer;
+use medcenter24\mcCore\App\User;
 use Hash;
 use Illuminate\Database\Eloquent\Builder;
 use League\Fractal\TransformerAbstract;

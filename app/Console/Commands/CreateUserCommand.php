@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Console\Commands;
+namespace medcenter24\mcCore\App\Console\Commands;
 
-use App\Role;
-use App\Services\RoleService;
-use App\Services\UserService;
-use App\User;
+use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Services\UserService;
+use medcenter24\mcCore\App\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
 
@@ -29,7 +29,7 @@ use Illuminate\Database\QueryException;
  * sudo -u www-data /usr/bin/php7.2 artisan user:add mail@mail.com login,admin passWord
  *
  * Class CreateUserCommand
- * @package App\Console\Commands
+ * @package medcenter24\mcCore\App\Console\Commands
  */
 class CreateUserCommand extends Command
 {

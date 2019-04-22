@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
 
-use App\Accident;
-use App\Document;
-use App\User;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Document;
+use medcenter24\mcCore\App\User;
 use Illuminate\Support\Collection;
 
 class DocumentService

@@ -27,9 +27,9 @@
 |
 */
 
-use App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\EnvironmentService;
 
-$app = new App\Foundation\Application(
+$app = new medcenter24\mcCore\App\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
@@ -46,17 +46,17 @@ $app = new App\Foundation\Application(
 
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
-    App\Http\Kernel::class
+    medcenter24\mcCore\App\Http\Kernel::class
 );
 
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
-    App\Console\Kernel::class
+    medcenter24\mcCore\App\Console\Kernel::class
 );
 
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
-    App\Exceptions\Handler::class
+    medcenter24\mcCore\App\Exceptions\Handler::class
 );
 
 /*

@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Support\Core;
+namespace medcenter24\mcCore\App\Support\Core;
 
 /**
  * Make things more configurable
  *
  * Class Configurable
- * @package App\Services
+ * @package medcenter24\mcCore\App\Services
  */
 abstract class Configurable implements ConfigurableInterface
 {

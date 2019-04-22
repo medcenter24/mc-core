@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\HospitalAccident;
-use App\Invoice;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Invoice;
 
 class HospitalAccidentService
 {

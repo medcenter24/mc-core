@@ -16,8 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\City;
-use App\Doctor;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\Doctor;
 use Faker\Generator as Faker;
 
 $factory->define(Doctor::class, function (Faker $faker) {

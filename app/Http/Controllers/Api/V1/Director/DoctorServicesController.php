@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\DoctorService;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\DoctorServiceRequest;
-use App\Transformers\DoctorServiceTransformer;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\DoctorServiceRequest;
+use medcenter24\mcCore\App\Transformers\DoctorServiceTransformer;
 use League\Fractal\TransformerAbstract;
 
 class DoctorServicesController extends ApiController

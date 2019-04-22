@@ -18,7 +18,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(medcenter24/mcCore\AccidentStatusHistory::class, function (Faker $faker) {
+$factory->define( medcenter24\mcCore\App;AccidentStatusHistory::class, function (Faker $faker) {
     return [
         'commentary' => $faker->text(20),
         'accident_status_id' => function () use ($faker) {
@@ -26,8 +26,8 @@ $factory->define(medcenter24/mcCore\AccidentStatusHistory::class, function (Fake
         },
         'historyable_id' => function () {
             // could be each of accident Doctor_Accident Accident Hospital_Accident ...
-            return factory(\medcenter24/mcCore\Accident::class)->create()->id;
+            return factory(\ medcenter24\mcCore\App;Accident::class)->create()->id;
         },
-        'historyable_type' => \medcenter24/mcCore\Accident::class,
+        'historyable_type' => \ medcenter24\mcCore\App;Accident::class,
     ];
 });

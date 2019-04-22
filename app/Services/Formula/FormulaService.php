@@ -62,7 +62,7 @@ class FormulaService
      * @param FinanceCondition $condition
      * @param FormulaBuilderInterface $builder
      * @throws NotImplementedException
-     * @throws \medcenter24/mcCore\Models\Formula\Exception\FormulaException
+     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
      */
     private function currencyOp(FinanceCondition $condition, FormulaBuilderInterface $builder): void
     {

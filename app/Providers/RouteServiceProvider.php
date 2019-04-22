@@ -30,7 +30,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'medcenter24/mcCore\Http\Controllers';
+    protected $namespace = ' medcenter24\mcCore\App;Http\Controllers';
 
     /**
      * Define your route model bindings, pattern filters, etc.

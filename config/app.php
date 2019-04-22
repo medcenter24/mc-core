@@ -175,11 +175,11 @@ $app = [
         // medcenter24\mcCore\App\Providers\BroadcastServiceProvider::class,
         medcenter24\mcCore\App\Providers\EventServiceProvider::class,
         medcenter24\mcCore\App\Providers\RouteServiceProvider::class,
-        \medcenter24/mcCore\Providers\ApiProvider::class,
+        \ medcenter24\mcCore\App;Providers\ApiProvider::class,
 
         //--- Added
         Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
-        \medcenter24/mcCore\Providers\RoleServiceProvider::class,
+        \ medcenter24\mcCore\App;Providers\RoleServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
@@ -188,9 +188,9 @@ $app = [
         \App\Services\Messenger\LocMessengerServiceProvider::class,
         BackupManager\Laravel\Laravel55ServiceProvider::class,
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
-        // \medcenter24/mcCore\Providers\CaseFinanceProvider::class,
-        \medcenter24/mcCore\Providers\FormulaServiceProvider::class,
-        \medcenter24/mcCore\Providers\ValidatorServiceProvider::class,
+        // \ medcenter24\mcCore\App;Providers\CaseFinanceProvider::class,
+        \ medcenter24\mcCore\App;Providers\FormulaServiceProvider::class,
+        \ medcenter24\mcCore\App;Providers\ValidatorServiceProvider::class,
     ],
 
     /*

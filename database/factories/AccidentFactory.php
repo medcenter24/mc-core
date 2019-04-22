@@ -30,7 +30,7 @@ use Faker\Generator as Faker;
  * Notice:
  * Everything changed to create to have real id's otherwise phpunit tests will be failed
  */
-$factory->define(\medcenter24/mcCore\Accident::class, function (Faker $faker) {
+$factory->define(\ medcenter24\mcCore\App;Accident::class, function (Faker $faker) {
     $refNum = $faker->toUpper(str_random(3)) . '-' . $faker->toUpper(str_random(3)) . $faker->toUpper(str_random(3));
     return [
         'created_by' => function () {
@@ -64,7 +64,7 @@ $factory->define(\medcenter24/mcCore\Accident::class, function (Faker $faker) {
         'ref_num' => $refNum,
         'title' => 'Accident ' . $refNum,
         'city_id' => function () {
-            return factory(\medcenter24/mcCore\City::class)->create()->id;
+            return factory(\ medcenter24\mcCore\App;City::class)->create()->id;
         },
         'address' => $faker->address,
         'contacts' => $faker->company . "\n" . $faker->companyEmail . "\n" . $faker->phoneNumber,

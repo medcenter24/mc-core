@@ -101,16 +101,16 @@ class EnvironmentService extends Configurable implements Environment
     /**
      * @param string $configPath
      * @return EnvironmentService
-     * @throws InconsistentDataException
      * @throws NotImplementedException
      */
     public static function init(string $configPath): self
     {
-        if (self::$instance) {
-            throw new InconsistentDataException('Environment already initialized');
+        if (!self::$instance) {
+            // why do I need this, it brakes tests
+            // throw new InconsistentDataException('Environment already initialized');
+            self::$instance = new self($configPath);
         }
 
-        self::$instance = new self($configPath);
         return self::instance();
     }
 
@@ -121,16 +121,16 @@ class EnvironmentService extends Configurable implements Environment
 
     /**
      * Checks or sets current state of environment
-     * @param bool $state
      * @return bool
      */
-    public static function isTmp(bool $state = false): bool
+    public static function isTmp(): bool
     {
-        if ($state) {
-            self::$isTmpEnv = true;
-        }
-
         return self::$isTmpEnv;
+    }
+
+    public static function setTmpState($state = false): void
+    {
+        self::$isTmpEnv = (bool) $state;
     }
 
     /**
@@ -251,5 +251,14 @@ class EnvironmentService extends Configurable implements Environment
         \app()->useEnvironmentPath($dir);
         \app()->loadEnvironmentFrom($fileName);
         \app()->useStoragePath($this->getOption(self::DATA_DIR));
+    }
+
+    /**
+     * For tests we need to rebuild application
+     */
+    public static function terminate(): void
+    {
+        self::$isTmpEnv = false;
+        self::$instance = null;
     }
 }

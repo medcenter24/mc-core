@@ -70,7 +70,7 @@ class Application extends BaseApplication
         if (!EnvironmentService::isInstalled()) {
             $dir = sys_get_temp_dir();
             FileHelper::createDirRecursive([$dir, 'bootstrap', 'cache']);
-            EnvironmentService::isTmp(true);
+            EnvironmentService::setTmpState(true);
             EnvironmentService::setTmp($dir);
         } else {
             $dir = $this->storagePath();
@@ -83,8 +83,13 @@ class Application extends BaseApplication
     {
         parent::terminate();
 
+        self::deleteTmp();
+    }
+
+    public static function deleteTmp(): void
+    {
         // drop tmp dirs for the cache
-        if (EnvironmentService::isTmp()) {
+        if (EnvironmentService::getTmp() && !empty(EnvironmentService::getTmp())) {
             FileHelper::delete(EnvironmentService::getTmp() . '/bootstrap');
         }
     }

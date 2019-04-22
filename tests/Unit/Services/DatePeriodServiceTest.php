@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services;
+namespace medcenter24\mcCore\Tests\Unit\Services;
 
 
 use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\TestCase;
 
 class DatePeriodServiceTest extends TestCase
 {
@@ -38,7 +38,7 @@ class DatePeriodServiceTest extends TestCase
         $this->service = new DatePeriodService();
     }
 
-    public function periodsDataProvider()
+    public function periodsDataProvider(): array
     {
         return [
             ['sun 00:00'],
@@ -52,12 +52,12 @@ class DatePeriodServiceTest extends TestCase
      * @param $period
      * @dataProvider periodsDataProvider
      */
-    public function testIsPeriod(string $period)
+    public function testIsPeriod(string $period): void
     {
         self::assertTrue($this->service->isPeriod($period));
     }
 
-    public function notAPeriodsDataProvider()
+    public function notAPeriodsDataProvider(): array
     {
         return [
             ['suns 00:00'],
@@ -73,12 +73,12 @@ class DatePeriodServiceTest extends TestCase
      * @param $period
      * @dataProvider notAPeriodsDataProvider
      */
-    public function testIsNotPeriod(string $period)
+    public function testIsNotPeriod(string $period): void
     {
         self::assertNotTrue($this->service->isPeriod($period));
     }
 
-    public function testSave()
+    public function testSave(): void
     {
         $data = [
             'title' => 'test',
@@ -90,12 +90,12 @@ class DatePeriodServiceTest extends TestCase
         self::assertSame($data, $datePeriod->toArray());
         self::assertSame([[
             'date_period_id' => '1',
-            'day_of_week' => 'sun',
+            'day_of_week' => '0',
             'from' => '12:21',
             'to' => '23:59',
         ], [
             'date_period_id' => '1',
-            'day_of_week' => 'mon',
+            'day_of_week' => '0',
             'from' => '00:00',
             'to' => '22:15',
         ]], $datePeriod->interpretation->toArray());

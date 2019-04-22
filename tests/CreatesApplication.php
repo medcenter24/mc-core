@@ -21,6 +21,7 @@ namespace medcenter24\mcCore\Tests;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Hash;
+use medcenter24\mcCore\App\Services\EnvironmentService;
 
 trait CreatesApplication
 {
@@ -29,11 +30,14 @@ trait CreatesApplication
      * Creates the application.
      *
      * @return Application
-     * @throws \ReflectionException
      */
     public function createApplication(): Application
     {
         putenv('DB_CONNECTION=sqliteTests');
+
+        if (EnvironmentService::isInstalled()) {
+            EnvironmentService::terminate();
+        }
 
         if ( !array_key_exists('APP_CONFIG_PATH', $_ENV) ) {
             $_ENV['APP_CONFIG_PATH'] = __DIR__ . '/settings/default.conf.php';

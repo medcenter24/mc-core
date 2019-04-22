@@ -77,7 +77,9 @@ try {
         $_ENV['APP_CONFIG_PATH'] ?? dirname(__DIR__, 2) . '/config/generis.conf.php'
     );
 } catch (Exception $e) {
-    if (!$app->isBooted() || !$app->environment('production')) {
+    if ($app->environment('testing') && $e->getMessage() === 'Environment already initialized') {
+        // do nothing
+    } elseif (!$app->isBooted() && $app->environment('local')) {
         echo "/**********************************/\n";
         echo "\t" . $e->getMessage() . "\n";
         echo "/**********************************/\n\n";

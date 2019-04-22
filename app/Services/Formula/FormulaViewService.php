@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Formula;
+namespace medcenter24\mcCore\App\Services\Formula;
 
 
-use App\Contract\Formula\FormulaBuilder;
-use App\Contract\Formula\Operation;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\Contract\Formula\Operation;
 use ArrayIterator;
 use Throwable;
 

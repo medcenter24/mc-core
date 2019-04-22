@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Helpers;
+namespace medcenter24\mcCore\App\Helpers;
 
 
-use App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 
 class Arr
 {

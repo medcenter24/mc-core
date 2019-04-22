@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Messenger;
+namespace medcenter24\mcCore\App\Services\Messenger;
 
 use Cmgmyr\Messenger\MessengerServiceProvider;
 
 /**
  * Class LocMessengerServiceProvider
- * @package App\Services\Messenger
+ * @package medcenter24\mcCore\App\Services\Messenger
  */
 class LocMessengerServiceProvider extends MessengerServiceProvider
 {

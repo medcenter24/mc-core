@@ -16,15 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\City;
-use App\Doctor;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\StoreDoctor;
-use App\Http\Requests\Api\UpdateDoctor;
-use App\Transformers\CityTransformer;
-use App\Transformers\DoctorTransformer;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\StoreDoctor;
+use medcenter24\mcCore\App\Http\Requests\Api\UpdateDoctor;
+use medcenter24\mcCore\App\Transformers\CityTransformer;
+use medcenter24\mcCore\App\Transformers\DoctorTransformer;
 use Dingo\Api\Http\Response;
 use Illuminate\Http\Request;
 use League\Fractal\TransformerAbstract;

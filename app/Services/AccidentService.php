@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\Accident;
-use App\City;
-use App\DoctorService;
-use App\Helpers\Arr;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Helpers\Arr;
 use Illuminate\Support\Collection;
 
 class AccidentService

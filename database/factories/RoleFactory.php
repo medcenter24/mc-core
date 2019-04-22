@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\Role;
+use medcenter24\mcCore\App\Role;
 use Faker\Generator as Faker;
 
 $factory->define(Role::class, function (Faker $faker) {

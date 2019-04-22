@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers;
+namespace medcenter24\mcCore\App\Http\Controllers;
 
-use App\Services\Export\Form1ExportService;
+use medcenter24\mcCore\App\Services\Export\Form1ExportService;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller

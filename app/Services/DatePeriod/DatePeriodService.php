@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\DatePeriod;
+namespace medcenter24\mcCore\App\Services\DatePeriod;
 
 
-use App\DatePeriod;
-use App\Events\DatePeriodChangedEvent;
-use App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\Events\DatePeriodChangedEvent;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use Illuminate\Support\Facades\Log;
 
 class DatePeriodService

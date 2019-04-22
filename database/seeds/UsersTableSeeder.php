@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\City;
-use App\Role;
-use App\User;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\User;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder

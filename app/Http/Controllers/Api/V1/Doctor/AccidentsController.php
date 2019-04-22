@@ -16,30 +16,30 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Doctor;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
-use App\Accident;
-use App\AccidentStatus;
-use App\Diagnostic;
-use App\Doctor;
-use App\DoctorAccident;
-use App\DoctorService;
-use App\DoctorSurvey;
-use App\Document;
-use App\Http\Controllers\ApiController;
-use App\Services\AccidentStatusesService;
-use App\Services\DoctorsService;
-use App\Services\DocumentService;
-use App\Transformers\AccidentTransformer;
-use App\Transformers\AccidentTypeTransformer;
-use App\Transformers\CaseAccidentTransformer;
-use App\Transformers\DiagnosticTransformer;
-use App\Transformers\DoctorAccidentStatusTransformer;
-use App\Transformers\DoctorAccidentTransformer;
-use App\Transformers\DoctorServiceTransformer;
-use App\Transformers\DoctorSurveyTransformer;
-use App\Transformers\DocumentTransformer;
-use App\Transformers\PatientTransformer;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Diagnostic;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\DoctorSurvey;
+use medcenter24\mcCore\App\Document;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\DoctorsService;
+use medcenter24\mcCore\App\Services\DocumentService;
+use medcenter24\mcCore\App\Transformers\AccidentTransformer;
+use medcenter24\mcCore\App\Transformers\AccidentTypeTransformer;
+use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
+use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
+use medcenter24\mcCore\App\Transformers\DoctorAccidentStatusTransformer;
+use medcenter24\mcCore\App\Transformers\DoctorAccidentTransformer;
+use medcenter24\mcCore\App\Transformers\DoctorServiceTransformer;
+use medcenter24\mcCore\App\Transformers\DoctorSurveyTransformer;
+use medcenter24\mcCore\App\Transformers\DocumentTransformer;
+use medcenter24\mcCore\App\Transformers\PatientTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 

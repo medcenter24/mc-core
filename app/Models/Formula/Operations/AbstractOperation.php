@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Formula\Operations;
+namespace medcenter24\mcCore\App\Models\Formula\Operations;
 
 
-use App\Models\Formula\Exception\FormulaException;
-use App\Contract\Formula\FormulaBuilder;
-use App\Contract\Formula\Operation;
-use App\Contract\Formula\Variable;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\Contract\Formula\Operation;
+use medcenter24\mcCore\App\Contract\Formula\Variable;
 
 abstract class AbstractOperation implements Operation
 {

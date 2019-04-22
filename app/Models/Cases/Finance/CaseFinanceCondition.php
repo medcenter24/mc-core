@@ -16,16 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Cases\Finance;
+namespace medcenter24\mcCore\App\Models\Cases\Finance;
 
 
-use App\Models\Cases\Finance\Operations\IfOperation;
+use medcenter24\mcCore\App\Models\Cases\Finance\Operations\IfOperation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
  * Class CaseFinanceCondition
- * @package App\Models\Cases\Finance
+ * @package medcenter24\mcCore\App\Models\Cases\Finance
  */
 class CaseFinanceCondition
 {

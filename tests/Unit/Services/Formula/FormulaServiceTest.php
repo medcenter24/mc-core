@@ -18,10 +18,10 @@
 
 namespace Tests\Unit\Services\Formula;
 
-use App\Contract\Formula\FormulaBuilder;
-use App\FinanceCondition;
-use App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
-use App\Services\Formula\FormulaService;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
+use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 

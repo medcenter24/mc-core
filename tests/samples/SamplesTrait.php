@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\samples;
+namespace medcenter24\mcCore\Tests\samples;
 
 
 trait SamplesTrait

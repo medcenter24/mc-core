@@ -18,7 +18,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(App\DoctorAccident::class, function (Faker $faker) {
+$factory->define(medcenter24\mcCore\App\DoctorAccident::class, function (Faker $faker) {
     return [
         'doctor_id' => 0,
         'recommendation' => $faker->paragraphs(3, true),

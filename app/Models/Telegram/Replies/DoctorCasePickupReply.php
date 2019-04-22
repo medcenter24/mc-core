@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Telegram\Replies;
+namespace medcenter24\mcCore\App\Models\Telegram\Replies;
 
 
-use App\Accident;
-use App\AccidentStatus;
-use App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\Update;
 
@@ -29,7 +29,7 @@ use Telegram\Bot\Objects\Update;
  * When doctor press reply button on assignment
  *
  * Class DoctorCasePickup
- * @package App\Models\Telegram\Replies
+ * @package medcenter24\mcCore\App\Models\Telegram\Replies
  */
 class DoctorCasePickupReply
 {
@@ -53,7 +53,7 @@ class DoctorCasePickupReply
      * DoctorCasePickupReply constructor.
      * @param Update $update
      * @param AccidentStatusesService $accidentStatusesService
-     * @throws \App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function __construct(Update $update, AccidentStatusesService $accidentStatusesService)
     {
@@ -66,7 +66,7 @@ class DoctorCasePickupReply
 
     /**
      * Doing all needed things after receive confirmation
-     * @throws \App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function acceptCase()
     {

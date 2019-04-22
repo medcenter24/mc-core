@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Foundation;
+namespace medcenter24\mcCore\App\Foundation;
 
 
-use App\Helpers\FileHelper;
-use App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Helpers\FileHelper;
+use medcenter24\mcCore\App\Services\EnvironmentService;
 use Illuminate\Foundation\Application as BaseApplication;
 
 class Application extends BaseApplication

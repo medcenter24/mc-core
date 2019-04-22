@@ -16,15 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
-use App\AccidentStatus;
+namespace medcenter24\mcCore\App\Services;
+use medcenter24\mcCore\App\AccidentStatus;
 
 /**
  * Scenario is a set of the statuses which should be done for the case completion
  * Each case should be presented as a hospital case or doctor case scenarios
  *
  * Interface ScenarioInterface
- * @package App\Services
+ * @package medcenter24\mcCore\App\Services
  */
 interface ScenarioInterface
 {

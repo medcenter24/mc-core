@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Installer;
+namespace medcenter24\mcCore\App\Services\Installer;
 
 
-use App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 
 /**
  * Class ConfigurableParam
- * @package App\Services\Installer
+ * @package medcenter24\mcCore\App\Services\Installer
  */
 abstract class ConfigurableParam
 {

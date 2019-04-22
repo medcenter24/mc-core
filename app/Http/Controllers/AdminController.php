@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers;
+namespace medcenter24\mcCore\App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Auth;
  * access to downloaded files, everything that I could need to.
  *
  * Class AdminController
- * @package App\Http\Controllers
+ * @package medcenter24\mcCore\App\Http\Controllers
  */
 class AdminController extends Controller
 {

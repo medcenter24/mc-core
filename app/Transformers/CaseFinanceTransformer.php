@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
 use Illuminate\Support\Collection;
@@ -25,7 +25,7 @@ use League\Fractal\TransformerAbstract;
 /**
  * Used for the output into the data table
  * Class CasesTransformer
- * @package App\Transformers
+ * @package medcenter24\mcCore\App\Transformers
  */
 class CaseFinanceTransformer extends TransformerAbstract
 {

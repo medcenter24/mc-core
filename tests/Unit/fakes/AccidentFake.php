@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\fakes;
+namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
-use App\Accident;
-use App\DoctorAccident;
-use App\HospitalAccident;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\HospitalAccident;
 
 // TODO Delete this
 

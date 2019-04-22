@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24/mcCore;
+namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
 

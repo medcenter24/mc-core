@@ -18,7 +18,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define( medcenter24\mcCore\App;User::class, function (Faker $faker) {
+$factory->define(medcenter24\mcCore\App\User::class, function (Faker $faker) {
     static $password;
 
     return [

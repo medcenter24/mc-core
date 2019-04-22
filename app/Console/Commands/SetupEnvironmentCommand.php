@@ -63,7 +63,7 @@ class SetupEnvironmentCommand extends Command
      * Execute the console command.
      * @param InstallerService $installerService
      * @throws InconsistentDataException
-     * @throws \ medcenter24\mcCore\App;Exceptions\NotImplementedException
+     * @throws \medcenter24\mcCore\App\Exceptions\NotImplementedException
      */
     public function handle(InstallerService $installerService): void
     {
@@ -128,7 +128,7 @@ class SetupEnvironmentCommand extends Command
 
     /**
      * @throws InconsistentDataException
-     * @throws \ medcenter24\mcCore\App;Exceptions\NotImplementedException
+     * @throws \medcenter24\mcCore\App\Exceptions\NotImplementedException
      */
     private function install(): void
     {
@@ -144,7 +144,7 @@ class SetupEnvironmentCommand extends Command
 
     /**
      * @throws InconsistentDataException
-     * @throws \ medcenter24\mcCore\App;Exceptions\NotImplementedException
+     * @throws \medcenter24\mcCore\App\Exceptions\NotImplementedException
      */
     private function reloadApp(): void
     {

@@ -53,7 +53,7 @@ class DoctorCasePickupReply
      * DoctorCasePickupReply constructor.
      * @param Update $update
      * @param AccidentStatusesService $accidentStatusesService
-     * @throws \ medcenter24\mcCore\App;Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function __construct(Update $update, AccidentStatusesService $accidentStatusesService)
     {
@@ -66,7 +66,7 @@ class DoctorCasePickupReply
 
     /**
      * Doing all needed things after receive confirmation
-     * @throws \ medcenter24\mcCore\App;Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function acceptCase()
     {

@@ -18,11 +18,11 @@
 
 use Faker\Generator as Faker;
 
-$factory->define( medcenter24\mcCore\App;Payment::class, function (Faker $faker) {
+$factory->define(medcenter24\mcCore\App\Payment::class, function (Faker $faker) {
     return [
         'value' => $faker->randomFloat(0, 10000),
         'currency_id' => function () {
-            return factory(\ medcenter24\mcCore\App;FinanceCurrency::class)->create()->id;
+            return factory(\medcenter24\mcCore\App\FinanceCurrency::class)->create()->id;
         },
         'fixed' => 0,
         'description' => 'Faker factory',

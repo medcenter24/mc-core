@@ -18,7 +18,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define( medcenter24\mcCore\App;HospitalAccident::class, function (Faker $faker) {
+$factory->define(medcenter24\mcCore\App\HospitalAccident::class, function (Faker $faker) {
     return [
         'hospital_id' => 0,
         'hospital_guarantee_id' => 0, //

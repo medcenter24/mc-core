@@ -69,7 +69,7 @@ class CaseFinanceViewService
      * @param array $types
      * @return Collection
      * @throws InconsistentDataException
-     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @throws \Throwable
      */
     public function get(Accident $accident, array $types): Collection
@@ -111,7 +111,7 @@ class CaseFinanceViewService
      * @param Accident $accident
      * @return array
      * @throws InconsistentDataException
-     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     private function getIncomeData(Accident $accident): array
     {
@@ -140,7 +140,7 @@ class CaseFinanceViewService
     /**
      * @param array $data
      * @return float
-     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     private function getValueFromData(array $data): float
     {
@@ -161,7 +161,7 @@ class CaseFinanceViewService
     /**
      * @param $accident
      * @return array
-     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     private function getAssistantData(Accident $accident): array
     {
@@ -191,7 +191,7 @@ class CaseFinanceViewService
      * @param Accident $accident
      * @return array
      * @throws InconsistentDataException
-     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     private function getCaseableData(Accident $accident): array
     {

@@ -34,8 +34,8 @@ class CaseFinanceController extends ApiController
      * @param int $id
      * @param CaseFinanceViewService $caseFinanceViewService
      * @return Response
-     * @throws \ medcenter24\mcCore\App;Exceptions\InconsistentDataException
-     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @throws \Throwable
      */
     public function show(Request $request, int $id, CaseFinanceViewService $caseFinanceViewService): Response
@@ -56,8 +56,8 @@ class CaseFinanceController extends ApiController
      * @param Request $request
      * @param CaseFinanceViewService $caseFinanceViewService
      * @return Response
-     * @throws \ medcenter24\mcCore\App;Exceptions\InconsistentDataException
-     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @throws \Throwable
      */
     public function save(
@@ -78,8 +78,8 @@ class CaseFinanceController extends ApiController
      * @param Accident $accident
      * @param CaseFinanceViewService $caseFinanceViewService
      * @return Response
-     * @throws \ medcenter24\mcCore\App;Exceptions\InconsistentDataException
-     * @throws \ medcenter24\mcCore\App;Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @throws \Throwable
      */
     private function getResponse($types, Accident $accident, CaseFinanceViewService $caseFinanceViewService): Response

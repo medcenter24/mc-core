@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\DoctorService;
+use medcenter24\mcCore\App\DoctorService;
 use Illuminate\Database\Seeder;
 
 class DoctorServicesTableSeeder extends Seeder

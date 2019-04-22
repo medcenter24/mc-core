@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
-use App\Company;
-use App\Helpers\MediaHelper;
-use App\Services\LogoService;
-use App\Services\SignatureService;
+use medcenter24\mcCore\App\Company;
+use medcenter24\mcCore\App\Helpers\MediaHelper;
+use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\Services\SignatureService;
 use League\Fractal\TransformerAbstract;
 
 class CompanyTransformer extends TransformerAbstract

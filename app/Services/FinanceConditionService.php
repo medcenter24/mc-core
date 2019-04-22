@@ -16,16 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\Assistant;
-use App\DatePeriod;
-use App\DatePeriodInterpretation;
-use App\Doctor;
-use App\DoctorService;
-use App\FinanceCondition;
-use App\FinanceStorage;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\DatePeriodInterpretation;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\FinanceStorage;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;

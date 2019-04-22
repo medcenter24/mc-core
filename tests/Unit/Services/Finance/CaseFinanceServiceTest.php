@@ -19,17 +19,17 @@
 namespace Tests\Unit\Services\Finance;
 
 
-use App\Accident;
-use App\Contract\Formula\FormulaBuilder;
-use App\DoctorAccident;
-use App\HospitalAccident;
-use App\Invoice;
-use App\Payment;
-use App\Services\AccidentService;
-use App\Services\CaseServices\Finance\CaseFinanceService;
-use App\Services\CurrencyService;
-use App\Services\FinanceConditionService;
-use App\Services\Formula\FormulaService;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Invoice;
+use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
+use medcenter24\mcCore\App\Services\CurrencyService;
+use medcenter24\mcCore\App\Services\FinanceConditionService;
+use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use Illuminate\Support\Collection;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;

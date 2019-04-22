@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App;
+namespace medcenter24/mcCore;
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -37,7 +37,7 @@ class Comment extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\User', 'created_by');
+        return $this->belongsTo('medcenter24/mcCore\User', 'created_by');
     }
 
     /**

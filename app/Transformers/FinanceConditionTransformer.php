@@ -16,15 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
-use App\Assistant;
-use App\City;
-use App\DatePeriod;
-use App\Doctor;
-use App\DoctorService;
-use App\FinanceCondition;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\FinanceCondition;
 use League\Fractal\TransformerAbstract;
 
 class FinanceConditionTransformer extends TransformerAbstract

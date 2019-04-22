@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Formula\Operations;
+namespace medcenter24\mcCore\App\Models\Formula\Operations;
 
 
 class Mul extends AbstractOperation

@@ -16,15 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Helpers;
+namespace medcenter24\mcCore\App\Helpers;
 
 
-use App\Accident;
-use App\DoctorAccident;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\DoctorAccident;
 
 /**
  * Class BlankModels
- * @package App\Helpers
+ * @package medcenter24\mcCore\App\Helpers
  * @deprecated not the best way to do it, try to use Services
  * maybe AccidentService::getFormattedAccidentData()
  */

@@ -16,15 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\DocxParser;
+namespace medcenter24\mcCore\Tests\Unit\DocxParser;
 
-use App\Services\DocxReader\SimpleDocxReaderService;
+use medcenter24\mcCore\App\Services\DocxReader\SimpleDocxReaderService;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RegexIterator;
-use Tests\SamplePath;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\SamplePath;
+use medcenter24\mcCore\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 

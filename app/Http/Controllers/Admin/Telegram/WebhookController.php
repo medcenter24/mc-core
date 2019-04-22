@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Admin\Telegram;
+namespace medcenter24\mcCore\App\Http\Controllers\Admin\Telegram;
 
 
-use App\Http\Controllers\AdminController;
-use App\Http\Requests\Telegram\SetWebhook;
-use App\Services\Bot\BotInstance;
+use medcenter24\mcCore\App\Http\Controllers\AdminController;
+use medcenter24\mcCore\App\Http\Requests\Telegram\SetWebhook;
+use medcenter24\mcCore\App\Services\Bot\BotInstance;
 use Telegram;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 

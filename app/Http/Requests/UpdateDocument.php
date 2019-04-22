@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Requests;
+namespace medcenter24\mcCore\App\Http\Requests;
 
-use App\Role;
+use medcenter24\mcCore\App\Role;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateDocument extends FormRequest

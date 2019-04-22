@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Exceptions;
+namespace medcenter24\mcCore\App\Exceptions;
 
 
 class InconsistentDataException extends \Exception

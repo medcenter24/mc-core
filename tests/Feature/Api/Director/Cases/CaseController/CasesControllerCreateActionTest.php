@@ -16,21 +16,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director\Cases\CaseController;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
-use App\Accident;
-use App\AccidentStatus;
-use App\AccidentType;
-use App\Assistant;
-use App\City;
-use App\DoctorAccident;
-use App\FormReport;
-use App\Patient;
-use App\Payment;
-use App\Services\AccidentStatusesService;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
-use Tests\TestCase;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\AccidentType;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\FormReport;
+use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CasesControllerCreateActionTest extends TestCase

@@ -16,8 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\AccidentType;
-use App\Services\AccidentTypeService;
+use medcenter24\mcCore\App\AccidentType;
+use medcenter24\mcCore\App\Services\AccidentTypeService;
 use Illuminate\Database\Seeder;
 
 class AccidentTypesTableSeeder extends Seeder

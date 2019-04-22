@@ -16,20 +16,20 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Verification;
+namespace medcenter24\mcCore\App\Services\Verification;
 
 
-use App\Accident;
-use App\City;
-use App\DoctorAccident;
-use App\Patient;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Patient;
 
 /**
  * Generate data which should be sent based on the DoctorAccident model
  *
  *
  * Class DoctorAccidentVerificationService
- * @package App\Services\Verification
+ * @package medcenter24\mcCore\App\Services\Verification
  */
 class DoctorAccidentVerificationService
 {

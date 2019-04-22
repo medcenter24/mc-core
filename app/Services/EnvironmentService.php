@@ -16,66 +16,66 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\Contract\General\Environment;
-use App\Exceptions\InconsistentDataException;
-use App\Exceptions\NotImplementedException;
-use App\Services\Installer\Params\ConfigDirParam;
-use App\Services\Installer\Params\ConfigFilenameParam;
-use App\Services\Installer\Params\DataDirParam;
-use App\Services\Installer\Params\EnvApiDebugParam;
-use App\Services\Installer\Params\EnvApiNameParam;
-use App\Services\Installer\Params\EnvApiPrefixParam;
-use App\Services\Installer\Params\EnvApiStrictParam;
-use App\Services\Installer\Params\EnvApiSubtypeParam;
-use App\Services\Installer\Params\EnvApiVersionParam;
-use App\Services\Installer\Params\EnvAppDebugParam;
-use App\Services\Installer\Params\EnvAppEnvParam;
-use App\Services\Installer\Params\EnvAppKeyParam;
-use App\Services\Installer\Params\EnvAppLogLevelParam;
-use App\Services\Installer\Params\EnvAppModeParam;
-use App\Services\Installer\Params\EnvAppUrlParam;
-use App\Services\Installer\Params\EnvBroadcastDriverParam;
-use App\Services\Installer\Params\EnvCacheDriverParam;
-use App\Services\Installer\Params\EnvCorsAllowOriginDirectorParam;
-use App\Services\Installer\Params\EnvCorsAllowOriginDoctorParam;
-use App\Services\Installer\Params\EnvCustomerNameParam;
-use App\Services\Installer\Params\EnvDbConnectionParam;
-use App\Services\Installer\Params\EnvDbDatabaseParam;
-use App\Services\Installer\Params\EnvDbHostParam;
-use App\Services\Installer\Params\EnvDbPasswordParam;
-use App\Services\Installer\Params\EnvDbPortParam;
-use App\Services\Installer\Params\EnvDbUserNameParam;
-use App\Services\Installer\Params\EnvDebugbarEnabledParam;
-use App\Services\Installer\Params\EnvDropboxBackupAppParam;
-use App\Services\Installer\Params\EnvDropboxBackupKeyParam;
-use App\Services\Installer\Params\EnvDropboxBackupRootParam;
-use App\Services\Installer\Params\EnvDropboxBackupSecretParam;
-use App\Services\Installer\Params\EnvDropboxBackupTokenParam;
-use App\Services\Installer\Params\EnvFilenameParam;
-use App\Services\Installer\Params\EnvImageDriverParam;
-use App\Services\Installer\Params\EnvMailDriverParam;
-use App\Services\Installer\Params\EnvMailEncryptionParam;
-use App\Services\Installer\Params\EnvMailHostParam;
-use App\Services\Installer\Params\EnvMailPasswordParam;
-use App\Services\Installer\Params\EnvMailPortParam;
-use App\Services\Installer\Params\EnvMailUsernameParam;
-use App\Services\Installer\Params\EnvPusherAppIdParam;
-use App\Services\Installer\Params\EnvPusherAppKeyParam;
-use App\Services\Installer\Params\EnvPusherAppSecretParam;
-use App\Services\Installer\Params\EnvQueueDriverParam;
-use App\Services\Installer\Params\EnvRedisHostParam;
-use App\Services\Installer\Params\EnvRedisPasswordParam;
-use App\Services\Installer\Params\EnvRedisPortParam;
-use App\Services\Installer\Params\EnvSessionDriverParam;
-use App\Support\Core\Configurable;
+use medcenter24\mcCore\App\Contract\General\Environment;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Exceptions\NotImplementedException;
+use medcenter24\mcCore\App\Services\Installer\Params\ConfigDirParam;
+use medcenter24\mcCore\App\Services\Installer\Params\ConfigFilenameParam;
+use medcenter24\mcCore\App\Services\Installer\Params\DataDirParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvApiDebugParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvApiNameParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvApiPrefixParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvApiStrictParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvApiSubtypeParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvApiVersionParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvAppDebugParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvAppEnvParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvAppKeyParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvAppLogLevelParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvAppModeParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvAppUrlParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvBroadcastDriverParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvCacheDriverParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvCorsAllowOriginDirectorParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvCorsAllowOriginDoctorParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvCustomerNameParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDbConnectionParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDbDatabaseParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDbHostParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDbPasswordParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDbPortParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDbUserNameParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDebugbarEnabledParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDropboxBackupAppParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDropboxBackupKeyParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDropboxBackupRootParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDropboxBackupSecretParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvDropboxBackupTokenParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvFilenameParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvImageDriverParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvMailDriverParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvMailEncryptionParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvMailHostParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvMailPasswordParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvMailPortParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvMailUsernameParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvPusherAppIdParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvPusherAppKeyParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvPusherAppSecretParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvQueueDriverParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvRedisHostParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvRedisPasswordParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvRedisPortParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvSessionDriverParam;
+use medcenter24\mcCore\App\Support\Core\Configurable;
 
 /**
  * Core environment configuration
  * Class EnvironmentService
- * @package App\Services
+ * @package medcenter24\mcCore\App\Services
  */
 class EnvironmentService extends Configurable implements Environment
 {

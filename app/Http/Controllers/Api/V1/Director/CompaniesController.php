@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\Company;
-use App\Http\Controllers\ApiController;
-use App\Services\LogoService;
-use App\Services\SignatureService;
-use App\Transformers\CompanyTransformer;
+use medcenter24\mcCore\App\Company;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\Services\SignatureService;
+use medcenter24\mcCore\App\Transformers\CompanyTransformer;
 use Illuminate\Http\Request;
 
 class CompaniesController extends ApiController

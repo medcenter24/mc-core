@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director\Statistics;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
 
 
-use App\Http\Controllers\ApiController;
-use App\Transformers\statistics\TrafficTransformer;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Transformers\statistics\TrafficTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +36,7 @@ class TrafficController extends ApiController
 
         $statistic = DB::table('accidents')
             ->join('doctor_accidents', function($join){
-                $join->where('accidents.caseable_type', '=', 'App\DoctorAccident')
+                $join->where('accidents.caseable_type', '=', 'medcenter24/mcCore\DoctorAccident')
                     ->on('accidents.caseable_id', '=', 'doctor_accidents.id');
             })
             ->join('doctors', 'doctors.id', '=', 'doctor_accidents.doctor_id')

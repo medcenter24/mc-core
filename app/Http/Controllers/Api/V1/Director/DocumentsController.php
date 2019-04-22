@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\Document;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\DoctorDocumentRequest;
-use App\Services\DocumentService;
-use App\Services\RoleService;
-use App\Transformers\DocumentTransformer;
+use medcenter24\mcCore\App\Document;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\DoctorDocumentRequest;
+use medcenter24\mcCore\App\Services\DocumentService;
+use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Transformers\DocumentTransformer;
 use PhpParser\Comment\Doc;
 
 class DocumentsController extends ApiController

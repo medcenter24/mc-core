@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Support\Facades;
+namespace medcenter24\mcCore\App\Support\Facades;
 
 
-use App\Services\RoleService;
+use medcenter24\mcCore\App\Services\RoleService;
 use Illuminate\Support\Facades\Facade;
 
 class Roles extends Facade

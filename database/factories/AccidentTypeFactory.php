@@ -18,9 +18,9 @@
 
 use Faker\Generator as Faker;
 
-$factory->define( medcenter24\mcCore\App;AccidentType::class, function (Faker $faker) {
+$factory->define(medcenter24\mcCore\App\AccidentType::class, function (Faker $faker) {
     return [
-        'title' => $faker->randomElement(\ medcenter24\mcCore\App;Services\AccidentTypeService::ALLOWED_TYPES),
+        'title' => $faker->randomElement(\medcenter24\mcCore\App\Services\AccidentTypeService::ALLOWED_TYPES),
         'description' => $faker->text(),
     ];
 });

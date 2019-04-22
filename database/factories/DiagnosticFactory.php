@@ -19,7 +19,7 @@
 use medcenter24\mcCore\App\DiagnosticCategory;
 use Faker\Generator as Faker;
 
-$factory->define( medcenter24\mcCore\App;Diagnostic::class, function (Faker $faker) {
+$factory->define(medcenter24\mcCore\App\Diagnostic::class, function (Faker $faker) {
     $refKey = $faker->toUpper(str_random(3));
     return [
         'title' => 'Diagnostic ' . $refKey,

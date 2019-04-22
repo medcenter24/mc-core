@@ -16,16 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\DatePeriod;
+namespace medcenter24\mcCore\App\Services\DatePeriod;
 
-use App\DatePeriod;
-use App\DatePeriodInterpretation;
+use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\DatePeriodInterpretation;
 use Carbon\Carbon;
 
 /**
  * Converting GUIs periods to the storing format to make possibility to use it in the DB with SQL
  * Class DatePeriodInterpretationService
- * @package App\Services
+ * @package medcenter24\mcCore\App\Services
  */
 class DatePeriodInterpretationService
 {
@@ -42,7 +42,7 @@ class DatePeriodInterpretationService
     /**
      * @param DatePeriod $datePeriod
      * @return array
-     * @throws \App\Exceptions\InconsistentDataException
+     * @throws \medcenter24/mcCore\Exceptions\InconsistentDataException
      */
     public function interpret(DatePeriod $datePeriod): array
     {
@@ -109,7 +109,7 @@ class DatePeriodInterpretationService
     /**
      * Updating interpreted data
      * @param DatePeriod $datePeriod
-     * @throws \App\Exceptions\InconsistentDataException
+     * @throws \medcenter24/mcCore\Exceptions\InconsistentDataException
      */
     public function update(DatePeriod $datePeriod)
     {

@@ -30,7 +30,7 @@ return [
     */
 
     'commands' => [
-        // App\Console\Commands\ExampleCommand::class,
+        // medcenter24\mcCore\App\Console\Commands\ExampleCommand::class,
     ],
 
     /*

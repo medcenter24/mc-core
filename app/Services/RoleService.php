@@ -16,16 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\User;
+use medcenter24\mcCore\App\User;
 
 /**
  * Permissions and role interface
  *
  * Class RoleService
- * @package App\Services
+ * @package medcenter24\mcCore\App\Services
  */
 class RoleService
 {

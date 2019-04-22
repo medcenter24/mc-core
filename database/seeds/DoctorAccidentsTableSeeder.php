@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\DoctorAccident;
+use medcenter24\mcCore\App\DoctorAccident;
 use Illuminate\Database\Seeder;
 
 class DoctorAccidentsTableSeeder extends Seeder

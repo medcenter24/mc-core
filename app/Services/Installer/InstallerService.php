@@ -16,24 +16,24 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Installer;
+namespace medcenter24\mcCore\App\Services\Installer;
 
 
-use App\Exceptions\InconsistentDataException;
-use App\Helpers\FileHelper;
-use App\Services\EnvironmentService;
-use App\Services\Installer\Params\ConfigDirParam;
-use App\Services\Installer\Params\DataDirParam;
-use App\Services\Installer\Params\EnvParam;
-use App\Services\Installer\Params\NullParam;
-use App\Support\Core\Configurable;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Helpers\FileHelper;
+use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Installer\Params\ConfigDirParam;
+use medcenter24\mcCore\App\Services\Installer\Params\DataDirParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvParam;
+use medcenter24\mcCore\App\Services\Installer\Params\NullParam;
+use medcenter24\mcCore\App\Support\Core\Configurable;
 
 /**
  *
  * @see resources/installer/README.md
  *
  * Class InstallerService
- * @package App\Services
+ * @package medcenter24\mcCore\App\Services
  */
 class InstallerService extends Configurable
 {

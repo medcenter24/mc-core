@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Console;
+namespace medcenter24\mcCore\App\Console;
 
-use App\Console\Commands\CleanInvites;
-use App\Console\Commands\CreateUserCommand;
-use App\Console\Commands\SetupEnvironmentCommand;
+use medcenter24\mcCore\App\Console\Commands\CleanInvites;
+use medcenter24\mcCore\App\Console\Commands\CreateUserCommand;
+use medcenter24\mcCore\App\Console\Commands\SetupEnvironmentCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

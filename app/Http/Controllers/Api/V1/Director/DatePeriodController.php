@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\DatePeriod;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\DatePeriodRequest;
-use App\Services\DatePeriod\DatePeriodService;
-use App\Transformers\DatePeriodTransformer;
+use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\DatePeriodRequest;
+use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
+use medcenter24\mcCore\App\Transformers\DatePeriodTransformer;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 

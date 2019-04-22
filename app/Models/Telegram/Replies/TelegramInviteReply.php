@@ -16,18 +16,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Telegram\Replies;
+namespace medcenter24\mcCore\App\Models\Telegram\Replies;
 
 
-use App\Services\InviteService;
-use App\TelegramUser;
+use medcenter24\mcCore\App\Services\InviteService;
+use medcenter24\mcCore\App\TelegramUser;
 use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\Update;
 
 /**
  * Work with response on the invite reply
  * Class TelegramInviteReply
- * @package App\Models\Telegram\Replies
+ * @package medcenter24\mcCore\App\Models\Telegram\Replies
  */
 class TelegramInviteReply
 {

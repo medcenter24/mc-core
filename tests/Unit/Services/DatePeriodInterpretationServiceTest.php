@@ -19,8 +19,8 @@
 namespace Tests\Unit\Services;
 
 
-use App\Services\DatePeriod\DatePeriodInterpretationService;
-use App\Services\DatePeriod\DatePeriodService;
+use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodInterpretationService;
+use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Tests\Unit\fakes\DatePeriodFake;

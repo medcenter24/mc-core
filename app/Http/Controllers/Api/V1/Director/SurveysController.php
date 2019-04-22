@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\DoctorSurvey;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\DoctorSurveyRequest;
-use App\Transformers\DoctorSurveyTransformer;
+use medcenter24\mcCore\App\DoctorSurvey;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\DoctorSurveyRequest;
+use medcenter24\mcCore\App\Transformers\DoctorSurveyTransformer;
 use League\Fractal\TransformerAbstract;
 
 class SurveysController extends ApiController

@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\FinanceCurrency;
+use medcenter24\mcCore\App\FinanceCurrency;
 use Illuminate\Database\Seeder;
 
 class FinanceCurrenciesTableSeeder extends Seeder

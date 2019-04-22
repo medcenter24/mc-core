@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Providers;
+namespace medcenter24\mcCore\App\Providers;
 
-use App\Services\AccidentService;
-use App\Services\CaseServices\Finance\CaseFinanceService;
-use App\Services\FinanceConditionService;
-use App\Services\Formula\FormulaResultService;
-use App\Services\Formula\FormulaService;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
+use medcenter24\mcCore\App\Services\FinanceConditionService;
+use medcenter24\mcCore\App\Services\Formula\FormulaResultService;
+use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use Illuminate\Support\ServiceProvider;
 
 class CaseFinanceServiceProvider extends ServiceProvider

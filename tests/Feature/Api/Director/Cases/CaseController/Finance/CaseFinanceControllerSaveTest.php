@@ -16,15 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director\Cases\CaseController\Finance;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController\Finance;
 
-use App\Accident;
-use App\FinanceCurrency;
-use App\Payment;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\FinanceCurrency;
+use medcenter24\mcCore\App\Payment;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
 
 class CaseFinanceControllerSaveTest extends TestCase
 {

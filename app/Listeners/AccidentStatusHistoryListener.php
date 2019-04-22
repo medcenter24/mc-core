@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Listeners;
+namespace medcenter24\mcCore\App\Listeners;
 
-use App\AccidentStatusHistory;
-use App\Events\AccidentStatusChangedEvent;
+use medcenter24\mcCore\App\AccidentStatusHistory;
+use medcenter24\mcCore\App\Events\AccidentStatusChangedEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

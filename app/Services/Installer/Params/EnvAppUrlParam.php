@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Installer\Params;
+namespace medcenter24\mcCore\App\Services\Installer\Params;
 
 
-use App\Services\EnvironmentService;
-use App\Services\Installer\ConfigurableParam;
+use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Installer\ConfigurableParam;
 
 class EnvAppUrlParam extends ConfigurableParam implements EnvParam
 {

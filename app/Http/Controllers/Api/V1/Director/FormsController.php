@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 
-use App\Form;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\FormRequest;
-use App\Services\FormService;
-use App\Transformers\FormTransformer;
+use medcenter24\mcCore\App\Form;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\FormRequest;
+use medcenter24\mcCore\App\Services\FormService;
+use medcenter24\mcCore\App\Transformers\FormTransformer;
 use League\Fractal\TransformerAbstract;
 
 class FormsController extends ApiController

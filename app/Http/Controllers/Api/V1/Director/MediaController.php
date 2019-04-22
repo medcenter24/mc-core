@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 
-use App\Http\Controllers\ApiController;
-use App\Services\UploaderService;
-use App\Transformers\UploadedFileTransformer;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Services\UploaderService;
+use medcenter24\mcCore\App\Transformers\UploadedFileTransformer;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
@@ -33,7 +33,7 @@ use Illuminate\Http\Request;
  * to upload medias, please use Media library
  *
  * Class MediaController
- * @package App\Http\Controllers\Api\V1\Director
+ * @package medcenter24\mcCore\App\Http\Controllers\Api\V1\Director
  */
 class MediaController extends ApiController
 {

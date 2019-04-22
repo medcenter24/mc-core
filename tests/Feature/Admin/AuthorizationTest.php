@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Admin;
+namespace medcenter24\mcCore\Tests\Feature\Admin;
 
 
-use App\User;
+use medcenter24\mcCore\App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestResponse;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\TestCase;
 
 class AuthorizationTest extends TestCase
 {

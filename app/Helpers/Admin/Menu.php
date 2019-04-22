@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Helpers\Admin;
+namespace medcenter24\mcCore\App\Helpers\Admin;
 
-use \App\Helpers\Menu as AbstractMenu;
+use \medcenter24/mcCore\Helpers\Menu as AbstractMenu;
 
 class Menu extends AbstractMenu
 {

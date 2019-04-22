@@ -16,15 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\Accident;
-use App\AccidentStatus;
-use App\DoctorAccident;
-use App\Events\AccidentStatusChangedEvent;
-use App\Exceptions\InconsistentDataException;
-use App\HospitalAccident;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Events\AccidentStatusChangedEvent;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\HospitalAccident;
 use Illuminate\Database\Eloquent\Model;
 
 class AccidentStatusesService

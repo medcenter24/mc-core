@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Bot;
+namespace medcenter24\mcCore\App\Services\Bot;
 
 
 /**
  * Configurable instance of the bot
  * Class BotInstance
- * @package App\Services\Bot
+ * @package medcenter24\mcCore\App\Services\Bot
  */
 class BotInstance
 {

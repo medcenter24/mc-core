@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Admin;
+namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
-use App\Http\Controllers\AdminController;
-use App\Http\Requests\RoleRequest;
-use App\Role;
+use medcenter24\mcCore\App\Http\Controllers\AdminController;
+use medcenter24\mcCore\App\Http\Requests\RoleRequest;
+use medcenter24\mcCore\App\Role;
 
 
 class RolesController extends AdminController

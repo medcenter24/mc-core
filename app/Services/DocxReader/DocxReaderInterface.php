@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace app\Services\DocxReader;
+namespace medcenter24\mcCore\App\Services\DocxReader;
 
 
 /**
  * Interface provided opportunity to read docx files
  *
  * Interface DocxReaderInterface
- * @package app\Services\DocxReader
+ * @package medcenter24\mcCore\App\Services\DocxReader
  */
 interface DocxReaderInterface
 {

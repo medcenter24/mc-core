@@ -18,7 +18,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(App\Assistant::class, function (Faker $faker) {
+$factory->define(medcenter24/mcCore\Assistant::class, function (Faker $faker) {
     $refKey = $faker->toUpper(str_random(3));
     return [
         'title' => 'Assistant ' . $refKey,

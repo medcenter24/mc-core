@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director\Statistics;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
 
 
-use App\Accident;
-use App\Http\Controllers\ApiController;
-use App\Transformers\statistics\CalendarEventTransformer;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Transformers\statistics\CalendarEventTransformer;
 use Illuminate\Http\Request;
 
 class CalendarController extends ApiController

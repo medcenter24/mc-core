@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\ExtractTableConfigurations;
+namespace medcenter24\mcCore\App\Services\ExtractTableConfigurations;
 
 
-use App\Services\ExtractTableFromArrayService;
+use medcenter24\mcCore\App\Services\ExtractTableFromArrayService;
 
 class HtmlConfiguration
 {

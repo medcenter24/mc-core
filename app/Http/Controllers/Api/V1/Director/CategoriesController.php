@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\DiagnosticCategory;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\DiagnosticCategoryUpdate;
-use App\Transformers\CategoryTransformer;
+use medcenter24\mcCore\App\DiagnosticCategory;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticCategoryUpdate;
+use medcenter24\mcCore\App\Transformers\CategoryTransformer;
 use League\Fractal\TransformerAbstract;
 
 class CategoriesController extends ApiController

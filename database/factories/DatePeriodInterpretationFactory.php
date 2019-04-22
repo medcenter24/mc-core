@@ -18,7 +18,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(\App\DatePeriodInterpretation::class, function (Faker $faker) {
+$factory->define(\medcenter24/mcCore\DatePeriodInterpretation::class, function (Faker $faker) {
     return [
         'day_of_week',
         'from',

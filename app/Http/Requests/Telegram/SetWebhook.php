@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Requests\Telegram;
+namespace medcenter24\mcCore\App\Http\Requests\Telegram;
 
-use App\Role;
-use App\Support\Facades\Roles;
+use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Support\Facades\Roles;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SetWebhook extends FormRequest

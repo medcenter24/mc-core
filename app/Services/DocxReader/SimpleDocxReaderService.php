@@ -16,8 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\DocxReader;
-use app\Helpers\MediaLibrary\DocPathGenerator;
+namespace medcenter24\mcCore\App\Services\DocxReader;
+use medcenter24\mcCore\App\Helpers\MediaLibrary\DocPathGenerator;
 use DOMDocument;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +30,7 @@ use ZipArchive;
  * external sources don't needed, all you need that php
  *
  * Class SimpleDocxReaderService
- * @package app\Services\DocxReader
+ * @package medcenter24\mcCore\App\Services\DocxReader
  */
 class SimpleDocxReaderService implements DocxReaderInterface
 {

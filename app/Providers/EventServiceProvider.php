@@ -16,17 +16,17 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Providers;
+namespace medcenter24\mcCore\App\Providers;
 
-use App\Events\AccidentPaymentChangedEvent;
-use App\Events\AccidentStatusChangedEvent;
-use App\Events\DatePeriodChangedEvent;
-use App\Events\DoctorAccidentUpdatedEvent;
-use App\Events\HospitalAccidentUpdatedEvent;
-use App\Listeners\AccidentPaymentListener;
-use App\Listeners\AccidentStatusHistoryListener;
-use App\Listeners\DatePeriodInterpretationListener;
-use App\Listeners\SendTelegramMessageOnDocAssignment;
+use medcenter24\mcCore\App\Events\AccidentPaymentChangedEvent;
+use medcenter24\mcCore\App\Events\AccidentStatusChangedEvent;
+use medcenter24\mcCore\App\Events\DatePeriodChangedEvent;
+use medcenter24\mcCore\App\Events\DoctorAccidentUpdatedEvent;
+use medcenter24\mcCore\App\Events\HospitalAccidentUpdatedEvent;
+use medcenter24\mcCore\App\Listeners\AccidentPaymentListener;
+use medcenter24\mcCore\App\Listeners\AccidentStatusHistoryListener;
+use medcenter24\mcCore\App\Listeners\DatePeriodInterpretationListener;
+use medcenter24\mcCore\App\Listeners\SendTelegramMessageOnDocAssignment;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider

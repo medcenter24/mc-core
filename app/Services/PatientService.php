@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\Patient;
+use medcenter24\mcCore\App\Patient;
 
 class PatientService
 {

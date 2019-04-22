@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
-use App\Support\Core\Configurable;
-use App\Upload;
+use medcenter24\mcCore\App\Support\Core\Configurable;
+use medcenter24\mcCore\App\Upload;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Storage;
 /**
  * Media storage for storing images which were uploaded but still haven't been bound to the any model
  * Class MediaService
- * @package App\Services
+ * @package medcenter24\mcCore\App\Services
  */
 class UploaderService extends Configurable
 {

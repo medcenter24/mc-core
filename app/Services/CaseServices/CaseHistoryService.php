@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\CaseServices;
+namespace medcenter24\mcCore\App\Services\CaseServices;
 
 
-use App\Accident;
+use medcenter24\mcCore\App\Accident;
 use Illuminate\Support\Collection;
 
 class CaseHistoryService

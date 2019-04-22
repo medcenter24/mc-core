@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Events;
+namespace medcenter24\mcCore\App\Events;
 
-use App\DatePeriod;
+use medcenter24\mcCore\App\DatePeriod;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;

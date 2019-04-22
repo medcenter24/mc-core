@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\Hospital;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\StoreHospital;
-use App\Http\Requests\Api\UpdateHospital;
-use App\Transformers\HospitalTransformer;
+use medcenter24\mcCore\App\Hospital;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\StoreHospital;
+use medcenter24\mcCore\App\Http\Requests\Api\UpdateHospital;
+use medcenter24\mcCore\App\Transformers\HospitalTransformer;
 use League\Fractal\TransformerAbstract;
 
 class HospitalsController extends ApiController

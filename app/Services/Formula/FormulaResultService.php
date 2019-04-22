@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Formula;
+namespace medcenter24\mcCore\App\Services\Formula;
 
 
-use App\Contract\Formula\FormulaBuilder;
-use App\Contract\Formula\Operation;
-use App\Contract\Formula\Result;
-use App\Models\Formula\Variables\Decimal;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\Contract\Formula\Operation;
+use medcenter24\mcCore\App\Contract\Formula\Result;
+use medcenter24\mcCore\App\Models\Formula\Variables\Decimal;
 
 class FormulaResultService implements Result
 {
@@ -30,7 +30,7 @@ class FormulaResultService implements Result
      * Calculate and get result
      * @param FormulaBuilder $formula
      * @return int|float
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24/mcCore\Models\Formula\Exception\FormulaException
      */
     public function calculate(FormulaBuilder $formula)
     {

@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\Support\Core\Configurable;
+use medcenter24\mcCore\App\Support\Core\Configurable;
 
 /**
  * Extract Default html based tables from the array
@@ -27,7 +27,7 @@ use App\Support\Core\Configurable;
  * Example in the test: \Tests\Unit\Services\ExtractTableFromArrayServiceTest
  *
  * Class ExtractTableFromArrayService
- * @package App\Services
+ * @package medcenter24\mcCore\App\Services
  */
 class ExtractTableFromArrayService extends Configurable
 {

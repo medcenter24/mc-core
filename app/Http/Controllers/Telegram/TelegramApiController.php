@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Telegram;
+namespace medcenter24\mcCore\App\Http\Controllers\Telegram;
 
 
-use App\Http\Controllers\Controller;
-use App\Models\Telegram\Replies\DoctorCasePickupReply;
-use App\Models\Telegram\Replies\TelegramInviteReply;
-use App\Services\AccidentStatusesService;
-use App\Services\InviteService;
+use medcenter24\mcCore\App\Http\Controllers\Controller;
+use medcenter24\mcCore\App\Models\Telegram\Replies\DoctorCasePickupReply;
+use medcenter24\mcCore\App\Models\Telegram\Replies\TelegramInviteReply;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\InviteService;
 use Illuminate\Support\Facades\Log;
 use Telegram;
 

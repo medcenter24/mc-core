@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http;
+namespace medcenter24\mcCore\App\Http;
 
-use App\Http\Middleware\Authenticate;
-use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\RedirectIfAuthenticated;
-use App\Http\Middleware\RoleMiddleware;
-use App\Http\Middleware\TrimStrings;
-use App\Http\Middleware\VerifyCsrfToken;
+use medcenter24\mcCore\App\Http\Middleware\Authenticate;
+use medcenter24\mcCore\App\Http\Middleware\EncryptCookies;
+use medcenter24\mcCore\App\Http\Middleware\RedirectIfAuthenticated;
+use medcenter24\mcCore\App\Http\Middleware\RoleMiddleware;
+use medcenter24\mcCore\App\Http\Middleware\TrimStrings;
+use medcenter24\mcCore\App\Http\Middleware\VerifyCsrfToken;
 use Barryvdh\Cors\HandleCors;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;

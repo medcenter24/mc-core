@@ -33,7 +33,7 @@ class CasesImportTest extends TestCase
     use JwtHeaders;
     use LoggedUser;
 
-    public function testOptions()
+    public function testOptions(): void
     {
         $user = factory(User::class)->create(['password' => bcrypt('foo')]);
 
@@ -42,7 +42,7 @@ class CasesImportTest extends TestCase
             ->assertHeader('Allow', 'GET,HEAD,POST,PUT,DELETE');
     }
 
-    public function testUpload()
+    public function testUpload(): void
     {
         Storage::fake(CaseImporterService::DISC_IMPORTS);
 

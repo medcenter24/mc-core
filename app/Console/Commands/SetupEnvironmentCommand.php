@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Console\Commands;
 
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Services\EnvironmentService;
 use medcenter24\mcCore\App\Services\Installer\ConfigurableParam;
@@ -63,7 +64,7 @@ class SetupEnvironmentCommand extends Command
      * Execute the console command.
      * @param InstallerService $installerService
      * @throws InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Exceptions\NotImplementedException
+     * @throws NotImplementedException
      */
     public function handle(InstallerService $installerService): void
     {
@@ -128,7 +129,7 @@ class SetupEnvironmentCommand extends Command
 
     /**
      * @throws InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Exceptions\NotImplementedException
+     * @throws NotImplementedException
      */
     private function install(): void
     {
@@ -144,7 +145,7 @@ class SetupEnvironmentCommand extends Command
 
     /**
      * @throws InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Exceptions\NotImplementedException
+     * @throws NotImplementedException
      */
     private function reloadApp(): void
     {

@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\App\Services;
 use medcenter24\mcCore\App\Contract\General\Environment;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
+use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Services\Installer\Params\ConfigDirParam;
 use medcenter24\mcCore\App\Services\Installer\Params\ConfigFilenameParam;
 use medcenter24\mcCore\App\Services\Installer\Params\DataDirParam;
@@ -260,5 +261,8 @@ class EnvironmentService extends Configurable implements Environment
     {
         self::$isTmpEnv = false;
         self::$instance = null;
+        if (!empty(self::$tmpDir)) {
+            FileHelper::delete(self::$tmpDir);
+        }
     }
 }

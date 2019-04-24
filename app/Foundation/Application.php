@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Foundation;
 
 
+use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Services\EnvironmentService;
 use Illuminate\Foundation\Application as BaseApplication;
@@ -71,7 +72,7 @@ class Application extends BaseApplication
             $dir = sys_get_temp_dir();
             FileHelper::createDirRecursive([$dir, 'bootstrap', 'cache']);
             EnvironmentService::setTmpState(true);
-            EnvironmentService::setTmp($dir);
+            EnvironmentService::setTmp($dir . '/bootstrap/cache');
         } else {
             $dir = $this->storagePath();
         }
@@ -86,11 +87,35 @@ class Application extends BaseApplication
         self::deleteTmp();
     }
 
+    /**
+     * phpunit tests use this
+     */
     public static function deleteTmp(): void
     {
         // drop tmp dirs for the cache
         if (EnvironmentService::getTmp() && !empty(EnvironmentService::getTmp())) {
             FileHelper::delete(EnvironmentService::getTmp() . '/bootstrap');
         }
+    }
+
+    /**
+     * Get or check the current application environment.
+     *
+     * @param  string|array  $environments
+     * @return string|bool
+     */
+    public function environment(...$environments)
+    {
+        if (!isset($this['env'])) {
+            return false;
+        }
+
+        if (count($environments) > 0) {
+            $patterns = is_array($environments[0]) ? $environments[0] : $environments;
+
+            return Str::is($patterns, $this['env']);
+        }
+
+        return $this['env'];
     }
 }

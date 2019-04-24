@@ -21,7 +21,7 @@ use medcenter24\mcCore\App\Services\FormService;
 use medcenter24\mcCore\App\Services\LogoService;
 use medcenter24\mcCore\App\Services\SignatureService;
 use medcenter24\mcCore\App\Services\UploaderService;
-use medcenter24\McDhv24\Services\Import\CaseImporterService;
+use medcenter24\McImport\Services\CaseImporterService;
 
 return [
 

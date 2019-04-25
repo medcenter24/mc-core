@@ -16,6 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use Dingo\Api\Routing\Router;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\AuthenticateController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentScenarioController;
@@ -50,35 +51,32 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\DoctorSurveysControlle
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\DocumentsController as DoctorDocumentsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DocumentsController as DirectorDocumentsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\ProfileController;
-use medcenter24\McImport\Http\Controllers\Api\V1\Director\CasesImporterController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentsController as DirectorAccidentsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentTypesController as DirectorAccidentTypesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DoctorServicesController as DirectorDoctorServicesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DiagnosticsController as DirectorDiagnosticsController;
 
+/** @var Router $api */
+$api = app(Router::class);
 
-
-/** @var \Dingo\Api\Routing\Router $api */
-$api = app('Dingo\Api\Routing\Router');
-
-$api->version('v1', ['middleware' => 'api'], function ($api) {
+$api->version('v1', ['middleware' => 'api'], static function ($api) {
     $api->post('authenticate', AuthenticateController::class . '@authenticate');
 });
 $api->group([
     'version' => 'v1',
     'middleware' => 'api',
     'prefix' => 'api',
-], function ($api) {
-    $api->version('v1', ['middleware' => ['cors']], function ($api) {
+], static function ($api) {
+    $api->version('v1', ['middleware' => ['cors']], static function ($api) {
         $api->group([
             'middleware' => 'api.auth'
-        ], function ($api) {
+        ], static function ($api) {
             $api->post('logout', AuthenticateController::class . '@logout');
             $api->get('token', AuthenticateController::class . '@getToken');
             $api->get('user', AuthenticateController::class . '@authenticatedUser');
             $api->get('user/company', AuthenticateController::class . '@getCompany');
 
-            $api->group(['prefix' => 'doctor', 'middleware' => ['role:doctor']], function ($api) {
+            $api->group(['prefix' => 'doctor', 'middleware' => ['role:doctor']], static function ($api) {
                 $api->post('accidents/send', DoctorAccidentsController::class . '@send');
                 $api->get('accidents/{id}/patient', DoctorAccidentsController::class . '@patient');
                 $api->patch('accidents/{id}/patient', DoctorAccidentsController::class . '@updatePatient');
@@ -103,7 +101,7 @@ $api->group([
                 $api->resource('documents', DoctorDocumentsController::class);
             });
 
-            $api->group(['prefix' => 'director', 'middleware' => ['role:director']], function ($api) {
+            $api->group(['prefix' => 'director', 'middleware' => ['role:director']], static function ($api) {
 
                 $api->resource('uploads', UploadsController::class);
 
@@ -127,19 +125,10 @@ $api->group([
                 $api->delete('companies/{id}/logo', CompaniesController::class . '@deleteLogo');
                 $api->delete('companies/{id}/sign', CompaniesController::class . '@deleteSign');
 
-                // Exporter
-                // todo move exporter to the cases group
-                $api->post('export/{form}', CasesExporterController::class . '@export');
-
                 // Cases
-                $api->group(['prefix' => 'cases'], function ($api) {
+                $api->group(['prefix' => 'cases'], static function ($api) {
 
-                    $api->group(['prefix' => 'importer'], function ($api) {
-                        $api->post('', CasesImporterController::class . '@upload');
-                        $api->get('', CasesImporterController::class . '@uploads');
-                        $api->put('{id}', CasesImporterController::class . '@import');
-                        $api->delete('{id}', CasesImporterController::class . '@destroy');
-                    });
+                    $api->post('export/{form}', CasesExporterController::class . '@export');
 
                     // assigned to case
                     $api->post('search', CasesController::class . '@search');

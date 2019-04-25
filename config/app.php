@@ -193,6 +193,7 @@ $app = [
         // \medcenter24\mcCore\App\Providers\CaseFinanceProvider::class,
         \medcenter24\mcCore\App\Providers\FormulaServiceProvider::class,
         \medcenter24\mcCore\App\Providers\ValidatorServiceProvider::class,
+        Nwidart\Modules\LaravelModulesServiceProvider::class,
     ],
 
     /*

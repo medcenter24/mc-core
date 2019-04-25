@@ -98,4 +98,41 @@ class FileHelper
         }
         return true;
     }
+
+    /**
+     * Calculates size
+     * @param string $path
+     * @return int
+     */
+    public static function getSize(string $path): int
+    {
+        $bytes = 0;
+        self::mapFiles($path, static function (\SplFileInfo $fileInfo) use (&$bytes) {
+            $bytes += $fileInfo->getSize();
+        });
+        return $bytes;
+    }
+
+    public static function filesCount(string $path, array $filesRegx = []): int
+    {
+        $count = 0;
+        $regEx = '/^['.implode('|', $filesRegx).']$/';
+        self::mapFiles($path, static function (\SplFileInfo $fileInfo) use (&$count, $regEx) {
+            if (preg_match($regEx, $fileInfo->getFilename()) !== false) {
+                $count++;
+            }
+        });
+        return $count;
+    }
+
+    public static function mapFiles(string $path, $closure): void
+    {
+        $path = realpath($path);
+        if ($path !== false && $path !== '' && file_exists($path)) {
+            /** @var \SplFileInfo $object */
+            foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS)) as $object){
+                $closure($object);
+            }
+        }
+    }
 }

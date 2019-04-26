@@ -57,6 +57,8 @@ use medcenter24\mcCore\App\Services\Installer\Params\EnvDropboxBackupSecretParam
 use medcenter24\mcCore\App\Services\Installer\Params\EnvDropboxBackupTokenParam;
 use medcenter24\mcCore\App\Services\Installer\Params\EnvFilenameParam;
 use medcenter24\mcCore\App\Services\Installer\Params\EnvImageDriverParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvLogChannelParam;
+use medcenter24\mcCore\App\Services\Installer\Params\EnvLogSlackWebhookUrlParam;
 use medcenter24\mcCore\App\Services\Installer\Params\EnvMailDriverParam;
 use medcenter24\mcCore\App\Services\Installer\Params\EnvMailEncryptionParam;
 use medcenter24\mcCore\App\Services\Installer\Params\EnvMailHostParam;
@@ -168,6 +170,8 @@ class EnvironmentService extends Configurable implements Environment
             new ConfigDirParam(),
             new ConfigFilenameParam(),
             new EnvFilenameParam(),
+            new EnvLogChannelParam(),
+            new EnvLogSlackWebhookUrlParam(),
             new DataDirParam(),
             new EnvApiDebugParam(),
             new EnvApiNameParam(),

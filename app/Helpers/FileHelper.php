@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\App\Helpers;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SplFileInfo;
 
 class FileHelper
 {
@@ -89,12 +90,19 @@ class FileHelper
     public static function delete($target): bool
     {
         if (file_exists($target)) {
-            $di = new RecursiveDirectoryIterator($target, FilesystemIterator::SKIP_DOTS);
-            $ri = new RecursiveIteratorIterator($di, RecursiveIteratorIterator::CHILD_FIRST);
+            if (is_dir($target)) {
+                $di = new RecursiveDirectoryIterator($target, FilesystemIterator::SKIP_DOTS);
+                $ri = new RecursiveIteratorIterator($di, RecursiveIteratorIterator::CHILD_FIRST);
+            } else {
+                $di = false;
+                $ri = [new SplFileInfo($target)];
+            }
             foreach ( $ri as $file ) {
                 $file->isDir() ?  rmdir($file) : unlink($file);
             }
-            $di->isDir() ? rmdir($target) : unlink($target);
+            if ($di) {
+                $di->isDir() ? rmdir($target) : unlink($target);
+            }
         }
         return true;
     }
@@ -102,36 +110,47 @@ class FileHelper
     /**
      * Calculates size
      * @param string $path
+     * @param array $extensions
      * @return int
      */
-    public static function getSize(string $path): int
+    public static function getSize(string $path, array $extensions = []): int
     {
         $bytes = 0;
-        self::mapFiles($path, static function (\SplFileInfo $fileInfo) use (&$bytes) {
+        self::mapFiles($path, static function (SplFileInfo $fileInfo) use (&$bytes) {
             $bytes += $fileInfo->getSize();
-        });
+        }, $extensions);
         return $bytes;
     }
 
-    public static function filesCount(string $path, array $filesRegx = []): int
+    public static function filesCount(string $path, array $extensions = []): int
     {
         $count = 0;
-        $regEx = '/^['.implode('|', $filesRegx).']$/';
-        self::mapFiles($path, static function (\SplFileInfo $fileInfo) use (&$count, $regEx) {
-            if (preg_match($regEx, $fileInfo->getFilename()) !== false) {
-                $count++;
-            }
-        });
+        self::mapFiles($path, static function (SplFileInfo $fileInfo) use (&$count, $extensions) {
+            $count++;
+        }, $extensions);
         return $count;
     }
 
-    public static function mapFiles(string $path, $closure): void
+    public static function mapFiles(string $path, $closure, array $extensions = []): void
     {
         $path = realpath($path);
         if ($path !== false && $path !== '' && file_exists($path)) {
-            /** @var \SplFileInfo $object */
-            foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS)) as $object){
-                $closure($object);
+            if (is_dir($path)) {
+                /** @var \SplFileInfo $object */
+                foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path,
+                    FilesystemIterator::SKIP_DOTS)) as $object) {
+
+                    $ext = $object->getExtension();
+                    if (!count($extensions) || in_array($ext, $extensions, false)) {
+                        $closure($object);
+                    }
+                }
+            } else {
+                $object = new SplFileInfo($path);
+                $ext = $object->getExtension();
+                if (!count($extensions) || in_array($ext, $extensions, false)) {
+                    $closure($object);
+                }
             }
         }
     }

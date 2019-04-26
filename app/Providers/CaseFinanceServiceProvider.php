@@ -34,7 +34,7 @@ class CaseFinanceServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         //
     }
@@ -44,7 +44,7 @@ class CaseFinanceServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->singleton(CaseFinanceService::class, function() {
             return new CaseFinanceService(

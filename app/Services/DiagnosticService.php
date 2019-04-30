@@ -19,33 +19,22 @@
 namespace medcenter24\mcCore\App\Services;
 
 
-use Illuminate\Database\Eloquent\Model;
-use medcenter24\mcCore\App\AccidentType;
+use medcenter24\mcCore\App\Diagnostic;
 
-class AccidentTypeService extends AbstractModelService
+class DiagnosticService extends AbstractModelService
 {
-    public const TYPE_INSURANCE = 'insurance';
-    public const TYPE_NON_INSURANCE = 'non-insurance';
-    public const ALLOWED_TYPES = ['insurance', 'non-insurance'];
 
     protected function getClassName(): string
     {
-        return AccidentType::class;
+        return Diagnostic::class;
     }
 
     protected function getRequiredFields(): array
     {
         return [
             'title' => '',
+            'disease_code' => '',
             'description' => '',
         ];
-    }
-
-    /**
-     * @return AccidentType
-     */
-    public function getInsuranceType(): Model
-    {
-        return $this->firstOrCreate(['title' => self::TYPE_INSURANCE]);
     }
 }

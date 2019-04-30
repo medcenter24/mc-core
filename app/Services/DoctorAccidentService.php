@@ -21,6 +21,21 @@ namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\DoctorAccident;
 
-class DoctorAccidentService
+class DoctorAccidentService extends AbstractModelService
 {
+
+    public function getClassName(): string
+    {
+        return DoctorAccident::class;
+    }
+
+    protected function getRequiredFields(): array
+    {
+        return [
+            'doctor_id' => 0,
+            'recommendation' => '',
+            'investigation' => '',
+        ];
+    }
+
 }

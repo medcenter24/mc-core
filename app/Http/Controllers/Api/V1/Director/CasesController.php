@@ -261,7 +261,7 @@ class CasesController extends ApiController
         $this->createCaseableFromRequest($accident, $request);
 
         if (!array_key_exists('patientId', $accidentData)) {
-            $patient = $patientService->findOrCreate($request->json('patient', []));
+            $patient = $patientService->firstOrCreate($request->json('patient', []));
             $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
         } else {
             $accident->patient_id = (int) $accidentData['patientId'];
@@ -355,7 +355,7 @@ class CasesController extends ApiController
         }
 
         if (!array_key_exists('patientId', $requestedAccident)) {
-            $patient = $patientService->findOrCreate($request->json('patient', []));
+            $patient = $patientService->firstOrCreate($request->json('patient', []));
             $newPatientId = $patient && $patient->id ? $patient->id : 0;
             if ($newPatientId) {
                 $requestedAccident['patientId'] = $newPatientId;

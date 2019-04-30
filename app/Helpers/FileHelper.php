@@ -154,4 +154,13 @@ class FileHelper
             }
         }
     }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public static function getRandomDirPath(): string
+    {
+        return sprintf('%02x/%02x', random_int(0, 255), random_int(0, 255));
+    }
 }

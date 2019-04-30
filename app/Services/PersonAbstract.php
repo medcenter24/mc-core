@@ -18,7 +18,7 @@
 
 namespace medcenter24\mcCore\App\Services;
 
-
+// @todo delete
 abstract class PersonAbstract
 {
     const GENDER_MALE = 'male';

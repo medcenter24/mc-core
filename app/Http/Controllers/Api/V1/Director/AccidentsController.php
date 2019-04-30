@@ -20,9 +20,11 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\StoreAccident;
 use medcenter24\mcCore\App\Http\Requests\UpdateAccident;
+use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use medcenter24\mcCore\App\Transformers\AccidentTransformer;
 use Dingo\Api\Http\Response;
@@ -46,15 +48,19 @@ class AccidentsController extends ApiController
         return $this->response->collection($accidents, new AccidentTransformer());
     }
 
-    public function store(StoreAccident $request, AccidentStatusesService $statusesService)
+    /**
+     * @param StoreAccident $request
+     * @param AccidentService $accidentService
+     * @param AccidentStatusesService $accidentStatusesService
+     * @return Response
+     * @throws InconsistentDataException
+     */
+    public function store(StoreAccident $request, AccidentService $accidentService, AccidentStatusesService $accidentStatusesService): Response
     {
-        $accident = Accident::create($request->all());
-
-        $statusesService->set($accident, AccidentStatus::findOrCreate([
-            'title' => AccidentStatusesService::STATUS_NEW,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT,
-        ]));
-        return $accident;
+        /** @var Accident $accident */
+        $accident = $accidentService->create($request->all());
+        $accidentService->setStatus($accident, $accidentStatusesService->getNewStatus());
+        return $this->response->created('', ['id' => $accident->getAttribute('id')]);
     }
 
     public function show($id): Response

@@ -23,8 +23,24 @@ use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\DoctorAccident;
 
-class DoctorsService extends PersonAbstract
+class DoctorsService extends AbstractModelService
 {
+
+    protected function getClassName(): string
+    {
+        return Doctor::class;
+    }
+
+    protected function getRequiredFields(): array
+    {
+        return [
+            'name' => '',
+            'description' => '',
+            'ref_key' => '',
+            'gender' => '',
+            'medical_board_num' => '',
+        ];
+    }
 
     /**
      * @param Doctor $doctor
@@ -32,8 +48,9 @@ class DoctorsService extends PersonAbstract
      *
      * @return bool
      */
-    public function hasAccess(Doctor $doctor, Accident $accident)
+    public function hasAccess(Doctor $doctor, Accident $accident): bool
     {
-        return $accident->caseable instanceof DoctorAccident && $accident->caseable->doctor_id == $doctor->id;
+        return $accident->getAttribute('caseable') instanceof DoctorAccident
+            && $accident->getAttribute('caseable')->getAttribute('doctor_id') === $doctor->getAttribute('id');
     }
 }

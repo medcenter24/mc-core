@@ -17,12 +17,9 @@
  */
 
 namespace medcenter24\mcCore\App\Services\DocxReader;
-use medcenter24\mcCore\App\Helpers\MediaLibrary\DocPathGenerator;
 use DOMDocument;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Spatie\MediaLibrary\Media;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use ZipArchive;
 
 /**
@@ -52,7 +49,7 @@ class SimpleDocxReaderService implements DocxReaderInterface
      * @param string $path
      * @return $this
      */
-    public function load($path = '')
+    public function load($path = ''): self
     {
         $this->filePath = $path;
         return $this;
@@ -62,7 +59,7 @@ class SimpleDocxReaderService implements DocxReaderInterface
      * File path
      * @return string
      */
-    public function getFilePath()
+    public function getFilePath(): string
     {
         return $this->filePath;
     }
@@ -71,7 +68,7 @@ class SimpleDocxReaderService implements DocxReaderInterface
      * dom as it is
      * @return DOMDocument
      */
-    public function getDom()
+    public function getDom(): DOMDocument
     {
         $this->dom = $this->docx2text($this->filePath);
         return $this->dom;
@@ -81,12 +78,12 @@ class SimpleDocxReaderService implements DocxReaderInterface
      * Get only text from the document
      * @return string
      */
-    public function getText()
+    public function getText(): string
     {
         return strip_tags($this->getDom()->saveXML());
     }
 
-    public function getImages()
+    public function getImages(): array
     {
         return $this->getZippedMedia($this->filePath);
     }
@@ -95,10 +92,12 @@ class SimpleDocxReaderService implements DocxReaderInterface
      * load file
      *
      * @param $filename
-     * @return DOMDocument|string
+     * @return DOMDocument
+     * @throws InconsistentDataException
      */
-    private function docx2text($filename) {
-        return $this->readZippedXML($filename, "word/document.xml");
+    private function docx2text($filename): DOMDocument
+    {
+        return $this->readZippedXML($filename, 'word/document.xml');
     }
 
     /**
@@ -106,9 +105,11 @@ class SimpleDocxReaderService implements DocxReaderInterface
      *
      * @param $archiveFile
      * @param $dataFile
-     * @return DOMDocument|string
+     * @return DomDocument
+     * @throws InconsistentDataException
      */
-    private function readZippedXML($archiveFile, $dataFile) {
+    private function readZippedXML($archiveFile, $dataFile): DomDocument
+    {
         Log::info('Open file to read', ['file' => $archiveFile]);
         // Create new ZIP archive
         $zip = new ZipArchive;
@@ -132,10 +133,7 @@ class SimpleDocxReaderService implements DocxReaderInterface
             }
             $zip->close();
         }
-
-        Log::error('File can not be read', ['file' => $archiveFile, 'err' => $zipErr]);
-        // In case of failure return empty string
-        return false;
+        throw new InconsistentDataException('File ' . $archiveFile . ' can not be read. Zip Error Code: ' . $zipErr);
     }
 
     /**
@@ -144,7 +142,8 @@ class SimpleDocxReaderService implements DocxReaderInterface
      * @param $archiveFile
      * @return array of medias
      */
-    private function getZippedMedia($archiveFile) {
+    private function getZippedMedia($archiveFile): array
+    {
         $files = [];
 
         Log::info('Open file to read', ['file' => $archiveFile]);
@@ -162,7 +161,7 @@ class SimpleDocxReaderService implements DocxReaderInterface
                 if ( $entry['size'] > 0 && preg_match('#\.(jpg|gif|png|jpeg|bmp)$#i', $entry['name'] )) {
                     $file = $zip->getFromIndex($i);
                     if( $file ){
-                        $ext = pathinfo(( basename( $entry['name'] ) . PHP_EOL ), PATHINFO_EXTENSION);
+                        $ext = pathinfo( basename( $entry['name'] ) . PHP_EOL, PATHINFO_EXTENSION);
                         $files[] = [
                             'name'  => $entry['name'],
                             'ext'   => $ext,

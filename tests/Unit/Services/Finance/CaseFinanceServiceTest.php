@@ -476,5 +476,5 @@ class CaseFinanceServiceTest extends TestCase
             'financeConditionServiceMock->findConditions' => 1,
         ])->getToHospitalFormula($accident));
     }
-v
+
 }

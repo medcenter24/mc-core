@@ -19,6 +19,8 @@
 namespace medcenter24\mcCore\App\Exceptions;
 
 
-class InconsistentDataException extends \Exception
+use Exception;
+
+class InconsistentDataException extends Exception
 {
 }

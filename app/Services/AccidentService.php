@@ -141,11 +141,8 @@ class AccidentService extends AbstractModelService
      */
     public function setStatus(Accident $accident, AccidentStatus $status, $comment = ''): void
     {
-        // prevent changing on closed accident
-        if ($accident->getAttribute('accidentStatus') && $accident->getAttribute('accidentStatus')->getAttribute('id')
-            === $this->getServiceLocator()->get(AccidentStatusesService::class)->getClosedStatus()->getAttribute('id') ) {
-            throw new InconsistentDataException('Closed Accident can not be edited');
-        }
+        // do not prevent changing on closed accident because it nonsense
+        // if we need to prevent then it needs to be in the controller not the service
 
         // I need to prevent all the times when I'm changing the status
         $accident->runStatusUpdating();

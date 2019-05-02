@@ -54,7 +54,7 @@ class FinanceCondition extends Model
     protected $visible = ['id', 'title', 'value', 'type', 'currency_id', 'currency_mode', 'model'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function conditions(): HasMany
     {

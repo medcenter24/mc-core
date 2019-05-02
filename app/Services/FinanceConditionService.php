@@ -152,14 +152,14 @@ class FinanceConditionService
      */
     private function find(string $model, Collection $filters): Collection
     {
+        // \Illuminate\Support\Facades\DB::enableQueryLog();
+
+        $storedConditions = [];
         if ($filters->count()) {
-
-            // \Illuminate\Support\Facades\DB::enableQueryLog();
-
-            /** @var \Illuminate\Database\Eloquent\Builder $storageQuery */
+            /** @var Builder $storageQuery */
             $storageQuery = FinanceStorage::query();
-            $filters->each(function ($val, $key) use ($storageQuery) {
-                $storageQuery->orWhere(function(Builder $query) use ($val, $key) {
+            $filters->each(static function ($val, $key) use ($storageQuery) {
+                $storageQuery->orWhere(static function (Builder $query) use ($val, $key) {
                     $query->where('model', $key);
                     if (is_array($val)) {
                         $query->whereIn('model_id', $val);
@@ -172,22 +172,20 @@ class FinanceConditionService
             $storedConditions = $storageQuery
                 ->groupBy('finance_condition_id')
                 ->get(['finance_condition_id']);
-
-            // $query = \Illuminate\Support\Facades\DB::getQueryLog();
-            $conditions = FinanceCondition::query()
-                ->where(function ($q) use ($model, $storedConditions) {
-                    // founded by stored conditions
-                    $q->where('model', $model)
-                        ->whereIn('id', $storedConditions);
-                })->orWhere( function ($q) use ($model) {
-                    // general conditions for the $model (without stored conditions)
-                    $q->where('model', $model)->doesntHave('conditions');
-                })
-                ->withCount('conditions')
-                ->get();
-        } else {
-            $conditions = collect();
         }
+
+        // $query = \Illuminate\Support\Facades\DB::getQueryLog();
+        $conditions = FinanceCondition::query()
+            ->where(static function (Builder $q) use ($model, $storedConditions) {
+                // founded by stored conditions
+                $q->where('model', $model)
+                    ->whereIn('id', $storedConditions);
+            })->orWhere( static function (Builder $q) use ($model) {
+                // general conditions for the $model (without stored conditions)
+                $q->where('model', $model)->doesntHave('conditions');
+            })
+            ->withCount('conditions')
+            ->get();
 
         return $conditions;
     }

@@ -19,11 +19,8 @@
 namespace medcenter24\mcCore\App\Services;
 
 
-use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\AccidentStatus;
-use medcenter24\mcCore\App\DoctorAccident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\HospitalAccident;
 use Illuminate\Database\Eloquent\Model;
 
 class AccidentStatusesService extends AbstractModelService

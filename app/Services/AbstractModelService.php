@@ -22,7 +22,6 @@ namespace medcenter24\mcCore\App\Services;
 use Illuminate\Database\Query\Builder;
 use medcenter24\mcCore\App\Helpers\Arr;
 use Illuminate\Database\Eloquent\Model;
-use PhpParser\Node\Expr\AssignOp\Mod;
 
 abstract class AbstractModelService
 {

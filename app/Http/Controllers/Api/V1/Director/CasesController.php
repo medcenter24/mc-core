@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Diagnostic;
 use medcenter24\mcCore\App\DoctorAccident;
@@ -25,6 +26,7 @@ use medcenter24\mcCore\App\DoctorService;
 use medcenter24\mcCore\App\DoctorSurvey;
 use medcenter24\mcCore\App\Events\DoctorAccidentUpdatedEvent;
 use medcenter24\mcCore\App\Events\HospitalAccidentUpdatedEvent;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CaseRequest;
@@ -242,7 +244,7 @@ class CasesController extends ApiController
      * @param ReferralNumberService $referralNumberService
      * @param AccidentService $accidentService
      * @param PatientService $patientService
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function store(
         CaseRequest $request,
@@ -251,18 +253,18 @@ class CasesController extends ApiController
         PatientService $patientService
     ): Response {
 
-        $accidentData = $accidentService->getFormattedAccidentData(
-            $this->convertIndexes(
-                $request->json('accident', [])
-            )
-        );
-
-        $accident = Accident::create($accidentData);
+        $accidentData = $this->convertIndexes( $request->json('accident', []) );
+        /** @var Accident $accident */
+        $accident = $accidentService->create($accidentData);
         $this->createCaseableFromRequest($accident, $request);
 
         if (!array_key_exists('patientId', $accidentData)) {
-            $patient = $patientService->firstOrCreate($request->json('patient', []));
-            $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
+            // if patient data were provided then try to find or create him
+            $patientData = $request->json('patient', []);
+            if (count($patientData)) {
+                $patient = $patientService->firstOrCreate($patientData);
+                $accident->patient_id = $patient->id;
+            }
         } else {
             $accident->patient_id = (int) $accidentData['patientId'];
         }
@@ -389,7 +391,7 @@ class CasesController extends ApiController
     {
         $converted = [];
         foreach ($data as $key => $val) {
-            $converted[snake_case($key)] = $val;
+            $converted[Str::snake($key)] = $val;
         }
         return $converted;
     }
@@ -448,13 +450,14 @@ class CasesController extends ApiController
     /**
      * Set status closed
      * @param int $id
-     * @param AccidentStatusesService $statusesService
-     * @return \Dingo\Api\Http\Response
+     * @param AccidentService $accidentService
+     * @return Response
+     * @throws InconsistentDataException
      */
-    public function close(int $id, AccidentStatusesService $statusesService): Response
+    public function close(int $id, AccidentService $accidentService): Response
     {
         $accident = Accident::findOrFail($id);
-        $statusesService->closeAccident($accident, 'Closed by director');
+        $accidentService->closeAccident($accident, 'Closed by director');
         return $this->response->noContent();
     }
 

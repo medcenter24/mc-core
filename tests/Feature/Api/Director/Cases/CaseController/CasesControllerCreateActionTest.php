@@ -25,6 +25,7 @@ use medcenter24\mcCore\App\Assistant;
 use medcenter24\mcCore\App\City;
 use medcenter24\mcCore\App\DoctorAccident;
 use medcenter24\mcCore\App\FormReport;
+use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Patient;
 use medcenter24\mcCore\App\Payment;
 use medcenter24\mcCore\App\Services\AccidentStatusesService;
@@ -39,7 +40,7 @@ class CasesControllerCreateActionTest extends TestCase
     use JwtHeaders;
     use LoggedUser;
 
-    public function testCreateWithoutData()
+    public function testCreateWithoutData(): void
     {
         $response = $this->post('/api/director/cases', [], $this->headers($this->getUser()));
         $response->assertStatus(201)->assertJson([
@@ -54,7 +55,7 @@ class CasesControllerCreateActionTest extends TestCase
                 'caseableId' => 1,
                 'cityId' => 0,
                 'formReportId' => 0,
-                'caseableType' => 'medcenter24\\mcCore\\App\\HospitalAccident',
+                'caseableType' => HospitalAccident::class,
                 'assistantRefNum' => '',
                 'title' => '',
                 'address' => '',
@@ -69,7 +70,7 @@ class CasesControllerCreateActionTest extends TestCase
     /**
      * Creating a case but with the data for accident only (without dependencies and relations)
      */
-    public function testCreateWithAccidentDataOnlyEmptyAllData()
+    public function testCreateWithAccidentDataOnlyEmptyAllData(): void
     {
         $data = [
             'accident' => [
@@ -211,7 +212,7 @@ class CasesControllerCreateActionTest extends TestCase
     /**
      * Creating a case but with the data for accident only (without dependencies and relations)
      */
-    public function testCreateWithAccidentDataOnly4()
+    public function testCreateWithAccidentDataOnly4(): void
     {
         $data = [
             'accident' => [
@@ -248,7 +249,7 @@ class CasesControllerCreateActionTest extends TestCase
                 'id' => 2,
                 'createdBy' => 2,
                 'parentId' => 1,
-                'patientId' => 0,
+                'patientId' => 2,
                 'accidentTypeId' => 1,
                 'accidentStatusId' => 1,
                 'assistantId' => '1',
@@ -274,14 +275,11 @@ class CasesControllerCreateActionTest extends TestCase
         ]);
     }
 
-    public function testCreateWithAccidentDataOnly5()
+    public function testCreateWithAccidentDataOnly5(): void
     {
         $data = [
             'accident' => [
-                'accidentStatusId' => AccidentStatus::firstOrCreate([
-                    'title' => AccidentStatusesService::STATUS_NEW,
-                    'type' => AccidentStatusesService::TYPE_ACCIDENT,
-                ])->id,
+                'accidentStatusId' => (new AccidentStatusesService())->getNewStatus()->getAttribute('id'),
                 'accidentTypeId' => factory(AccidentType::class)->create()->id,
                 'address' => "any",
                 'assistantId' => factory(Assistant::class)->create()->id,
@@ -311,7 +309,7 @@ class CasesControllerCreateActionTest extends TestCase
                 'id' => 2,
                 'createdBy' => 2,
                 'parentId' => 1,
-                'patientId' => 0,
+                'patientId' => 2,
                 'accidentTypeId' => 1,
                 'accidentStatusId' => 1,
                 'assistantId' => '1',

@@ -23,6 +23,7 @@ use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Services\CaseServices\CaseHistoryService;
 use Illuminate\Http\Request;
+use medcenter24\mcCore\App\Services\FormService;
 
 class CasesController extends AdminController
 {

@@ -120,7 +120,7 @@ class CaseFinanceServiceTest extends TestCase
         $accidentMock->isHospitalCaseable()->willReturn(false);
         $accidentMock->getAttribute(Argument::type('string'))->will(function ($args) {
             $value = null;
-            if ($args['0'] == 'caseable_type') {
+            if ($args['0'] === 'caseable_type') {
                 $value = DoctorAccident::class;
             }
             return $value;
@@ -155,8 +155,8 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * Case without anything should return 0 for all valuable variables
-     * @throwsmedcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throwsmedcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function testEmptyDoctorCase(): void
     {
@@ -165,12 +165,14 @@ class CaseFinanceServiceTest extends TestCase
         // how much do we need to pay to the doctor?
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
+            'financeConditionServiceMock->findConditions' => 1,
         ])->getToDoctorFormula($accident), 'Doctors payment is correct');
         // how much has assistant paid us?
-        self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
+        $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'formulaServiceMock->createFormulaFromConditions' => 0,
-        ])->getFromAssistantFormula($accident), 'Assistants payment is correct');
+            'financeConditionServiceMock->findConditions' => 1,
+        ])->getFromAssistantFormula($accident);
     }
 
     /**
@@ -185,10 +187,12 @@ class CaseFinanceServiceTest extends TestCase
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
+            'financeConditionServiceMock->findConditions' => 1,
         ])->getToHospitalFormula($accident), 'Payment is correct');
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'formulaServiceMock->createFormulaFromConditions' => 0,
+            'financeConditionServiceMock->findConditions' => 1,
         ])->getFromAssistantFormula($accident), 'Assistants payment is correct');
     }
 
@@ -238,6 +242,7 @@ class CaseFinanceServiceTest extends TestCase
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
+            'financeConditionServiceMock->findConditions' => 1,
         ])->getFromAssistantFormula($accident));
     }
 
@@ -253,6 +258,7 @@ class CaseFinanceServiceTest extends TestCase
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
+            'financeConditionServiceMock->findConditions' => 1,
         ])->getFromAssistantFormula($accident));
     }
 
@@ -312,6 +318,7 @@ class CaseFinanceServiceTest extends TestCase
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
+            'financeConditionServiceMock->findConditions' => 1,
         ])->getToDoctorFormula($accident));
     }
 
@@ -368,6 +375,7 @@ class CaseFinanceServiceTest extends TestCase
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
+            'financeConditionServiceMock->findConditions' => 1,
         ])->getToDoctorFormula($accident));
     }
 
@@ -401,6 +409,7 @@ class CaseFinanceServiceTest extends TestCase
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
+            'financeConditionServiceMock->findConditions' => 1,
         ])->getToHospitalFormula($accident));
     }
 
@@ -464,6 +473,8 @@ class CaseFinanceServiceTest extends TestCase
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
+            'financeConditionServiceMock->findConditions' => 1,
         ])->getToHospitalFormula($accident));
     }
+v
 }

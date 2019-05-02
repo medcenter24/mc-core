@@ -19,8 +19,33 @@
 namespace medcenter24\mcCore\Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Foundation\Testing\TestResponse;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
+
+    /**
+     * I want to see all 500 errors
+     * @param string $method
+     * @param string $uri
+     * @param array $parameters
+     * @param array $cookies
+     * @param array $files
+     * @param array $server
+     * @param null $content
+     * @return TestResponse|void
+     */
+    public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null): ?TestResponse
+    {
+        $res = parent::call($method, $uri, $parameters, $cookies, $files, $server, $content);
+
+        if ($res->getStatusCode() === 500) {
+            echo "\n <================ PRINT CONTENT ==============> \n";
+            print_r(json_decode($res->getContent()));
+            echo "\n <================ / END PRINT CONTENT ==============> \n";
+        }
+
+        return $res;
+    }
 }

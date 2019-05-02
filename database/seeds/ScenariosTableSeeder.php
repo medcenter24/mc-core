@@ -25,8 +25,8 @@ use Illuminate\Database\Seeder;
 
 class ScenariosTableSeeder extends Seeder
 {
-    const DEFAULT_MODE = 'step';
-    const DOCTOR_SCENARIO = [
+    public const DEFAULT_MODE = 'step';
+    protected const DOCTOR_SCENARIO = [
         1 => [
             'order' => 1,
             'title' => AccidentStatusesService::STATUS_NEW,
@@ -67,7 +67,7 @@ class ScenariosTableSeeder extends Seeder
         ],
     ];
 
-    const HOSPITAL_SCENARIO = [
+    protected const HOSPITAL_SCENARIO = [
         /** hospital case created */
         1 => [
             'order' => 1,
@@ -121,7 +121,7 @@ class ScenariosTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         if (App::environment('production') && Scenario::all()->count()) {
             return;

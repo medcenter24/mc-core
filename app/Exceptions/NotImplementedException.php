@@ -19,6 +19,6 @@
 namespace medcenter24\mcCore\App\Exceptions;
 
 
-class NotImplementedException extends \Exception
+class NotImplementedException extends CommonException
 {
 }

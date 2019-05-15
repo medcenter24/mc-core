@@ -19,6 +19,26 @@
 namespace medcenter24\mcCore\App\Exceptions;
 
 
-class InconsistentDataException extends CommonException
+use Exception;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Services\EnvironmentService;
+use Throwable;
+
+class CommonException extends Exception
 {
+    /**
+     * CommonException constructor.
+     * @param string $message
+     * @param int $code
+     * @param Throwable|null $previous
+     */
+    public function __construct($message = '', $code = 0, Throwable $previous = null)
+    {
+        if (EnvironmentService::isInstalled()) {
+            // logging only when we can use logger
+            Log::error($message);
+        }
+
+        parent::__construct($message, $code, $previous);
+    }
 }

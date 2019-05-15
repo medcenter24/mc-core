@@ -36,7 +36,7 @@ class CommonException extends Exception
     {
         if (EnvironmentService::isInstalled()) {
             // logging only when we can use logger
-            Log::error($message);
+            Log::error(' :: CommonException: ' . $message);
         }
 
         parent::__construct($message, $code, $previous);

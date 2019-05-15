@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Console;
 
 use medcenter24\mcCore\App\Console\Commands\CleanInvites;
+use medcenter24\mcCore\App\Console\Commands\CopierCommand;
 use medcenter24\mcCore\App\Console\Commands\CreateUserCommand;
 use medcenter24\mcCore\App\Console\Commands\SetupEnvironmentCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -35,15 +36,16 @@ class Kernel extends ConsoleKernel
         CleanInvites::class,
         CreateUserCommand::class,
         SetupEnvironmentCommand::class,
+        CopierCommand::class,
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param  Schedule  $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
         // clearing redundant invites
         $schedule->command('invite:clean')->weekly();
@@ -58,7 +60,7 @@ class Kernel extends ConsoleKernel
      *
      * @return void
      */
-    protected function commands()
+    protected function commands(): void
     {
         require base_path('routes/console.php');
     }

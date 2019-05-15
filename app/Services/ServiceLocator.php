@@ -16,20 +16,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\ExtractTableConfigurations;
+namespace medcenter24\mcCore\App\Services;
 
 
-use medcenter24\mcCore\App\Services\ExtractTableFromArrayService;
-
-class HtmlConfiguration
+class ServiceLocator
 {
-    public static function getConfig()
+    private static $inst;
+
+    public static function instance(): self
     {
-        return [
-            ExtractTableFromArrayService::CONFIG_FIRST_INDEX => true,
-            ExtractTableFromArrayService::CONFIG_TABLE => ['table'],
-            ExtractTableFromArrayService::CONFIG_ROW => ['tr'],
-            ExtractTableFromArrayService::CONFIG_CEIL => ['td', 'th'],
-        ];
+        if (!self::$inst) {
+            self::$inst = new self();
+        }
+        return self::$inst;
+    }
+
+    public function get(string $name, array $parameters = [])
+    {
+        return resolve($name, ['options' => $parameters]);
     }
 }

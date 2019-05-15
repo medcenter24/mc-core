@@ -144,7 +144,6 @@ class SetupEnvironmentCommand extends Command
     }
 
     /**
-     * @throws InconsistentDataException
      * @throws NotImplementedException
      */
     private function reloadApp(): void

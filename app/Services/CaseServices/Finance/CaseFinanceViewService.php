@@ -22,11 +22,13 @@ namespace medcenter24\mcCore\App\Services\CaseServices\Finance;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Payment;
 use medcenter24\mcCore\App\Services\CurrencyService;
 use medcenter24\mcCore\App\Services\Formula\FormulaResultService;
 use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
 use Illuminate\Support\Collection;
+use Throwable;
 
 class CaseFinanceViewService
 {
@@ -69,8 +71,8 @@ class CaseFinanceViewService
      * @param array $types
      * @return Collection
      * @throws InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
-     * @throws \Throwable
+     * @throws FormulaException
+     * @throws Throwable
      */
     public function get(Accident $accident, array $types): Collection
     {
@@ -111,7 +113,7 @@ class CaseFinanceViewService
      * @param Accident $accident
      * @return array
      * @throws InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     private function getIncomeData(Accident $accident): array
     {
@@ -161,7 +163,7 @@ class CaseFinanceViewService
     /**
      * @param $accident
      * @return array
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     private function getAssistantData(Accident $accident): array
     {
@@ -191,7 +193,7 @@ class CaseFinanceViewService
      * @param Accident $accident
      * @return array
      * @throws InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     private function getCaseableData(Accident $accident): array
     {
@@ -200,15 +202,22 @@ class CaseFinanceViewService
         $formula = 'invoice';
         if (!$payment) {
             // fixed payment has the minor priority
-            $payment = $accident->paymentToCaseable;
+            $payment = $accident->getAttribute('paymentToCaseable');
             $formula = 'fixed';
             // formula doesn't have any priority
             if (!$payment || !$payment->fixed) {
-                $formula = $accident->isDoctorCaseable()
-                    ? $this->caseFinanceService->getToDoctorFormula($accident)
-                    : $this->caseFinanceService->getToHospitalFormula($accident);
+                // it's possible that accident doesn't have caseable (new one)
+                if ($accident->getAttribute('caseable')) {
+                    $formula = $accident->isDoctorCaseable()
+                        ? $this->caseFinanceService->getToDoctorFormula($accident)
+                        : $this->caseFinanceService->getToHospitalFormula($accident);
+                } else {
+                    $formula = 0.00;
+                    $payment = null;
+                }
             }
         }
+
         return compact('payment', 'formula');
     }
 

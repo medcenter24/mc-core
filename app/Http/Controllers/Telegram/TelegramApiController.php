@@ -22,28 +22,23 @@ namespace medcenter24\mcCore\App\Http\Controllers\Telegram;
 use medcenter24\mcCore\App\Http\Controllers\Controller;
 use medcenter24\mcCore\App\Models\Telegram\Replies\DoctorCasePickupReply;
 use medcenter24\mcCore\App\Models\Telegram\Replies\TelegramInviteReply;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
-use medcenter24\mcCore\App\Services\InviteService;
 use Illuminate\Support\Facades\Log;
-use Telegram;
+use \Telegram;
 
 class TelegramApiController extends Controller
 {
     /**
      * Callback for the telegrams requests
      *
-     * @param InviteService $inviteService
-     * @param AccidentStatusesService $accidentStatusesService
      * @return string
-     * @throws \Exception
      */
-    public function index(InviteService $inviteService, AccidentStatusesService $accidentStatusesService)
+    public function index(): string
     {
         $updates = Telegram::commandsHandler(true);
 
         // if this is response on the invite request then I need to work with it
-        new TelegramInviteReply($updates, $inviteService);
-        new DoctorCasePickupReply($updates, $accidentStatusesService);
+        new TelegramInviteReply($updates);
+        new DoctorCasePickupReply($updates);
 
         Log::info('Turn Commands Handler on', ['updates' => $updates]);
         return 'ok';

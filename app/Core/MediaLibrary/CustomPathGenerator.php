@@ -16,49 +16,44 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\Tests;
+namespace medcenter24\mcCore\App\Core\MediaLibrary;
 
 
-use ReflectionClass;
-use ReflectionException;
+use Spatie\MediaLibrary\Models\Media;
+use Spatie\MediaLibrary\PathGenerator\PathGenerator;
+use Exception;
 
-trait SamplePath
+class CustomPathGenerator implements PathGenerator
 {
     /**
-     * Path to the folder with docx examples
-     * @var string
-     */
-    private $samplePath = '';
-
-    /**
+     * @param Media $media
      * @return string
-     * @throws ReflectionException
+     * @throws Exception
      */
-    protected function getSamplePath(): string
+    public function getPath(Media $media) : string
     {
-        if (!$this->samplePath) {
-            $reflector = new ReflectionClass(get_class($this));
-            $this->samplePath = dirname($reflector->getFileName())
-                . DIRECTORY_SEPARATOR
-                . 'samples'
-                . DIRECTORY_SEPARATOR;
-        }
-
-        return $this->samplePath;
-    }
-
-    protected function getTopAppSamplePath(): string
-    {
-        return __DIR__ . '/samples';
+        $pass = md5($media->getAttribute('id') . $media->getAttribute('created_at'));
+        $dir = substr($pass, 0, 2) . '/' . substr($pass, 2, 2);
+        return $dir.'/';
     }
 
     /**
-     * @param string $file
+     * @param Media $media
      * @return string
-     * @throws ReflectionException
+     * @throws Exception
      */
-    protected function getSampleFile($file=''): string
+    public function getPathForConversions(Media $media) : string
     {
-        return $this->getSamplePath() . $file;
+        return $this->getPath($media).'c/';
+    }
+
+    /**
+     * @param Media $media
+     * @return string
+     * @throws Exception
+     */
+    public function getPathForResponsiveImages(Media $media): string
+    {
+        return $this->getPath($media).'/cri/';
     }
 }

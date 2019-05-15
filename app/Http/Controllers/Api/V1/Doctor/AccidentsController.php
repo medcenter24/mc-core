@@ -18,6 +18,8 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
+use Dingo\Api\Http\Response;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\AccidentStatus;
 use medcenter24\mcCore\App\Diagnostic;
@@ -26,7 +28,9 @@ use medcenter24\mcCore\App\DoctorAccident;
 use medcenter24\mcCore\App\DoctorService;
 use medcenter24\mcCore\App\DoctorSurvey;
 use medcenter24\mcCore\App\Document;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use medcenter24\mcCore\App\Services\DoctorsService;
 use medcenter24\mcCore\App\Services\DocumentService;
@@ -139,7 +143,7 @@ class AccidentsController extends ApiController
         return $this->response->item($patient, new PatientTransformer());
     }
 
-    public function updatePatient($id, Request $request, AccidentStatusesService $statusesService)
+    public function updatePatient($id, Request $request, AccidentService $accidentService, AccidentStatusesService $statusesService): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
@@ -157,26 +161,24 @@ class AccidentsController extends ApiController
         $newComment = $request->get('comment', '');
         $newAddress = $request->get('address', '');
 
-        if ($newName != $patient->name) {
+        if ($newName !== $patient->name) {
             $changedData['name'] = ['old' => $patient->name, 'new' => $newName];
             $patient->name = $newName;
         }
 
-        if ($newComment != $patient->comment) {
+        if ($newComment !== $patient->comment) {
             $changedData['comment'] = ['old' => $accident->symptoms, 'new' => $newComment];
             $patient->comment = $newComment;
         }
 
-        if ($newAddress != $patient->address) {
+        if ($newAddress !== $patient->address) {
             $changedData['address'] = ['old' => $patient->address, 'new' => $newAddress];
             $patient->address = $newAddress;
         }
 
         if (count($changedData)) {
-            $statusesService->set($accident, AccidentStatus::firstOrCreate([
-                'title' => AccidentStatusesService::STATUS_ASSIGNED,
-                'type' => AccidentStatusesService::TYPE_DOCTOR,
-            ]), 'Updated by doctor ' . $this->user()->id . ' ' . json_encode($changedData));
+            $status = $statusesService->getDoctorAssignedStatus();
+            $accidentService->setStatus($accident, $status, 'Updated by doctor ' . $this->user()->id . ' ' . json_encode($changedData));
         }
         $patient->save();
 
@@ -496,10 +498,12 @@ class AccidentsController extends ApiController
     /**
      * Send cases to the director as completed
      * @param Request $request
+     * @param AccidentService $accidentService
      * @param AccidentStatusesService $accidentStatusesService
-     * @return \Dingo\Api\Http\Response
+     * @return Response
+     * @throws InconsistentDataException
      */
-    public function send(Request $request, AccidentStatusesService $accidentStatusesService)
+    public function send(Request $request, AccidentService $accidentService, AccidentStatusesService $accidentStatusesService): Response
     {
         $accidents = $request->get('cases', []);
 
@@ -510,15 +514,12 @@ class AccidentsController extends ApiController
         foreach ($accidents as $accidentId) {
             $accident = Accident::find($accidentId);
             if (!$accident) {
-                \Log::warning('Accident has not been found, so it could not be sent to the doctor',
+                Log::warning('Accident has not been found, so it could not be sent to the doctor',
                     ['accidentId' => $accidentId, 'userId' => $this->user()->id]);
                 continue;
             }
-            $status = AccidentStatus::firstOrCreate([
-                'title' => AccidentStatusesService::STATUS_SENT,
-                'type' => AccidentStatusesService::TYPE_DOCTOR,
-            ]);
-            $accidentStatusesService->set($accident, $status, 'Sent by doctor');
+            $status = $accidentStatusesService->getSentDoctorStatus();
+            $accidentService->setStatus($accident, $status, 'Sent by doctor');
         }
 
         return $this->response->noContent();

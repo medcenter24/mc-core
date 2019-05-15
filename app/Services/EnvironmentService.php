@@ -20,7 +20,6 @@ namespace medcenter24\mcCore\App\Services;
 
 
 use medcenter24\mcCore\App\Contract\General\Environment;
-use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Services\Installer\Params\ConfigDirParam;

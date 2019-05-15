@@ -16,10 +16,26 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\ExtractTableConfigurations;
+namespace medcenter24\mcCore\App\Services;
 
 
-class DocxConfiguration
+use medcenter24\mcCore\App\DoctorService;
+
+class DoctorServiceService extends AbstractModelService
 {
 
+    protected function getClassName(): string
+    {
+        return DoctorService::class;
+    }
+
+    protected function getRequiredFields(): array
+    {
+        return [
+            'title' => '',
+            'description' => '',
+            'created_by' => 0,
+            'disease_code' => '',
+        ];
+    }
 }

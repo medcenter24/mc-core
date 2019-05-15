@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Services;
 
 
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Support\Core\Configurable;
 
 /**
@@ -34,35 +35,35 @@ class ExtractTableFromArrayService extends Configurable
     /**
      * Extracted tables
      */
-    const TABLES = 'tables';
+    public const TABLES = 'tables';
 
     /**
      * All that left without tables
      */
-    const CONTENT = 'content';
+    public const CONTENT = 'content';
 
     /**
      * Configuration for extraction
      */
-    const CONFIG_TABLE = 'table';
-    const CONFIG_ROW = 'row';
-    const CONFIG_CEIL = 'ceil';
+    public const CONFIG_TABLE = 'table';
+    public const CONFIG_ROW = 'row';
+    public const CONFIG_CEIL = 'ceil';
 
     /**
      * Result will be table with rows [table1 = [row1, row2 => [col1, col2] ] ]
      *
      * @param array $resource
      * @return array
-     * @throws \Exception
+     * @throws InconsistentDataException
      */
-    public function extract(array $resource)
+    public function extract(array $resource): array
     {
         if (
             !$this->hasOption(self::CONFIG_TABLE)
             || !$this->hasOption(self::CONFIG_ROW)
             || !$this->hasOption(self::CONFIG_CEIL)
         ) {
-            throw new \Exception('All configurable parameters should be defined');
+            throw new InconsistentDataException('All configurable parameters should be defined');
         }
 
         $result = [
@@ -72,14 +73,12 @@ class ExtractTableFromArrayService extends Configurable
         foreach ($resource as $key => $body) {
             if ($this->is($key, self::CONFIG_TABLE)) {
                 $result[self::TABLES][] = $this->getRows($body);
+            } elseif (is_array($body)) {
+                $container = $this->extract($body);
+                $result[self::TABLES] += $container[self::TABLES];
+                $result[self::CONTENT][$key] = $container[self::CONTENT];
             } else {
-                if (is_array($body)) {
-                    $container = $this->extract($body);
-                    $result[self::TABLES] += $container[self::TABLES];
-                    $result[self::CONTENT][$key] = $container[self::CONTENT];
-                } else {
-                    $result[self::CONTENT][$key] = $body;
-                }
+                $result[self::CONTENT][$key] = $body;
             }
         }
 
@@ -92,11 +91,11 @@ class ExtractTableFromArrayService extends Configurable
      * @param string $configValue
      * @return bool
      */
-    private function is ($key, $configValue = '')
+    private function is ($key, $configValue = ''): bool
     {
         $key .= ''; // make it string
         $key = preg_replace('/:\d+$/', '', $key);
-        return in_array($key, $this->getOption($configValue));
+        return in_array($key, $this->getOption($configValue), false);
     }
 
     /**
@@ -105,7 +104,7 @@ class ExtractTableFromArrayService extends Configurable
      * @param $table
      * @return array
      */
-    private function getRows($table)
+    private function getRows($table): array
     {
         $result = [];
         foreach ($table as $key => $element) {
@@ -119,7 +118,7 @@ class ExtractTableFromArrayService extends Configurable
         return $result;
     }
 
-    private function getCols($row)
+    private function getCols($row): array
     {
         $result = [];
         foreach ($row as $key => $item) {

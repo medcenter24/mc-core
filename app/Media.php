@@ -16,36 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+namespace medcenter24\mcCore\App;
 
+use \Spatie\MediaLibrary\Models\Media as CoreMedia;
 
-use Illuminate\Database\Eloquent\Model;
-use medcenter24\mcCore\App\AccidentType;
-
-class AccidentTypeService extends AbstractModelService
+class Media extends CoreMedia
 {
-    public const TYPE_INSURANCE = 'insurance';
-    public const TYPE_NON_INSURANCE = 'non-insurance';
-    public const ALLOWED_TYPES = ['insurance', 'non-insurance'];
-
-    protected function getClassName(): string
-    {
-        return AccidentType::class;
-    }
-
-    protected function getRequiredFields(): array
-    {
-        return [
-            'title' => '',
-            'description' => '',
-        ];
-    }
-
-    /**
-     * @return AccidentType
-     */
-    public function getInsuranceType(): Model
-    {
-        return $this->firstOrCreate(['title' => self::TYPE_INSURANCE]);
-    }
 }

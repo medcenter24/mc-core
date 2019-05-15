@@ -29,6 +29,7 @@ use medcenter24\mcCore\App\FormReport;
 use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Patient;
 use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use medcenter24\mcCore\App\Services\AccidentTypeService;
 use medcenter24\mcCore\App\Upload;
@@ -352,7 +353,8 @@ class CasesControllerUpdateActionTest extends TestCase
         ], json_decode($ans->errors->accident[0], 1));
     }
 
-    public function testClosedAccident(){
+    public function testClosedAccident(): void
+    {
         $accident = factory(Accident::class)->create(['accident_status_id' => 0]);
         $data = [
             'accident' => [
@@ -360,9 +362,9 @@ class CasesControllerUpdateActionTest extends TestCase
             ]
         ];
 
-        $accidentStatusService = new AccidentStatusesService();
+        $accidentService = new AccidentService();
         // closing an accident
-        $accidentStatusService->closeAccident($accident);
+        $accidentService->closeAccident($accident);
 
         $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
 

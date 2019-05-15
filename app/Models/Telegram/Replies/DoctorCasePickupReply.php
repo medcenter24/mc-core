@@ -19,8 +19,10 @@
 namespace medcenter24\mcCore\App\Models\Telegram\Replies;
 
 
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\Update;
@@ -45,30 +47,24 @@ class DoctorCasePickupReply
     private $update;
 
     /**
-     * @var AccidentStatusesService
-     */
-    private $accidentStatusesService;
-
-    /**
      * DoctorCasePickupReply constructor.
      * @param Update $update
      * @param AccidentStatusesService $accidentStatusesService
      * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
-    public function __construct(Update $update, AccidentStatusesService $accidentStatusesService)
+    public function __construct(Update $update)
     {
         $this->update = $update;
         $this->message = $this->update->getMessage();
-        $this->accidentStatusesService = $accidentStatusesService;
         \App::setLocale($this->message->from->languageCode);
         $this->acceptCase();
     }
 
     /**
      * Doing all needed things after receive confirmation
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws InconsistentDataException
      */
-    public function acceptCase()
+    public function acceptCase(): void
     {
         $accident = $this->lookingForAccident();
         if ($accident instanceof Accident && $accident->id) {
@@ -77,9 +73,9 @@ class DoctorCasePickupReply
                 ->where('type', AccidentStatusesService::TYPE_DOCTOR)->first();
 
             if (!$status || !$status->id) {
-                \Log::info('Cant find status in progress for the doctor');
+                Log::info('Cant find status in progress for the doctor');
             } else {
-                $this->accidentStatusesService->set($accident, $status, 'Telegram Accept button after assignment');
+                $this->accidentService->setStatus($accident, $status, 'Telegram Accept button after assignment');
             }
         }
     }

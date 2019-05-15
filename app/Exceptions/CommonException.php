@@ -16,38 +16,29 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\DocxReader;
+namespace medcenter24\mcCore\App\Exceptions;
 
 
-/**
- * Interface provided opportunity to read docx files
- *
- * Interface DocxReaderInterface
- * @package medcenter24\mcCore\App\Services\DocxReader
- */
-interface DocxReaderInterface
+use Exception;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Services\EnvironmentService;
+use Throwable;
+
+class CommonException extends Exception
 {
     /**
-     * Load file for reading
-     * @return mixed
+     * CommonException constructor.
+     * @param string $message
+     * @param int $code
+     * @param Throwable|null $previous
      */
-    public function load();
+    public function __construct($message = '', $code = 0, Throwable $previous = null)
+    {
+        if (EnvironmentService::isInstalled()) {
+            // logging only when we can use logger
+            Log::error($message);
+        }
 
-    /**
-     * Object with parsed body
-     * @return mixed
-     */
-    public function getDom();
-
-    /**
-     * Get all text from the document
-     * @return string
-     */
-    public function getText();
-
-    /**
-     * File path
-     * @return string
-     */
-    public function getFilePath();
+        parent::__construct($message, $code, $previous);
+    }
 }

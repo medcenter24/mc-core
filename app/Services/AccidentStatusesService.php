@@ -19,63 +19,50 @@
 namespace medcenter24\mcCore\App\Services;
 
 
-use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\AccidentStatus;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\Events\AccidentStatusChangedEvent;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\HospitalAccident;
 use Illuminate\Database\Eloquent\Model;
 
-class AccidentStatusesService
+class AccidentStatusesService extends AbstractModelService
 {
-    const TYPE_ACCIDENT = 'accident';
-    const TYPE_DOCTOR = 'doctor';
-    const TYPE_HOSPITAL = 'hospital';
-    const TYPE_ASSISTANT = 'assistant';
+    public const TYPE_ACCIDENT = 'accident';
+    public const TYPE_DOCTOR = 'doctor';
+    public const TYPE_HOSPITAL = 'hospital';
+    public const TYPE_ASSISTANT = 'assistant';
 
-    const STATUS_NEW = 'new';
-    const STATUS_ASSIGNED = 'assigned';
-    const STATUS_IN_PROGRESS = 'in_progress';
-    const STATUS_SENT = 'sent';
-    const STATUS_PAID = 'paid';
-    const STATUS_REJECT = 'reject';
-    const STATUS_CLOSED = 'closed';
+    public const STATUS_NEW = 'new';
+    public const STATUS_ASSIGNED = 'assigned';
+    public const STATUS_IN_PROGRESS = 'in_progress';
+    public const STATUS_SENT = 'sent';
+    public const STATUS_PAID = 'paid';
+    public const STATUS_REJECT = 'reject';
+    public const STATUS_CLOSED = 'closed';
 
-    const STATUS_HOSPITAL_GUARANTEE = 'hospital_guarantee';
-    const STATUS_HOSPITAL_INVOICE = 'hospital_invoice';
-    const STATUS_ASSISTANT_INVOICE = 'assistant_invoice';
-    const STATUS_ASSISTANT_GUARANTEE = 'assistant_guarantee';
+    public const STATUS_HOSPITAL_GUARANTEE = 'hospital_guarantee';
+    public const STATUS_HOSPITAL_INVOICE = 'hospital_invoice';
+    public const STATUS_ASSISTANT_INVOICE = 'assistant_invoice';
+    public const STATUS_ASSISTANT_GUARANTEE = 'assistant_guarantee';
 
-    /**
-     * Set new status to accident
-     * @param Accident $accident
-     * @param AccidentStatus $status
-     * @param string $comment
-     */
-    public function set(Accident $accident, AccidentStatus $status, $comment = '')
+    protected function getClassName(): string
     {
-        // I need to prevent all the times when I'm changing the status
-        $accident->runStatusUpdating();
-        $accident->accident_status_id = $status->id;
-        $accident->save();
-        $accident->refresh();
+        return AccidentStatus::class;
+    }
 
-        \Log::debug('Set new status to accident', [
-            'status_id' => $status->id,
-            'status_title' => $status->title,
-            'status_type' => $status->type,
-            'accident_id' => $accident->id,
-        ]);
-        event(new AccidentStatusChangedEvent($accident, $comment));
+    protected function getRequiredFields(): array
+    {
+        return [
+            'title' => '',
+            'type' => '',
+        ];
     }
 
     /**
      * @param array $params
      * @throws InconsistentDataException
      * @return AccidentStatus
+     * @deprecated please use firstOrFail method
      */
-    public function firstOrFail(array $params = [])
+    public function firstOrFail(array $params = []): AccidentStatus
     {
         if (!count($params)) {
             throw new InconsistentDataException('Parameters should been provided');
@@ -85,142 +72,69 @@ class AccidentStatusesService
     }
 
     /**
-     * When the accidents property updated
-     * @param Accident $accident
-     * @param string $comment
+     * @return AccidentStatus
      */
-    public function updateAccidentStatus(Accident $accident, $comment = 'Accident updated')
+    public function getClosedStatus(): Model
     {
-        if ($accident->isStatusUpdatingRun()) {
-            $accident->stopStatusUpdating();
-            return; // skip saving of the status
-        }
-        $events = [
-            'id' => [
-                'status' => AccidentStatusesService::STATUS_NEW,
-                'type' => AccidentStatusesService::TYPE_ACCIDENT,
-            ],
-            'assistant_invoice_id' => [
-                'status' => AccidentStatusesService::STATUS_ASSISTANT_INVOICE,
-                'type' => AccidentStatusesService::TYPE_ASSISTANT,
-            ],
-            'assistant_guarantee_id' => [
-                'status' => AccidentStatusesService::STATUS_ASSISTANT_GUARANTEE,
-                'type' => AccidentStatusesService::TYPE_ASSISTANT,
-            ],
-            'assistant_payment_id' => [
-                'status' => AccidentStatusesService::STATUS_PAID,
-                'type' => AccidentStatusesService::TYPE_ASSISTANT,
-            ],
-        ];
-
-        $this->setStatusByEvents($accident, $accident, $events, $comment);
-    }
-
-    /**
-     * @param Model $model
-     * @param Accident $accident
-     * @param array $events
-     * @param string $comment
-     */
-    private function setStatusByEvents(Model $model, Accident $accident, array $events, $comment = '')
-    {
-        if ($model->isDirty()) {
-            $dirty = array_keys($model->getDirty());
-            foreach ($dirty as $key) {
-                if (key_exists($key, $events) && $model->$key) {
-                    $this->set($accident, AccidentStatus::firstOrCreate([
-                        'title' => $events[$key]['status'],
-                        'type' => $events[$key]['type'],
-                    ]), $comment);
-                }
-            }
-        }
-    }
-
-    /**
-     * When the HospitalAccident's property updated
-     * @param HospitalAccident $hospitalAccident
-     * @param string $comment
-     */
-    public function updateHospitalAccidentStatus(HospitalAccident $hospitalAccident, $comment = 'Hospital accident changed')
-    {
-        if (!$hospitalAccident->accident) {
-            return; // don't do status changing when we don't have an accident
-        }
-
-        // changing of the fields in `keys` will provide status from the `value`
-        $events = [
-            'hospital_id' => [
-                'status' => AccidentStatusesService::STATUS_ASSIGNED,
-                'type' => AccidentStatusesService::TYPE_HOSPITAL,
-            ],
-            'hospital_guarantee_id' => [
-                'status' => AccidentStatusesService::STATUS_HOSPITAL_GUARANTEE,
-                'type' => AccidentStatusesService::TYPE_HOSPITAL,
-            ],
-            'hospital_invoice_id' => [
-                'status' => AccidentStatusesService::STATUS_HOSPITAL_INVOICE,
-                'type' => AccidentStatusesService::TYPE_HOSPITAL,
-            ],
-        ];
-
-        $this->setStatusByEvents($hospitalAccident, $hospitalAccident->accident, $events, $comment);
-    }
-
-    /**
-     * When the DoctorAccident's property updated
-     * @param DoctorAccident $doctorAccident
-     * @param string $comment
-     */
-    public function updateDoctorAccidentStatus(DoctorAccident $doctorAccident, $comment = 'Doctor accident changed')
-    {
-        if (!$doctorAccident->accident) {
-            return; // don't do status changing when we don't have an accident
-        }
-
-        // changing of the fields in `keys` will provide status from the `value`
-        $events = [
-            'doctor_id' => [
-                'status' => AccidentStatusesService::STATUS_ASSIGNED,
-                'type' => AccidentStatusesService::TYPE_DOCTOR,
-            ],
-        ];
-
-        $this->setStatusByEvents($doctorAccident, $doctorAccident->accident, $events, $comment);
-    }
-
-    public function closeAccident(Accident $accident, $comment = 'closed')
-    {
-        $this->set($accident, AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusesService::STATUS_CLOSED,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT,
-        ]), $comment);
-    }
-
-    public function moveDoctorAccidentToInProgressState(Accident $accident, $comment = 'moved')
-    {
-        $accidentStatus = $accident->accidentStatus;
-
-        if ($accidentStatus->title == AccidentStatusesService::STATUS_ASSIGNED && $accidentStatus->type == AccidentStatusesService::TYPE_DOCTOR) {
-
-            $status = AccidentStatus::firstOrCreate([
-                'title' => AccidentStatusesService::STATUS_IN_PROGRESS,
-                'type' => AccidentStatusesService::TYPE_DOCTOR,
-            ]);
-
-            $this->set($accident, $status, $comment);
-        }
-    }
-
-    public function rejectDoctorAccident($accident, $comment = 'rejected')
-    {
-        $status = AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusesService::STATUS_REJECT,
-            'type' => AccidentStatusesService::TYPE_DOCTOR,
+        return $this->firstOrCreate([
+            'title' => self::STATUS_CLOSED,
+            'type' => self::TYPE_ACCIDENT,
         ]);
+    }
 
-        $this->set($accident, $status, $comment);
+    /**
+     * @return AccidentStatus
+     */
+    public function getNewStatus(): Model
+    {
+        return $this->firstOrCreate([
+            'title' => self::STATUS_NEW,
+            'type' => self::TYPE_ACCIDENT,
+        ]);
+    }
+
+    /**
+     * @return AccidentStatus
+     */
+    public function getDoctorSentStatus(): Model
+    {
+        return $this->firstOrCreate([
+            'title' => self::STATUS_SENT,
+            'type' => self::TYPE_DOCTOR,
+        ]);
+    }
+
+    /**
+     * @return AccidentStatus
+     */
+    public function getDoctorInProgressStatus(): Model
+    {
+        return $this->firstOrCreate([
+            'title' => self::STATUS_IN_PROGRESS,
+            'type' => self::TYPE_DOCTOR,
+        ]);
+    }
+
+    /**
+     * @return AccidentStatus
+     */
+    public function getDoctorAssignedStatus(): Model
+    {
+        return $this->firstOrCreate([
+            'title' => self::STATUS_ASSIGNED,
+            'type' => self::TYPE_DOCTOR,
+        ]);
+    }
+
+    /**
+     * @return AccidentStatus
+     */
+    public function getDoctorRejectedStatus(): Model
+    {
+        return $this->firstOrCreate([
+            'title' => self::STATUS_REJECT,
+            'type' => self::TYPE_DOCTOR,
+        ]);
     }
 
 }

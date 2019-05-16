@@ -1,5 +1,5 @@
 {
-    "name": "medcenter24/md-core",
+    "name": "medcenter24/mc-core",
     "description": "Backend for the MedCenter24 project",
     "keywords": ["api", "medcenter24", "backoffice", "medicine"],
     "license": "GPL-2.0-only",

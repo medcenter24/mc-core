@@ -16,17 +16,17 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 
-use App\Services\LogoService;
-use App\User;
+use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
 
 class UsersControllerTest extends TestCase
 {

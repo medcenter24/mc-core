@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Contract\Formula;
+namespace medcenter24\mcCore\App\Contract\Formula;
 
 
-use App\Models\Formula\Exception\FormulaException;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use Illuminate\Support\Collection;
 
 interface FormulaBuilder

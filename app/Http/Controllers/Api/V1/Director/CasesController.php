@@ -16,40 +16,42 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\Accident;
-use App\Diagnostic;
-use App\DoctorAccident;
-use App\DoctorService;
-use App\DoctorSurvey;
-use App\Events\DoctorAccidentUpdatedEvent;
-use App\Events\HospitalAccidentUpdatedEvent;
-use App\HospitalAccident;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\CaseRequest;
-use App\Models\Scenario\ScenarioModel;
-use App\Services\AccidentService;
-use App\Services\AccidentStatusesService;
-use App\Services\CaseServices\CaseHistoryService;
-use App\Services\DocumentService;
-use App\Services\PatientService;
-use App\Services\ReferralNumberService;
-use App\Services\RoleService;
-use App\Services\Scenario\ScenarioService;
-use App\Services\Scenario\StoryService;
-use App\Transformers\AccidentCheckpointTransformer;
-use App\Transformers\AccidentStatusHistoryTransformer;
-use App\Transformers\CaseAccidentTransformer;
-use App\Transformers\DiagnosticTransformer;
-use App\Transformers\DirectorCaseTransformer;
-use App\Transformers\DoctorCaseTransformer;
-use App\Transformers\DoctorServiceTransformer;
-use App\Transformers\DoctorSurveyTransformer;
-use App\Transformers\DocumentTransformer;
-use App\Transformers\HospitalCaseTransformer;
-use App\Transformers\MessageTransformer;
-use App\Transformers\ScenarioTransformer;
+use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Diagnostic;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\DoctorSurvey;
+use medcenter24\mcCore\App\Events\DoctorAccidentUpdatedEvent;
+use medcenter24\mcCore\App\Events\HospitalAccidentUpdatedEvent;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\CaseRequest;
+use medcenter24\mcCore\App\Models\Scenario\ScenarioModel;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\CaseServices\CaseHistoryService;
+use medcenter24\mcCore\App\Services\DocumentService;
+use medcenter24\mcCore\App\Services\PatientService;
+use medcenter24\mcCore\App\Services\ReferralNumberService;
+use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Services\Scenario\ScenarioService;
+use medcenter24\mcCore\App\Services\Scenario\StoryService;
+use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
+use medcenter24\mcCore\App\Transformers\AccidentStatusHistoryTransformer;
+use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
+use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
+use medcenter24\mcCore\App\Transformers\DirectorCaseTransformer;
+use medcenter24\mcCore\App\Transformers\DoctorCaseTransformer;
+use medcenter24\mcCore\App\Transformers\DoctorServiceTransformer;
+use medcenter24\mcCore\App\Transformers\DoctorSurveyTransformer;
+use medcenter24\mcCore\App\Transformers\DocumentTransformer;
+use medcenter24\mcCore\App\Transformers\HospitalCaseTransformer;
+use medcenter24\mcCore\App\Transformers\MessageTransformer;
+use medcenter24\mcCore\App\Transformers\ScenarioTransformer;
 use Carbon\Carbon;
 use Cmgmyr\Messenger\Models\Message;
 use Cmgmyr\Messenger\Models\Participant;
@@ -58,6 +60,7 @@ use Dingo\Api\Http\Response;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 
 
@@ -192,7 +195,7 @@ class CasesController extends ApiController
      */
     private function createCaseableFromRequest(Accident $accident, Request $request): void
     {
-        $caseable = $accident->caseable_type == DoctorAccident::class
+        $caseable = $accident->caseable_type === DoctorAccident::class
             ? DoctorAccident::create(['recommendation' => '', 'investigation' => ''])
             : HospitalAccident::create();
 
@@ -241,7 +244,7 @@ class CasesController extends ApiController
      * @param ReferralNumberService $referralNumberService
      * @param AccidentService $accidentService
      * @param PatientService $patientService
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function store(
         CaseRequest $request,
@@ -250,18 +253,18 @@ class CasesController extends ApiController
         PatientService $patientService
     ): Response {
 
-        $accidentData = $accidentService->getFormattedAccidentData(
-            $this->convertIndexes(
-                $request->json('accident', [])
-            )
-        );
-
-        $accident = Accident::create($accidentData);
+        $accidentData = $this->convertIndexes( $request->json('accident', []) );
+        /** @var Accident $accident */
+        $accident = $accidentService->create($accidentData);
         $this->createCaseableFromRequest($accident, $request);
 
         if (!array_key_exists('patientId', $accidentData)) {
-            $patient = $patientService->findOrCreate($request->json('patient', []));
-            $accident->patient_id = $patient && $patient->id ? $patient->id : 0;
+            // if patient data were provided then try to find or create him
+            $patientData = $request->json('patient', []);
+            if (count($patientData)) {
+                $patient = $patientService->firstOrCreate($patientData);
+                $accident->patient_id = $patient->id;
+            }
         } else {
             $accident->patient_id = (int) $accidentData['patientId'];
         }
@@ -315,7 +318,7 @@ class CasesController extends ApiController
      * @param CaseRequest $request
      * @param AccidentService $accidentService
      * @param PatientService $patientService
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function update(
         $id,
@@ -338,7 +341,7 @@ class CasesController extends ApiController
         $requestedAccident = $request->json('accident', false);
 
         if (!$requestedAccident['id']) {
-            \Log::error('Can not update the case: undefined request accident', [
+            Log::error('Can not update the case: undefined request accident', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
             ]);
@@ -346,7 +349,7 @@ class CasesController extends ApiController
         }
 
         if ($accident->id !== $requestedAccident['id']) {
-            \Log::error('Can not update the case: incorrect requested accident', [
+            Log::error('Can not update the case: incorrect requested accident', [
                 'accidentId' => $id,
                 'requestedAccident' => $requestedAccident
             ]);
@@ -354,7 +357,7 @@ class CasesController extends ApiController
         }
 
         if (!array_key_exists('patientId', $requestedAccident)) {
-            $patient = $patientService->findOrCreate($request->json('patient', []));
+            $patient = $patientService->firstOrCreate($request->json('patient', []));
             $newPatientId = $patient && $patient->id ? $patient->id : 0;
             if ($newPatientId) {
                 $requestedAccident['patientId'] = $newPatientId;
@@ -388,7 +391,7 @@ class CasesController extends ApiController
     {
         $converted = [];
         foreach ($data as $key => $val) {
-            $converted[snake_case($key)] = $val;
+            $converted[Str::snake($key)] = $val;
         }
         return $converted;
     }
@@ -407,7 +410,11 @@ class CasesController extends ApiController
                 if (in_array($item, $model->getDates(), true)) {
                     $model->$item = $data[$item] ? Carbon::parse($data[$item])->format('Y-m-d H:i:s') : null;
                 } else {
-                    $model->$item = $data[$item] ?: '';
+                    if (mb_strstr($item, 'id')) {
+                        $model->$item = (int)$data[$item];
+                    } else {
+                        $model->$item = $data[$item] ?: '';
+                    }
                 }
             }
         }
@@ -443,13 +450,14 @@ class CasesController extends ApiController
     /**
      * Set status closed
      * @param int $id
-     * @param AccidentStatusesService $statusesService
-     * @return \Dingo\Api\Http\Response
+     * @param AccidentService $accidentService
+     * @return Response
+     * @throws InconsistentDataException
      */
-    public function close(int $id, AccidentStatusesService $statusesService): Response
+    public function close(int $id, AccidentService $accidentService): Response
     {
         $accident = Accident::findOrFail($id);
-        $statusesService->closeAccident($accident, 'Closed by director');
+        $accidentService->closeAccident($accident, 'Closed by director');
         return $this->response->noContent();
     }
 

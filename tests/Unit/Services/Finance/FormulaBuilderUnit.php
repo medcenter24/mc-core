@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services\Finance;
+namespace medcenter24\mcCore\Tests\Unit\Services\Finance;
 
-use App\Contract\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use Illuminate\Support\Collection;
 
 /**

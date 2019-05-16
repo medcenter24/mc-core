@@ -16,13 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Admin;
+namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
 
-use App\Accident;
-use App\Http\Controllers\AdminController;
-use App\Services\CaseServices\CaseHistoryService;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Http\Controllers\AdminController;
+use medcenter24\mcCore\App\Services\CaseServices\CaseHistoryService;
 use Illuminate\Http\Request;
+use medcenter24\mcCore\App\Services\FormService;
 
 class CasesController extends AdminController
 {

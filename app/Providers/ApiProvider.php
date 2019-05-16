@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Providers;
+namespace medcenter24\mcCore\App\Providers;
 
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;

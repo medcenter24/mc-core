@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\City;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\CityRequest;
-use App\Transformers\CityTransformer;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\CityRequest;
+use medcenter24\mcCore\App\Transformers\CityTransformer;
 use League\Fractal\TransformerAbstract;
 
 class CitiesController extends ApiController

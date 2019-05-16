@@ -16,12 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Helpers;
+namespace medcenter24\mcCore\App\Helpers;
 
 
 use FilesystemIterator;
+use medcenter24\mcCore\App\Exceptions\CommonException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SplFileInfo;
+use Exception;
 
 class FileHelper
 {
@@ -46,7 +49,7 @@ class FileHelper
     {
         $dir = '';
         foreach ($paths as $path) {
-            $dir .= DIRECTORY_SEPARATOR . $path;
+            $dir .= DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR);
             if (!self::isDirExists($dir)) {
                 self::createDir($dir);
             }
@@ -89,13 +92,123 @@ class FileHelper
     public static function delete($target): bool
     {
         if (file_exists($target)) {
-            $di = new RecursiveDirectoryIterator($target, FilesystemIterator::SKIP_DOTS);
-            $ri = new RecursiveIteratorIterator($di, RecursiveIteratorIterator::CHILD_FIRST);
+            if (is_dir($target)) {
+                $di = new RecursiveDirectoryIterator($target, FilesystemIterator::SKIP_DOTS);
+                $ri = new RecursiveIteratorIterator($di, RecursiveIteratorIterator::CHILD_FIRST);
+            } else {
+                $di = false;
+                $ri = [new SplFileInfo($target)];
+            }
             foreach ( $ri as $file ) {
                 $file->isDir() ?  rmdir($file) : unlink($file);
             }
-            $di->isDir() ? rmdir($target) : unlink($target);
+            if ($di) {
+                $di->isDir() ? rmdir($target) : unlink($target);
+            }
         }
         return true;
+    }
+
+    /**
+     * Calculates size
+     * @param string $path
+     * @param array $extensions
+     * @return int
+     */
+    public static function getSize(string $path, array $extensions = []): int
+    {
+        $bytes = 0;
+        self::mapFiles($path, static function (SplFileInfo $fileInfo) use (&$bytes) {
+            $bytes += $fileInfo->getSize();
+        }, $extensions);
+        return $bytes;
+    }
+
+    public static function filesCount(string $path, array $extensions = []): int
+    {
+        $count = 0;
+        self::mapFiles($path, static function () use (&$count) {
+            $count++;
+        }, $extensions);
+        return $count;
+    }
+
+    public static function mapFiles(string $path, $closure, array $extensions = []): void
+    {
+        $path = realpath($path);
+        if ($path !== false && $path !== '' && file_exists($path)) {
+            if (is_dir($path)) {
+                /** @var SplFileInfo $object */
+                foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path,
+                    FilesystemIterator::SKIP_DOTS)) as $object) {
+
+                    $ext = $object->getExtension();
+                    if (!count($extensions) || in_array($ext, $extensions, false)) {
+                        $closure($object);
+                    }
+                }
+            } else {
+                $object = new SplFileInfo($path);
+                $ext = $object->getExtension();
+                if (!count($extensions) || in_array($ext, $extensions, false)) {
+                    $closure($object);
+                }
+            }
+        }
+    }
+
+    /**
+     * Copy all files $from -> $to names of what are matched $regExp
+     * @param string $from
+     * @param string $to
+     * @param string $regExp
+     * @param $callback
+     */
+    public static function copy(string $from, string $to, string $regExp = '', $callback = null): void
+    {
+        self::mapFiles($from, static function (SplFileInfo $fileInfo) use ($regExp, $to, $callback) {
+            if (!$regExp || preg_match($regExp, $fileInfo->getFilename())) {
+
+                $sourcePath = $fileInfo->getRealPath();
+                // only files allowed
+                if ( is_file($sourcePath) && self::isReadable($sourcePath) ) {
+                    $newFileName = self::generateFileName($to, $fileInfo->getFilename());
+                    $state = copy($sourcePath, $newFileName);
+                    if (is_callable($callback)) {
+                        $callback($newFileName, $state);
+                    }
+                }
+            }
+        });
+    }
+
+    public static function generateFileName(string $dir, string $name): string
+    {
+        $postfix = '';
+        do {
+            $filePath = rtrim($dir, '/') . '/' . $name;
+
+            if (!empty($postfix)) {
+                $filePath .= '_'.$postfix;
+            }
+
+            $postfix = (int) $postfix;
+            $postfix++;
+            $postfix = (string) $postfix;
+        } while (file_exists($filePath));
+        return $filePath;
+    }
+
+    /**
+     * @return string
+     * @throws CommonException
+     */
+    public static function getRandomDirPath(): string
+    {
+        try {
+            return sprintf('%02x/%02x', random_int(0, 255), random_int(0, 255));
+        } catch (Exception $e) {
+            throw new CommonException($e->getMessage(), $e->getCode(), $e->getPrevious());
+        }
     }
 }

@@ -27,7 +27,7 @@ class CitiesTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\City::truncate();
+       medcenter24\mcCore\App\City::truncate();
         factory(\App\City::class, 10)->create();
     }
 }

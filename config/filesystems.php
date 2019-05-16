@@ -16,6 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use medcenter24\mcCore\App\Services\DocumentService;
+use medcenter24\mcCore\App\Services\FormService;
+use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\Services\SignatureService;
+use medcenter24\mcCore\App\Services\UploaderService;
+use medcenter24\McImport\Services\CaseImporterService;
+
 return [
 
     /*
@@ -80,34 +87,34 @@ return [
             'url' => env('AWS_URL'),
         ],
 
-        \App\Services\CaseImporterService::DISC_IMPORTS => [
+        CaseImporterService::DISC_IMPORTS => [
             'driver' => 'local',
-            'root' => storage_path( \App\Services\CaseImporterService::DISC_IMPORTS),
+            'root' => storage_path( CaseImporterService::DISC_IMPORTS),
         ],
 
-        \App\Services\DocumentService::DISC_IMPORTS => [
+        DocumentService::DISC_IMPORTS => [
             'driver' => 'local',
-            'root' => storage_path(\App\Services\DocumentService::DISC_IMPORTS),
+            'root' => storage_path(DocumentService::DISC_IMPORTS),
         ],
 
-        \App\Services\LogoService::DISC => [
+        LogoService::DISC => [
             'driver' => 'local',
-            'root' => storage_path(\App\Services\LogoService::FOLDER)
+            'root' => storage_path(LogoService::FOLDER)
         ],
 
-        \App\Services\SignatureService::DISC => [
+        SignatureService::DISC => [
             'driver' => 'local',
-            'root' => storage_path(\App\Services\SignatureService::FOLDER),
+            'root' => storage_path(SignatureService::FOLDER),
         ],
 
-        \App\Services\FormService::PDF_DISK => [
+        FormService::PDF_DISK => [
             'driver' => 'local',
-            'root' => storage_path(\App\Services\FormService::PDF_FOLDER),
+            'root' => storage_path(FormService::PDF_FOLDER),
         ],
 
-        \App\Services\UploaderService::CONF_DEFAULT => [
+        UploaderService::CONF_DEFAULT => [
             'driver' => 'local',
-            'root' => storage_path(\App\Services\UploaderService::CONF_DEFAULT),
+            'root' => storage_path(UploaderService::CONF_DEFAULT),
         ],
 
         /*
@@ -118,5 +125,4 @@ return [
         ]*/
 
     ],
-
 ];

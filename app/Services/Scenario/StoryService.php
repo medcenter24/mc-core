@@ -16,17 +16,17 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Scenario;
+namespace medcenter24\mcCore\App\Services\Scenario;
 
 
-use App\Scenario;
-use App\Services\ScenarioInterface;
+use medcenter24\mcCore\App\Scenario;
+use medcenter24\mcCore\App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;
 
 /**
  * Concatenate History with scenario to get the current accident story
  * Class StoryService
- * @package App\Services\Scenario
+ * @package medcenter24\mcCore\App\Services\Scenario
  */
 class StoryService implements ScenarioInterface
 {

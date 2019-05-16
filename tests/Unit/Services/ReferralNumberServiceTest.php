@@ -16,16 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services;
+namespace medcenter24\mcCore\Tests\Unit\Services;
 
-use App\DoctorAccident;
-use App\HospitalAccident;
-use App\Services\AccidentService;
-use App\Services\ReferralNumberService;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\ReferralNumberService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
-use Tests\Unit\fakes\AccidentFake;
+use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Unit\fakes\AccidentFake;
 
 class ReferralNumberServiceTest extends TestCase
 {
@@ -88,7 +87,7 @@ class ReferralNumberServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGenerateHospitalsKey()
+    public function testGenerateHospitalsKey(): void
     {
         $params = [
             'ref_num' => '',

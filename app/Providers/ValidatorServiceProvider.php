@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Providers;
+namespace medcenter24\mcCore\App\Providers;
 
-use App\Services\DatePeriod\DatePeriodService;
+use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 use Illuminate\Support\ServiceProvider;
 
 class ValidatorServiceProvider extends ServiceProvider

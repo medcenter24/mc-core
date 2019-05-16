@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services;
+namespace medcenter24\mcCore\Tests\Unit\Services;
 
 
-use App\Services\DatePeriod\DatePeriodInterpretationService;
-use App\Services\DatePeriod\DatePeriodService;
+use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodInterpretationService;
+use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
-use Tests\Unit\fakes\DatePeriodFake;
+use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Unit\fakes\DatePeriodFake;
 
 class DatePeriodInterpretationServiceTest extends TestCase
 {
@@ -92,7 +92,7 @@ class DatePeriodInterpretationServiceTest extends TestCase
      *
      * @param array $period
      * @param array $expected
-     * @throws \App\Exceptions\InconsistentDataException
+     * @throwsmedcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function testInterpreter(array $period, array $expected)
     {

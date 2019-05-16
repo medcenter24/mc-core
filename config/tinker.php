@@ -30,7 +30,7 @@ return [
     */
 
     'commands' => [
-        // App\Console\Commands\ExampleCommand::class,
+        // medcenter24\mcCore\App\Console\Commands\ExampleCommand::class,
     ],
 
     /*
@@ -45,7 +45,7 @@ return [
     */
 
     'dont_alias' => [
-        'App\Nova',
+        'medcenter24\mcCore\App\Nova',
     ],
 
 ];

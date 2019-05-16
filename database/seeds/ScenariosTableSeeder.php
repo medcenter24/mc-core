@@ -16,17 +16,17 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\AccidentStatus;
-use App\DoctorAccident;
-use App\HospitalAccident;
-use App\Scenario;
-use App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Scenario;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use Illuminate\Database\Seeder;
 
 class ScenariosTableSeeder extends Seeder
 {
-    const DEFAULT_MODE = 'step';
-    const DOCTOR_SCENARIO = [
+    public const DEFAULT_MODE = 'step';
+    protected const DOCTOR_SCENARIO = [
         1 => [
             'order' => 1,
             'title' => AccidentStatusesService::STATUS_NEW,
@@ -67,7 +67,7 @@ class ScenariosTableSeeder extends Seeder
         ],
     ];
 
-    const HOSPITAL_SCENARIO = [
+    protected const HOSPITAL_SCENARIO = [
         /** hospital case created */
         1 => [
             'order' => 1,
@@ -121,7 +121,7 @@ class ScenariosTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         if (App::environment('production') && Scenario::all()->count()) {
             return;

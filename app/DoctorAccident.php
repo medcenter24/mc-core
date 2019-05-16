@@ -16,11 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App;
+namespace medcenter24\mcCore\App;
 
 
-use App\Services\AccidentStatusesService;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\ServiceLocator;
 
 /**
  * Accident that needs Doctor involvement
@@ -43,9 +44,9 @@ class DoctorAccident extends AccidentAbstract
     public static function boot(): void
     {
         parent::boot();
-
-        self::saved( function (DoctorAccident $doctorAccident) {
-            (new AccidentStatusesService())->updateDoctorAccidentStatus($doctorAccident);
+        self::saved(static function (DoctorAccident $doctorAccident) {
+            $serviceLocator = ServiceLocator::instance();
+            $serviceLocator->get(AccidentService::class)->updateDoctorAccidentStatus($doctorAccident);
         } );
     }
 

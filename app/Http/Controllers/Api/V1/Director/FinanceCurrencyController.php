@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\FinanceCurrency;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\FinanceCurrencyRequest;
-use App\Transformers\FinanceCurrencyTransformer;
+use medcenter24\mcCore\App\FinanceCurrency;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\FinanceCurrencyRequest;
+use medcenter24\mcCore\App\Transformers\FinanceCurrencyTransformer;
 use Dingo\Api\Http\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;

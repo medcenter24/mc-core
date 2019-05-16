@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api;
+namespace medcenter24\mcCore\Tests\Feature\Api;
 
 
-use App\User;
+use medcenter24\mcCore\App\User;
 
 trait LoggedUser
 {

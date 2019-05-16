@@ -16,13 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App;
+namespace medcenter24\mcCore\App;
 
-use App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\AccidentService;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use medcenter24\mcCore\App\Services\ServiceLocator;
 
 /**
  * Case|Accident|...
@@ -93,8 +94,9 @@ class Accident extends AccidentAbstract
     {
         parent::boot();
 
-        self::saved( function(Accident $accident) {
-            (new AccidentStatusesService())->updateAccidentStatus($accident);
+        self::saved(static function(Accident $accident) {
+            $serviceLocator = ServiceLocator::instance();
+            $serviceLocator->get(AccidentService::class)->updateAccidentStatus($accident);
         });
     }
 
@@ -114,7 +116,7 @@ class Accident extends AccidentAbstract
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function createdBy(): BelongsTo
     {
@@ -123,7 +125,7 @@ class Accident extends AccidentAbstract
 
     /**
      * Payment either to doctor or hospital
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function paymentToCaseable(): BelongsTo
     {
@@ -132,7 +134,7 @@ class Accident extends AccidentAbstract
 
     /**
      * Calculated income
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function incomePayment(): BelongsTo
     {
@@ -141,7 +143,7 @@ class Accident extends AccidentAbstract
 
     /**
      * Payment from the assistant
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function paymentFromAssistant(): BelongsTo
     {
@@ -151,7 +153,7 @@ class Accident extends AccidentAbstract
     /**
      * Case checkpoints - statuses which could be selected in different order
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function checkpoints(): BelongsToMany
     {
@@ -161,7 +163,7 @@ class Accident extends AccidentAbstract
     /**
      * Status changes
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return MorphMany
      */
     public function history(): MorphMany
     {
@@ -170,7 +172,7 @@ class Accident extends AccidentAbstract
 
     /**
      * Assistant company
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function assistant(): BelongsTo
     {
@@ -179,7 +181,7 @@ class Accident extends AccidentAbstract
 
     /**
      * Patient from the accident
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function patient(): BelongsTo
     {
@@ -205,7 +207,7 @@ class Accident extends AccidentAbstract
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     * @return MorphTo
      */
     public function caseable(): MorphTo
     {
@@ -213,7 +215,7 @@ class Accident extends AccidentAbstract
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function accidentStatus(): BelongsTo
     {
@@ -221,7 +223,7 @@ class Accident extends AccidentAbstract
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function assistantInvoice(): BelongsTo
     {
@@ -229,7 +231,7 @@ class Accident extends AccidentAbstract
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function assistantGuarantee(): BelongsTo
     {
@@ -244,5 +246,10 @@ class Accident extends AccidentAbstract
     public function isHospitalCaseable(): bool
     {
         return $this->getAttribute('caseable_type') === HospitalAccident::class;
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
     }
 }

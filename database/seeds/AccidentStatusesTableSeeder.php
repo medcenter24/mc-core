@@ -16,8 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\AccidentStatus;
-use App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use Illuminate\Database\Seeder;
 
 class AccidentStatusesTableSeeder extends Seeder
@@ -78,7 +78,7 @@ class AccidentStatusesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment('production') && \App\AccidentStatus::all()->count()) {
+        if (App::environment('production') &&medcenter24\mcCore\App\AccidentStatus::all()->count()) {
             return;
         }
         if (!App::environment('production')) {

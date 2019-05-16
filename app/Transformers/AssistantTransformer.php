@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
-use App\Assistant;
+use medcenter24\mcCore\App\Assistant;
 use League\Fractal\TransformerAbstract;
 
 class AssistantTransformer extends TransformerAbstract

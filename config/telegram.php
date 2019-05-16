@@ -134,8 +134,8 @@ return [
     |
     */
     'commands'                     => [
-        \App\Models\Telegram\Commands\StartCommand::class,
-        \App\Models\Telegram\Commands\HelpCommand::class,
+       medcenter24\mcCore\App\Models\Telegram\Commands\StartCommand::class,
+       medcenter24\mcCore\App\Models\Telegram\Commands\HelpCommand::class,
     ],
 
     /*

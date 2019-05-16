@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Scenario;
+namespace medcenter24\mcCore\App\Services\Scenario;
 
 
-use App\Scenario;
+use medcenter24\mcCore\App\Scenario;
 
 class ScenarioService
 {

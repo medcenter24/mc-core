@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\DiagnosticCategory;
+use medcenter24\mcCore\App\DiagnosticCategory;
 use Illuminate\Database\Seeder;
 
 class DiagnosticCategoriesTableSeeder extends Seeder

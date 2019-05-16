@@ -16,21 +16,25 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Telegram\Replies;
+namespace medcenter24\mcCore\App\Models\Telegram\Replies;
 
 
-use App\Services\InviteService;
-use App\TelegramUser;
+use medcenter24\mcCore\App\Services\InviteService;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\TelegramUser;
 use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\Update;
 
 /**
  * Work with response on the invite reply
  * Class TelegramInviteReply
- * @package App\Models\Telegram\Replies
+ * @package medcenter24\mcCore\App\Models\Telegram\Replies
+ * @todo move to services
  */
 class TelegramInviteReply
 {
+    use ServiceLocatorTrait;
+
     /**
      * @var Message
      */
@@ -49,29 +53,24 @@ class TelegramInviteReply
     /**
      * TelegramInviteReply constructor.
      * @param Update|null $update
-     * @param InviteService $service
-     * @throws \Exception
      */
-    public function __construct(Update $update = null, InviteService $service)
+    public function __construct(Update $update = null): void
     {
         $this->update = $update;
         $this->message = $this->update->getMessage();
-        \App::setLocale($this->message->from->languageCode);
-        $this->inviteService = $service;
+        app()->setLocale($this->message->from->languageCode);
         if ($this->message) {
             $this->bindAccount();
         }
     }
 
-    /**
-     * @throws \Exception
-     */
-    private function bindAccount()
+    private function bindAccount(): void
     {
         $token = $this->inviteSeeker();
         if ($token) {
             if ($this->inviteService->isValidInvite($token)) {
-                $invite = $this->inviteService->getInviteByToken($token);
+                /** @var InviteService $invite */
+                $invite = $this->getServiceLocator()->get(InviteService::class)->getInviteByToken($token);
                 $user = $invite->user;
                 $telegramUser = TelegramUser::create([
                     'telegram_id' => $this->message->from->id,

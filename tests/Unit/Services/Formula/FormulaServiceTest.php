@@ -16,14 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services\Formula;
+namespace medcenter24\mcCore\Tests\Unit\Services\Formula;
 
-use App\Contract\Formula\FormulaBuilder;
-use App\FinanceCondition;
-use App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
-use App\Services\Formula\FormulaService;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
+use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use Illuminate\Support\Collection;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\TestCase;
 
 class FormulaServiceTest extends TestCase
 {
@@ -50,7 +50,7 @@ class FormulaServiceTest extends TestCase
      * in the CaseFinanceService (or somewhere higher)
      *
      * @return array
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      */
     public function dataProvider()
     {

@@ -16,15 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\City;
-use App\Doctor;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\StoreDoctor;
-use App\Http\Requests\Api\UpdateDoctor;
-use App\Transformers\CityTransformer;
-use App\Transformers\DoctorTransformer;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\StoreDoctor;
+use medcenter24\mcCore\App\Http\Requests\Api\UpdateDoctor;
+use medcenter24\mcCore\App\Transformers\CityTransformer;
+use medcenter24\mcCore\App\Transformers\DoctorTransformer;
+use Dingo\Api\Http\Response;
 use Illuminate\Http\Request;
 use League\Fractal\TransformerAbstract;
 
@@ -41,19 +42,19 @@ class DoctorsController extends ApiController
         return Doctor::class;
     }
 
-    public function index()
+    public function index(): Response
     {
         $doctors = Doctor::orderBy('name')->get();
         return $this->response->collection($doctors, new DoctorTransformer());
     }
 
-    public function show($id)
+    public function show($id): Response
     {
         $doctor = Doctor::findOrFail($id);
         return $this->response->item($doctor, new DoctorTransformer());
     }
 
-    public function store(StoreDoctor $request)
+    public function store(StoreDoctor $request): Response
     {
         $doctor = Doctor::create([
             'name' => $request->json('name', ''),
@@ -65,7 +66,7 @@ class DoctorsController extends ApiController
         return $this->response->created(null, $transformer->transform($doctor));
     }
 
-    public function update($id, UpdateDoctor $request)
+    public function update($id, UpdateDoctor $request): Response
     {
         $doctor = Doctor::findOrFail($id);
         $doctor->name = $request->json('name', '');
@@ -80,7 +81,7 @@ class DoctorsController extends ApiController
         return $this->response->item($doctor, new DoctorTransformer());
     }
 
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $doctor = Doctor::findOrFail($id);
         \Log::info('Doctor deleted', [$doctor]);
@@ -91,15 +92,15 @@ class DoctorsController extends ApiController
     /**
      * Covered by doctor
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function cities($id)
+    public function cities($id): Response
     {
         $doctor = Doctor::findOrFail($id);
         return $this->response->collection($doctor->cities, new CityTransformer());
     }
 
-    public function setCities($id, Request $request)
+    public function setCities($id, Request $request): Response
     {
         $doctor = Doctor::findOrFail($id);
         $doctor->cities()->detach();
@@ -110,7 +111,7 @@ class DoctorsController extends ApiController
         return $this->response->accepted();
     }
 
-    public function getDoctorsByCity($cityId)
+    public function getDoctorsByCity($cityId): Response
     {
         $city = City::findOrFail($cityId);
         return $this->response->collection($city->doctors, new DoctorTransformer());

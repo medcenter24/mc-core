@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\fakes;
+namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
-use App\Hospital;
+use medcenter24\mcCore\App\Hospital;
 
 class HospitalFake implements Fake
 {

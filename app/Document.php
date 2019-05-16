@@ -16,11 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App;
+namespace medcenter24\mcCore\App;
 
-use App\Services\DocumentService;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use medcenter24\mcCore\App\Services\DocumentService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -38,17 +40,18 @@ class Document extends Model implements HasMedia
     use SoftDeletes;
     use HasMediaTrait;
 
-    const THUMB = 'thumb';
-    const PIC = 'pic';
+    // @todo move const to service
+    public const THUMB = 'thumb';
+    public const PIC = 'pic';
 
     protected $fillable = ['title', 'created_by'];
     protected $visible = ['title', 'created_by'];
 
     /**
      * @param Media|null $media
-     * @throws \Spatie\Image\Exceptions\InvalidManipulation
+     * @throws InvalidManipulation
      */
-    public function registerMediaConversions(Media $media = null)
+    public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion(self::THUMB)
             ->sharpen(10)
@@ -62,22 +65,22 @@ class Document extends Model implements HasMedia
             ->performOnCollections(DocumentService::CASES_FOLDERS);
     }
 
-    public function patients()
+    public function patients(): MorphToMany
     {
         return $this->morphedByMany(Patient::class, 'documentable');
     }
 
-    public function doctorAccidents()
+    public function doctorAccidents(): MorphToMany
     {
         return $this->morphedByMany(DoctorAccident::class, 'documentable');
     }
 
-    public function accidents()
+    public function accidents(): MorphToMany
     {
         return $this->morphedByMany(Accident::class, 'documentable');
     }
 
-    public function users()
+    public function users(): MorphToMany
     {
         return $this->morphedByMany(User::class, 'documentable');
     }

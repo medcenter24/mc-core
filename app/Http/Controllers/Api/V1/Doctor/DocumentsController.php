@@ -16,18 +16,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Doctor;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
-use App\Document;
-use App\Http\Controllers\ApiController;
-use App\Services\DocumentService;
+use medcenter24\mcCore\App\Document;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Services\DocumentService;
 
 /**
  * The main difference from the directors controller is that doctor can delete only his documents
  * from the active accidents
  *
  * Class DocumentsController
- * @package App\Http\Controllers\Api\V1\Doctor
+ * @package medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor
  */
 class DocumentsController extends ApiController
 {

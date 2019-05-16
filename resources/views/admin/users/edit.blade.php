@@ -1,7 +1,7 @@
 @extends('admin.html')
 
 @section('content')
-    <div class="container white m-2">
+    <div class="container white p-2">
 
         <h1>@lang('content.edit'): {{ $user->name }}</h1>
 

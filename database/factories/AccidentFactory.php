@@ -16,21 +16,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\AccidentStatus;
-use App\AccidentType;
-use App\Assistant;
-use App\DoctorAccident;
-use App\FormReport;
-use App\Patient;
-use App\Services\AccidentTypeService;
-use App\User;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\AccidentType;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\FormReport;
+use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Services\AccidentTypeService;
+use medcenter24\mcCore\App\User;
 use Faker\Generator as Faker;
 
 /**
  * Notice:
  * Everything changed to create to have real id's otherwise phpunit tests will be failed
  */
-$factory->define(\App\Accident::class, function (Faker $faker) {
+$factory->define(\medcenter24\mcCore\App\Accident::class, function (Faker $faker) {
     $refNum = $faker->toUpper(str_random(3)) . '-' . $faker->toUpper(str_random(3)) . $faker->toUpper(str_random(3));
     return [
         'created_by' => function () {
@@ -64,7 +64,7 @@ $factory->define(\App\Accident::class, function (Faker $faker) {
         'ref_num' => $refNum,
         'title' => 'Accident ' . $refNum,
         'city_id' => function () {
-            return factory(\App\City::class)->create()->id;
+            return factory(\medcenter24\mcCore\App\City::class)->create()->id;
         },
         'address' => $faker->address,
         'contacts' => $faker->company . "\n" . $faker->companyEmail . "\n" . $faker->phoneNumber,

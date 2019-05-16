@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
-use App\Accident;
+use medcenter24\mcCore\App\Accident;
 
 class DoctorAccidentTransformer extends AccidentTransformer
 {
@@ -27,14 +27,14 @@ class DoctorAccidentTransformer extends AccidentTransformer
      * @param Accident $accident
      * @return array
      */
-    public function transform (Accident $accident)
+    public function transform (Accident $accident): array
     {
         $transformedAccident = parent::transform($accident);
 
         $doctorAccident = [
             'recommendation' => $accident->caseable->recommendation,
             'investigation' => $accident->caseable->investigation,
-            'visitTime' => $accident->caseable->visit_time->format(config('date.systemFormat')),
+            'visitTime' => $accident->caseable->visit_time ? $accident->caseable->visit_time->format(config('date.systemFormat')) : '',
             'createdAt' => $accident->caseable->created_at->format(config('date.systemFormat')),
             'cityId' => $accident->city_id,
             'doctorId' => $accident->caseable->doctor_id,

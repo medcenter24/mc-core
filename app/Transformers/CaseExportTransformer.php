@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
-use App\Accident;
-use App\DoctorAccident;
-use App\HospitalAccident;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\HospitalAccident;
 use League\Fractal\TransformerAbstract;
 
 class CaseExportTransformer extends TransformerAbstract

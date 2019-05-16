@@ -16,26 +16,28 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director\Cases\CaseController;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
 
-use App\Accident;
-use App\AccidentStatus;
-use App\AccidentType;
-use App\Assistant;
-use App\City;
-use App\DoctorAccident;
-use App\FormReport;
-use App\HospitalAccident;
-use App\Patient;
-use App\Payment;
-use App\Services\AccidentStatusesService;
-use App\Upload;
-use App\User;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\AccidentType;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\FormReport;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\AccidentTypeService;
+use medcenter24\mcCore\App\Upload;
+use medcenter24\mcCore\App\User;
 use Carbon\Carbon;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CasesControllerUpdateActionTest extends TestCase
@@ -207,7 +209,7 @@ class CasesControllerUpdateActionTest extends TestCase
         $accident = factory(Accident::class)->create([
             'created_by' => $createdBy = '' . factory(User::class)->create()->id,
             'accident_type_id' => $accidentType = factory(AccidentType::class)->create([
-                'title' => \App\Services\AccidentTypeService::ALLOWED_TYPES[1],
+                'title' => AccidentTypeService::ALLOWED_TYPES[1],
             ])->id,
             'caseable_id' => $caseable->id,
             'caseable_type' => get_class($caseable),
@@ -219,7 +221,7 @@ class CasesControllerUpdateActionTest extends TestCase
         $data = [
             'accident' => [
                 'accidentTypeId' => $accidentType = factory(AccidentType::class)->create([
-                    'title' => \App\Services\AccidentTypeService::ALLOWED_TYPES[0]
+                    'title' => AccidentTypeService::ALLOWED_TYPES[0]
                 ])->id,
                 'address' => $address = 'address string',
                 'assistantId' => $assistant = factory(Assistant::class)->create()->id,
@@ -351,7 +353,8 @@ class CasesControllerUpdateActionTest extends TestCase
         ], json_decode($ans->errors->accident[0], 1));
     }
 
-    public function testClosedAccident(){
+    public function testClosedAccident(): void
+    {
         $accident = factory(Accident::class)->create(['accident_status_id' => 0]);
         $data = [
             'accident' => [
@@ -359,9 +362,9 @@ class CasesControllerUpdateActionTest extends TestCase
             ]
         ];
 
-        $accidentStatusService = new AccidentStatusesService();
+        $accidentService = new AccidentService();
         // closing an accident
-        $accidentStatusService->closeAccident($accident);
+        $accidentService->closeAccident($accident);
 
         $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
 

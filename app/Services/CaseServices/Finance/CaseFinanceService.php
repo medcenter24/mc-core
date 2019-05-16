@@ -16,32 +16,32 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\CaseServices\Finance;
+namespace medcenter24\mcCore\App\Services\CaseServices\Finance;
 
 
-use App\Accident;
-use App\Assistant;
-use App\City;
-use App\DatePeriod;
-use App\Doctor;
-use App\DoctorAccident;
-use App\DoctorService;
-use App\Events\AccidentPaymentChangedEvent;
-use App\Exceptions\InconsistentDataException;
-use App\FinanceCondition;
-use App\FinanceStorage;
-use App\Hospital;
-use App\HospitalAccident;
-use App\Http\Requests\Api\FinanceRequest;
-use App\Models\Cases\Finance\CaseFinanceCondition;
-use App\Models\Formula\FormulaBuilder;
-use App\Payment;
-use App\Services\AccidentService;
-use App\Services\CurrencyService;
-use App\Services\FinanceConditionService;
-use App\Services\Formula\FormulaService;
-use App\Contract\Formula\FormulaBuilder as FormulaBuilderContract;
-use DemeterChain\C;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Events\AccidentPaymentChangedEvent;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\FinanceStorage;
+use medcenter24\mcCore\App\Hospital;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Http\Requests\Api\FinanceRequest;
+use medcenter24\mcCore\App\Models\Cases\Finance\CaseFinanceCondition;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
+use medcenter24\mcCore\App\Models\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\CurrencyService;
+use medcenter24\mcCore\App\Services\FinanceConditionService;
+use medcenter24\mcCore\App\Services\Formula\FormulaService;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder as FormulaBuilderContract;
 
 class CaseFinanceService
 {
@@ -71,6 +71,7 @@ class CaseFinanceService
      * @param AccidentService $accidentService
      * @param FinanceConditionService $financeConditionService
      * @param CurrencyService $currencyService
+     * @todo needs to be implemented with service locator
      */
     public function __construct(
         FormulaService $formulaService,
@@ -151,14 +152,14 @@ class CaseFinanceService
      * @param string $model
      * @param $conditionProps
      * @return FormulaBuilderContract
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     private function generateFormula(string $model, $conditionProps): FormulaBuilderContract {
         /** @var FormulaBuilder $formula */
         $formula = $this->newFormula();
         // delete empty values
         $conditionProps = array_filter($conditionProps);
-        $conditions = $conditionProps ? $this->financeConditionService->findConditions($model, $conditionProps) : false;
+        $conditions = $this->financeConditionService->findConditions($model, $conditionProps);
 
         // calculate formula by conditions
         if ($conditions && $conditions->count()) {
@@ -175,7 +176,7 @@ class CaseFinanceService
      * @param Accident $accident
      * @return mixed
      * @throws InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     public function getToDoctorFormula(Accident $accident): FormulaBuilderContract
     {
@@ -206,7 +207,7 @@ class CaseFinanceService
      * @param Accident $accident
      * @return FormulaBuilderContract
      * @throws InconsistentDataException
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     public function getToHospitalFormula(Accident $accident): FormulaBuilderContract
     {
@@ -228,7 +229,7 @@ class CaseFinanceService
      * Payment from the assistant to the company
      * @param Accident $accident
      * @return FormulaBuilderContract
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     public function getFromAssistantFormula(Accident $accident): FormulaBuilderContract
     {

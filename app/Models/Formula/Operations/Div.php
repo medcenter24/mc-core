@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Formula\Operations;
+namespace medcenter24\mcCore\App\Models\Formula\Operations;
 
 
-use App\Contract\Formula\Variable;
-use App\Models\Formula\Exception\FormulaException;
+use medcenter24\mcCore\App\Contract\Formula\Variable;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 
 class Div extends AbstractOperation
 {

@@ -16,17 +16,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Export;
+namespace medcenter24\mcCore\App\Services\Export;
 
 
-use App\Accident;
-use App\DoctorAccident;
-use App\Services\AccidentService;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Services\AccidentService;
 use Maatwebsite\Excel\Facades\Excel;
 
 /**
+ *
  * Class Form1ExportService
- * @package App\Services\Export
+ * @package medcenter24\mcCore\App\Services\Export
  * @deprecated moved to the Exports/CasesExport
  */
 class Form1ExportService

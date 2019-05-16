@@ -16,13 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Admin\Messenger;
+namespace medcenter24\mcCore\App\Http\Controllers\Admin\Messenger;
 
 
-use App\Http\Controllers\AdminController;
-use App\Http\Requests\Messenger\CreateMessage;
-use App\Services\Messenger\ThreadService;
-use App\User;
+use medcenter24\mcCore\App\Http\Controllers\AdminController;
+use medcenter24\mcCore\App\Http\Requests\Messenger\CreateMessage;
+use medcenter24\mcCore\App\Services\Messenger\ThreadService;
+use medcenter24\mcCore\App\User;
 use Carbon\Carbon;
 use Cmgmyr\Messenger\Models\Message;
 use Cmgmyr\Messenger\Models\Participant;

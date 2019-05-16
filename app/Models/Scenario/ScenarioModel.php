@@ -16,18 +16,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Scenario;
+namespace medcenter24\mcCore\App\Models\Scenario;
 
 
-use App\AccidentStatus;
-use App\Exceptions\InconsistentDataException;
-use App\Services\AccidentStatusesService;
-use App\Services\ScenarioInterface;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;
 
 /**
  * Class ScenarioModel
- * @package App\Models\Scenario
+ * @package medcenter24\mcCore\App\Models\Scenario
  */
 class ScenarioModel implements ScenarioInterface
 {

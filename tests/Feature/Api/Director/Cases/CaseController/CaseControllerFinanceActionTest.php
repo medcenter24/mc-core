@@ -16,29 +16,74 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director\Cases\CaseController;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
-use App\Accident;
-use App\Assistant;
-use App\City;
-use App\Doctor;
-use App\FinanceCondition;
-use App\FinanceCurrency;
-use App\FinanceStorage;
-use App\Hospital;
-use App\HospitalAccident;
-use App\Invoice;
-use App\Payment;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\FinanceCurrency;
+use medcenter24\mcCore\App\FinanceStorage;
+use medcenter24\mcCore\App\Hospital;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Invoice;
+use medcenter24\mcCore\App\Payment;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
 
 class CaseControllerFinanceActionTest extends TestCase
 {
     use DatabaseMigrations;
     use JwtHeaders;
     use LoggedUser;
+
+    /**
+     * @var AccidentService
+     */
+    private $accidentService;
+    /**
+     * @var AccidentStatusesService
+     */
+    private $accidentStatusService;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->accidentService = new AccidentService();
+        $this->accidentStatusService = new AccidentStatusesService();
+    }
+
+    /**
+     * @param array $data
+     * @return Accident
+     */
+    private function createNewAccident(array $data = []): Model
+    {
+        return $this->accidentService->create(array_merge($data, [
+            'accident_status_id' => $this->accidentStatusService->getNewStatus()->getAttribute('id'),
+        ]));
+    }
+
+    /**
+     * @return Accident
+     */
+    private function createNewDoctorCase(): Model
+    {
+        $caseable = factory(DoctorAccident::class)->create();
+        $accident = $this->createNewAccident([
+            'caseable_type' => DoctorAccident::class,
+            'caseable_id' => $caseable->getAttribute('id'),
+        ]);
+        return $accident;
+    }
 
     public function test404(): void {
         $response = $this->json('POST', '/api/director/cases/1/finance', [], $this->headers($this->getUser()));
@@ -47,7 +92,7 @@ class CaseControllerFinanceActionTest extends TestCase
     }
 
     public function testWithoutCondition(): void {
-        $accident = factory(Accident::class)->create();
+        $accident = $this->createNewAccident();
         factory(FinanceCurrency::class)->create();
         $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
         $response->assertStatus(200);
@@ -81,7 +126,7 @@ class CaseControllerFinanceActionTest extends TestCase
      */
     public function testAssistantCondition(): void
     {
-        $accident = factory(Accident::class)->create();
+        $accident = $this->createNewAccident();
         factory(FinanceCurrency::class)->create();
 
         // condition
@@ -131,9 +176,7 @@ class CaseControllerFinanceActionTest extends TestCase
     {
         $city = factory(City::class)->create();
         $city2 = factory(City::class)->create();
-        $accident = factory(Accident::class)->create([
-            'city_id' => $city->id,
-        ]);
+        $accident = $this->createNewAccident(['city_id' => $city->id]);
         $currency = factory(FinanceCurrency::class)->create();
 
         // condition
@@ -220,15 +263,15 @@ class CaseControllerFinanceActionTest extends TestCase
 
     public function testDoctorCondition(): void
     {
-        $accident = factory(Accident::class)->create();
-        factory(FinanceCurrency::class)->create();
+        $accident = $this->createNewDoctorCase();
+        $currency = factory(FinanceCurrency::class)->create();
 
         // condition
-        // each accident has price 10
+        // each doctors accident has price 10
         factory(FinanceCondition::class)->create([
             'type' => 'add',
             'value' => '10',
-            'currency_id' => 1,
+            'currency_id' => $currency->getAttribute('id'),
             'currency_mode' => 'currency',
             'model' => Doctor::class,
         ]);
@@ -267,7 +310,7 @@ class CaseControllerFinanceActionTest extends TestCase
      */
     public function testIncomeAssistantDoctorConditions(): void
     {
-        $accident = factory(Accident::class)->create();
+        $accident = $this->createNewDoctorCase();
         $currency = factory(FinanceCurrency::class)->create();
 
         // condition
@@ -372,7 +415,7 @@ class CaseControllerFinanceActionTest extends TestCase
 
     public function testAssistantDoctorComplexCondition(): void
     {
-        $accident = factory(Accident::class)->create();
+        $accident = $this->createNewDoctorCase();
         factory(FinanceCurrency::class)->create();
 
         // condition
@@ -428,7 +471,7 @@ class CaseControllerFinanceActionTest extends TestCase
     public function testHospitalCondition(): void
     {
         $caseable = factory(HospitalAccident::class)->create();
-        $accident = factory(Accident::class)->create([
+        $accident = $this->createNewAccident([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
         ]);
@@ -489,7 +532,7 @@ class CaseControllerFinanceActionTest extends TestCase
         $invoice = factory(Invoice::class)->create([
             'payment_id' => $payment->id,
         ]);
-        $accident = factory(Accident::class)->create([
+        $accident = $accident = $this->createNewAccident([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
             'assistant_invoice_id' => $invoice->id,
@@ -542,7 +585,7 @@ class CaseControllerFinanceActionTest extends TestCase
     /**
      * Checks that Hospital prices are taken from the invoices from the hospital or stored as a fixed payment
      */
-    public function testHositalFixedPayment(): void
+    public function testHospitalFixedPayment(): void
     {
         $caseable = factory(HospitalAccident::class)->create(['hospital_invoice_id' => 0]);
         $currency = factory(FinanceCurrency::class)->create();
@@ -559,7 +602,7 @@ class CaseControllerFinanceActionTest extends TestCase
         $invoice = factory(Invoice::class)->create([
             'payment_id' => $payment->id,
         ]);
-        $accident = factory(Accident::class)->create([
+        $accident = $accident = $this->createNewAccident([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
             'assistant_invoice_id' => $invoice->id,
@@ -639,7 +682,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'fixed' => 1,
             'value' => 700,
         ]);
-        $accident = factory(Accident::class)->create([
+        $accident = $accident = $this->createNewAccident([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
             'assistant_invoice_id' => $invoice->id,
@@ -722,7 +765,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'fixed' => 1,
             'value' => 20,
         ]);
-        $accident = factory(Accident::class)->create([
+        $accident = $accident = $this->createNewAccident([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
             'assistant_invoice_id' => $invoice->id,
@@ -799,13 +842,13 @@ class CaseControllerFinanceActionTest extends TestCase
             'fixed' => 0,
             'value' => 20,
         ]);
-        $accident = factory(Accident::class)->create([
+        $accident = $accident = $this->createNewAccident([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
-            'assistant_invoice_id' => 0,
             'caseable_payment_id' => $caseablePayment->id,
             'income_payment_id' => $incomePayment->id,
             'assistant_payment_id' => $assistantPayment->id,
+            'accident_status_id' => 0,
         ]);
 
         // condition

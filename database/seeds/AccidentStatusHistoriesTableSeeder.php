@@ -16,17 +16,17 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\Accident;
-use App\AccidentStatus;
-use App\AccidentStatusHistory;
-use App\AccidentType;
-use App\Assistant;
-use App\DoctorAccident;
-use App\Form;
-use App\FormReport;
-use App\Patient;
-use App\Services\AccidentTypeService;
-use App\User;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\AccidentStatusHistory;
+use medcenter24\mcCore\App\AccidentType;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Form;
+use medcenter24\mcCore\App\FormReport;
+use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Services\AccidentTypeService;
+use medcenter24\mcCore\App\User;
 use Illuminate\Database\Seeder;
 
 class AccidentStatusHistoriesTableSeeder extends Seeder

@@ -16,18 +16,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 
-use App\Assistant;
-use App\City;
-use App\DatePeriod;
-use App\Doctor;
-use App\DoctorService;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\DoctorService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
 
 class FinancesTest extends TestCase
 {

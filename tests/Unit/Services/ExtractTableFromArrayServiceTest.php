@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services;
+namespace medcenter24\mcCore\Tests\Unit\Services;
 
-use App\Services\ExtractTableFromArrayService;
-use Tests\TestCase;
+use medcenter24\mcCore\App\Services\ExtractTableFromArrayService;
+use medcenter24\mcCore\Tests\TestCase;
 
 class ExtractTableFromArrayServiceTest extends TestCase
 {

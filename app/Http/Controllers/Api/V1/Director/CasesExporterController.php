@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\Exports\CasesExport;
-use App\Http\Controllers\ApiController;
-// use App\Services\Export\Form1ExportService;
+use medcenter24\mcCore\App\Exports\CasesExport;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+// use medcenter24\mcCore\App\Services\Export\Form1ExportService;
 use Illuminate\Http\Request;
 
 class CasesExporterController extends ApiController

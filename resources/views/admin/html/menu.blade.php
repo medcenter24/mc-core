@@ -1,4 +1,4 @@
-@inject('menu', 'App\Helpers\Admin\Menu')
+@inject('menu', 'medcenter24\mcCore\App\Helpers\Admin\Menu')
 
 <div class="container">
     <!-- NavBar -->

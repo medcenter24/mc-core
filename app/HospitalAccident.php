@@ -16,10 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App;
+namespace medcenter24\mcCore\App;
 
 
-use App\Services\AccidentStatusesService;
+
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\ServiceLocator;
 
 class HospitalAccident extends AccidentAbstract
 {
@@ -32,12 +34,13 @@ class HospitalAccident extends AccidentAbstract
     protected $fillable = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id'];
     protected $visible = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id'];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
-        self::saved( function (HospitalAccident $hospitalAccident) {
-            (new AccidentStatusesService())->updateHospitalAccidentStatus($hospitalAccident);
+        self::saved(static function (HospitalAccident $hospitalAccident) {
+            ServiceLocator::instance()->get(AccidentService::class)
+                ->updateHospitalAccidentStatus($hospitalAccident);
         } );
     }
 

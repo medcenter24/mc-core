@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Models\Formula\Variables;
+namespace medcenter24\mcCore\App\Models\Formula\Variables;
 
 
-use App\Contract\Formula\Variable;
+use medcenter24\mcCore\App\Contract\Formula\Variable;
 
 class Integer implements Variable
 {

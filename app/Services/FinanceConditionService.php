@@ -16,16 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\Assistant;
-use App\DatePeriod;
-use App\DatePeriodInterpretation;
-use App\Doctor;
-use App\DoctorService;
-use App\FinanceCondition;
-use App\FinanceStorage;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\DatePeriodInterpretation;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\FinanceStorage;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -152,14 +152,14 @@ class FinanceConditionService
      */
     private function find(string $model, Collection $filters): Collection
     {
+        // \Illuminate\Support\Facades\DB::enableQueryLog();
+
+        $storedConditions = [];
         if ($filters->count()) {
-
-            // \Illuminate\Support\Facades\DB::enableQueryLog();
-
-            /** @var \Illuminate\Database\Eloquent\Builder $storageQuery */
+            /** @var Builder $storageQuery */
             $storageQuery = FinanceStorage::query();
-            $filters->each(function ($val, $key) use ($storageQuery) {
-                $storageQuery->orWhere(function(Builder $query) use ($val, $key) {
+            $filters->each(static function ($val, $key) use ($storageQuery) {
+                $storageQuery->orWhere(static function (Builder $query) use ($val, $key) {
                     $query->where('model', $key);
                     if (is_array($val)) {
                         $query->whereIn('model_id', $val);
@@ -172,22 +172,20 @@ class FinanceConditionService
             $storedConditions = $storageQuery
                 ->groupBy('finance_condition_id')
                 ->get(['finance_condition_id']);
-
-            // $query = \Illuminate\Support\Facades\DB::getQueryLog();
-            $conditions = FinanceCondition::query()
-                ->where(function ($q) use ($model, $storedConditions) {
-                    // founded by stored conditions
-                    $q->where('model', $model)
-                        ->whereIn('id', $storedConditions);
-                })->orWhere( function ($q) use ($model) {
-                    // general conditions for the $model (without stored conditions)
-                    $q->where('model', $model)->doesntHave('conditions');
-                })
-                ->withCount('conditions')
-                ->get();
-        } else {
-            $conditions = collect();
         }
+
+        // $query = \Illuminate\Support\Facades\DB::getQueryLog();
+        $conditions = FinanceCondition::query()
+            ->where(static function (Builder $q) use ($model, $storedConditions) {
+                // founded by stored conditions
+                $q->where('model', $model)
+                    ->whereIn('id', $storedConditions);
+            })->orWhere( static function (Builder $q) use ($model) {
+                // general conditions for the $model (without stored conditions)
+                $q->where('model', $model)->doesntHave('conditions');
+            })
+            ->withCount('conditions')
+            ->get();
 
         return $conditions;
     }

@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Doctor;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
-use App\Accident;
-use App\Diagnostic;
-use App\Http\Controllers\ApiController;
-use App\Transformers\DiagnosticTransformer;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Diagnostic;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
 
 class DiagnosticsController extends ApiController
 {

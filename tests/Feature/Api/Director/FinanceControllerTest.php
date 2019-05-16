@@ -16,20 +16,20 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 
-use App\Accident;
-use App\FinanceCondition;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\FinanceCondition;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
-use Tests\TestCase;
-use Tests\Unit\fakes\DoctorServiceFake;
-use Tests\Unit\fakes\AssistantFake;
-use Tests\Unit\fakes\CityFake;
-use Tests\Unit\fakes\DatePeriodFake;
-use Tests\Unit\fakes\DoctorFake;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Unit\fakes\DoctorServiceFake;
+use medcenter24\mcCore\Tests\Unit\fakes\AssistantFake;
+use medcenter24\mcCore\Tests\Unit\fakes\CityFake;
+use medcenter24\mcCore\Tests\Unit\fakes\DatePeriodFake;
+use medcenter24\mcCore\Tests\Unit\fakes\DoctorFake;
 
 class FinanceControllerTest extends TestCase
 {

@@ -16,11 +16,26 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\DoctorAccident;
+use medcenter24\mcCore\App\DoctorAccident;
 
-class DoctorAccidentService
+class DoctorAccidentService extends AbstractModelService
 {
+
+    public function getClassName(): string
+    {
+        return DoctorAccident::class;
+    }
+
+    protected function getRequiredFields(): array
+    {
+        return [
+            'doctor_id' => 0,
+            'recommendation' => '',
+            'investigation' => '',
+        ];
+    }
+
 }

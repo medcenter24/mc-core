@@ -16,19 +16,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\Accident;
-use App\AccidentCheckpoint;
-use App\AccidentStatus;
-use App\AccidentType;
-use App\Assistant;
-use App\Diagnostic;
-use App\DoctorAccident;
-use App\DoctorService;
-use App\DoctorSurvey;
-use App\Form;
-use App\FormReport;
-use App\Patient;
-use App\User;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\AccidentCheckpoint;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\AccidentType;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\Diagnostic;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\DoctorSurvey;
+use medcenter24\mcCore\App\Form;
+use medcenter24\mcCore\App\FormReport;
+use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\User;
 use Illuminate\Database\Seeder;
 
 class AccidentsTableSeeder extends Seeder
@@ -52,7 +52,7 @@ class AccidentsTableSeeder extends Seeder
                         ? factory(AccidentType::class)->create()
                         : AccidentType::first();
                 },
-                'accident_status_id' => \App\AccidentStatus::firstOrCreate(AccidentStatusesTableSeeder::ACCIDENT_STATUSES[0]), // new
+                'accident_status_id' =>medcenter24\mcCore\App\AccidentStatus::firstOrCreate(AccidentStatusesTableSeeder::ACCIDENT_STATUSES[0]), // new
                 'assistant_id' => function () {
                     return factory(Assistant::class)->create();
                 },

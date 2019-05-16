@@ -16,6 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use medcenter24\mcCore\App\Services\Messenger\LocMessengerServiceProvider;
+
 $app = [
 
     /*
@@ -170,27 +172,28 @@ $app = [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
-        \App\Providers\ApiProvider::class,
+        medcenter24\mcCore\App\Providers\AppServiceProvider::class,
+        medcenter24\mcCore\App\Providers\AuthServiceProvider::class,
+        // medcenter24\mcCore\App\Providers\BroadcastServiceProvider::class,
+        medcenter24\mcCore\App\Providers\EventServiceProvider::class,
+        medcenter24\mcCore\App\Providers\RouteServiceProvider::class,
+        \medcenter24\mcCore\App\Providers\ApiProvider::class,
 
         //--- Added
         Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
-        \App\Providers\RoleServiceProvider::class,
+        \medcenter24\mcCore\App\Providers\RoleServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         \Maatwebsite\Excel\ExcelServiceProvider::class,
         // I need this to have possibility to use vendor path in the other direction than default
-        \App\Services\Messenger\LocMessengerServiceProvider::class,
+        LocMessengerServiceProvider::class,
         BackupManager\Laravel\Laravel55ServiceProvider::class,
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
-        // \App\Providers\CaseFinanceProvider::class,
-        \App\Providers\FormulaServiceProvider::class,
-        \App\Providers\ValidatorServiceProvider::class,
+        // \medcenter24\mcCore\App\Providers\CaseFinanceProvider::class,
+        \medcenter24\mcCore\App\Providers\FormulaServiceProvider::class,
+        \medcenter24\mcCore\App\Providers\ValidatorServiceProvider::class,
+        Nwidart\Modules\LaravelModulesServiceProvider::class,
     ],
 
     /*
@@ -241,7 +244,7 @@ $app = [
         'View' => Illuminate\Support\Facades\View::class,
 
         // extend
-        'Roles' => App\Support\Facades\Roles::class,
+        'Roles' => medcenter24\mcCore\App\Support\Facades\Roles::class,
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Telegram'  => Telegram\Bot\Laravel\Facades\Telegram::class,

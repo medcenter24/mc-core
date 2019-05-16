@@ -16,20 +16,20 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director\Cases\CaseController\Finance;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController\Finance;
 
-use App\Accident;
-use App\Assistant;
-use App\Doctor;
-use App\DoctorAccident;
-use App\DoctorService;
-use App\FinanceCondition;
-use App\FinanceCurrency;
-use App\FinanceStorage;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\FinanceCurrency;
+use medcenter24\mcCore\App\FinanceStorage;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

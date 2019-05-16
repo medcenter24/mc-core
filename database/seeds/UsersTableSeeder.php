@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\City;
-use App\Role;
-use App\User;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\User;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -31,7 +31,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment('production') && \App\User::all()->count()) {
+        if (App::environment('production') &&medcenter24\mcCore\App\User::all()->count()) {
             return;
         } elseif (!App::environment('production')) {
             User::truncate();

@@ -16,11 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\Invite;
-use App\User;
+use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Invite;
+use medcenter24\mcCore\App\User;
 use Carbon\Carbon;
 
 class InviteService
@@ -39,7 +40,7 @@ class InviteService
 
         $invite = Invite::create([
             'user_id' => $user->id,
-            'token' => str_random(21),
+            'token' => Str::random(21),
             'valid_from' => Carbon::now(),
             'valid_to' => Carbon::now()->addWeek(2),
         ]);

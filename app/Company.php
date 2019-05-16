@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App;
+namespace medcenter24\mcCore\App;
 
 
-use App\Services\LogoService;
-use App\Services\SignatureService;
+use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\Services\SignatureService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Image\Manipulations;

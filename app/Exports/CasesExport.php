@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Exports;
+namespace medcenter24\mcCore\App\Exports;
 
-use App\Accident;
-use App\Services\CaseServices\CaseSeekerService;
-use App\Transformers\CaseExportTransformer;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Services\CaseServices\CaseSeekerService;
+use medcenter24\mcCore\App\Transformers\CaseExportTransformer;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;

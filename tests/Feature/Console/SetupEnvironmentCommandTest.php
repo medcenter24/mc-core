@@ -22,12 +22,10 @@ namespace medcenter24\mcCore\Tests\Feature\Console;
 use medcenter24\mcCore\App\Contract\General\Environment;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Services\EnvironmentService;
-use medcenter24\mcCore\App\Services\Installer\InstallerService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use medcenter24\mcCore\App\Services\Installer\Params\EnvDbConnectionParam;
+use medcenter24\mcCore\App\Services\Installer\InstallerService;
 use medcenter24\mcCore\Tests\SamplePath;
 use medcenter24\mcCore\Tests\TestCase;
-use Mockery\Exception\BadMethodCallException;
 
 class SetupEnvironmentCommandTest extends TestCase
 {
@@ -84,9 +82,10 @@ class SetupEnvironmentCommandTest extends TestCase
     /*
      * it breaks all tests
      * needs to be reviewed later
-     *
-     * public function test_installing_env(): void
+     */
+    /*public function test_installing_env(): void
     {
+        $_ENV['APP_CONFIG_PATH'] = null;
         EnvironmentService::terminate();
         $configDir = __DIR__ . '/samples/sandbox/config';
         $confFile = 'generis.conf.php';

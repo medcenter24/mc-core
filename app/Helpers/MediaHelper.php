@@ -16,10 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Helpers;
+namespace medcenter24\mcCore\App\Helpers;
 
 
 
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 
 class MediaHelper
@@ -29,12 +30,12 @@ class MediaHelper
      * @param string $collectionName
      * @param string $thumbName
      * @return string
-     * @throws \ErrorException
+     * @throws InconsistentDataException
      */
-    public static function b64(HasMedia $model, $collectionName = '', $thumbName = 'thumb')
+    public static function b64(HasMedia $model, $collectionName = '', $thumbName = 'thumb'): string
     {
         if (!$model->hasMedia($collectionName)) {
-            throw new \ErrorException('Model does not have medias');
+            throw new InconsistentDataException('Model does not have medias');
         }
 
         $path = $model->getFirstMediaPath($collectionName, $thumbName);
@@ -45,7 +46,7 @@ class MediaHelper
      * If no image available
      * @return string
      */
-    public static function getB64Gag()
+    public static function getB64Gag(): string
     {
         return base64_encode(file_get_contents(resource_path('assets/img/no_image_available.jpg')));
     }

@@ -16,16 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\DatePeriod;
+namespace medcenter24\mcCore\App\Services\DatePeriod;
 
-use App\DatePeriod;
-use App\DatePeriodInterpretation;
+use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\DatePeriodInterpretation;
 use Carbon\Carbon;
 
 /**
  * Converting GUIs periods to the storing format to make possibility to use it in the DB with SQL
  * Class DatePeriodInterpretationService
- * @package App\Services
+ * @package medcenter24\mcCore\App\Services
  */
 class DatePeriodInterpretationService
 {
@@ -42,9 +42,9 @@ class DatePeriodInterpretationService
     /**
      * @param DatePeriod $datePeriod
      * @return array
-     * @throws \App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
-    public function interpret(DatePeriod $datePeriod)
+    public function interpret(DatePeriod $datePeriod): array
     {
         $from = $this->datePeriodService->parsePeriod($datePeriod->from);
         $to = $this->datePeriodService->parsePeriod($datePeriod->to);
@@ -57,7 +57,7 @@ class DatePeriodInterpretationService
 
         $result = [];
         $this->addFirstDate($from, $result);
-        if ($from[DatePeriodService::DOW] != $to[DatePeriodService::DOW]) {
+        if ($from[DatePeriodService::DOW] !== $to[DatePeriodService::DOW]) {
             // adding all the days between dates
             $this->addBetweenDates($from, $to, $result);
         } else {
@@ -109,7 +109,7 @@ class DatePeriodInterpretationService
     /**
      * Updating interpreted data
      * @param DatePeriod $datePeriod
-     * @throws \App\Exceptions\InconsistentDataException
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function update(DatePeriod $datePeriod)
     {
@@ -119,8 +119,8 @@ class DatePeriodInterpretationService
         $data = [];
         foreach ($days as $day) {
             $data[] = [
-                'date_period_id' => $datePeriod->id,
-                'day_of_week' => $day[0],
+                'date_period_id' => (int)$datePeriod->id,
+                'day_of_week' => (int)$day[0],
                 'from' => $day[1],
                 'to' => $day[2],
             ];

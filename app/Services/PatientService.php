@@ -16,36 +16,26 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
-use App\Patient;
+use medcenter24\mcCore\App\Patient;
 
-class PatientService
+class PatientService extends AbstractModelService
 {
-    /**
-     * Create or find a patient according to the patients data
-     * @param array $patientData
-     * @return bool|Patient
-     */
-    public function findOrCreate(array $patientData = [])
+    public function getClassName(): string
     {
-        $patient = false;
-        if (count($patientData)) {
-            if (!$patientData['birthday']) {
-                $patientData['birthday'] = null;
-            }
+        return Patient::class;
+    }
 
-            $patient = null;
-            if (!$patientData['id']) {
-                if ($patientData['name']) {
-                    $patient = Patient::create($patientData);
-                }
-            } else {
-                $patient = Patient::findOrFail($patientData['id']);
-            }
-        }
-
-        return $patient;
+    protected function getRequiredFields(): array
+    {
+        return [
+            'name' => '',
+            'address' => '',
+            'phones' => '',
+            'comment' => '',
+            'birthday' => null,
+        ];
     }
 }

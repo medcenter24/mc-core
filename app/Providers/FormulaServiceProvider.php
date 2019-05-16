@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Providers;
+namespace medcenter24\mcCore\App\Providers;
 
-use App\Services\Formula\FormulaResultService;
-use App\Services\Formula\FormulaService;
-use App\Services\Formula\FormulaViewService;
+use medcenter24\mcCore\App\Services\Formula\FormulaResultService;
+use medcenter24\mcCore\App\Services\Formula\FormulaService;
+use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
 use Illuminate\Support\ServiceProvider;
 
 class FormulaServiceProvider extends ServiceProvider
@@ -46,10 +46,7 @@ class FormulaServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(FormulaService::class, function($app) {
-            return new FormulaService(
-                $app->make(FormulaViewService::class),
-                $app->make(FormulaResultService::class)
-            );
+            return new FormulaService();
         });
     }
 

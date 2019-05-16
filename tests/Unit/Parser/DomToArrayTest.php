@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Parser;
+namespace medcenter24\mcCore\Tests\Unit\Parser;
 
 
-use App\Services\DomDocumentService;
+use medcenter24\mcCore\App\Services\DomDocumentService;
 
 /**
  * Parse DOMDocument to array

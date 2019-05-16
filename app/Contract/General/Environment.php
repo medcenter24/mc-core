@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Contract\General;
+namespace medcenter24\mcCore\App\Contract\General;
 
 
 interface Environment
@@ -69,4 +69,6 @@ interface Environment
     public const PROP_DROPBOX_BACKUP_APP = 'DROPBOX_BACKUP_APP';
     public const PROP_DROPBOX_BACKUP_ROOT = 'DROPBOX_BACKUP_ROOT';
     public const PROP_DEBUGBAR_ENABLED = 'DEBUGBAR_ENABLED';
+    public const PROP_LOG_CHANNEL = 'LOG_CHANNEL';
+    public const PROP_LOG_SLACK_WEBHOOK_URL = 'LOG_SLACK_WEBHOOK_URL';
 }

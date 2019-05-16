@@ -27,7 +27,7 @@ return [
     |
     */
 
-    'namespace' => 'Modules',
+    'namespace' => 'medcenter24',
 
     /*
     |--------------------------------------------------------------------------
@@ -39,8 +39,9 @@ return [
     */
 
     'stubs' => [
-        'enabled' => false,
-        'path' => base_path() . '/vendor/nwidart/laravel-modules/src/Commands/stubs',
+        'enabled' => true,
+        // it is only for development and development needs to have vendor in the laravel only, so we don't need to rewrite it
+        'path' => resource_path('modules/stubs'),
         'files' => [
             'routes/web' => 'Routes/web.php',
             'routes/api' => 'Routes/api.php',
@@ -83,7 +84,7 @@ return [
         |
         */
 
-        'modules' => base_path('Modules'),
+        'modules' => base_path() . '/..',
         /*
         |--------------------------------------------------------------------------
         | Modules assets path
@@ -93,7 +94,7 @@ return [
         |
         */
 
-        'assets' => public_path('modules'),
+        'assets' => public_path('extensions'),
         /*
         |--------------------------------------------------------------------------
         | The migrations path
@@ -105,6 +106,7 @@ return [
         */
 
         'migration' => base_path('database/migrations'),
+
         /*
         |--------------------------------------------------------------------------
         | Generator path
@@ -149,9 +151,9 @@ return [
     */
 
     'scan' => [
-        'enabled' => false,
+        'enabled' => true,
         'paths' => [
-            base_path('vendor/*/*'),
+            base_path('../mc*/*'),
         ],
     ],
     /*
@@ -164,7 +166,7 @@ return [
     */
 
     'composer' => [
-        'vendor' => 'MyDocs24',
+        'vendor' => 'medcenter24',
         'author' => [
             'name' => 'Oleksandr Zagovorychev',
             'email' => 'zagovorychev@gmail.com',

@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Doctor;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
-use App\DoctorService;
-use App\Http\Controllers\ApiController;
-use App\Transformers\DoctorServiceTransformer;
+use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Transformers\DoctorServiceTransformer;
 
 class DoctorServicesController extends ApiController
 {

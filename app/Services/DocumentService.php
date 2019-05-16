@@ -16,40 +16,52 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services;
+namespace medcenter24\mcCore\App\Services;
 
 
 
-use App\Accident;
-use App\Document;
-use App\User;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Document;
+use medcenter24\mcCore\App\User;
 use Illuminate\Support\Collection;
 
-class DocumentService
+class DocumentService extends AbstractModelService
 {
-    const DISC_IMPORTS = 'documents';
-    const CASES_FOLDERS = 'patients';
+    public const DISC_IMPORTS = 'documents';
+    public const CASES_FOLDERS = 'patients';
 
-    const TYPE_PASSPORT = 'passport';
-    const TYPE_INSURANCE = 'insurance';
+    public const TYPE_PASSPORT = 'passport';
+    public const TYPE_INSURANCE = 'insurance';
 
-    const TYPES = [self::TYPE_PASSPORT, self::TYPE_INSURANCE];
+    public const TYPES = [self::TYPE_PASSPORT, self::TYPE_INSURANCE];
+
+    protected function getClassName(): string
+    {
+        return Document::class;
+    }
+
+    protected function getRequiredFields(): array
+    {
+        return [
+            'created_by' => 0,
+            'title' => '',
+        ];
+    }
 
     /**
      * @param $file
      * @param User $user
      * @return Document
-     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded
      */
-    public function createDocumentFromFile($file, User $user)
+    public function createDocumentFromFile($file, User $user): Document
     {
         /** @var Document $document */
-        $document = Document::create([
+        $document = $this->create([
             'created_by' => $user->id,
             'title' => $file->getClientOriginalName()
         ]);
         $document->addMedia($file)
-            ->toMediaCollection(DocumentService::CASES_FOLDERS, DocumentService::DISC_IMPORTS);
+            ->toMediaCollection(self::CASES_FOLDERS, self::DISC_IMPORTS);
         $user->documents()->attach($document);
 
         return $document;
@@ -59,9 +71,8 @@ class DocumentService
      * @param $files
      * @param User $user
      * @return Collection
-     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded
      */
-    public function createDocumentsFromFiles($files, User $user)
+    public function createDocumentsFromFiles($files, User $user): Collection
     {
         $documents = new Collection();
         foreach ($files as $file) {
@@ -77,17 +88,17 @@ class DocumentService
      * @param string $type - all, user or accident
      * @return Collection
      */
-    public function getDocuments(User $user = null, Accident $accident = null, $type = 'all')
+    public function getDocuments(User $user = null, Accident $accident = null, $type = 'all'): Collection
     {
         $documents = new Collection();
-        if ($user && ($type == 'all' || $type == 'user')) {
+        if ($user && ($type === 'all' || $type === 'user')) {
             $documents = $documents->merge($user->documents);
         }
 
-        if ($accident && ($type == 'all' || $type == 'accident')) {
+        if ($accident && ($type === 'all' || $type === 'accident')) {
             $documents = $documents->merge($accident->documents);
-            if ($accident->caseable) {
-                $documents = $documents->merge($accident->caseable->documents);
+            if ($accident->getAttribute('caseable')) {
+                $documents = $documents->merge($accident->getAttribute('caseable')->documents);
             }
         }
 
@@ -100,7 +111,7 @@ class DocumentService
      * @param RoleService $roleService
      * @return bool
      */
-    public function checkAccess(Document $document, User $user, RoleService $roleService)
+    public function checkAccess(Document $document, User $user, RoleService $roleService): bool
     {
         return $roleService->hasRole($user, 'director')
             || ($roleService->hasRole($user, 'doctor') && $document->created_by == $user->id);

@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services\Formula;
+namespace medcenter24\mcCore\Tests\Unit\Services\Formula;
 
-use App\Contract\Formula\FormulaBuilder;
-use App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
-use App\Services\Formula\FormulaViewService;
+use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
+use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
 
 class FormulaViewServiceTest extends AbstractDataProvider
 {
@@ -49,9 +49,9 @@ class FormulaViewServiceTest extends AbstractDataProvider
     }
 
     /**
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @throws \Throwable
-     * @expectedException \App\Models\Formula\Exception\FormulaException
+     * @expectedException \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @expectedExceptionMessage Divide by zero
      */
     public function testDivideByZero(): void
@@ -60,9 +60,9 @@ class FormulaViewServiceTest extends AbstractDataProvider
     }
 
     /**
-     * @throws \App\Models\Formula\Exception\FormulaException
+     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @throws \Throwable
-     * @expectedException \App\Models\Formula\Exception\FormulaException
+     * @expectedException \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
      * @expectedExceptionMessage Divide by zero
      */
     public function testDivideByZero2(): void

@@ -16,22 +16,20 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Support\Core;
+namespace medcenter24\mcCore\Tests\Unit\Support\Core;
 
-use App\Support\Core\Configurable;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use medcenter24\mcCore\App\Support\Core\Configurable;
+use medcenter24\mcCore\Tests\TestCase;
 
 class ConfigurableTest extends TestCase
 {
-    public function testConstructorNoConfig()
+    public function testConstructorNoConfig(): void
     {
         $configTest = new ConfigTest;
         $this->assertEquals($configTest->getOptions(), []);
     }
 
-    public function testConstructorWithObject()
+    public function testConstructorWithObject(): void
     {
         $configTest = new ConfigTest(new MyConfigObject);
         // the default options should be merged with the constructor values,
@@ -43,7 +41,7 @@ class ConfigurableTest extends TestCase
         $this->assertEquals($expectedOptions, $configTest->getOptions());
     }
 
-    public function testConstructorWithArrayConfig()
+    public function testConstructorWithArrayConfig(): void
     {
         $configTest = new ConfigTest(
             array('option2' => 'newvalue2', 'option3' => 3)
@@ -68,7 +66,7 @@ class ConfigTest extends Configurable
 
 class MyConfigObject
 {
-    public function toArray()
+    public function toArray(): array
     {
         return array('option2' => 'newvalue2', 'option3' => 3);
     }

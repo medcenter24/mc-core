@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use App\Hospital;
+use medcenter24\mcCore\App\Hospital;
 use Illuminate\Database\Seeder;
 
 class HospitalsTableSeeder extends Seeder

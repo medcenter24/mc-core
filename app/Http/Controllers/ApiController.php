@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers;
+namespace medcenter24\mcCore\App\Http\Controllers;
 
-use App\Exceptions\NotImplementedException;
+use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

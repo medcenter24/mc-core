@@ -16,8 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests;
+namespace medcenter24\mcCore\Tests;
 
+
+use ReflectionClass;
+use ReflectionException;
 
 trait SamplePath
 {
@@ -29,12 +32,12 @@ trait SamplePath
 
     /**
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function getSamplePath(): string
     {
         if (!$this->samplePath) {
-            $reflector = new \ReflectionClass(get_class($this));
+            $reflector = new ReflectionClass(get_class($this));
             $this->samplePath = dirname($reflector->getFileName())
                 . DIRECTORY_SEPARATOR
                 . 'samples'
@@ -52,7 +55,7 @@ trait SamplePath
     /**
      * @param string $file
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function getSampleFile($file=''): string
     {

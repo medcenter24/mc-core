@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Transformers;
+namespace medcenter24\mcCore\App\Transformers;
 
 
-use App\DoctorService;
+use medcenter24\mcCore\App\DoctorService;
 use League\Fractal\TransformerAbstract;
 
 class DoctorServiceTransformer extends TransformerAbstract

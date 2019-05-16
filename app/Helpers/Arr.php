@@ -16,10 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Helpers;
+namespace medcenter24\mcCore\App\Helpers;
 
 
-use App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 
 class Arr
 {
@@ -29,7 +29,7 @@ class Arr
      * @param $arr
      * @return string
      */
-    public static function multiArrayToString ($arr)
+    public static function multiArrayToString ($arr): string
     {
         $result = [];
         array_walk_recursive($arr, function($v) use (&$result) {
@@ -43,12 +43,12 @@ class Arr
      * @param $arr
      * @return array
      */
-    public static function convertTableToKeyValue (array $arr)
+    public static function convertTableToKeyValue (array $arr): array
     {
         $keys = array_shift($arr);
-        return array_map(function ($val) use ($keys) {
+        return array_map(static function ($val) use ($keys) {
 
-            if (count($keys) != count($val)) {
+            if (count($keys) !== count($val)) {
                 throw new InconsistentDataException('Key and Data tables should have the same size');
             }
 
@@ -56,7 +56,7 @@ class Arr
         }, $arr);
     }
 
-    public static function collectTableRows (array $arr)
+    public static function collectTableRows (array $arr): array
     {
         $result = [];
         foreach (self::convertTableToKeyValue($arr) as $row) {
@@ -77,10 +77,33 @@ class Arr
      * @param string $key
      * @param string $defaultEmpty
      */
-    public static function setDefault(array &$arr, string $key, $defaultEmpty = '')
+    public static function setDefault(array &$arr, string $key, $defaultEmpty = ''): void
     {
         if (!isset($arr[$key]) || !$arr[$key]) {
             $arr[$key] = $defaultEmpty;
         }
+    }
+
+    /**
+     * Checks that all keys esist in the array
+     *
+     * @example keysExists([0 => 1, 1 => 0, 0 => 0], [0, 1, 0]) === true
+     *
+     * @param array $data
+     * @param array $keys
+     * @return bool
+     */
+    public static function keysExists(array $data, array $keys): bool
+    {
+        $array = $data;
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $array)) {
+                return false;
+            }
+
+            $array = $array[$key];
+        }
+
+        return true;
     }
 }

@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Console\Commands;
+namespace medcenter24\mcCore\App\Console\Commands;
 
-use App\Services\InviteService;
+use medcenter24\mcCore\App\Services\InviteService;
 use Illuminate\Console\Command;
 
 class CleanInvites extends Command

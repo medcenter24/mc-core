@@ -16,23 +16,25 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director\Cases\CaseController;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
 
-use App\Accident;
-use App\AccidentStatus;
-use App\Doctor;
-use App\DoctorAccident;
-use App\Hospital;
-use App\HospitalAccident;
-use App\Invoice;
-use App\Payment;
-use App\Services\AccidentStatusesService;
-use App\Upload;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Hospital;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Invoice;
+use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Upload;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
+use ScenariosTableSeeder;
 
 class CaseControllerScenarioActionTest extends TestCase
 {
@@ -44,10 +46,10 @@ class CaseControllerScenarioActionTest extends TestCase
     {
         parent::setUp();
         // adding scenarios to the storage
-        (new \ScenariosTableSeeder())->run();
+        (new ScenariosTableSeeder())->run();
     }
 
-    public function testGetDefaultScenario()
+    public function testGetDefaultScenario(): void
     {
         $response = $this->post('/api/director/cases', $caseData = [], $this->headers($this->getUser()));
         $response->assertStatus(201);
@@ -59,7 +61,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     [
                         'id' => 8,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '1',
                         'mode' => 'step',
                         'accident_status_id' => '1',
@@ -68,7 +70,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 9,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '2',
                         'mode' => 'step',
                         'accident_status_id' => '8',
@@ -77,7 +79,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 10,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '3',
                         'mode' => 'step',
                         'accident_status_id' => '9',
@@ -86,7 +88,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 11,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '4',
                         'mode' => 'step',
                         'accident_status_id' => '10',
@@ -95,7 +97,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 12,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '5',
                         'mode' => 'step',
                         'accident_status_id' => '11',
@@ -104,7 +106,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 13,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '6',
                         'mode' => 'step',
                         'accident_status_id' => '12',
@@ -113,7 +115,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 14,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '7',
                         'mode' => 'step',
                         'accident_status_id' => '13',
@@ -122,7 +124,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 15,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '8',
                         'mode' => 'step',
                         'accident_status_id' => '7',
@@ -133,7 +135,7 @@ class CaseControllerScenarioActionTest extends TestCase
             ]);
     }
 
-    public function testHospitalCaseScenarioCurrentNew()
+    public function testHospitalCaseScenarioCurrentNew(): void
     {
         $accidentId = factory(Accident::class)->create([
             'caseable_type' => HospitalAccident::class,
@@ -146,7 +148,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     [
                         'id' => 8,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '1',
                         'mode' => 'step',
                         'accident_status_id' => '1',
@@ -155,7 +157,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 9,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '2',
                         'mode' => 'step',
                         'accident_status_id' => '8',
@@ -164,7 +166,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 10,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '3',
                         'mode' => 'step',
                         'accident_status_id' => '9',
@@ -173,7 +175,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 11,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '4',
                         'mode' => 'step',
                         'accident_status_id' => '10',
@@ -182,7 +184,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 12,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '5',
                         'mode' => 'step',
                         'accident_status_id' => '11',
@@ -191,7 +193,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 13,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '6',
                         'mode' => 'step',
                         'accident_status_id' => '12',
@@ -200,7 +202,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 14,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '7',
                         'mode' => 'step',
                         'accident_status_id' => '13',
@@ -209,7 +211,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 15,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '8',
                         'mode' => 'step',
                         'accident_status_id' => '7',
@@ -220,7 +222,7 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
-    public function testHospitalCaseScenarioPassAllSteps()
+    public function testHospitalCaseScenarioPassAllSteps(): void
     {
         $accident = factory(Accident::class)->create([
             'caseable_type' => HospitalAccident::class,
@@ -240,7 +242,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'hospital_invoice_id' => factory(Invoice::class)->create()->id,
         ])->save();
 
-        (new AccidentStatusesService())->closeAccident($accident);
+        (new AccidentService())->closeAccident($accident);
 
         $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
         $response2->assertJson([
@@ -248,7 +250,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     [
                         'id' => 8,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '1',
                         'mode' => 'step',
                         'accident_status_id' => '1',
@@ -257,7 +259,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 9,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '2',
                         'mode' => 'step',
                         'accident_status_id' => '8',
@@ -266,7 +268,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 10,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '3',
                         'mode' => 'step',
                         'accident_status_id' => '9',
@@ -275,7 +277,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 11,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '4',
                         'mode' => 'step',
                         'accident_status_id' => '10',
@@ -284,7 +286,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 12,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '5',
                         'mode' => 'step',
                         'accident_status_id' => '11',
@@ -293,7 +295,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 13,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '6',
                         'mode' => 'step',
                         'accident_status_id' => '12',
@@ -302,7 +304,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 14,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '7',
                         'mode' => 'step',
                         'accident_status_id' => '13',
@@ -311,7 +313,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 15,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '8',
                         'mode' => 'step',
                         'accident_status_id' => '7',
@@ -322,7 +324,7 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
-    public function testHospitalCaseScenarioCreateAndClose()
+    public function testHospitalCaseScenarioCreateAndClose(): void
     {
         $accident = factory(Accident::class)->create([
             'caseable_type' => HospitalAccident::class,
@@ -332,7 +334,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'assistant_guarantee_id' => 0,
         ]);
 
-        (new AccidentStatusesService())->closeAccident($accident);
+        (new AccidentService())->closeAccident($accident);
 
         $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
         $response2->assertJson([
@@ -340,7 +342,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     [
                         'id' => 8,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '1',
                         'mode' => 'step',
                         'accident_status_id' => '1',
@@ -349,7 +351,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 9,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '2',
                         'mode' => 'step',
                         'accident_status_id' => '8',
@@ -358,7 +360,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 10,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '3',
                         'mode' => 'step',
                         'accident_status_id' => '9',
@@ -367,7 +369,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 11,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '4',
                         'mode' => 'step',
                         'accident_status_id' => '10',
@@ -376,7 +378,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 12,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '5',
                         'mode' => 'step',
                         'accident_status_id' => '11',
@@ -385,7 +387,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 13,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '6',
                         'mode' => 'step',
                         'accident_status_id' => '12',
@@ -394,7 +396,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 14,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '7',
                         'mode' => 'step',
                         'accident_status_id' => '13',
@@ -403,7 +405,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 15,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '8',
                         'mode' => 'step',
                         'accident_status_id' => '7',
@@ -414,7 +416,7 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
-    public function testHospitalCaseScenarioPartialSteps()
+    public function testHospitalCaseScenarioPartialSteps(): void
     {
         $accident = factory(Accident::class)->create([
             'caseable_type' => HospitalAccident::class,
@@ -426,6 +428,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'assistant_invoice_id' => 0,
             'assistant_payment_id' => factory(Payment::class)->create()->id,
             'assistant_guarantee_id' => 0,
+            'accident_status_id' => (new AccidentStatusesService())->getNewStatus(),
         ]);
 
         $accident->caseable->fill([
@@ -434,7 +437,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'hospital_invoice_id' => 0,
         ])->save();
 
-        (new AccidentStatusesService())->closeAccident($accident);
+        (new AccidentService())->closeAccident($accident);
 
         $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
         $response2->assertJson([
@@ -442,7 +445,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     [
                         'id' => 8,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '1',
                         'mode' => 'step',
                         'accident_status_id' => '1',
@@ -451,7 +454,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 9,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '2',
                         'mode' => 'step',
                         'accident_status_id' => '8',
@@ -460,7 +463,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 10,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '3',
                         'mode' => 'step',
                         'accident_status_id' => '9',
@@ -469,7 +472,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 11,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '4',
                         'mode' => 'step',
                         'accident_status_id' => '10',
@@ -478,7 +481,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 12,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '5',
                         'mode' => 'step',
                         'accident_status_id' => '11',
@@ -487,7 +490,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 13,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '6',
                         'mode' => 'step',
                         'accident_status_id' => '12',
@@ -496,7 +499,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 14,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '7',
                         'mode' => 'step',
                         'accident_status_id' => '13',
@@ -505,7 +508,7 @@ class CaseControllerScenarioActionTest extends TestCase
                     ],
                     [
                         'id' => 15,
-                        'tag' => 'App\\HospitalAccident',
+                        'tag' => HospitalAccident::class,
                         'order' => '8',
                         'mode' => 'step',
                         'accident_status_id' => '7',
@@ -516,18 +519,19 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
-    public function testDoctorCaseScenarioNew()
+    public function testDoctorCaseScenarioNew(): void
     {
-        $accidentId = factory(Accident::class)->create([
+        $accidentId = (new AccidentService)->create([
+            'accident_status_id' => (new AccidentStatusesService())->getNewStatus(),
             'caseable_type' => DoctorAccident::class,
-        ])->id;
+        ])->getAttribute('id');
 
         $response2 = $this->get('/api/director/cases/' . $accidentId . '/scenario', $this->headers($this->getUser()));
         $response2->assertOk()->assertJson([
             'data' => [
                 [
                     'id' => 1,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '1',
                     'mode' => 'step',
                     'accident_status_id' => '1',
@@ -536,7 +540,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 2,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '2',
                     'mode' => 'step',
                     'accident_status_id' => '2',
@@ -545,7 +549,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 3,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '3',
                     'mode' => 'step',
                     'accident_status_id' => '3',
@@ -554,7 +558,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 4,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '4',
                     'mode' => 'step',
                     'accident_status_id' => '4',
@@ -563,7 +567,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 5,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '5',
                     'mode' => 'step',
                     'accident_status_id' => '5',
@@ -572,7 +576,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 7,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '7',
                     'mode' => 'step',
                     'accident_status_id' => '7',
@@ -583,7 +587,7 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
-    public function testDoctorCaseScenarioStoryAllSteps()
+    public function testDoctorCaseScenarioStoryAllSteps(): void
     {
         // status new accident
         $accident = factory(Accident::class)->create([
@@ -597,21 +601,21 @@ class CaseControllerScenarioActionTest extends TestCase
             'doctor_id' => factory(Doctor::class)->create()->id,
         ])->save();
 
-        $accidentStatusService = new AccidentStatusesService();
+        $accidentService = new AccidentService();
 
         // Doctor needs to visit accidents page to set status `in_progress`
         $accident->refresh();
-        $accidentStatusService->moveDoctorAccidentToInProgressState($accident);
+        $accidentService->moveDoctorAccidentToInProgressState($accident);
 
         // closing an accident
-        $accidentStatusService->closeAccident($accident);
+        $accidentService->closeAccident($accident);
 
         $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
         $response2->assertOk()->assertJson([
             'data' => [
                 [
                     'id' => 1,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '1',
                     'mode' => 'step',
                     'accident_status_id' => '1',
@@ -620,7 +624,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 2,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '2',
                     'mode' => 'step',
                     'accident_status_id' => '2',
@@ -629,7 +633,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 3,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '3',
                     'mode' => 'step',
                     'accident_status_id' => '3',
@@ -638,7 +642,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 4,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '4',
                     'mode' => 'step',
                     'accident_status_id' => '4',
@@ -647,7 +651,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 5,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '5',
                     'mode' => 'step',
                     'accident_status_id' => '5',
@@ -656,7 +660,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 7,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '7',
                     'mode' => 'step',
                     'accident_status_id' => '7',
@@ -667,7 +671,7 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
-    public function testDoctorCaseScenarioStorySkippedStep()
+    public function testDoctorCaseScenarioStorySkippedStep(): void
     {
         // status new accident
         $accident = factory(Accident::class)->create([
@@ -677,8 +681,8 @@ class CaseControllerScenarioActionTest extends TestCase
             ])->id,
         ]);
 
-        $accidentStatusService = new AccidentStatusesService();
-        $accidentStatusService->rejectDoctorAccident($accident);
+        $accidentService = new AccidentService();
+        $accidentService->rejectDoctorAccident($accident);
 
         $rejectStatus = AccidentStatus::firstOrCreate([
             'title' => AccidentStatusesService::STATUS_REJECT,
@@ -691,7 +695,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'data' => [
                 [
                     'id' => 1,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '1',
                     'mode' => 'step',
                     'accident_status_id' => '1',
@@ -700,7 +704,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 6,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '6',
                     'mode' => 'skip:doctor',
                     'accident_status_id' => '6',
@@ -709,7 +713,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 7,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '7',
                     'mode' => 'step',
                     'accident_status_id' => '7',
@@ -720,7 +724,7 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
-    public function testDoctorCaseScenarioStorySkippedClosedStep()
+    public function testDoctorCaseScenarioStorySkippedClosedStep(): void
     {
         // status new accident
         $accident = factory(Accident::class)->create([
@@ -730,8 +734,8 @@ class CaseControllerScenarioActionTest extends TestCase
             ])->id,
         ]);
 
-        $accidentStatusService = new AccidentStatusesService();
-        $accidentStatusService->rejectDoctorAccident($accident);
+        $accidentService = new AccidentService();
+        $accidentService->rejectDoctorAccident($accident);
 
         $rejectStatus = AccidentStatus::firstOrCreate([
             'title' => AccidentStatusesService::STATUS_REJECT,
@@ -740,14 +744,14 @@ class CaseControllerScenarioActionTest extends TestCase
         self::assertEquals($accident->accident_status_id, $rejectStatus->id);
 
         // closing an accident
-        $accidentStatusService->closeAccident($accident);
+        $accidentService->closeAccident($accident);
 
         $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
         $response2->assertOk()->assertJson([
             'data' => [
                 [
                     'id' => 1,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '1',
                     'mode' => 'step',
                     'accident_status_id' => '1',
@@ -756,7 +760,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 6,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '6',
                     'mode' => 'skip:doctor',
                     'accident_status_id' => '6',
@@ -765,7 +769,7 @@ class CaseControllerScenarioActionTest extends TestCase
                 ],
                 [
                     'id' => 7,
-                    'tag' => 'App\\DoctorAccident',
+                    'tag' => DoctorAccident::class,
                     'order' => '7',
                     'mode' => 'step',
                     'accident_status_id' => '7',

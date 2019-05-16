@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Auth;
+namespace medcenter24\mcCore\App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use medcenter24\mcCore\App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
 class ForgotPasswordController extends Controller

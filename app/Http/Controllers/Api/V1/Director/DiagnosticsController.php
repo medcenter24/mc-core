@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use App\Diagnostic;
-use App\Http\Controllers\ApiController;
-use App\Http\Requests\Api\DiagnosticRequest;
-use App\Transformers\DiagnosticTransformer;
+use medcenter24\mcCore\App\Diagnostic;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticRequest;
+use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
 use League\Fractal\TransformerAbstract;
 
 class DiagnosticsController extends ApiController

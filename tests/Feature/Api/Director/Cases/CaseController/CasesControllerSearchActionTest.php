@@ -16,12 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director\Cases\CaseController;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
-use App\Accident;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
-use Tests\TestCase;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CasesControllerSearchActionTest extends TestCase
@@ -30,7 +32,7 @@ class CasesControllerSearchActionTest extends TestCase
     use JwtHeaders;
     use LoggedUser;
 
-    public function testSearch()
+    public function testSearch(): void
     {
         factory(Accident::class, 7)->create();
         $response = $this->post('/api/director/cases/search', [], $this->headers($this->getUser()));
@@ -39,14 +41,39 @@ class CasesControllerSearchActionTest extends TestCase
             'data' => [
                 ['id' => 1]
             ],
-            "meta" => [
-                "pagination" => [
-                    "total" => 7,
-                    "count" => 7,
-                    "per_page" => 3000,
-                    "current_page" => 1,
-                    "total_pages" => 1,
-                    "links" => []
+            'meta' => [
+                'pagination' => [
+                    'total' => 7,
+                    'count' => 7,
+                    'per_page' => 3000,
+                    'current_page' => 1,
+                    'total_pages' => 1,
+                    'links' => [],
+                ]
+            ]
+        ]);
+    }
+
+    public function testSearchClosed(): void
+    {
+        // I can't create closed Accident at all
+        (new AccidentService())->create([
+            'accident_status_id' => (new AccidentStatusesService())->getClosedStatus()->getAttribute('id'),
+        ]);
+        $response = $this->post('/api/director/cases/search', [], $this->headers($this->getUser()));
+
+        $response->assertStatus(200)->assertJson([
+            'data' => [
+                ['id' => 1]
+            ],
+            'meta' => [
+                'pagination' => [
+                    'total' => 1,
+                    'count' => 1,
+                    'per_page' => 3000,
+                    'current_page' => 1,
+                    'total_pages' => 1,
+                    'links' => [],
                 ]
             ]
         ]);

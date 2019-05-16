@@ -16,21 +16,22 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Feature\Api\Director\Cases\CaseController;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
-use App\Accident;
-use App\AccidentStatus;
-use App\AccidentType;
-use App\Assistant;
-use App\City;
-use App\DoctorAccident;
-use App\FormReport;
-use App\Patient;
-use App\Payment;
-use App\Services\AccidentStatusesService;
-use Tests\Feature\Api\JwtHeaders;
-use Tests\Feature\Api\LoggedUser;
-use Tests\TestCase;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\AccidentType;
+use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\FormReport;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CasesControllerCreateActionTest extends TestCase
@@ -39,7 +40,7 @@ class CasesControllerCreateActionTest extends TestCase
     use JwtHeaders;
     use LoggedUser;
 
-    public function testCreateWithoutData()
+    public function testCreateWithoutData(): void
     {
         $response = $this->post('/api/director/cases', [], $this->headers($this->getUser()));
         $response->assertStatus(201)->assertJson([
@@ -54,7 +55,7 @@ class CasesControllerCreateActionTest extends TestCase
                 'caseableId' => 1,
                 'cityId' => 0,
                 'formReportId' => 0,
-                'caseableType' => 'App\\HospitalAccident',
+                'caseableType' => HospitalAccident::class,
                 'assistantRefNum' => '',
                 'title' => '',
                 'address' => '',
@@ -69,7 +70,7 @@ class CasesControllerCreateActionTest extends TestCase
     /**
      * Creating a case but with the data for accident only (without dependencies and relations)
      */
-    public function testCreateWithAccidentDataOnlyEmptyAllData()
+    public function testCreateWithAccidentDataOnlyEmptyAllData(): void
     {
         $data = [
             'accident' => [
@@ -115,7 +116,7 @@ class CasesControllerCreateActionTest extends TestCase
                 'caseableId' => 1,
                 'cityId' => 0,
                 'formReportId' => 0,
-                'caseableType' => 'App\\HospitalAccident',
+                'caseableType' => 'medcenter24\\mcCore\\App\\HospitalAccident',
                 'assistantPaymentId' => 0,
                 'incomePaymentId' => 0,
                 'caseablePaymentId' => 0,
@@ -143,7 +144,7 @@ class CasesControllerCreateActionTest extends TestCase
                 'assistantId' => 2,
                 'assistantRefNum' => "",
                 'caseableId' => "3",
-                'caseableType' => 'App\DoctorAccidents',
+                'caseableType' => 'medcenter24\mcCore\App\DoctorAccidents',
                 'cityId' => 3,
                 'closedAt' => null,
                 'contacts' => "",
@@ -211,7 +212,7 @@ class CasesControllerCreateActionTest extends TestCase
     /**
      * Creating a case but with the data for accident only (without dependencies and relations)
      */
-    public function testCreateWithAccidentDataOnly4()
+    public function testCreateWithAccidentDataOnly4(): void
     {
         $data = [
             'accident' => [
@@ -248,14 +249,14 @@ class CasesControllerCreateActionTest extends TestCase
                 'id' => 2,
                 'createdBy' => 2,
                 'parentId' => 1,
-                'patientId' => 0,
+                'patientId' => 2,
                 'accidentTypeId' => 1,
                 'accidentStatusId' => 1,
                 'assistantId' => '1',
                 'caseableId' => 3,
                 'cityId' => 1,
                 'formReportId' => 1,
-                'caseableType' => 'App\\DoctorAccident',
+                'caseableType' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                 'assistantRefNum' => 'ref---',
                 'title' => 'ccc',
                 'address' => 'any',
@@ -274,20 +275,17 @@ class CasesControllerCreateActionTest extends TestCase
         ]);
     }
 
-    public function testCreateWithAccidentDataOnly5()
+    public function testCreateWithAccidentDataOnly5(): void
     {
         $data = [
             'accident' => [
-                'accidentStatusId' => AccidentStatus::firstOrCreate([
-                    'title' => AccidentStatusesService::STATUS_NEW,
-                    'type' => AccidentStatusesService::TYPE_ACCIDENT,
-                ])->id,
+                'accidentStatusId' => (new AccidentStatusesService())->getNewStatus()->getAttribute('id'),
                 'accidentTypeId' => factory(AccidentType::class)->create()->id,
                 'address' => "any",
                 'assistantId' => factory(Assistant::class)->create()->id,
                 'assistantRefNum' => "ref---",
                 'caseableId' => factory(DoctorAccident::class)->create()->id,
-                'caseableType' => 'App\DoctorAccident',
+                'caseableType' => 'medcenter24\mcCore\App\DoctorAccident',
                 'cityId' => factory(City::class)->create()->id,
                 'closedAt' => null,
                 'contacts' => "anything",
@@ -311,14 +309,14 @@ class CasesControllerCreateActionTest extends TestCase
                 'id' => 2,
                 'createdBy' => 2,
                 'parentId' => 1,
-                'patientId' => 0,
+                'patientId' => 2,
                 'accidentTypeId' => 1,
                 'accidentStatusId' => 1,
                 'assistantId' => '1',
                 'caseableId' => 3,
                 'cityId' => 1,
                 'formReportId' => 1,
-                'caseableType' => 'App\\DoctorAccident',
+                'caseableType' => 'medcenter24\\mcCore\\App\\DoctorAccident',
                 'assistantRefNum' => 'ref---',
                 'title' => 'ccc',
                 'address' => 'any',

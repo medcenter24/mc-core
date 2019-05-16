@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Requests\Api;
+namespace medcenter24\mcCore\App\Http\Requests\Api;
 
 class StoreHospital extends JsonRequest
 {
@@ -30,7 +30,7 @@ class StoreHospital extends JsonRequest
         return [
             'title' => 'required|max:150',
             'description' => 'max:255',
-            'refKey' => 'required|max:5|unique:doctors',
+            'refKey' => 'required|max:5|unique:doctors,ref_key',
             'address' => 'max:255',
             'phones' => 'max:200',
         ];

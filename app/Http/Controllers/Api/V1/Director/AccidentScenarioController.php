@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 
-use App\Http\Controllers\ApiController;
-use App\Services\Scenario\DoctorScenarioService;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Services\Scenario\DoctorScenarioService;
 
 class AccidentScenarioController extends ApiController
 {

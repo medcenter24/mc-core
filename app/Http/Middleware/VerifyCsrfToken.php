@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Middleware;
+namespace medcenter24\mcCore\App\Http\Middleware;
 
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Application;

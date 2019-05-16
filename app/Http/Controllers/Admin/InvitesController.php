@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Http\Controllers\Admin;
+namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
-use App\Http\Controllers\AdminController;
-use App\Invite;
-use App\Services\InviteService;
-use App\User;
+use medcenter24\mcCore\App\Http\Controllers\AdminController;
+use medcenter24\mcCore\App\Invite;
+use medcenter24\mcCore\App\Services\InviteService;
+use medcenter24\mcCore\App\User;
 use Illuminate\Http\Request;
 
 class InvitesController extends AdminController

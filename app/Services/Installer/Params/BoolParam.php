@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Services\Installer\Params;
+namespace medcenter24\mcCore\App\Services\Installer\Params;
 
 
 abstract class BoolParam extends EnumParam

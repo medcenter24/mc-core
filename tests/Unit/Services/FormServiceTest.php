@@ -16,18 +16,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace Tests\Unit\Services;
+namespace medcenter24\mcCore\Tests\Unit\Services;
 
-use App\Accident;
-use App\Doctor;
-use App\DoctorAccident;
-use App\Form;
-use App\Hospital;
-use App\HospitalAccident;
-use App\Patient;
-use App\Services\FormService;
+use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Form;
+use medcenter24\mcCore\App\Hospital;
+use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Services\FormService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
+use medcenter24\mcCore\Tests\TestCase;
 
 class FormServiceTest extends TestCase
 {

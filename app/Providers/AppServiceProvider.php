@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace App\Providers;
+namespace medcenter24\mcCore\App\Providers;
 
 
 use App;
@@ -38,9 +38,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if (App::environment() === 'local') {
+        // package-auto-discovery will do this
+        /*if (App::environment() === 'local') {
             App::register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
             App::register(\Barryvdh\Debugbar\ServiceProvider::class);
-        }
+        }*/
     }
 }

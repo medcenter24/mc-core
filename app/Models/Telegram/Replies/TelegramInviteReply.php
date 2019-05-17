@@ -54,7 +54,7 @@ class TelegramInviteReply
      * TelegramInviteReply constructor.
      * @param Update|null $update
      */
-    public function __construct(Update $update = null): void
+    public function __construct(Update $update = null)
     {
         $this->update = $update;
         $this->message = $this->update->getMessage();

@@ -21,6 +21,7 @@ namespace medcenter24\mcCore\App\Console;
 use medcenter24\mcCore\App\Console\Commands\CleanInvites;
 use medcenter24\mcCore\App\Console\Commands\CopierCommand;
 use medcenter24\mcCore\App\Console\Commands\CreateUserCommand;
+use medcenter24\mcCore\App\Console\Commands\SeedInstallerCommand;
 use medcenter24\mcCore\App\Console\Commands\SetupEnvironmentCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -37,6 +38,7 @@ class Kernel extends ConsoleKernel
         CreateUserCommand::class,
         SetupEnvironmentCommand::class,
         CopierCommand::class,
+        SeedInstallerCommand::class,
     ];
 
     /**

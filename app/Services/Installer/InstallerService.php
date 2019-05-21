@@ -19,13 +19,66 @@
 namespace medcenter24\mcCore\App\Services\Installer;
 
 
+use medcenter24\mcCore\App\Contract\Installer\EnvParam;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
+use medcenter24\mcCore\App\Models\Installer\Params\ConfigurableParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvApiDebugParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvApiNameParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvApiPrefixParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvApiStrictParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvApiSubtypeParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvApiVersionParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvAppDebugParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvAppEnvParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvAppKeyParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvAppLogLevelParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvAppModeParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvAppUrlParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvBroadcastDriverParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvCacheDriverParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvCorsAllowOriginDirectorParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvCorsAllowOriginDoctorParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvCustomerNameParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDbConnectionParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDbDatabaseParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDbHostParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDbPasswordParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDbPortParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDbUserNameParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDebugbarEnabledParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDropboxBackupAppParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDropboxBackupKeyParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDropboxBackupRootParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDropboxBackupSecretParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDropboxBackupTokenParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvImageDriverParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvLogChannelParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvLogSlackWebhookUrlParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvMailDriverParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvMailEncryptionParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvMailHostParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvMailPasswordParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvMailPortParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvMailUsernameParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvPusherAppIdParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvPusherAppKeyParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvPusherAppSecretParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvQueueDriverParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvRedisHostParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvRedisPasswordParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvRedisPortParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvSessionDriverParam;
+use medcenter24\mcCore\App\Models\Installer\Params\NullParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\AdminEmailParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\AdminNameParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\AdminPasswordParam;
+use medcenter24\mcCore\App\Models\Installer\Params\System\AutoModeParam;
+use medcenter24\mcCore\App\Models\Installer\Params\System\ConfigDirParam;
+use medcenter24\mcCore\App\Models\Installer\Params\System\ConfigFilenameParam;
+use medcenter24\mcCore\App\Models\Installer\Params\System\DataDirParam;
+use medcenter24\mcCore\App\Models\Installer\Params\System\EnvFilenameParam;
 use medcenter24\mcCore\App\Services\EnvironmentService;
-use medcenter24\mcCore\App\Services\Installer\Params\ConfigDirParam;
-use medcenter24\mcCore\App\Services\Installer\Params\DataDirParam;
-use medcenter24\mcCore\App\Services\Installer\Params\EnvParam;
-use medcenter24\mcCore\App\Services\Installer\Params\NullParam;
 use medcenter24\mcCore\App\Support\Core\Configurable;
 
 /**
@@ -73,10 +126,89 @@ class InstallerService extends Configurable
     public const PROP_DATA_DIR = 'data-dir';
 
     /**
+     * Auto mode to setup everything automatically
+     */
+    public const PROP_AUTO_MODE = 'auto';
+
+    public const PROP_ADMIN_EMAIL = 'admin-email';
+    public const PROP_ADMIN_NAME = 'admin-name';
+    public const PROP_ADMIN_PASSWORD = 'admin-password';
+
+    /**
      * Prepared configuration
      * @var array
      */
     private $config = [];
+
+    public static function getConfigParams(): array
+    {
+        return array_merge([
+            new AutoModeParam(),
+            new AdminPasswordParam(),
+            new AdminEmailParam(),
+            new AdminNameParam(),
+            new ConfigDirParam(),
+            new ConfigFilenameParam(),
+            new DataDirParam(),
+        ], self::getEnvParams());
+    }
+
+    /**
+     * .env
+     * @return array
+     */
+    public static function getEnvParams(): array
+    {
+        return [
+            new EnvFilenameParam(),
+            new EnvLogSlackWebhookUrlParam(),
+            new EnvLogChannelParam(),
+            new EnvApiDebugParam(),
+            new EnvApiNameParam(),
+            new EnvApiPrefixParam(),
+            new EnvApiStrictParam(),
+            new EnvApiSubtypeParam(),
+            new EnvApiVersionParam(),
+            new EnvAppDebugParam(),
+            new EnvAppEnvParam(),
+            new EnvAppKeyParam(),
+            new EnvAppLogLevelParam(),
+            new EnvAppModeParam(),
+            new EnvAppUrlParam(),
+            new EnvBroadcastDriverParam(),
+            new EnvCacheDriverParam(),
+            new EnvCorsAllowOriginDirectorParam(),
+            new EnvCorsAllowOriginDoctorParam(),
+            new EnvCustomerNameParam(),
+            new EnvDbConnectionParam(),
+            new EnvDbDatabaseParam(),
+            new EnvDbHostParam(),
+            new EnvDbPasswordParam(),
+            new EnvDbPortParam(),
+            new EnvDbUserNameParam(),
+            new EnvDebugbarEnabledParam(),
+            new EnvDropboxBackupAppParam(),
+            new EnvDropboxBackupKeyParam(),
+            new EnvDropboxBackupRootParam(),
+            new EnvDropboxBackupSecretParam(),
+            new EnvDropboxBackupTokenParam(),
+            new EnvImageDriverParam(),
+            new EnvMailDriverParam(),
+            new EnvMailEncryptionParam(),
+            new EnvMailHostParam(),
+            new EnvMailPasswordParam(),
+            new EnvMailPortParam(),
+            new EnvMailUsernameParam(),
+            new EnvPusherAppIdParam(),
+            new EnvPusherAppKeyParam(),
+            new EnvPusherAppSecretParam(),
+            new EnvQueueDriverParam(),
+            new EnvRedisHostParam(),
+            new EnvRedisPasswordParam(),
+            new EnvRedisPortParam(),
+            new EnvSessionDriverParam(),
+        ];
+    }
 
     /**
      * @throws InconsistentDataException
@@ -92,7 +224,7 @@ class InstallerService extends Configurable
      */
     private function fillConfig(array $conf = []): void
     {
-        $this->config = EnvironmentService::getConfigParams();
+        $this->config = self::getConfigParams();
         /** @var ConfigurableParam $configParam */
         foreach ($conf as $configParam) {
             /** @var ConfigurableParam $item */

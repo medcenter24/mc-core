@@ -85,9 +85,9 @@ class Arr
     }
 
     /**
-     * Checks that all keys esist in the array
+     * Checks that nested key exists in the nested array
      *
-     * @example keysExists([0 => 1, 1 => 0, 0 => 0], [0, 1, 0]) === true
+     * @example keysExists([ 0 => [ 0 => [ 0 => 0 ]]], [0, 1, 0]) === true
      *
      * @param array $data
      * @param array $keys

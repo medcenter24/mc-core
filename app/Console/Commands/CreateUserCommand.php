@@ -39,6 +39,7 @@ class CreateUserCommand extends Command
      * @var string
      */
     protected $signature = 'user:add
+        {auto? : Auto}
         {email? : Email}
         {roles? : Role [admin, login, doctor, director]}
         {password? : Secrete phrase}
@@ -79,6 +80,11 @@ class CreateUserCommand extends Command
     private $rolesService;
 
     /**
+     * @var bool
+     */
+    private $auto = false;
+
+    /**
      * Execute the console command.
      *
      * @param UserService $userService
@@ -95,10 +101,14 @@ class CreateUserCommand extends Command
         $this->setUserName();
 
         $this->showUser();
-
-        if ($this->confirm('Do you wish to create this user?')) {
+        if ($this->isAuto() || $this->confirm('Do you wish to create this user?')) {
             $this->createUser();
         }
+    }
+
+    private function isAuto(): bool
+    {
+        return $this->hasArgument('auto') && (bool)$this->argument('auto');
     }
 
     private function showUser(): void

@@ -18,11 +18,13 @@
 
 namespace medcenter24\mcCore\App\Console\Commands;
 
+
+use medcenter24\mcCore\App\Contract\Installer\InstallerParam;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
+use medcenter24\mcCore\App\Models\Installer\Params\ConfigurableParam;
 use medcenter24\mcCore\App\Services\EnvironmentService;
-use medcenter24\mcCore\App\Services\Installer\ConfigurableParam;
 use medcenter24\mcCore\App\Services\Installer\InstallerService;
 use Dotenv\Dotenv;
 use Illuminate\Console\Command;
@@ -40,8 +42,8 @@ class SetupEnvironmentCommand extends Command
     public function __construct()
     {
         // extend signatures to have possibility to set any of environment params
-        /** @var ConfigurableParam $param */
-        foreach (EnvironmentService::getConfigParams() as $param) {
+        /** @var InstallerParam $param */
+        foreach (InstallerService::getConfigParams() as $param) {
             $this->signature .= "\n{ --" .$param->getParamName().'= : '.$param->question().' }';
         }
 
@@ -82,7 +84,9 @@ class SetupEnvironmentCommand extends Command
             if (!$this->installerService->canBeInstalled()) {
                 throw new InconsistentDataException('Incorrect configuration for the installer');
             }
-            $this->printConfigTable();
+            if (!$this->all()) {
+                $this->printConfigTable();
+            }
             $this->install();
         } catch (InconsistentDataException $e) {
             $this->error($e->getMessage());
@@ -105,7 +109,7 @@ class SetupEnvironmentCommand extends Command
         } else {
             $config = [];
             /** @var ConfigurableParam $configParam */
-            foreach (EnvironmentService::getConfigParams() as $configParam) {
+            foreach (InstallerService::getConfigParams() as $configParam) {
                 if ($this->hasOption($configParam->getParamName()) && $this->option($configParam->getParamName())) {
                     $configParam->setValue($this->option($configParam->getParamName()));
                     if (!$configParam->isValid()) {
@@ -133,7 +137,7 @@ class SetupEnvironmentCommand extends Command
      */
     private function install(): void
     {
-        if ($this->confirm('Are you sure want to install application with these parameters?')) {
+        if ($this->all() || $this->confirm('Are you sure want to install application with these parameters?')) {
             $this->installerService->install();
 
             $this->reloadApp();
@@ -158,7 +162,7 @@ class SetupEnvironmentCommand extends Command
 
     private function migrate(): void 
     {
-        if ($this->confirm('Do you want to migrate DB?')) {
+        if ($this->all() || $this->confirm('Do you want to migrate DB?')) {
 
             if (env('DB_CONNECTION') === 'sqlite') {
                 // create new file for the DB
@@ -176,7 +180,7 @@ class SetupEnvironmentCommand extends Command
     
     private function seed(): void
     {
-        if ($this->confirm('Do you want to seed DB?')) {
+        if ($this->all() || $this->confirm('Do you want to seed DB?')) {
             $this->call('db:seed');
             $this->addSuperAdmin();
         }
@@ -184,8 +188,23 @@ class SetupEnvironmentCommand extends Command
     
     private function addSuperAdmin(): void
     {
-        if ($this->confirm('Do you want to create Super Admin?')) {
-            $this->call('user:add', ['roles' => 'login,admin']);
+        if ($this->all() || $this->confirm('Do you want to create Super Admin?')) {
+            $this->call('user:add', [
+                'auto' => $this->all() ? 1 : 0,
+                'roles' => 'login,admin',
+                'email' => $this->hasOption(InstallerService::PROP_ADMIN_EMAIL) ? $this->option(InstallerService::PROP_ADMIN_EMAIL) : '',
+                'password' => $this->hasOption(InstallerService::PROP_ADMIN_PASSWORD) ? $this->option(InstallerService::PROP_ADMIN_PASSWORD) : '',
+                'name' => $this->hasOption(InstallerService::PROP_ADMIN_NAME) ? $this->option(InstallerService::PROP_ADMIN_NAME) : '',
+            ]);
         }
+    }
+
+    /**
+     * Auto mode to install everything
+     * @return bool
+     */
+    private function all(): bool
+    {
+        return $this->hasOption(InstallerService::PROP_AUTO_MODE) && $this->option(InstallerService::PROP_AUTO_MODE);
     }
 }

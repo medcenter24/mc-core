@@ -24,7 +24,8 @@
         "medcenter24/lib-installer": "~1.0",
         "spatie/laravel-medialibrary": "~7.6.0",
         "srmklive/flysystem-dropbox-v2": "dev-master",
-        "tymon/jwt-auth": "1.0.0-rc.4.1"
+        "tymon/jwt-auth": "1.0.0-rc.4.1",
+        "nwidart/laravel-modules": "5.0.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "~3.2.3",
@@ -34,7 +35,6 @@
         "mockery/mockery": "1.2.*",
         "nunomaduro/collision": "^3.0.1",
         "phpunit/phpunit": "~7.5",
-        "nwidart/laravel-modules": "5.0.0",
         "roave/security-advisories": "dev-master"
     },
     "autoload": {

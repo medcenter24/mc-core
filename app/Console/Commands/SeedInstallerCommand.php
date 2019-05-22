@@ -18,11 +18,13 @@
 
 namespace medcenter24\mcCore\App\Console\Commands;
 
+
 use Illuminate\Console\Command;
 use medcenter24\mcCore\App\Contract\Installer\InstallerParam;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Models\Installer\Params\System\AutoModeParam;
 use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Installer\GuiSettingsService;
 use medcenter24\mcCore\App\Services\Installer\InstallerService;
 use medcenter24\mcCore\App\Services\Installer\JsonSeedReaderService;
 use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
@@ -49,28 +51,53 @@ class SeedInstallerCommand extends Command
     protected $description = 'Install application with a seed file.';
 
     /**
+     * @var JsonSeedReaderService
+     */
+    private $jsonSeedReaderService;
+
+    /**
      * Execute the console command.
      */
     public function handle(): void
     {
         try {
             $seedParams = $this->readSeedParams();
+
+            // make auto installation without questions
             $autoMode = new AutoModeParam();
             $autoMode->setValue(true);
             $seedParams[] = $autoMode;
+
             $this->call('setup:environment', $this->listParams($seedParams));
+
+            $this->saveGuiSettings();
+            $this->info('Settings installed');
+
         } catch (InconsistentDataException $e) {
             $this->error($e->getMessage());
         }
+        $this->info('Seeding finished');
     }
 
+    /**
+     * @return array
+     * @throws InconsistentDataException
+     */
     private function readSeedParams(): array
     {
         $seedFile = (string)$this->argument(self::SEED_JSON_ARGUMENT);
         if (empty($seedFile)) {
             $seedFile = dirname(__DIR__, 3) . '/seed.json';
         }
-        return $this->getServiceLocator()->get(JsonSeedReaderService::class)->read($seedFile);
+        return $this->getJsonSeedReaderService()->read($seedFile);
+    }
+
+    private function getJsonSeedReaderService(): JsonSeedReaderService
+    {
+        if (!$this->jsonSeedReaderService) {
+            $this->jsonSeedReaderService = $this->getServiceLocator()->get(JsonSeedReaderService::class);
+        }
+        return $this->jsonSeedReaderService;
     }
 
     /**
@@ -97,5 +124,34 @@ class SeedInstallerCommand extends Command
         }
 
         return $transformed;
+    }
+
+    /**
+     * Store doctors and directors configurations to use it within development only
+     * it has sense to use it with local environment only, before compilation
+     * @throws InconsistentDataException
+     */
+    private function saveGuiSettings(): void
+    {
+        if ($this->getJsonSeedReaderService()->get(EnvironmentService::PROP_APP_ENV)->getValue() === 'local') {
+
+            $params = [];
+
+            foreach ([
+                         JsonSeedReaderService::PROP_DIRECTOR_DEV_HOST,
+                         JsonSeedReaderService::PROP_DIRECTOR_PROD_HOST,
+                         JsonSeedReaderService::PROP_DOCTOR_DEV_HOST,
+                         JsonSeedReaderService::PROP_DOCTOR_PROD_HOST,
+                         JsonSeedReaderService::PROP_DIRECTOR_DEV_PROJECT_NAME,
+                         JsonSeedReaderService::PROP_DIRECTOR_PROD_PROJECT_NAME,
+                         JsonSeedReaderService::PROP_DIRECTOR_DOCTOR_DEV_HOST,
+                         JsonSeedReaderService::PROP_DIRECTOR_DOCTOR_PROD_HOST,
+                    ] as $prop) {
+                $params[$prop] = $this->getJsonSeedReaderService()->get($prop)->getValue();
+            }
+
+            $this->getServiceLocator()->get(GuiSettingsService::class)
+                ->storeConfig($params);
+        }
     }
 }

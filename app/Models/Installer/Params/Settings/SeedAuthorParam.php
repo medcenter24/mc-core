@@ -16,27 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Models\Installer\Params;
+namespace medcenter24\mcCore\App\Models\Installer\Params\Settings;
 
 
-abstract class StringParam extends ConfigurableParam
+use medcenter24\mcCore\App\Models\Installer\Params\StringParam;
+use medcenter24\mcCore\App\Services\Installer\JsonSeedReaderService;
+
+class SeedAuthorParam extends StringParam
 {
-    /**
-     * Check that dir exists/could be created and writable
-     * @return bool
-     */
-    public function isValid(): bool
+    public function getParamName(): string
     {
-        return is_string($this->getValue());
-    }
-
-    public function question(): string
-    {
-        return 'Enter ' . $this->getParamName();
-    }
-
-    public function defaultValue(): string
-    {
-        return '';
+        return JsonSeedReaderService::PROP_SEED_AUTHOR;
     }
 }

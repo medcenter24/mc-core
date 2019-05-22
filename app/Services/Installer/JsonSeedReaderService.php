@@ -73,7 +73,17 @@ use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvSessionDriverParam;
 use medcenter24\mcCore\App\Models\Installer\Params\Settings\AdminEmailParam;
 use medcenter24\mcCore\App\Models\Installer\Params\Settings\AdminNameParam;
 use medcenter24\mcCore\App\Models\Installer\Params\Settings\AdminPasswordParam;
-use medcenter24\mcCore\App\Models\Installer\Params\StringParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\DirectorDevHostParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\DirectorDevProjectNameParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\DirectorDoctorDevHostParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\DirectorDoctorProdHostParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\DirectorProdHostParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\DirectorProdProjectNameParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\DoctorDevHostParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\DoctorProdHostParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\SeedAuthorParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\SeedIdentifierParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Settings\SeedVersionParam;
 use medcenter24\mcCore\App\Models\Installer\Params\System\ConfigDirParam;
 use medcenter24\mcCore\App\Models\Installer\Params\System\ConfigFilenameParam;
 use medcenter24\mcCore\App\Models\Installer\Params\System\DataDirParam;
@@ -82,6 +92,18 @@ use medcenter24\mcCore\App\Support\Core\ConfigurableInterface;
 
 class JsonSeedReaderService
 {
+
+    public const PROP_SEED_IDENTIFIER = 'seed-id';
+    public const PROP_SEED_AUTHOR = 'seed-author';
+    public const PROP_SEED_VERSION = 'seed-version';
+    public const PROP_DIRECTOR_DEV_HOST = 'director-dev-host';
+    public const PROP_DOCTOR_DEV_HOST = 'doctor-dev-host';
+    public const PROP_DOCTOR_PROD_HOST = 'doctor-prod-host';
+    public const PROP_DIRECTOR_PROD_HOST = 'director-prod-host';
+    public const PROP_DIRECTOR_DEV_PROJECT_NAME = 'director-dev-project-name';
+    public const PROP_DIRECTOR_PROD_PROJECT_NAME = 'director-prod-project-name';
+    public const PROP_DIRECTOR_DOCTOR_DEV_HOST = 'director-doctor-dev-host';
+    public const PROP_DIRECTOR_DOCTOR_PROD_HOST = 'director-doctor-prod-host';
 
     /**
      * Data from the json
@@ -108,6 +130,23 @@ class JsonSeedReaderService
         }
 
         return $this->data;
+    }
+
+    /**
+     * @param string $name
+     * @return InstallerParam
+     * @throws InconsistentDataException
+     */
+    public function get(string $name): InstallerParam
+    {
+        /** @var InstallerParam $param */
+        foreach ($this->data as $param) {
+            if ($param->getParamName() === $name) {
+                return $param;
+            }
+        }
+
+        throw new InconsistentDataException('Parameter with name ' . $name . ' not found');
     }
 
     private function fillPaths(array $data, $path): array
@@ -155,9 +194,9 @@ class JsonSeedReaderService
     {
         return [
             'seed' => [
-                'identifier' => new StringParam(),
-                'author' => new StringParam(),
-                'version' => new StringParam(),
+                'identifier' => new SeedIdentifierParam(),
+                'author' => new SeedAuthorParam(),
+                'version' => new SeedVersionParam(),
             ],
             'admin' => [
                 'email' => new AdminEmailParam(),
@@ -220,23 +259,25 @@ class JsonSeedReaderService
                     'slack_webhook_url' => new EnvLogSlackWebhookUrlParam(),
                 ],
                 'director-gui' => [
+                    // static paths ../settings/guiDirector/environments/[environment.prod.ts|environment.ts]
                     'development' => [
-                        'apiHost' => new StringParam(),
-                        'projectName' => new StringParam(),
-                        'doctorLink' => new StringParam(),
+                        'apiHost' => new DirectorDevHostParam(),
+                        'projectName' => new DirectorDevProjectNameParam(),
+                        'doctorLink' => new DirectorDoctorDevHostParam(),
                     ],
                     'production' => [
-                        'apiHost' => new StringParam(),
-                        'projectName' => new StringParam(),
-                        'doctorLink' => new StringParam(),
+                        'apiHost' => new DirectorProdHostParam(),
+                        'projectName' => new DirectorProdProjectNameParam(),
+                        'doctorLink' => new DirectorDoctorProdHostParam(),
                     ],
                 ],
                 'doctor-gui' => [
+                    // static paths ../settings/guiDoctor/environments/[development.js|productions.js]
                     'development' => [
-                        'apiHost' => new StringParam(),
+                        'apiHost' => new DoctorDevHostParam(),
                     ],
                     'production' => [
-                        'apiHost' => new StringParam(),
+                        'apiHost' => new DoctorProdHostParam(),
                     ],
                 ],
             ]

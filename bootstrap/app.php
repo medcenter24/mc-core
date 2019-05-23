@@ -27,8 +27,6 @@
 |
 */
 
-use medcenter24\mcCore\App\Services\EnvironmentService;
-
 $app = new medcenter24\mcCore\App\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
@@ -58,33 +56,6 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     medcenter24\mcCore\App\Exceptions\Handler::class
 );
-
-/*
-|--------------------------------------------------------------------------
-| To use LaravelInstaller data (artisan setup:environment)
-|--------------------------------------------------------------------------
-|
-| Automatizator for the installation process
-| Default place for the config is on the up of the project dir
-| but you could change this if pass APP_CONFIG_PATH from the server configurator
-|
-| Notice: EnvironmentService requires initialized application
-|
- */
-
-try {
-    EnvironmentService::init(
-        $_ENV['APP_CONFIG_PATH'] ?? dirname(__DIR__, 2) . '/config/generis.conf.php'
-    );
-} catch (Exception $e) {
-    if ($app->environment('testing') && $e->getMessage() === 'Environment already initialized') {
-        // do nothing
-    } elseif (!$app->isBooted() && $app->environment('local')) {
-        echo "/**********************************/\n";
-        echo "\t" . $e->getMessage() . "\n";
-        echo "/**********************************/\n\n";
-    }
-}
 
 /*
 |--------------------------------------------------------------------------

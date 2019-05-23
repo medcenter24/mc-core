@@ -122,8 +122,6 @@ class EnvironmentService extends Configurable implements Environment
     {
         $options = $this->readConfig($configPath);
         parent::__construct($options);
-
-        $this->setUpApplication();
     }
 
     /**
@@ -141,14 +139,24 @@ class EnvironmentService extends Configurable implements Environment
         return $config;
     }
 
-    private function setUpApplication(): void
+    public function getEnvironmentPath(): string
     {
-        $envFile = realpath($this->getOption(self::ENV_FILE));
-        $dir = dirname($envFile);
-        $fileName = str_replace($dir, '', $envFile);
-        \app()->useEnvironmentPath($dir);
-        \app()->loadEnvironmentFrom($fileName);
-        \app()->useStoragePath($this->getOption(self::DATA_DIR));
+        return realpath($this->getOption(self::ENV_FILE));
+    }
+
+    public function getEnvironmentDir(): string
+    {
+        return dirname($this->getEnvironmentPath());
+    }
+
+    public function getEnvironmentFileName(): string
+    {
+        return str_replace($this->getEnvironmentDir(), '', $this->getEnvironmentPath());
+    }
+
+    public function getStoragePath(): string
+    {
+        return realpath($this->getOption(self::DATA_DIR));
     }
 
     /**

@@ -18,6 +18,8 @@
 
 namespace medcenter24\mcCore\App\Support\Core;
 
+use medcenter24\mcCore\App\Exceptions\CommonException;
+
 /**
  * Make things more configurable
  *
@@ -43,7 +45,8 @@ abstract class Configurable implements ConfigurableInterface
      * @param $name
      * @param $value
      */
-    public function setOption($name, $value) {
+    public function setOption($name, $value): void
+    {
         $this->options[$name] = $value;
     }
 
@@ -54,12 +57,13 @@ abstract class Configurable implements ConfigurableInterface
      * @param bool $overwrite
      * @return void
      */
-    public function setOptions($options, $overwrite = false) {
+    public function setOptions($options, $overwrite = false): void
+    {
         if (!is_array($options)) {
             if (is_object($options) && method_exists($options, 'toArray')) {
                 $options = $options->toArray();
             } else {
-                new \Exception('Options submitted to '.get_called_class().' must be an array or implement toArray');
+                new CommonException('Options submitted to '.static::class.' must be an array or implement toArray');
             }
         }
 
@@ -76,7 +80,8 @@ abstract class Configurable implements ConfigurableInterface
      * @param  string $name
      * @return boolean
      */
-    public function hasOption($name) {
+    public function hasOption($name): bool
+    {
         return isset($this->options[$name]);
     }
 
@@ -89,7 +94,7 @@ abstract class Configurable implements ConfigurableInterface
      * @return mixed
      */
     public function getOption($name) {
-        return isset($this->options[$name]) ? $this->options[$name] : null;
+        return $this->options[$name] ?? null;
     }
 
     /**
@@ -97,7 +102,8 @@ abstract class Configurable implements ConfigurableInterface
      *
      * @return array
      */
-    public function getOptions() {
+    public function getOptions(): array
+    {
         return $this->options;
     }
 }

@@ -19,13 +19,46 @@
 namespace medcenter24\mcCore\App\Foundation;
 
 
+use http\Env;
 use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Services\EnvironmentService;
 use Illuminate\Foundation\Application as BaseApplication;
 
 class Application extends BaseApplication
 {
+
+    /**
+     * Create a new Illuminate application instance.
+     *
+     * @param  string|null  $basePath
+     * @return void
+     */
+    public function __construct($basePath = null)
+    {
+        try {
+            $generisConfPath = dirname(__DIR__, 3) . '/config/generis.conf.php';
+            if (array_key_exists('APP_CONFIG_PATH', $_ENV)) {
+                $generisConfPath = $_ENV['APP_CONFIG_PATH'];
+            }
+            $environmentService = EnvironmentService::init($generisConfPath);
+            $this->useEnvironmentPath($environmentService->getEnvironmentDir());
+            $this->loadEnvironmentFrom($environmentService->getEnvironmentFileName());
+            $this->useStoragePath($environmentService->getStoragePath());
+        } catch (CommonException $e) {
+            if ($this->environment('testing') && $e->getMessage() === 'Environment already initialized') {
+                // do nothing
+            } elseif (!$this->isBooted() && $this->environment('local')) {
+                echo "/**********************************/\n";
+                echo "\t" . $e->getMessage() . "\n";
+                echo "/**********************************/\n\n";
+            }
+        }
+
+        parent::__construct($basePath);
+    }
+
     /**
      * Get the path to the cached services.php file.
      *
@@ -74,9 +107,9 @@ class Application extends BaseApplication
             EnvironmentService::setTmpState(true);
             EnvironmentService::setTmp($dir . '/bootstrap/cache');
         } else {
-            $dir = $this->storagePath();
+            $dir = $this->storagePath() . '/';
         }
-        $dir .= '/bootstrap/cache/';
+        $dir .= 'bootstrap/cache/';
         return $dir . $path;
     }
 

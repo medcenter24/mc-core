@@ -22,6 +22,8 @@ namespace medcenter24\mcCore\App\Console\Commands;
 use Illuminate\Console\Command;
 use medcenter24\mcCore\App\Contract\Installer\InstallerParam;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Helpers\Arr;
+use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Models\Installer\Params\System\AutoModeParam;
 use medcenter24\mcCore\App\Services\EnvironmentService;
 use medcenter24\mcCore\App\Services\Installer\GuiSettingsService;
@@ -29,6 +31,12 @@ use medcenter24\mcCore\App\Services\Installer\InstallerService;
 use medcenter24\mcCore\App\Services\Installer\JsonSeedReaderService;
 use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
 
+/**
+ * php artisan setup:seed [--force]
+ *
+ * Class SeedInstallerCommand
+ * @package medcenter24\mcCore\App\Console\Commands
+ */
 class SeedInstallerCommand extends Command
 {
 
@@ -41,7 +49,9 @@ class SeedInstallerCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'setup:seed {'.self::SEED_JSON_ARGUMENT.'? : Full path to the .json with seeded data [by default will be installed local environment]}';
+    protected $signature = 'setup:seed 
+        {'.self::SEED_JSON_ARGUMENT.'? : Full path to the .json with seeded data [by default will be installed local environment]}
+        {--force= : Required for installation folders will be automatically created and cleaned }';
 
     /**
      * The console command description.
@@ -61,8 +71,10 @@ class SeedInstallerCommand extends Command
     public function handle(): void
     {
         try {
-            $seedParams = $this->readSeedParams();
+            $this->info('Installation run from the "'.$this->getSeedFilePath().'"');
+            $this->cleanIfForceReinstall();
 
+            $seedParams = $this->readSeedParams();
             // make auto installation without questions
             $autoMode = new AutoModeParam();
             $autoMode->setValue(true);
@@ -79,17 +91,44 @@ class SeedInstallerCommand extends Command
         $this->info('Seeding finished');
     }
 
+    private function cleanIfForceReinstall(): void
+    {
+        if ($this->hasOption('force')) {
+            $data = $this->getJsonSeedReaderService()->getRawData($this->getSeedFilePath());
+            if (Arr::keysExists($data, ['configurations', 'global', 'config-path'])
+                && Arr::keysExists($data, ['configurations', 'global', 'data-path'])) {
+
+                if (FileHelper::isDirExists($data['configurations']['global']['config-path'])) {
+                    FileHelper::delete($data['configurations']['global']['config-path']);
+                }
+                FileHelper::createDir($data['configurations']['global']['config-path']);
+
+                if (FileHelper::isDirExists($data['configurations']['global']['data-path'])) {
+                    FileHelper::delete($data['configurations']['global']['data-path']);
+                }
+                FileHelper::createDir($data['configurations']['global']['data-path']);
+
+                EnvironmentService::terminate();
+            }
+        }
+    }
+
+    private function getSeedFilePath(): string
+    {
+        $seedFile = (string)$this->argument(self::SEED_JSON_ARGUMENT);
+        if (empty($seedFile)) {
+            $seedFile = dirname(__DIR__, 3) . '/seed.json';
+        }
+        return $seedFile;
+    }
+
     /**
      * @return array
      * @throws InconsistentDataException
      */
     private function readSeedParams(): array
     {
-        $seedFile = (string)$this->argument(self::SEED_JSON_ARGUMENT);
-        if (empty($seedFile)) {
-            $seedFile = dirname(__DIR__, 3) . '/seed.json';
-        }
-        return $this->getJsonSeedReaderService()->read($seedFile);
+        return $this->getJsonSeedReaderService()->read($this->getSeedFilePath());
     }
 
     private function getJsonSeedReaderService(): JsonSeedReaderService

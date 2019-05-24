@@ -105,11 +105,14 @@ class Application extends BaseApplication
             $dir = sys_get_temp_dir();
             FileHelper::createDirRecursive([$dir, 'bootstrap', 'cache']);
             EnvironmentService::setTmpState(true);
-            EnvironmentService::setTmp($dir . '/bootstrap/cache');
+            $dir = rtrim($dir, '/');
+            $dir .= '/bootstrap/cache';
+            EnvironmentService::setTmp($dir);
         } else {
-            $dir = $this->storagePath() . '/';
+            $dir = $this->storagePath();
+            $dir = rtrim($dir, '/');
+            $dir .= '/bootstrap/cache';
         }
-        $dir .= 'bootstrap/cache/';
         return $dir . $path;
     }
 

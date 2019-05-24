@@ -106,10 +106,16 @@ class JsonSeedReaderService
     public const PROP_DIRECTOR_DOCTOR_PROD_HOST = 'director-doctor-prod-host';
 
     /**
-     * Data from the json
-     * @var array
+     * Prepared data from the json
+     * @var array of InstallerParam's
      */
     private $data = [];
+
+    /**
+     * Raw data as it is
+     * @var array
+     */
+    private $rawData = [];
 
     /**
      * @param string $path
@@ -119,17 +125,25 @@ class JsonSeedReaderService
     public function read(string $path): array
     {
         $this->data = [];
+        $this->rawData = [];
         if (file_exists($path) && FileHelper::isReadable($path)) {
-            $json = FileHelper::getContent($path);
-            $data = json_decode($json, true);
-            // replace ../ from the json file according to the json file location
-            $data = $this->fillPaths($data, dirname($path));
-            $this->checkAndCollect($data, $this->getJsonFileMap());
+            $this->collect($this->getRawData($path), $this->getJsonFileMap());
         }  else {
             throw new InconsistentDataException('Json file not found');
         }
 
         return $this->data;
+    }
+
+    public function getRawData(string $path): array
+    {
+        if (!count($this->rawData)) {
+            $json = FileHelper::getContent($path);
+            $this->rawData = json_decode($json, true);
+            // replace ../ from the json file according to the json file location
+            $this->rawData = $this->fillPaths($this->rawData, dirname($path));
+        }
+        return $this->rawData;
     }
 
     /**
@@ -169,7 +183,7 @@ class JsonSeedReaderService
      * @param array|InstallerParam $map
      * @throws InconsistentDataException
      */
-    private function checkAndCollect($data, $map): void
+    private function collect($data, $map): void
     {
         /**
          * @var string $key
@@ -178,14 +192,11 @@ class JsonSeedReaderService
         foreach ($map as $key => $val) {
             if ($val instanceof InstallerParam) {
                 $val->setValue($data[$key]);
-                if (!$val->isValid()) {
-                    throw new InconsistentDataException('Incorrect parameter ' . $val->getParamName() . ' in ' . $key);
-                }
                 $this->data[] = $val;
             } elseif(!is_array($data) || !array_key_exists($key, $data)) {
                 throw new InconsistentDataException(' Incorrect value in ' . $key);
             } else {
-                $this->checkAndCollect($data[$key], $val);
+                $this->collect($data[$key], $val);
             }
         }
     }

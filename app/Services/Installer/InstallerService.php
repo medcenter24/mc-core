@@ -470,6 +470,6 @@ class InstallerService extends Configurable
             }
         }
 
-        $this->status('Stores created.');
+        $this->status('Data directories created.');
     }
 }

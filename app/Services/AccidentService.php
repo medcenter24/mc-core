@@ -47,7 +47,11 @@ class AccidentService extends AbstractModelService
         return Accident::where('ref_num', $ref)->count();
     }
 
-    public function getByRefNum (string $ref = ''): Accident
+    /**
+     * @param string $ref
+     * @return Accident|null
+     */
+    public function getByRefNum (string $ref = ''): ?Accident
     {
         return Accident::where('ref_num', $ref)->first();
     }

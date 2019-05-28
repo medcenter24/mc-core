@@ -60,12 +60,12 @@ class UpdateDoctor extends JsonRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => 'min:1|max:150',
             'description' => 'min:1|max:255',
-            'refKey' => 'min:1|max:5|unique:doctors',
+            'refKey' => 'min:1|max:5|unique:doctors,ref_key',
         ];
     }
 }

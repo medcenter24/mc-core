@@ -19,6 +19,8 @@
 namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -38,18 +40,18 @@ class Doctor extends Model implements HasMedia
 
     /**
      * City where doctor is (leave)
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function city()
+    public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);
     }
 
     /**
      * Cities which are covered by this doctor
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return MorphToMany
      */
-    public function cities()
+    public function cities(): MorphToMany
     {
         return $this->morphToMany(City::class,'cityable');
     }

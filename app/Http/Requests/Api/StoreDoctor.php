@@ -25,7 +25,7 @@ class StoreDoctor extends JsonRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => 'required|max:150',

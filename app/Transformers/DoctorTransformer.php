@@ -24,7 +24,7 @@ use League\Fractal\TransformerAbstract;
 
 class DoctorTransformer extends TransformerAbstract
 {
-    public function transform(Doctor $doctor)
+    public function transform(Doctor $doctor): array
     {
         return [
             'id' => $doctor->id,

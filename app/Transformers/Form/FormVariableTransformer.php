@@ -16,29 +16,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers;
+namespace medcenter24\mcCore\App\Transformers\Form;
 
 
-use Illuminate\Http\Response;
+use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\FormVariable;
 
-class HomeController extends Controller
+class FormVariableTransformer extends TransformerAbstract
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
+    public function transform(FormVariable $variable): array
     {
-        parent::__construct();
-        $this->middleware('auth');
-    }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return Response
-     */
-    public function index(): Response
-    {
-        return view('home');
+        return [];
     }
 }

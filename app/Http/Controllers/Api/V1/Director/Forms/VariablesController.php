@@ -16,29 +16,22 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Forms;
 
 
-use Illuminate\Http\Response;
+use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\FormVariable;
+use medcenter24\mcCore\App\Http\Controllers\ApiController;
 
-class HomeController extends Controller
+class VariablesController extends ApiController
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
+    protected function getDataTransformer(): TransformerAbstract
     {
-        parent::__construct();
-        $this->middleware('auth');
+        return new FormVariableTransformer();
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return Response
-     */
-    public function index(): Response
+    protected function getModelClass(): string
     {
-        return view('home');
+        return FormVariable::class;
     }
 }

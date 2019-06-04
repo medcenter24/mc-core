@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\Tests\Unit\Services;
 
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\DoctorAccident;
 use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\ReferralNumberService;
@@ -53,7 +54,7 @@ class ReferralNumberServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGenerateDoctorsKey()
+    public function testGenerateDoctorsKey(): void
     {
         $params = [
             'ref_num' => '',

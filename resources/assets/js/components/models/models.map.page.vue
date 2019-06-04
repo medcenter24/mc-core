@@ -17,7 +17,7 @@
 
 <template>
     <div class="container white p-2 models-map-container">
-
+        <models-tree></models-tree>
     </div>
 </template>
 

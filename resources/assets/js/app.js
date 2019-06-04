@@ -67,8 +67,13 @@ Vue.component(
 );
 
 Vue.component(
-    'models-map',
-    require('./components/models/models.map')
+    'models-map-page',
+    require('./components/models/models.map.page')
+);
+
+Vue.component(
+    'models-tree',
+    require('./components/models/models.tree')
 );
 
 const app = new Vue({

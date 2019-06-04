@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App;
 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 

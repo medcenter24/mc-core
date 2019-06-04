@@ -22,6 +22,13 @@ use medcenter24\mcCore\App\Http\Controllers\AdminController;
 
 class MainController extends AdminController
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->getMenuService()->setTitle(trans('content.admin_panel'));
+    }
+
     public function index()
     {
         return view('admin.main.index');

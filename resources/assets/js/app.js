@@ -66,6 +66,16 @@ Vue.component(
     require('./components/telegram/telegram.bot')
 );
 
+Vue.component(
+    'models-map-page',
+    require('./components/models/models.map.page')
+);
+
+Vue.component(
+    'models-tree',
+    require('./components/models/models.tree')
+);
+
 const app = new Vue({
     el: '#app'
 });

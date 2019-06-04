@@ -81,4 +81,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
 
         Route::resource('webhook', 'Admin\Telegram\WebhookController');
     });
+
+    Route::group(['prefix' => 'system'], static function () {
+        //var_dump(ModelsController::class);die;
+        Route::resource('models', 'Admin\System\ModelsController');
+    });
 });

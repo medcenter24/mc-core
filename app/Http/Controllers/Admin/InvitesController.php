@@ -26,19 +26,16 @@ use Illuminate\Http\Request;
 
 class InvitesController extends AdminController
 {
-    public function __construct()
-    {
-        parent::__construct();
-        view()->share('current_menu', '1.30');
-    }
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function index()
     {
+        $this->getMenuService()->markCurrentMenu('1.30');
         $invites = Invite::orderBy('valid_to', 'desc')->get();
         $users = User::all();
         return view('admin.invite.index', compact('invites', 'users'));

@@ -16,29 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers;
+namespace medcenter24\mcCore\App;
 
 
-use Illuminate\Http\Response;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class HomeController extends Controller
+class FormVariable extends Model
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->middleware('auth');
-    }
+    use SoftDeletes;
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return Response
-     */
-    public function index(): Response
-    {
-        return view('home');
-    }
+
 }

@@ -1,5 +1,4 @@
 @if(!array_key_exists('role', $cell) || \Roles::hasRole(auth()->user(), $cell['role']))
-
     @if(array_key_exists('submenu', $cell) && count($cell['submenu']))
         @php
             $id = mt_rand(10000, 99999)
@@ -11,9 +10,9 @@
                id="{{ $id }}"
                aria-haspopup="true"
                aria-expanded="false">{{ $cell['name'] }} <span class="caret"></span></a>
-            <ul class="dropdown-menu" aria-labelledby="{{ $id }}">
+            <ul class="dropdown-menu{{ array_key_exists('active', $cell) ? ' active' : '' }}" aria-labelledby="{{ $id }}">
                 @foreach($cell['submenu'] as $submenu)
-                    <a class="dropdown-item" href="/{{ $submenu['slug'] }}">{{ $submenu['name'] }}</a>
+                    <a class="dropdown-item{{ array_key_exists('active', $submenu) ? ' active' : ''}}" href="/{{ $submenu['slug'] }}">{{ $submenu['name'] }}</a>
                 @endforeach
             </ul>
         </li>

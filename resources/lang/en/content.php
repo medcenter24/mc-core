@@ -80,4 +80,7 @@ return [
     'go_to_accident_page' => 'Go to the accident page',
     'pickup_case' => 'Accept Case Assignment :ref_num',
     'send' => 'send',
+    'system' => 'System',
+    'models' => 'Models',
+    'admin_panel' => 'Admin Panel',
 ];

@@ -18,8 +18,8 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use medcenter24\mcCore\App\Services\Menu\AdminMenuService;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
 
 /**
  * Admin part just for the developer, to see where was last backup,
@@ -30,10 +30,21 @@ use Illuminate\Support\Facades\Auth;
  */
 class AdminController extends Controller
 {
-    public function __construct()
+    use ServiceLocatorTrait;
+
+    /**
+     * @var AdminMenuService
+     */
+    private $menuService;
+
+    protected function getMenuService(): AdminMenuService
     {
-        parent::__construct();
-        view()->share('current_menu', '');
-        //   view()->share('locations', config('translation-manager.locales'));
+        if (!$this->menuService) {
+            $this->menuService = $this->getServiceLocator()->get(AdminMenuService::class);
+            view()->share('menuService', $this->menuService);
+            $this->menuService->asArray();
+        }
+
+        return $this->menuService;
     }
 }

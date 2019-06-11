@@ -57,8 +57,6 @@ class MenuService
 
     /**
      * Some kind of the menu cache
-     * @param array $menu
-     * @param bool $update
      * @return array
      */
     private function filteredMenu(): array
@@ -123,7 +121,7 @@ class MenuService
             if (!array_key_exists('name', $menu[$cell])) {
                 throw new InconsistentDataException('Name field not found in the ' . $cell . ' for the array menu: ' . print_r($menu, 1));
             }
-            $this->title .= (empty($this->title) ? '' : ' &dot; ') . $menu[$cell]['name'];
+            $this->title .= (empty($this->title) ? '' : ' ::: ') . $menu[$cell]['name'];
             if (array_key_exists('submenu', $menu[$cell])) {
                 $menu = &$menu[$cell]['submenu'];
             }

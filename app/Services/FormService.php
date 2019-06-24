@@ -23,24 +23,26 @@ use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Form;
 use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Form\FormVariableService;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 
 class FormService
 {
+    use ServiceLocatorTrait;
     /**
      * Filesystem constants
      */
-    const PDF_DISK = 'pdfForms';
-    const PDF_FOLDER = 'pdfForms';
+    public const PDF_DISK = 'pdfForms';
+    public const PDF_FOLDER = 'pdfForms';
 
     /**
      * @param Form $form
      * @param Model $source
-     * @return mixed
+     * @return string
      * @throws InconsistentDataException
      */
-    public function getPdfPath(Form $form, Model $source)
+    public function getPdfPath(Form $form, Model $source): string
     {
         $uniq = $this->getCacheableUniqValue($source) . '.pdf';
 
@@ -51,7 +53,7 @@ class FormService
         return \Storage::disk(self::PDF_DISK)->path($uniq);
     }
 
-    public function toPdf(Form $form, Model $source, $path = 'file.pdf')
+    public function toPdf(Form $form, Model $source, $path = 'file.pdf'): void
     {
         try {
             $mpdf = new Mpdf([
@@ -103,7 +105,7 @@ class FormService
      * @return string
      * @throws InconsistentDataException
      */
-    private function getCacheableUniqValue(Model $model)
+    private function getCacheableUniqValue(Model $model): string
     {
         $modelClass = get_class($model);
         switch ($modelClass) {
@@ -124,83 +126,34 @@ class FormService
      */
     public function getHtml(Form $form, Model $source): string
     {
-        $variables = [];
-        if ($form->variables) {
-            $variables = json_decode($form->variables);
-            $variables = $variables ? : [];
-            $variables = array_unique($variables);
-        }
+        $formVariableService = $this->getServiceLocator()->get(FormVariableService::class);
         $this->checkModel($form, $source);
-        $this->checkVariables($variables, $form);
-        $values = $this->getValues($source, $variables);
-
         $template = $form->template;
-        foreach ($values as $key => $value) {
-            $template = str_replace($key, $value, $template);
+        foreach ($formVariableService->getAccidentVariables() as $map) {
+            $value = $this->getAccidentValue($source, $map);
+            $value = $value ?: 'VARIABLE_STILL_NOT_SET';
+            $template = str_replace($map, $value, $template);
         }
-
         return $template;
     }
 
-    /**
-     * Getting values of the variables for the current model
-     * @param Model $model
-     * @param array $variables
-     * @return array
-     * @throws InconsistentDataException
-     */
-    private function getValues(Model $model, array $variables)
+    private function getAccidentValue(Model $accident, string $var): string
     {
-        $values = [];
-        foreach ($variables as $var) {
-            $values[$var] = $this->getValue($model, $var);
+        $map = trim($var, ':');
+        $map = explode('.', $map);
+        $obj = $accident;
+        array_shift($map); // pop accident
+        $val = '';
+        foreach ($map as $property) {
+            if ( isset($obj->$property) ) {
+                if (is_object($obj->$property)) {
+                    $obj = $obj->$property;
+                } else {
+                    $val = $obj->$property;
+                }
+            }
         }
-        return $values;
-    }
-
-    /**
-     * @param Model $model
-     * @param string $var
-     * @return string
-     * @throws InconsistentDataException
-     */
-    private function getValue(Model $model, $var = '')
-    {
-        $modelClass = get_class($model);
-        switch ($modelClass) {
-            case Accident::class :
-                $value = $this->getAccidentValue($model, $var);
-                break;
-            default:
-                throw new InconsistentDataException('Undefined model ' . $modelClass);
-        }
-        return $value;
-    }
-
-    /**
-     * @param Accident $accident
-     * @param $var
-     * @return string
-     * @throws InconsistentDataException
-     */
-    private function getAccidentValue(Accident $accident, $var)
-    {
-        switch ($var) {
-            case ':doctor.name':
-                $val = $accident->caseable->doctor ? $accident->caseable->doctor->name : '_Doctor Name_';
-                break;
-            case ':hospital.title':
-                $val = $accident->caseable->hospital ? $accident->caseable->hospital->title : '_Hospital Title_';
-                break;
-            case ':patient.name':
-                $val = $accident->patient ? $accident->patient->name : '_Patient Name_';
-                break;
-            case ':ref.number':
-                $val = $accident->ref_num;
-                break;
-            default: throw new InconsistentDataException('Variable is not defined: ' . $var);
-        }
-        return $val;
+        return (string)$val;
     }
 
     /**
@@ -208,51 +161,10 @@ class FormService
      * @param Model $model
      * @throws InconsistentDataException
      */
-    private function checkModel(Form $form, Model $model)
+    private function checkModel(Form $form, Model $model): void
     {
-        if ($form->formable_type != get_class($model)) {
+        if ($form->formable_type !== get_class($model)) {
             throw new InconsistentDataException('This model not supported by this form');
         }
-    }
-
-    /**
-     * @param array $vars
-     * @param Form $form
-     * @throws InconsistentDataException
-     */
-    private function checkVariables(array $vars, Form $form)
-    {
-        $allowed = $this->getAllowedVariables($form);
-        if ( count($diff = array_diff($vars, $allowed)) ) {
-            throw new InconsistentDataException('Unsupported Form variables ' . print_r($diff, 1));
-        }
-    }
-
-    /**
-     * @param Form $form
-     * @throws InconsistentDataException
-     * @return array
-     */
-    private function getAllowedVariables(Form $form)
-    {
-        switch ($form->formable_type) {
-            case Accident::class :
-                $variables = $this->getAllowedForAccidentVariables();
-                break;
-            default: throw new InconsistentDataException('Implementation of this type of source `' . $sourceClass . '` does not exist.');
-        }
-
-        return $variables;
-    }
-
-    private function getAllowedForAccidentVariables()
-    {
-        return [
-            ':doctor.name',
-            ':hospital.title',
-            ':patient.name',
-            ':company.name',
-            ':ref.number'
-        ];
     }
 }

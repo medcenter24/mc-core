@@ -24,11 +24,12 @@ use League\Fractal\TransformerAbstract;
 
 class CityTransformer extends TransformerAbstract
 {
-    public function transform(City $city)
+    public function transform(City $city): array
     {
         return [
             'id' => (int)$city->id,
             'title' => $city->title,
+            'regionId' => $city->region_id,
         ];
     }
 }

@@ -29,7 +29,11 @@ return [
     'supportsCredentials' => true,
     // 'allowedOrigins' => ['*'], // importer won't work with *
     // FMI I can return needed when it will be required
-    'allowedOrigins' => [env('CORS_ALLOW_ORIGIN_DIRECTOR'), env('CORS_ALLOW_ORIGIN_DOCTOR')],
+    'allowedOrigins' => [
+        env('APP_URL'),
+        env('CORS_ALLOW_ORIGIN_DIRECTOR'),
+        env('CORS_ALLOW_ORIGIN_DOCTOR'),
+    ],
     // 'allowedHeaders' => ['Content-Type', 'X-Requested-With'],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],

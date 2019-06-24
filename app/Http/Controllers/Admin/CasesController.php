@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
 
+use Illuminate\Http\JsonResponse;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Services\CaseServices\CaseHistoryService;
@@ -27,7 +28,11 @@ use medcenter24\mcCore\App\Services\FormService;
 
 class CasesController extends AdminController
 {
-    public function search(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function search(Request $request): JsonResponse
     {
         $query = $request->input('query', '');
         $limit = $request->input('limit', 20);

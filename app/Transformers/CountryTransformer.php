@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,22 +15,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Forms;
+namespace medcenter24\mcCore\App\Transformers;
 
 
 use League\Fractal\TransformerAbstract;
-use medcenter24\mcCore\App\FormVariable;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Country;
 
-class VariablesController extends ApiController
+class CountryTransformer extends TransformerAbstract
 {
-    protected function getDataTransformer(): TransformerAbstract
+    public function transform(Country $country): array
     {
-        return new FormVariableTransformer();
-    }
-
-    protected function getModelClass(): string
-    {
-        return FormVariable::class;
+        return [
+            'id' => (int)$country->id,
+            'title' => $country->title,
+        ];
     }
 }

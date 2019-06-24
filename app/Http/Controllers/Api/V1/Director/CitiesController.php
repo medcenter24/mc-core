@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\City;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CityRequest;
@@ -36,32 +37,34 @@ class CitiesController extends ApiController
         return City::class;
     }
 
-    public function index()
+    public function index(): Response
     {
         $cities = City::orderBy('title')->get();
         return $this->response->collection($cities, new CityTransformer());
     }
 
-    public function store(CityRequest $request)
+    public function store(CityRequest $request): Response
     {
         $city = City::create([
             'title' => $request->json('title', ''),
+            'region_id' => $request->json('regionId', 0),
         ]);
         $transformer = new CityTransformer();
         return $this->response->created(null, $transformer->transform($city));
     }
 
-    public function update($id, CityRequest $request)
+    public function update($id, CityRequest $request): Response
     {
         $city = City::findOrFail($id);
         $city->title = $request->json('title', '');
+        $city->region_id = $request->json('regionId', 0);
         $city->save();
 
         \Log::info('City updated', [$city, $this->user()]);
         return $this->response->item($city, new CityTransformer());
     }
 
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $city = City::findOrFail($id);
         \Log::info('City deleted', [$city, $this->user()]);

@@ -83,7 +83,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
     });
 
     Route::group(['prefix' => 'system'], static function () {
-        //var_dump(ModelsController::class);die;
-        Route::resource('models', 'Admin\System\ModelsController');
+        Route::group(['prefix' => 'models'], function () {
+            Route::get('search', 'Admin\System\ModelsController@search');
+            Route::post('relations', 'Admin\System\ModelsController@relations');
+            Route::get('', 'Admin\System\ModelsController@index');
+        });
     });
 });

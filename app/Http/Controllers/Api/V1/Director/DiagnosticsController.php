@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Diagnostic;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticRequest;
@@ -36,13 +37,13 @@ class DiagnosticsController extends ApiController
         return Diagnostic::class;
     }
 
-    public function index()
+    public function index(): Response
     {
         $diagnostics = Diagnostic::orderBy('title')->get();
         return $this->response->collection($diagnostics, new DiagnosticTransformer());
     }
 
-    public function update($id, DiagnosticRequest $request)
+    public function update($id, DiagnosticRequest $request): Response
     {
         $diagnostic = Diagnostic::find($id);
         if (!$diagnostic) {
@@ -60,20 +61,20 @@ class DiagnosticsController extends ApiController
         return $this->response->accepted(null, $transformer->transform($diagnostic));
     }
 
-    public function store(DiagnosticRequest $request)
+    public function store(DiagnosticRequest $request): Response
     {
         $diagnostic = Diagnostic::create([
             'title' => $request->json('title', ''),
             'disease_code' => $request->json('diseaseCode', ''),
             'description' => $request->json('description', ''),
-            'category_id' => $request->json('diagnosticCategoryId', 0),
+            'diagnostic_category_id' => $request->json('diagnosticCategoryId', 0),
             'created_by' => $this->user()->id,
         ]);
         $transformer = new DiagnosticTransformer();
         return $this->response->created(null, $transformer->transform($diagnostic));
     }
 
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $diagnostic = Diagnostic::find($id);
         if (!$diagnostic) {

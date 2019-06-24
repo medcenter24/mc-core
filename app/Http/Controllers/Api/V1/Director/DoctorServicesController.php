@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\DoctorService;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DoctorServiceRequest;
@@ -36,13 +37,13 @@ class DoctorServicesController extends ApiController
         return DoctorService::class;
     }
 
-    public function index()
+    public function index(): Response
     {
         $services = DoctorService::orderBy('title', 'desc')->get();
         return $this->response->collection($services, new DoctorServiceTransformer());
     }
 
-    public function update($id, DoctorServiceRequest $request)
+    public function update($id, DoctorServiceRequest $request): Response
     {
         $doctorService = DoctorService::find($id);
         if (!$doctorService) {
@@ -59,7 +60,7 @@ class DoctorServicesController extends ApiController
         return $this->response->accepted(null, $transformer->transform($doctorService));
     }
 
-    public function store(DoctorServiceRequest $request)
+    public function store(DoctorServiceRequest $request): Response
     {
         $doctorService = DoctorService::create([
             'title' => $request->json('title', ''),
@@ -71,7 +72,7 @@ class DoctorServicesController extends ApiController
         return $this->response->created(null, $transformer->transform($doctorService));
     }
     
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $service = DoctorService::find($id);
         if (!$service) {

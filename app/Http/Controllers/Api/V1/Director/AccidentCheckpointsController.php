@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use medcenter24\mcCore\App\AccidentCheckpoint;
+use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AccidentCheckpointRequest;
 use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
@@ -37,10 +38,14 @@ class AccidentCheckpointsController extends ApiController
         return AccidentCheckpoint::class;
     }
 
+    /**
+     * @return Response
+     * @throws NotImplementedException
+     */
     public function index(): Response
     {
         $accidentCheckpoint = AccidentCheckpoint::orderBy('title')->get();
-        return $this->response->collection($accidentCheckpoint, new AccidentCheckpointTransformer());
+        return $this->response->collection($accidentCheckpoint, $this->getDataTransformer());
     }
 
     public function show($id): Response
@@ -66,7 +71,7 @@ class AccidentCheckpointsController extends ApiController
         $accidentCheckpoint->description = $request->json('description', '');
         $accidentCheckpoint->save();
         \Log::info('Accident status updated', [$accidentCheckpoint, $this->user()]);
-        $this->response->item($accidentCheckpoint, new AccidentCheckpointTransformer());
+        return $this->response->item($accidentCheckpoint, new AccidentCheckpointTransformer());
     }
 
     public function destroy($id): Response

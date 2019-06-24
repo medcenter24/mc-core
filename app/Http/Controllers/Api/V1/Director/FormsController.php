@@ -19,12 +19,17 @@
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 
+use Dingo\Api\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Log;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Form;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FormRequest;
 use medcenter24\mcCore\App\Services\FormService;
 use medcenter24\mcCore\App\Transformers\FormTransformer;
 use League\Fractal\TransformerAbstract;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class FormsController extends ApiController
 {
@@ -33,12 +38,18 @@ class FormsController extends ApiController
         return new FormTransformer();
     }
 
+    /**
+     * @return string
+     */
     protected function getModelClass(): string
     {
         return Form::class;
     }
 
-    public function index()
+    /**
+     * @return Response
+     */
+    public function index(): Response
     {
         $cities = Form::orderBy('title')->get();
         return $this->response->collection($cities, new FormTransformer());
@@ -46,15 +57,15 @@ class FormsController extends ApiController
 
     /**
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function show($id)
+    public function show($id): Response
     {
         $form = Form::findOrFail($id);
         return $this->response->item($form, new FormTransformer());
     }
 
-    public function store(FormRequest $request)
+    public function store(FormRequest $request): Response
     {
         $form = Form::create([
             'title' => $request->json('title', ''),
@@ -66,35 +77,49 @@ class FormsController extends ApiController
         return $this->response->created(null, $transformer->transform($form));
     }
 
-    public function update($id, FormRequest $request)
+    public function update($id, FormRequest $request): Response
     {
         $form = Form::findOrFail($id);
         $form->title = $request->json('title', '');
         $form->template = $request->json('template', '');
-        $form->variables = json_encode($request->json('variables', []));
         $form->formable_type = $request->json('formableType', '');
         $form->save();
 
-        \Log::info('Form updated', [$form, $this->user()]);
+
+        Log::info('Form updated', [$form, $this->user()]);
         return $this->response->item($form, new FormTransformer());
     }
 
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $form = Form::findOrFail($id);
-        \Log::info('Form deleted', [$form, $this->user()]);
+        Log::info('Form deleted', [$form, $this->user()]);
         $form->delete();
         return $this->response->noContent();
     }
 
-    public function pdf($formId, $srcId, FormService $formService)
+    /**
+     * @param $formId
+     * @param $srcId
+     * @param FormService $formService
+     * @return BinaryFileResponse
+     * @throws InconsistentDataException
+     */
+    public function pdf($formId, $srcId, FormService $formService): BinaryFileResponse
     {
         $form = Form::findOrFail($formId);
         $source = call_user_func([$form->formable_type, 'findOrFail'], $srcId);
         return response()->download($formService->getPdfPath($form, $source));
     }
 
-    public function html($formId, $srcId, FormService $formService)
+    /**
+     * @param $formId
+     * @param $srcId
+     * @param FormService $formService
+     * @return JsonResponse
+     * @throws InconsistentDataException
+     */
+    public function html($formId, $srcId, FormService $formService): JsonResponse
     {
         $form = Form::findOrFail($formId);
         $source = call_user_func([$form->formable_type, 'findOrFail'], $srcId);

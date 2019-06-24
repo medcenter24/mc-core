@@ -27,7 +27,7 @@ class FinanceCurrencyRequest extends JsonRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check()
             && \Roles::hasRole(auth()->user(), Role::ROLE_DIRECTOR);
@@ -38,7 +38,7 @@ class FinanceCurrencyRequest extends JsonRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => 'max:200',

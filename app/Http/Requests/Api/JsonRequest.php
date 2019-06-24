@@ -29,7 +29,7 @@ abstract class JsonRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check() && \Roles::hasRole(auth()->user(), Role::ROLE_DIRECTOR);
     }
@@ -38,7 +38,7 @@ abstract class JsonRequest extends FormRequest
      * The data to be validated should be processed as JSON.
      * @return mixed
      */
-    protected function validationData()
+    protected function validationData(): array
     {
 
         $data = $this->json()->all();

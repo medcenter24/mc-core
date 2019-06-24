@@ -25,10 +25,11 @@ class CityRequest extends JsonRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => 'required|max:150',
+            'regionId' => 'required'
         ];
     }
 }

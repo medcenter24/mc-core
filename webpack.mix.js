@@ -15,7 +15,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-const { mix } = require('laravel-mix');
+const mix = require('laravel-mix');
 
 /*
  |--------------------------------------------------------------------------

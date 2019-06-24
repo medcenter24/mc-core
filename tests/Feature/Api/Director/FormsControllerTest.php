@@ -25,6 +25,7 @@ use medcenter24\mcCore\App\DoctorAccident;
 use medcenter24\mcCore\App\Form;
 use medcenter24\mcCore\App\Patient;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use medcenter24\mcCore\App\Services\Form\FormVariableService;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
 use medcenter24\mcCore\Tests\TestCase;
@@ -35,15 +36,16 @@ class FormsControllerTest extends TestCase
     use JwtHeaders;
     use LoggedUser;
 
-    public function testStoreError()
+    public function testStoreError(): void
     {
         $form = factory(Form::class)->create([
             'title' => 'Form_1',
             'description' => 'Unit Test Form #1',
-            'variables' => '[":doctor.name",":patient.name",":doctor.name",":ref.number"]',
-            'template' => '<p>Doctor: <b>:doctor.name</b></p>
-                <p>Patient ":patient.name" Doctor one more time :doctor.name. Current company is Medical Company.</p>
-                <p>Ref number №:ref.number</p>',
+            'template' => '<p>Doctor: <b>'.FormVariableService::VAR_ACCIDENT_CASEABLE_DOCTOR_NAME.'</b></p>
+                <p>Patient "'.FormVariableService::VAR_ACCIDENT_PATIENT_NAME
+                . '" Doctor one more time '.FormVariableService::VAR_ACCIDENT_CASEABLE_DOCTOR_NAME
+                . '. Current company is Medical Company.</p>
+                <p>Ref number №'.FormVariableService::VAR_ACCIDENT_REF_NUM.'</p>',
         ]);
 
         $doctorAccident = factory(Accident::class)->create([

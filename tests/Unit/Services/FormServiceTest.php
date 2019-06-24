@@ -21,10 +21,12 @@ namespace medcenter24\mcCore\Tests\Unit\Services;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Form;
 use medcenter24\mcCore\App\Hospital;
 use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Services\Form\FormVariableService;
 use medcenter24\mcCore\App\Services\FormService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\Tests\TestCase;
@@ -43,7 +45,20 @@ class FormServiceTest extends TestCase
         $this->service = new FormService();
     }
 
-    public function testHtmlDocCase()
+    /**
+     * @throws InconsistentDataException
+     */
+    public function testOneVar(): void
+    {
+        $accident = new Accident(['ref_num' => 'ooo']);
+        $form = new Form([
+            'template' => '<b>'.FormVariableService::VAR_ACCIDENT_REF_NUM.'</b>',
+            'formable_type' => Accident::class,
+        ]);
+        self::assertSame('<b>ooo</b>', $this->service->getHtml($form, $accident));
+    }
+
+    public function testHtmlDocCase(): void
     {
         $doctorAccident = factory(Accident::class)->create([
             'ref_num' => 'aaa-aaa-aaa',
@@ -59,11 +74,13 @@ class FormServiceTest extends TestCase
         $form = factory(Form::class)->create([
             'title' => 'Form_1',
             'description' => 'Unit Test Form #1',
-            'variables' => '[":doctor.name",":patient.name",":doctor.name",":ref.number"]',
             'template' => '
-                <p>Doctor: <b>:doctor.name</b></p>
-                <p>Patient ":patient.name" Doctor one more time :doctor.name. Current company is Medical Company.</p>
-                <p>Ref number №:ref.number</p>',
+                <p>Doctor: <b>'.FormVariableService::VAR_ACCIDENT_CASEABLE_DOCTOR_NAME.'</b></p>
+                <p>Patient "'.FormVariableService::VAR_ACCIDENT_PATIENT_NAME
+                .'" Doctor one more time '.
+                FormVariableService::VAR_ACCIDENT_CASEABLE_DOCTOR_NAME
+                .'. Current company is Medical Company.</p>
+                <p>Ref number №'.FormVariableService::VAR_ACCIDENT_REF_NUM.'</p>',
         ]);
 
         self::assertEquals('
@@ -72,7 +89,7 @@ class FormServiceTest extends TestCase
                 <p>Ref number №aaa-aaa-aaa</p>', $this->service->getHtml($form, $doctorAccident));
     }
 
-    public function testHtmlHospCase()
+    public function testHtmlHospCase(): void
     {
         $hospitalAccident = factory(Accident::class)->create([
             'ref_num' => 'aaa-aaa-aaa',
@@ -88,11 +105,14 @@ class FormServiceTest extends TestCase
         $form = factory(Form::class)->create([
             'title' => 'Form_1',
             'description' => 'Unit Test Form #1',
-            'variables' => '[":hospital.title",":patient.name",":hospital.title",":hospital.title",":ref.number"]',
             'template' => '
-                <p>Hospital: <b>:hospital.title</b></p>
-                <p>Patient ":patient.name" Hospital one more time :hospital.title and one more :hospital.title. Current company is Medical Company.</p>
-                <p>Ref number №:ref.number</p>',
+                <p>Hospital: <b>'.FormVariableService::VAR_ACCIDENT_CASEABLE_HOSPITAL_TITLE.'</b></p>
+                <p>Patient "'.FormVariableService::VAR_ACCIDENT_PATIENT_NAME
+                .'" Hospital one more time '.FormVariableService::VAR_ACCIDENT_CASEABLE_HOSPITAL_TITLE
+                .' and one more '.
+                FormVariableService::VAR_ACCIDENT_CASEABLE_HOSPITAL_TITLE
+                .'. Current company is Medical Company.</p>
+                <p>Ref number №'.FormVariableService::VAR_ACCIDENT_REF_NUM.'</p>',
         ]);
 
         self::assertEquals('

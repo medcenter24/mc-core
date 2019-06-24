@@ -40,8 +40,8 @@ class AccessTest extends TestCase
     public function testAdmin(): void
     {
         \Roles::shouldReceive('hasRole')
-            ->times(1)
-            ->andReturnUsing(function ($user, $role) {
+            ->times(11)
+            ->andReturnUsing(static function ($user, $role) {
                 return true;
             });
 
@@ -55,7 +55,7 @@ class AccessTest extends TestCase
     public function testDoctor(): void
     {
         \Roles::shouldReceive('hasRole')
-            ->times(1)
+            ->times(6)
             ->andReturnUsing(function ($user, $role) {
                 return false;
             });
@@ -70,7 +70,7 @@ class AccessTest extends TestCase
     public function testDirector(): void
     {
         \Roles::shouldReceive('hasRole')
-            ->times(1)
+            ->times(6)
             ->andReturnUsing(function ($user, $role) {
                 return false;
             });

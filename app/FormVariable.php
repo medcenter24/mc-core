@@ -26,5 +26,5 @@ class FormVariable extends Model
 {
     use SoftDeletes;
 
-
+    protected $fillable = ['title', 'key', 'type'];
 }

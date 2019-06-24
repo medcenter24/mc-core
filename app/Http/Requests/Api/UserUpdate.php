@@ -26,7 +26,7 @@ class UserUpdate extends UserStore
 {
     private $requireEmailRule = 'required|';
 
-    public function validationData()
+    public function validationData(): array
     {
         $data = parent::validationData();
 
@@ -46,7 +46,7 @@ class UserUpdate extends UserStore
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'email' => $this->requireEmailRule . 'email|unique:users',

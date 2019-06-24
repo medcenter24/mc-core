@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Transformers\Form;
 
 
+use Illuminate\Support\Str;
 use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\FormVariable;
 
@@ -26,6 +27,17 @@ class FormVariableTransformer extends TransformerAbstract
 {
     public function transform(FormVariable $variable): array
     {
-        return [];
+        return [
+            'title' => $this->prepareTitle($variable->title),
+            'key' => $variable->key,
+            'type' => $variable->type,
+        ];
+    }
+
+    private function prepareTitle(string $title): string
+    {
+        $title = trim($title, ':');
+        $title = str_replace('.', ' ', $title);
+        return Str::title($title);
     }
 }

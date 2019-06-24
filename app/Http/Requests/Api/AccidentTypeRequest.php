@@ -25,7 +25,7 @@ class AccidentTypeRequest extends JsonRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => 'required|max:70',

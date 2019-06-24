@@ -22,7 +22,7 @@ use medcenter24\mcCore\App\Hospital;
 
 class UpdateHospital extends JsonRequest
 {
-    public function validationData()
+    public function validationData(): array
     {
         $data = parent::validationData();
 
@@ -41,7 +41,7 @@ class UpdateHospital extends JsonRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => 'min:1|max:150',

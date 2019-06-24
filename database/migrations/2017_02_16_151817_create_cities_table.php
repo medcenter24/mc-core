@@ -27,10 +27,11 @@ class CreateCitiesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('cities', function (Blueprint $table) {
+        Schema::create('cities', static function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('region_id')->default(0)->index();
             $table->string('title')->default('')->index();
             $table->timestamps();
             $table->softDeletes();
@@ -42,7 +43,7 @@ class CreateCitiesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('cities');
     }

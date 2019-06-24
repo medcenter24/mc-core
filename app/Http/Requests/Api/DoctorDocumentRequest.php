@@ -27,7 +27,7 @@ class DoctorDocumentRequest extends JsonRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check() && \Roles::hasRole(auth()->user(), Role::ROLE_DOCTOR);
     }
@@ -37,7 +37,7 @@ class DoctorDocumentRequest extends JsonRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'type' => 'required|in:'.DocumentService::TYPE_PASSPORT.','.DocumentService::TYPE_INSURANCE,

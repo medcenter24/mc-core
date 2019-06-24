@@ -17,13 +17,95 @@
 
 <template>
     <div class="container white p-2 models-map-container">
-        <models-tree></models-tree>
+        <ui-tree-component
+            :items="items"
+            v-on:select="selected"
+        ></ui-tree-component>
     </div>
 </template>
 
 <script>
+    import UiTreeComponent from '../ui/tree';
+    import ModelsProvider from '../../providers/models.provider';
+
     export default {
-        name: "models-map"
+        name: "models-map",
+        components: {
+            UiTreeComponent
+        },
+        data () {
+            /*
+            Example
+            return {
+                items: [
+                    {
+                        id: 1,
+                        name: 'Model 1'
+                    },
+                    {
+                        id: 2,
+                        name: 'Model 2',
+                        visible: true,
+                        children: [
+                            {
+                                id: 3,
+                                name: 'sub model 1'
+                            },
+                            {
+                                id: 4,
+                                name: 'sub model 2',
+                                children: [
+                                    {
+                                        id: 5,
+                                        name: 'sub sub model 1'
+                                    },
+                                    {
+                                        id: 6,
+                                        name: 'sub sub model 2'
+                                    }
+                                ]
+                            },
+                        ]
+                    }
+                ]
+            };*/
+            return {items: []};
+        },
+        created: function () {
+            this.reloadModels();
+        },
+        methods: {
+            reloadModels() {
+                ModelsProvider.getModels().then(response => {
+                    this.items = response.data.map(row => {
+                        const children = [];
+                        for (let param in row.params) {
+                            children.push({
+                                name: row.params[param],
+                                type: 'param'
+                            });
+                        }
+
+                        return {
+                            name: row.id,
+                            type: 'model',
+                            children: children
+                        };
+                    });
+                });
+            },
+            selected(model) {
+                if (model.type === 'model') {
+                    console.log('selected model');
+                    this.higlightRelations(model);
+                }
+            },
+            higlightRelations(model) {
+                ModelsProvider.getRelations(model.name).then(response => {
+                    console.log(response);
+                });
+            }
+        }
     }
 </script>
 

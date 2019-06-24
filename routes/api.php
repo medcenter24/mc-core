@@ -28,16 +28,19 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CasesExporterControl
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CategoriesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CitiesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CompaniesController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CountriesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DatePeriodController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DoctorsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\FinanceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\FinanceCurrencyController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Forms\FormsVariablesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\FormsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\HospitalsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\InvoiceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\MediaController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\PatientsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\PaymentController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\RegionsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics\CalendarController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics\TrafficController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\SurveysController;
@@ -159,6 +162,7 @@ $api->group([
                 $api->resource('types', DirectorAccidentTypesController::class);
 
                 $api->post('services/search', DirectorDoctorServicesController::class . '@search');
+                // $api->post('services', DirectorDoctorServicesController::class . '@store');
                 $api->resource('services', DirectorDoctorServicesController::class);
 
                 $api->post('surveys/search', SurveysController::class . '@search');
@@ -183,6 +187,16 @@ $api->group([
 
                 $api->post('cities/search', CitiesController::class . '@search');
                 $api->resource('cities', CitiesController::class);
+
+                $api->resource('countries', CountriesController::class);
+                $api->group(['prefix' => 'countries'], static function($api) {
+                    $api->post('search', CountriesController::class . '@search');
+                });
+
+                $api->resource('regions', RegionsController::class);
+                $api->group(['prefix' => 'regions'], static function($api) {
+                    $api->post('search', RegionsController::class . '@search');
+                });
 
                 $api->post('diagnostics/search', DirectorDiagnosticsController::class . '@search');
                 $api->resource('diagnostics', DirectorDiagnosticsController::class);
@@ -210,8 +224,11 @@ $api->group([
                 $api->post('periods/search', DatePeriodController::class . '@search');
                 $api->resource('periods', DatePeriodController::class);
 
-                $api->group(['prefix' => 'forms'], function ($api) {
+                $api->group(['prefix' => 'forms'], static function ($api) {
                     $api->post('search', FormsController::class . '@search');
+                    $api->group(['prefix' => 'variables'], static function ($api) {
+                        $api->post('search', FormsVariablesController::class . '@search');
+                    });
                     $api->get('', FormsController::class . '@index');
                     $api->get('/{id}', FormsController::class . '@show');
                     $api->post('/', FormsController::class . '@store');
@@ -220,6 +237,8 @@ $api->group([
                     $api->get('/{formId}/{srcId}/pdf', FormsController::class . '@pdf');
                     $api->get('/{formId}/{srcId}/html', FormsController::class . '@html');
                 });
+
+                // @TODO do not use such records at all, we need to create group then all references of this group
 
                 $api->post('invoice/search', InvoiceController::class . '@search');
                 $api->get('invoice/{id}/form', InvoiceController::class . '@form');

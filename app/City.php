@@ -20,16 +20,20 @@ namespace medcenter24\mcCore\App;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class City extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title'];
+    protected $fillable = ['region_id', 'title'];
     protected $visible = ['id', 'title'];
 
-    public function doctors()
+    /**
+     * @return MorphToMany
+     */
+    public function doctors(): MorphToMany
     {
         return $this->morphedByMany(Doctor::class, 'cityable');
     }

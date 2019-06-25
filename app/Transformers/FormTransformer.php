@@ -31,7 +31,6 @@ class FormTransformer extends TransformerAbstract
             'title' => $form->title,
             'description' => $form->description,
             'type' => $form->formable_type,
-            'variables' => $form->variables,
             'template' => $form->template,
             'formableType' => $form->formable_type,
         ];

@@ -8,23 +8,25 @@
     "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
     "prod": "npm run production",
     "yarn:prod": "yarn run production",
+    "yarn:watch": "yarn run watch",
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "devDependencies": {
-    "axios": "^0.18",
-    "bootstrap": "^4.0.0",
-    "bootstrap-vue": "^1.4.0",
-    "browser-sync": "^2.23.5",
-    "browser-sync-webpack-plugin": "^1.2.0",
-    "cross-env": "^5.0.1",
-    "jquery": "^3.1.1",
-    "laravel-mix": "^1.0",
-    "lodash": "^4.17.4",
-    "popper.js": "^1.12",
-    "vue": "^2.1.10",
-    "vue-autosuggest": "^1.2.2"
-  },
-  "dependencies": {
-    "node-sass": "^4.9.0"
+    "axios": "^0.19.0",
+    "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^1.5.1",
+    "browser-sync": "^2.26.7",
+    "browser-sync-webpack-plugin": "^2.2.2",
+    "cross-env": "^5.2.0",
+    "jquery": "^3.4.1",
+    "laravel-mix": "^4.0.16",
+    "lodash": "^4.17.11",
+    "popper.js": "^1.15.0",
+    "resolve-url-loader": "^2.3.1",
+    "sass": "^1.15.2",
+    "sass-loader": "^7.1.0",
+    "vue": "^2.6.10",
+    "vue-autosuggest": "^1.2.2",
+    "vue-template-compiler": "^2.6.10"
   }
 }

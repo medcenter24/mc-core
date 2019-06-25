@@ -94,7 +94,7 @@ class AuthorizationTest extends TestCase
         ]);
 
         \Roles::shouldReceive('hasRole')
-            ->times(5)
+            ->times(11)
             ->andReturnUsing(function ($user, $role) {
                 return true;
             });

@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class AccidentAbstract extends Model
+abstract class AccidentAbstract extends Model
 {
     use SoftDeletes;
 
@@ -37,7 +37,7 @@ class AccidentAbstract extends Model
     /**
      * Assignment from the Doctor_Accident to the status action with comment
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return MorphMany
      */
     public function statusHistory(): MorphMany
     {

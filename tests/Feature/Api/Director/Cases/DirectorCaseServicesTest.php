@@ -24,9 +24,7 @@ use medcenter24\mcCore\App\DoctorService;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
 use medcenter24\mcCore\Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class DirectorCaseServicesTest extends TestCase
 {
@@ -34,7 +32,7 @@ class DirectorCaseServicesTest extends TestCase
     use JwtHeaders;
     use LoggedUser;
 
-    public function testGetNoServices()
+    public function testGetNoServices(): void
     {
         $case = factory(Accident::class)->create();
         $response = $this->get('/api/director/cases/' . $case->id .'/services', $this->headers($this->getUser()));
@@ -42,7 +40,7 @@ class DirectorCaseServicesTest extends TestCase
         $response->assertJson(['data' => []]);
     }
 
-    public function testGetServices()
+    public function testGetServices(): void
     {
         $caseable = factory(DoctorAccident::class)->create();
 

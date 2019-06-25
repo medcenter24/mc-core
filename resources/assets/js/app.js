@@ -33,37 +33,42 @@ Vue.component('example', require('./components/Example.vue'));
 
 Vue.component(
     'passport-clients',
-    require('./components/passport/Clients.vue')
+    require('./components/passport/Clients.vue').default
 );
 
 Vue.component(
     'passport-authorized-clients',
-    require('./components/passport/AuthorizedClients.vue')
+    require('./components/passport/AuthorizedClients.vue').default
 );
 
 Vue.component(
     'passport-personal-access-tokens',
-    require('./components/passport/PersonalAccessTokens.vue')
+    require('./components/passport/PersonalAccessTokens.vue').default
 );
 
 Vue.component(
     'case-report-page',
-    require('./components/case/report/case.report.page')
+    require('./components/case/report/case.report.page').default
 );
 
 Vue.component(
     'case-history-page',
-    require('./components/case/history/case.history.page')
+    require('./components/case/history/case.history.page').default
 );
 
 Vue.component(
     'messenger-dashboard',
-    require('./components/messenger/dashboard.page')
+    require('./components/messenger/dashboard.page').default
 );
 
 Vue.component(
     'telegram-bot',
-    require('./components/telegram/telegram.bot')
+    require('./components/telegram/telegram.bot').default
+);
+
+Vue.component(
+    'models-map-page',
+    require('./components/models/models.map.page').default
 );
 
 const app = new Vue({

@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App;
 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -47,6 +48,6 @@ class Form extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'template', 'variables', 'formable_type'];
-    protected $visible = ['title', 'description', 'template', 'variables', 'formable_type'];
+    protected $fillable = ['title', 'description', 'template', 'formable_type'];
+    protected $visible = ['title', 'description', 'template', 'formable_type'];
 }

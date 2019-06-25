@@ -25,7 +25,7 @@ class DiagnosticCategoryUpdate extends JsonRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => 'required|min:1|max:120',

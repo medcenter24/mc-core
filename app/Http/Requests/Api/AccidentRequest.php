@@ -31,7 +31,7 @@ class AccidentRequest extends JsonRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         // extends Validator only for this request
         \Validator::extend( 'parent_rule', function ( $attribute, $value, $parameters, $validator ) {
@@ -52,7 +52,7 @@ class AccidentRequest extends JsonRequest
 
             $res = true;
             if ($fields['id'] && $fields['parentId']) {
-                $res = $fields['id'] == $fields['parentId']
+                $res = $fields['id'] === $fields['parentId']
                     ? false // can't be the same
                     : Accident::where('id', $fields['parentId'])->exists();
             }

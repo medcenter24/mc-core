@@ -27,6 +27,7 @@ class AuthorizationTest extends TestCase
 {
     use DatabaseMigrations;
     use JwtHeaders;
+    use LoggedUser;
 
     public function testAuthorizationWithoutJwtHeaders(): void
     {
@@ -43,7 +44,7 @@ class AuthorizationTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function testAuthorization()
+    public function testAuthorization(): void
     {
         \Roles::shouldReceive('hasRole')
             ->andReturnUsing(function () {
@@ -61,9 +62,44 @@ class AuthorizationTest extends TestCase
             'password' => $passwd,
         ], $this->headers());
 
-        if ($response->getStatusCode() != 200) {
+        if ($response->getStatusCode() !== 200) {
             var_dump($response->getContent());
         }
         $response->assertStatus(200);
+    }
+
+    public function testLogout(): void
+    {
+        $response = $this->post('/api/logout', $this->headers($this->getUser()));
+        $response->assertStatus(401);
+    }
+
+    public function testToken(): void
+    {
+        $response = $this->get('/api/token', $this->headers($this->getUser()));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'token_type' => 'bearer',
+            'expires_in' => 3600,
+            'lang' => '',
+            'thumb' => '',
+        ]);
+        $token = $response->assertJsonStructure([
+            'token_type',
+            'expires_in',
+            'lang',
+            'thumb',
+            'access_token',
+        ]);
+        self::assertNotEmpty($token);
+    }
+
+    public function testGetUser(): void
+    {
+        $response = $this->get('/api/user', $this->headers($this->getUser()));
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['data' => [
+            'id', 'name', 'email', 'phone', 'lang', 'thumb200', 'thumb45', 'timezone'
+        ]]);
     }
 }

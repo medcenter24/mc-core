@@ -25,8 +25,13 @@ use medcenter24\mcCore\App\Role;
 
 class RolesController extends AdminController
 {
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     */
     public function index()
     {
+        $this->getMenuService()->markCurrentMenu('1.20');
         $roles = Role::all();
         return view('admin.roles.index', compact('roles'));
     }
@@ -34,7 +39,6 @@ class RolesController extends AdminController
     public function store(RoleRequest $request)
     {
         $role = Role::create($request->all());
-
         return redirect('admin/roles')
             ->with(['flash_message' => trans('content.added') . ': ' . $role->title]);
     }

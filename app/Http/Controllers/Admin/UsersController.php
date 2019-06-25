@@ -28,29 +28,32 @@ class UsersController extends AdminController
     public function __construct()
     {
         parent::__construct();
-        view()->share('current_menu', '1.10');
     }
 
     public function index()
     {
+        $this->getMenuService()->markCurrentMenu('1.10');
         $users = User::orderBy('name')->get();
         return view('admin.users.index', compact('users'));
     }
     
     public function show($id)
     {
+        $this->getMenuService()->markCurrentMenu('1.10');
         $user = User::findOrFail($id);
         return view('admin.users.show', compact('user'));
     }
 
     public function create()
     {
+        $this->getMenuService()->markCurrentMenu('1.10');
         $user = new User();
         return view('admin.users.create', compact('user'));
     }
 
     public function edit($id)
     {
+        $this->getMenuService()->markCurrentMenu('1.10');
         $user = User::findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }

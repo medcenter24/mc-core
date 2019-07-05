@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\PatientRequest;
 use medcenter24\mcCore\App\Patient;
@@ -36,42 +37,41 @@ class PatientsController extends ApiController
         return Patient::class;
     }
 
-    public function index()
+    public function index(): Response
     {
         $patients = Patient::orderBy('name')->get();
         return $this->response->collection($patients, new PatientTransformer());
     }
 
-    public function show($id)
+    public function show($id): Response
     {
-        return $this->response->item(
-            Patient::findOrFail($id),
-            new PatientTransformer()
-        );
+        $patient = Patient::findOrFail($id);
+        return $this->response->item($patient, new PatientTransformer());
     }
 
-    public function store(PatientRequest $request)
+    public function store(PatientRequest $request): Response
     {
         $patient = Patient::create($this->getJsonData($request));
         $transformer = new PatientTransformer();
         return $this->response->created(url("/api/director/patients/{$patient->id}"), $transformer->transform($patient));
     }
 
-    public function update($id, PatientRequest $request)
+    public function update($id, PatientRequest $request): Response
     {
         $data = $this->getJsonData($request);
         $patient = Patient::findOrFail($id);
         $patient->name = $data['name'];
         $patient->address = $data['address'];
         $patient->phones = $data['phones'];
-        $patient->birthday = isset($data['birthday']) ? $data['birthday'] : null;
+        $patient->birthday = $data['birthday'] ?? null;
         $patient->comment = $data['comment'];
         $patient->save();
         \Log::info('Patient updated', [$patient, $this->user()]);
         return $this->response->item($patient, new PatientTransformer());
     }
 
-    private function getJsonData(PatientRequest $request) {
+    private function getJsonData(PatientRequest $request): array
+    {
         $data = [
             'name' => $request->json('name', ''),
             'address' => $request->json('address', ''),

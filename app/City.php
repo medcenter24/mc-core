@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -36,5 +37,10 @@ class City extends Model
     public function doctors(): MorphToMany
     {
         return $this->morphedByMany(Doctor::class, 'cityable');
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
     }
 }

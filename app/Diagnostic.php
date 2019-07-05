@@ -19,6 +19,8 @@
 namespace medcenter24\mcCore\App;
 
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -37,17 +39,17 @@ class Diagnostic extends Model
     protected $fillable = ['title', 'description', 'diagnostic_category_id', 'disease_code', 'created_by'];
     protected $visible = ['title', 'description', 'diagnostic_category_id', 'disease_code'];
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(DiagnosticCategory::class);
     }
 
-    public function diagnosticDoctorAccidents()
+    public function diagnosticDoctorAccidents(): MorphToMany
     {
         return $this->morphedByMany(DoctorAccident::class, 'diagnosticable');
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }

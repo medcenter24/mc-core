@@ -33,7 +33,7 @@ class CaseAccidentTransformer extends TransformerAbstract
      * @param Accident $accident
      * @return array
      */
-    public function transform (Accident $accident)
+    public function transform (Accident $accident): array
     {
         return [
             'id' => $accident->id, // accident id

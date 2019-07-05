@@ -20,7 +20,7 @@ namespace medcenter24\mcCore\App\Services\Form;
 
 class FormVariableService
 {
-    public const VAR_REG_EX = ':[a-z0-9\._]+';
+    public const VAR_REG_EX = ':[a-zA-Z0-9\._]+';
     public const VAR_ACCIDENT_ASSISTANT_TITLE = ':accident.assistant.title';
     public const VAR_ACCIDENT_ASSISTANT_COMMENT = ':accident.assistant.comment';
     public const VAR_ACCIDENT_PATIENT_NAME = ':accident.patient.name';

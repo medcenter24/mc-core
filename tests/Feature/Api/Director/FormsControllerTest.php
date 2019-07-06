@@ -62,8 +62,8 @@ class FormsControllerTest extends TestCase
         $response = $this->get('/api/director/forms/'.$form->id.'/'.$doctorAccident->id.'/html', $this->headers($this->getUser()));
         $response->assertStatus(200)->assertJson([
             'data' => '<p>Doctor: <b>Doctor Name</b></p>
-                <p>Patient "Patient Name" Doctor one more time Doctor Name. Current company is Medical Company.</p>
-                <p>Ref number №aaa-aaa-aaa</p>',
+    <p>Patient "Patient Name" Doctor one more time Doctor Name. Current company is Medical Company.</p>
+    <p>Ref number №aaa-aaa-aaa</p>',
         ]);
     }
 }

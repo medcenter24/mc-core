@@ -15,22 +15,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App;
+namespace medcenter24\mcCore\Tests\Unit\Services\Forms;
 
+use medcenter24\mcCore\App\Services\Form\FormVariableService;
+use medcenter24\mcCore\Tests\TestCase;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
-class Region extends Model
+class FormVariableServiceTest extends TestCase
 {
-    use SoftDeletes;
-
-    protected $fillable = ['title', 'country_id'];
-    protected $visible = ['id', 'title'];
-
-    public function country(): BelongsTo
+    public function testRegEx(): void
     {
-        return $this->belongsTo(Country::class);
+        $service = new FormVariableService();
+        foreach ($service->getAccidentVariables() as $variable) {
+            self::assertRegExp('/^'.FormVariableService::VAR_REG_EX.'$/', $variable, $variable . ' is correct');
+        }
     }
 }

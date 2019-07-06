@@ -171,8 +171,14 @@ $api->group([
                 $api->post('assistants/search', AssistantsController::class . '@search');
                 $api->resource('assistants', AssistantsController::class);
 
-                $api->post('patients/search', PatientsController::class . '@search');
-                $api->resource('patients', PatientsController::class);
+                $api->group(['prefix' => 'patients'], static function ($api) {
+                    $api->post('search', PatientsController::class . '@search');
+                    $api->get('{id}', PatientsController::class . '@show');
+                    $api->post('', PatientsController::class . '@store');
+                    $api->get('', PatientsController::class . '@index');
+                    $api->put('{id}', PatientsController::class . '@update');
+                    $api->delete('{id}', PatientsController::class . '@destroy');
+                });
 
                 $api->resource('doctors', DoctorsController::class);
                 $api->group(['prefix' => 'doctors'], function ($api) {

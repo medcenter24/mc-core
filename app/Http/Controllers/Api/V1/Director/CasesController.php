@@ -89,7 +89,7 @@ class CasesController extends ApiController
      * Load all data that needed by director for the case editing
      * (Will return big json data)
      * @param $id - accident id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function show($id): Response
     {

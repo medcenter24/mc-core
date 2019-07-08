@@ -87,9 +87,11 @@ return [
             'url' => env('AWS_URL'),
         ],
 
-        CaseImporterService::DISC_IMPORTS => [
+        // @todo hack
+        // @todo rewrite extension installer or module that connect filesystems to do it from the CaseImporterService::DISC_IMPORTS
+        'imports' => [
             'driver' => 'local',
-            'root' => storage_path( CaseImporterService::DISC_IMPORTS),
+            'root' => storage_path( 'imports'),
         ],
 
         DocumentService::DISC_IMPORTS => [

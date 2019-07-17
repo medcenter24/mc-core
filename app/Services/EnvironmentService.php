@@ -127,14 +127,16 @@ class EnvironmentService extends Configurable implements Environment
     /**
      * @param string $path
      * @return array
-     * @throws NotImplementedException
      */
     private function readConfig(string $path): array
     {
         if (file_exists($path) && is_readable($path) && !is_dir($path)) {
             $config = include($path);
         } else {
-            throw new NotImplementedException('Configuration file not found [use setup:environment]');
+            // If I don't have access to this file then it could either access denied or not installed
+            // but in most cases it will be access denied and I can't write Exception
+            // throw new NotImplementedException('Configuration file not found [use setup:environment]');
+            die('Access to the file '.$path.' denied, please check this path (or try to install env again with setup:environment command)');
         }
         return $config;
     }

@@ -112,7 +112,8 @@ class Application extends BaseApplication
             $dir = rtrim($dir, '/');
             $dir .= '/bootstrap/cache';
         }
-        return $dir . $path;
+        // without / in the end will be failed manifestPath in the PackageManifest : 57
+        return rtrim($dir, '/\\') . '/' . ltrim($path, '/\\');
     }
 
     public function terminate(): void

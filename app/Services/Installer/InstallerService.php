@@ -425,6 +425,15 @@ class InstallerService extends Configurable
                 && FileHelper::writeFile($this->getNewEnvFilePath(), $this->getEnvData());
         }
 
+        $waiter = 0;
+        while (!FileHelper::isReadable($this->getNewEnvFilePath())) {
+            if ($waiter > 10) {
+                throw new InconsistentDataException('Env file can not be read more than 10 sec');
+            }
+            sleep(1);
+            $waiter++;
+        }
+
         if (!$created) {
             throw new InconsistentDataException('Config File can not be created');
         }

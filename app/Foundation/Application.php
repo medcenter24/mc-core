@@ -19,7 +19,6 @@
 namespace medcenter24\mcCore\App\Foundation;
 
 
-use http\Env;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
@@ -47,9 +46,9 @@ class Application extends BaseApplication
             $this->loadEnvironmentFrom($environmentService->getEnvironmentFileName());
             $this->useStoragePath($environmentService->getStoragePath());
         } catch (CommonException $e) {
-            if ($this->environment('testing') && $e->getMessage() === 'Environment already initialized') {
-                // do nothing
-            } elseif (!$this->isBooted() && $this->environment('local')) {
+            $installed = $this->environment('testing')
+                && $e->getMessage() === 'Environment already initialized';
+            if (!$installed && !$this->isBooted() && $this->environment('local')) {
                 echo "/**********************************/\n";
                 echo "\t" . $e->getMessage() . "\n";
                 echo "/**********************************/\n\n";
@@ -113,7 +112,8 @@ class Application extends BaseApplication
             $dir = rtrim($dir, '/');
             $dir .= '/bootstrap/cache';
         }
-        return $dir . $path;
+        // without / in the end will be failed manifestPath in the PackageManifest : 57
+        return rtrim($dir, '/\\') . '/' . ltrim($path, '/\\');
     }
 
     public function terminate(): void

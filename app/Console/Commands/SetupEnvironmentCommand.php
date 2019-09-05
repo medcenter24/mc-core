@@ -138,9 +138,8 @@ class SetupEnvironmentCommand extends Command
     private function install(): void
     {
         if ($this->all() || $this->confirm('Are you sure want to install application with these parameters?')) {
-            $this->installerService->install();
-
-            $this->reloadApp();
+            $newEnvPath = $this->installerService->install();
+            $this->reloadApp($newEnvPath);
             $this->migrate();
         } else {
             $this->error('Aborted');
@@ -148,19 +147,26 @@ class SetupEnvironmentCommand extends Command
     }
 
     /**
+     * @param string $newEnvFilePath
+     * @throws InconsistentDataException
      * @throws NotImplementedException
      */
-    private function reloadApp(): void
+    private function reloadApp(string $newEnvFilePath): void
     {
         EnvironmentService::init(
             $_ENV['APP_CONFIG_PATH'] ?? dirname(__DIR__, 4) . '/config/generis.conf.php'
         );
-        $dot = Dotenv::create(app()->environmentPath(), app()->environmentFile());
+        // on the install I need to reset envPath to the configured
+        app()->loadEnvironmentFrom($newEnvFilePath);
+        $realPath = realpath($newEnvFilePath);
+        $envDir = dirname($realPath);
+        $envFile = str_replace($envDir, '', $realPath);
+        $dot = Dotenv::create($envDir, $envFile);
         with($dot)->overload();
         with(new LoadConfiguration())->bootstrap(app());
     }
 
-    private function migrate(): void 
+    private function migrate(): void
     {
         if ($this->all() || $this->confirm('Do you want to migrate DB?')) {
 
@@ -177,7 +183,7 @@ class SetupEnvironmentCommand extends Command
             $this->seed();
         }
     }
-    
+
     private function seed(): void
     {
         if ($this->all() || $this->confirm('Do you want to seed DB?')) {
@@ -185,7 +191,7 @@ class SetupEnvironmentCommand extends Command
             $this->addSuperAdmin();
         }
     }
-    
+
     private function addSuperAdmin(): void
     {
         if ($this->all() || $this->confirm('Do you want to create Super Admin?')) {

@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Diagnostic;
@@ -77,11 +78,27 @@ class CasesController extends ApiController
 
     /**
      * Datatable transformer
-     * @return CaseAccidentTransformer|\League\Fractal\TransformerAbstract
+     * @return CaseAccidentTransformer|TransformerAbstract
      */
     protected function getDataTransformer(): TransformerAbstract
     {
         return new CaseAccidentTransformer();
+    }
+
+    /**
+     * @param $eloquent
+     * @param Request|null $request
+     * @return Builder
+     */
+    protected function applyCondition($eloquent, Request $request = null): Builder
+    {
+        if ($request) {
+            $filters = $request->json('filters', false);
+            if (is_array($filters) && array_key_exists('find', $filters) && !empty($filters['find'])) {
+                $eloquent->where('ref_num', $filters['find']);
+            }
+        }
+        return $eloquent;
     }
 
     /**

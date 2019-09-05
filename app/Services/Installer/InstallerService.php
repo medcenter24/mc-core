@@ -252,9 +252,10 @@ class InstallerService extends Configurable
     }
 
     /**
+     * @return string
      * @throws InconsistentDataException
      */
-    public function install(): void
+    public function install(): string
     {
         if (!$this->canBeInstalled()) {
             throw new InconsistentDataException('Incorrect configuration for the installer');
@@ -264,10 +265,11 @@ class InstallerService extends Configurable
         $this->createDataDir();
 
         $this->writeConfigFile();
-        $this->envFileSetup();
+        $newEnvFilePath = $this->envFileSetup();
 
         // folders for the data storing
         $this->createStores();
+        return $newEnvFilePath;
     }
 
     public function canBeInstalled(): bool
@@ -409,9 +411,10 @@ class InstallerService extends Configurable
     }
 
     /**
+     * @return string
      * @throws InconsistentDataException
      */
-    private function envFileSetup(): void
+    private function envFileSetup(): string
     {
         $created = false;
         /** @var ConfigurableParam $param */
@@ -419,12 +422,33 @@ class InstallerService extends Configurable
             $confDir = $paramConfigDir->getValue();
             $created = $paramConfigDir instanceof ConfigDirParam
                 && is_writable($confDir)
-                && FileHelper::writeFile($confDir . DIRECTORY_SEPARATOR . $this->getParam(self::PROP_ENV_FILE_NAME)->getValue(), $this->getEnvData());
+                && FileHelper::writeFile($this->getNewEnvFilePath(), $this->getEnvData());
+        }
+
+        $waiter = 0;
+        while (!FileHelper::isReadable($this->getNewEnvFilePath())) {
+            if ($waiter > 10) {
+                throw new InconsistentDataException('Env file can not be read more than 10 sec');
+            }
+            sleep(1);
+            $waiter++;
         }
 
         if (!$created) {
             throw new InconsistentDataException('Config File can not be created');
         }
+
+        return $this->getNewEnvFilePath();
+    }
+
+    /**
+     * @return string
+     */
+    private function getNewEnvFilePath(): string
+    {
+        return $this->getParam(self::PROP_CONFIG_DIR)->getValue()
+            . DIRECTORY_SEPARATOR
+            . $this->getParam(self::PROP_ENV_FILE_NAME)->getValue();
     }
 
     private function getEnvData(): string

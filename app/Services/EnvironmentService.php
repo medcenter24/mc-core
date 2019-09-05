@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Services;
 
 
 use medcenter24\mcCore\App\Contract\General\Environment;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Support\Core\Configurable;
@@ -54,11 +55,12 @@ class EnvironmentService extends Configurable implements Environment
      * @param string $configPath
      * @return EnvironmentService
      * @throws NotImplementedException
+     * @throws InconsistentDataException
      */
     public static function init(string $configPath): self
     {
         if (!self::$instance) {
-            // why do I need this, it brakes tests
+            // it brakes tests but it allows to use artisan without installed application
             // throw new InconsistentDataException('Environment already initialized');
             self::$instance = new self($configPath);
         }
@@ -134,7 +136,11 @@ class EnvironmentService extends Configurable implements Environment
         if (file_exists($path) && is_readable($path) && !is_dir($path)) {
             $config = include($path);
         } else {
-            throw new NotImplementedException('Configuration file not found [use setup:environment]');
+            // When file is not found that means we don't have an access or file not exists
+            // trying to allow to install it from artisan
+            throw new NotImplementedException('Configuration file not found [use setup:seed] or CHECK Access');
+            // I can't use it because installation process will be failed
+            // die('Access to the file '.$path.' denied, please check this path (or try to install env again with setup:environment command)');
         }
         return $config;
     }

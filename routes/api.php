@@ -58,6 +58,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentsController 
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentTypesController as DirectorAccidentTypesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DoctorServicesController as DirectorDoctorServicesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DiagnosticsController as DirectorDiagnosticsController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\System\ExtensionsController;
 
 /** @var Router $api */
 $api = app(Router::class);
@@ -78,6 +79,7 @@ $api->group([
             $api->get('token', AuthenticateController::class . '@getToken');
             $api->get('user', AuthenticateController::class . '@authenticatedUser');
             $api->get('user/company', AuthenticateController::class . '@getCompany');
+            $api->get('system/extensions/{extName}', ExtensionsController::class . '@index');
 
             $api->group(['prefix' => 'doctor', 'middleware' => ['role:doctor']], static function ($api) {
                 $api->post('accidents/send', DoctorAccidentsController::class . '@send');

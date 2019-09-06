@@ -46,13 +46,6 @@ class Application extends BaseApplication
             $this->loadEnvironmentFrom($environmentService->getEnvironmentFileName());
             $this->useStoragePath($environmentService->getStoragePath());
         } catch (CommonException $e) {
-            $installed = $this->environment('testing')
-                && $e->getMessage() === 'Environment already initialized';
-            if (!$installed && !$this->isBooted() && $this->environment('local')) {
-                echo "/**********************************/\n";
-                echo "\t" . $e->getMessage() . "\n";
-                echo "/**********************************/\n\n";
-            }
         }
 
         parent::__construct($basePath);

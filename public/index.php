@@ -16,6 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use medcenter24\mcCore\App\Services\EnvironmentService;
+
 
 /**
  * Laravel - A PHP Framework For Web Artisans
@@ -50,6 +52,13 @@ require __DIR__.'/../bootstrap/autoload.php';
 |
 */
 $app = require_once __DIR__.'/../bootstrap/app.php';
+
+if (EnvironmentService::hasErrors()) {
+    echo '<h1>Error</h1>';
+    $errors = implode('<br>', EnvironmentService::getErrors());
+    print_r($errors);
+    die();
+}
 
 /*
 |--------------------------------------------------------------------------

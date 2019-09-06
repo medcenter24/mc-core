@@ -13,9 +13,17 @@
 |
 */
 
+use medcenter24\mcCore\App\Services\EnvironmentService;
+
 require __DIR__.'/bootstrap/autoload.php';
 
 $app = require_once __DIR__.'/bootstrap/app.php';
+
+if (EnvironmentService::hasErrors()) {
+    echo "\n**********************************\n";
+    echo implode("\n", EnvironmentService::getErrors());
+    echo "\n**********************************\n";
+}
 
 /*
 |--------------------------------------------------------------------------

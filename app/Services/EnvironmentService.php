@@ -52,13 +52,20 @@ class EnvironmentService extends Configurable implements Environment
     private static $tmpDir = '';
 
     /**
+     * That class is very low layer of the project
+     * so we need to have opportunity to handle errors by himself
+     * @var array
+     */
+    private static $errors = [];
+
+    /**
      * @param string $configPath
      * @return EnvironmentService
      * @throws NotImplementedException
-     * @throws InconsistentDataException
      */
     public static function init(string $configPath): self
     {
+        self::cleanErrors();
         if (!self::$instance) {
             // it brakes tests but it allows to use artisan without installed application
             // throw new InconsistentDataException('Environment already initialized');
@@ -71,6 +78,30 @@ class EnvironmentService extends Configurable implements Environment
     public static function isInstalled(): bool
     {
         return self::$instance !== null;
+    }
+
+    /**
+     * Checks if there are any errors
+     * @return bool
+     */
+    public static function hasErrors(): bool
+    {
+        return count(static::$errors) > 0;
+    }
+
+    public static function getErrors(): array
+    {
+        return static::$errors;
+    }
+
+    private static function addError(string $err = ''): void
+    {
+        static::$errors[] = $err;
+    }
+
+    private static function cleanErrors(): void
+    {
+        static::$errors = [];
     }
 
     /**
@@ -110,7 +141,9 @@ class EnvironmentService extends Configurable implements Environment
     public static function instance(): self
     {
         if (!self::$instance) {
-            throw new NotImplementedException('You need to initialise your application before EnvironmentService::init($configPath)');
+            $msg = 'You need to initialise your application before EnvironmentService::init($configPath)';
+            self::addError($msg);
+            throw new NotImplementedException($msg);
         }
         return self::$instance;
     }
@@ -138,7 +171,9 @@ class EnvironmentService extends Configurable implements Environment
         } else {
             // When file is not found that means we don't have an access or file not exists
             // trying to allow to install it from artisan
-            throw new NotImplementedException('Configuration file not found [use setup:seed] or CHECK Access');
+            $msg = 'Configuration file not found [use setup:seed] or CHECK Access ['.$path.']';
+            self::addError($msg);
+            throw new NotImplementedException($msg);
             // I can't use it because installation process will be failed
             // die('Access to the file '.$path.' denied, please check this path (or try to install env again with setup:environment command)');
         }
@@ -170,6 +205,7 @@ class EnvironmentService extends Configurable implements Environment
      */
     public static function terminate(): void
     {
+        self::cleanErrors();
         self::$isTmpEnv = false;
         self::$instance = null;
         if (!empty(self::$tmpDir)) {

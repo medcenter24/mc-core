@@ -19,20 +19,25 @@
 namespace medcenter24\mcCore\App\Transformers;
 
 
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\UserService;
 use medcenter24\mcCore\App\User;
 use Cmgmyr\Messenger\Models\Message;
 use League\Fractal\TransformerAbstract;
 
 class MessageTransformer extends TransformerAbstract
 {
+    use ServiceLocatorTrait;
+
     /**
      * @param Message $message
      * @return array
-     * @throws \ErrorException
+     * @throws InconsistentDataException
      */
-    public function transform(Message $message)
+    public function transform(Message $message): array
     {
         return [
             'id' => $message->id,
@@ -41,7 +46,9 @@ class MessageTransformer extends TransformerAbstract
             'user_thumb' => $message->user_id && $message->user->hasMedia(LogoService::FOLDER)
                 ? MediaHelper::b64($message->user, LogoService::FOLDER, User::THUMB_45) : '',
             'body' => $message->body,
-            'created_at' => $message->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
+            'created_at' => $message->created_at->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')),
         ];
     }
 }

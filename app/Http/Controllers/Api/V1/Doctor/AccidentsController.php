@@ -553,7 +553,7 @@ class AccidentsController extends ApiController
                     ['accidentId' => $accidentId, 'userId' => $this->user()->id]);
                 continue;
             }
-            $status = $accidentStatusesService->getSentDoctorStatus();
+            $status = $accidentStatusesService->getDoctorSentStatus();
             $accidentService->setStatus($accident, $status, 'Sent by doctor');
         }
 

@@ -23,7 +23,7 @@ trait DoctorTrait
 {
     private $isDoctor = false;
 
-    public function markAsDoctor(): bool
+    public function markAsDoctor(): void
     {
         $this->isDoctor = true;
     }

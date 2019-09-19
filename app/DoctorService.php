@@ -23,6 +23,8 @@ use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\DoctorServiceService;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
 
 /**
  * Services provided by a Doctor
@@ -34,6 +36,7 @@ class DoctorService extends Model
 {
     use SoftDeletes;
     use DoctorTrait;
+    use ServiceLocatorTrait;
 
     protected $fillable = ['title', 'description', 'created_by', 'disease_code'];
     protected $visible = ['id', 'title', 'description', 'created_by', 'disease_code'];
@@ -41,5 +44,10 @@ class DoctorService extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function isDoctor(): bool
+    {
+        return $this->getServiceLocator()->get(DoctorServiceService::class)->isDoctor($this->created_by);
     }
 }

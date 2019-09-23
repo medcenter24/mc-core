@@ -483,7 +483,7 @@ class AccidentsController extends ApiController
      * @return \Dingo\Api\Http\Response
      * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded
      */
-    public function createDocument($id, Request $request, DocumentService $documentService)
+    public function createDocument($id, Request $request, DocumentService $documentService): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
@@ -497,14 +497,22 @@ class AccidentsController extends ApiController
         return $this->response->item($document, new DocumentTransformer());
     }
 
-    public function documents($id, DocumentService $documentService)
+    /**
+     * @param $id
+     * @param DocumentService $documentService
+     * @return Response
+     */
+    public function documents($id, DocumentService $documentService): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
         }
 
-        return $this->response->collection($documentService->getDocuments($this->user(), $accident), new DocumentTransformer());
+        return $this->response->collection(
+            $documentService->getDocuments($this->user(), $accident, 'accident'),
+            new DocumentTransformer()
+        );
     }
 
     /**

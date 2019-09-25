@@ -27,13 +27,15 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', static function () {
+    return redirect('admin');
 });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index');
+Route::get('/home', static function () {
+    return redirect('admin');
+});
 
 // if it needed I could check that server is telegram
 Route::group(['prefix' => 'telegram'], function () {

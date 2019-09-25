@@ -17,9 +17,10 @@
                                 echo $item['name'];
                             }
                             echo '</li>';
+                            $menu = is_array($item) && array_key_exists('submenu', $item) ? $item['submenu'] : false;
+                            break;
                         }
                     }
-                    $menu = array_key_exists('submenu', $item) ? $item['submenu'] : false;
                 }
             @endphp
         </ol>

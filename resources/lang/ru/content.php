@@ -17,6 +17,8 @@
  */
 
 return [
+    'slack' => 'Slack',
+    'messengers' => 'Мессенжеры',
     'profile' => 'Профиль',
     'assistant' => 'Ассистант',
     'npp' => 'Номер в очереди',

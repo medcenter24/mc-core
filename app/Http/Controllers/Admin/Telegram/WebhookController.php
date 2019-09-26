@@ -19,21 +19,23 @@
 namespace medcenter24\mcCore\App\Http\Controllers\Admin\Telegram;
 
 
+use ErrorException;
+use Illuminate\Http\JsonResponse;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Http\Requests\Telegram\SetWebhook;
 use medcenter24\mcCore\App\Services\Bot\BotInstance;
 use Telegram;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
-class WebhookController extends  AdminController
+class WebhookController extends AdminController
 {
 
     /**
      * @param BotInstance $botInstance
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \ErrorException
+     * @return JsonResponse
+     * @throws ErrorException
      */
-    public function index (BotInstance $botInstance)
+    public function index (BotInstance $botInstance): JsonResponse
     {
         $telegram = $botInstance->getBot('telegram');
         $info = $telegram->getWebhookInformation();
@@ -43,10 +45,10 @@ class WebhookController extends  AdminController
     /**
      * @param SetWebhook $request
      * @param BotInstance $botInstance
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \ErrorException
+     * @return JsonResponse
+     * @throws ErrorException
      */
-    public function update (SetWebhook $request, BotInstance $botInstance)
+    public function update (SetWebhook $request, BotInstance $botInstance): JsonResponse
     {
         $url = $request->input('webhook');
         $conf = [

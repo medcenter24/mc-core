@@ -27,6 +27,8 @@
 |
 */
 
+use medcenter24\mcCore\App\Http\Controllers\Admin\Slack\SlackController;
+
 Route::get('/', static function () {
     return redirect('admin');
 });
@@ -48,11 +50,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
     Route::resource('roles', 'Admin\RolesController');
     Route::resource('invites', 'Admin\InvitesController');
 
-    Route::group(['prefix' => 'preview'], function() {
+    Route::group(['prefix' => 'preview'], static function() {
         Route::get('caseReport', 'Admin\PreviewController@caseReport');
         Route::get('caseHistory', 'Admin\PreviewController@caseHistory');
         Route::get('messenger', 'Admin\PreviewController@messenger');
         Route::get('telegram', 'Admin\PreviewController@telegram');
+        Route::get('slack', 'Admin\PreviewController@slack');
     });
 
     Route::group(['prefix' => 'cases'], function () {
@@ -72,16 +75,21 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
         });
     });
 
-    Route::group(['prefix' => 'telegram'], function () {
+    Route::group(['prefix' => 'telegram'], static function () {
 
         Route::get('getMe', 'Admin\Telegram\TelegramController@getMe');
         Route::get('getWebhookInfo', 'Admin\Telegram\TelegramController@getWebhookInfo');
 
-        Route::group(['prefix' => 'message'], function () {
+        Route::group(['prefix' => 'message'], static function () {
             Route::post('send', 'Admin\Telegram\MessageController@send');
         });
 
         Route::resource('webhook', 'Admin\Telegram\WebhookController');
+    });
+
+    Route::group(['prefix' => 'slack'], static function () {
+        Route::post('log', 'Admin\Slack\SlackController@log');
+        Route::get('info', 'Admin\Slack\SlackController@info');
     });
 
     Route::group(['prefix' => 'system'], static function () {

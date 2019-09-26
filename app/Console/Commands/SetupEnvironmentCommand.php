@@ -148,7 +148,6 @@ class SetupEnvironmentCommand extends Command
 
     /**
      * @param string $newEnvFilePath
-     * @throws InconsistentDataException
      * @throws NotImplementedException
      */
     private function reloadApp(string $newEnvFilePath): void

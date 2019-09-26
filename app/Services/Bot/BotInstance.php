@@ -32,7 +32,7 @@ class BotInstance
      * @return Bot
      * @throws \ErrorException
      */
-    public function getBot( $connection = '' )
+    public function getBot( $connection = '' ): Bot
     {
         $isActive = config('bot.connections.' . $connection . '.active', false);
         $className = config('bot.connections.'.$connection.'.class', '');

@@ -17,6 +17,8 @@
  */
 
 return [
+    'slack' => 'Slack',
+    'messengers' => 'Messengers',
     'profile' => 'Profile',
     'assistant' => 'Assistant',
     'npp' => 'Number in order',

@@ -71,6 +71,11 @@ Vue.component(
     require('./components/models/models.map.page').default
 );
 
+Vue.component(
+  'slack-preview',
+  require('./components/slack/preview.page').default
+);
+
 const app = new Vue({
     el: '#app'
 });

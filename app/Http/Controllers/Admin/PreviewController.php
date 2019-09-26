@@ -19,16 +19,27 @@
 namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\View\View;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 
 class PreviewController extends AdminController
 {
+    /**
+     * @return Factory|View
+     * @throws InconsistentDataException
+     */
     public function caseReport()
     {
         $this->getMenuService()->markCurrentMenu('2.10');
         return view('admin.preview.case.report');
     }
 
+    /**
+     * @return Factory|View
+     * @throws InconsistentDataException
+     */
     public function caseHistory()
     {
         $this->getMenuService()->markCurrentMenu('2.20');
@@ -37,6 +48,8 @@ class PreviewController extends AdminController
 
     /**
      * Dashboard of the messenger
+     * @return Factory|View
+     * @throws InconsistentDataException
      */
     public function messenger()
     {
@@ -44,9 +57,23 @@ class PreviewController extends AdminController
         return view('admin.preview.messenger');
     }
 
+    /**
+     * @return Factory|View
+     * @throws InconsistentDataException
+     */
     public function telegram()
     {
         $this->getMenuService()->markCurrentMenu('4.10');
         return view('admin.preview.telegram.bot');
+    }
+
+    /**
+     * @return View
+     * @throws InconsistentDataException
+     */
+    public function slack(): View
+    {
+        $this->getMenuService()->markCurrentMenu('4.20');
+        return view('admin.preview.slack.log');
     }
 }

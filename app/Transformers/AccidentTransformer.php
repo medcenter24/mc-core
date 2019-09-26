@@ -21,14 +21,18 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use medcenter24\mcCore\App\Accident;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\UserService;
 
 class AccidentTransformer extends TransformerAbstract
 {
+    use ServiceLocatorTrait;
+
     /**
      * @param Accident $accident
      * @return array
      */
-    public function transform (Accident $accident)
+    public function transform (Accident $accident): array
     {
         return [
             'id' => $accident->id,
@@ -54,11 +58,19 @@ class AccidentTransformer extends TransformerAbstract
             'contacts' => $accident->contacts,
             'symptoms' => $accident->symptoms,
             // system format needed by the director case editor
-            'createdAt' => $accident->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
-            'updatedAt' => $accident->updated_at ? $accident->updated_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : null,
-            'deletedAt' => $accident->deleted_at ? $accident->deleted_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : null,
+            'createdAt' => $accident->created_at->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')),
+            'updatedAt' => $accident->updated_at ? $accident->updated_at->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')) : null,
+            'deletedAt' => $accident->deleted_at ? $accident->deleted_at->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')) : null,
             'closedAt' => $accident->closed_at,
-            'handlingTime' => $accident->handling_time ? $accident->handling_time->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : null,
+            'handlingTime' => $accident->handling_time ? $accident->handling_time->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')) : null,
         ];
     }
 }

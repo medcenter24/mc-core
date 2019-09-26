@@ -18,25 +18,41 @@
 
 namespace medcenter24\mcCore\App;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\DoctorServiceService;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
 
 class DoctorSurvey extends Model
 {
     use SoftDeletes;
     use DoctorTrait;
+    use ServiceLocatorTrait;
 
     protected $fillable = ['title', 'description', 'created_by', 'surveable_id', 'surveable_type'];
     protected $visible = ['title', 'description'];
 
-    public function surveable()
+    /**
+     * @return MorphTo
+     */
+    public function surveable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function creator()
+    /**
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function isDoctor(): bool
+    {
+        return $this->getServiceLocator()->get(DoctorServiceService::class)->isDoctor($this->created_by);
     }
 }

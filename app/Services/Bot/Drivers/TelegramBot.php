@@ -20,13 +20,13 @@ namespace medcenter24\mcCore\App\Services\Bot\Drivers;
 
 
 use Telegram\Bot\Api;
-use Telegram\Bot\Objects\Message;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class TelegramBot extends AbstractBotDriver
 {
     /**
      * @return Api
-     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     * @throws TelegramSDKException
      */
     protected function getTelegram()
     {
@@ -35,7 +35,7 @@ class TelegramBot extends AbstractBotDriver
 
     /**
      * @return array
-     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     * @throws TelegramSDKException
      */
     public function getBotInformation()
     {
@@ -53,7 +53,7 @@ class TelegramBot extends AbstractBotDriver
 
     /**
      * @return array
-     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     * @throws TelegramSDKException
      */
     public function getWebhookInformation()
     {
@@ -71,7 +71,7 @@ class TelegramBot extends AbstractBotDriver
     /**
      * @param array $settings
      * @return int|string
-     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     * @throws TelegramSDKException
      */
     public function sendTextMessage(array $settings = [])
     {
@@ -82,7 +82,7 @@ class TelegramBot extends AbstractBotDriver
     /**
      * @param array $conf
      * @return bool
-     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     * @throws TelegramSDKException
      */
     public function setWebhook(array $conf = [])
     {
@@ -91,7 +91,7 @@ class TelegramBot extends AbstractBotDriver
 
     /**
      * @return bool|mixed
-     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     * @throws TelegramSDKException
      */
     public function removeWebhook()
     {

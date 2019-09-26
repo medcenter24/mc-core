@@ -32,7 +32,7 @@ class EnvLogSlackWebhookUrlParam extends StringParam implements EnvParam
 
     public function defaultValue(): string
     {
-        return 'http://slack';
+        return '';
     }
 
 }

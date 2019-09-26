@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Services;
 
 
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\DoctorAccident;
@@ -51,6 +52,6 @@ class DoctorsService extends AbstractModelService
     public function hasAccess(Doctor $doctor, Accident $accident): bool
     {
         return $accident->getAttribute('caseable') instanceof DoctorAccident
-            && $accident->getAttribute('caseable')->getAttribute('doctor_id') === $doctor->getAttribute('id');
+            && (int)$accident->getAttribute('caseable')->getAttribute('doctor_id') === (int)$doctor->getAttribute('id');
     }
 }

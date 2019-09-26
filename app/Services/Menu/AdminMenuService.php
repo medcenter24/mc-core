@@ -68,11 +68,15 @@ class AdminMenuService extends MenuService
         ],
         4 => [
             'role' => 'admin',
-            'name' => 'content.telegram',
+            'name' => 'content.messengers',
             'submenu' => [
                 '10' => [
-                    'name' => 'content.preview',
+                    'name' => 'content.telegram',
                     'slug' => 'admin/preview/telegram',
+                ],
+                '20' => [
+                    'name' => 'content.slack',
+                    'slug' => 'admin/preview/slack',
                 ],
             ]
         ],

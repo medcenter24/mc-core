@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\City;
 use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
@@ -61,6 +62,7 @@ class DoctorsController extends ApiController
             'description' => $request->json('description', ''),
             'ref_key' => $request->json('refKey', ''),
             'medical_board_num' => $request->json('medicalBoardNumber', ''),
+            'user_id' => (int)$request->json('userId', 0),
         ]);
         $transformer = new DoctorTransformer();
         return $this->response->created(null, $transformer->transform($doctor));

@@ -13,3 +13,4 @@ Homestead.yaml
 yarn.lock
 .composer.lock
 /composer.lock
+package-lock.json

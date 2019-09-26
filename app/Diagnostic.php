@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\DoctorServiceService;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
 
 /**
  * Kinds of the diagnostics that should be done by the Doctor through the Accident
@@ -35,6 +37,7 @@ class Diagnostic extends Model
 {
     use SoftDeletes;
     use DoctorTrait;
+    use ServiceLocatorTrait;
 
     protected $fillable = ['title', 'description', 'diagnostic_category_id', 'disease_code', 'created_by'];
     protected $visible = ['title', 'description', 'diagnostic_category_id', 'disease_code'];
@@ -52,5 +55,10 @@ class Diagnostic extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function isDoctor(): bool
+    {
+        return $this->getServiceLocator()->get(DoctorServiceService::class)->isDoctor($this->created_by);
     }
 }

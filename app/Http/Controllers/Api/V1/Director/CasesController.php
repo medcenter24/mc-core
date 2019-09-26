@@ -41,6 +41,7 @@ use medcenter24\mcCore\App\Services\ReferralNumberService;
 use medcenter24\mcCore\App\Services\RoleService;
 use medcenter24\mcCore\App\Services\Scenario\ScenarioService;
 use medcenter24\mcCore\App\Services\Scenario\StoryService;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
 use medcenter24\mcCore\App\Transformers\AccidentStatusHistoryTransformer;
 use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
@@ -67,6 +68,8 @@ use League\Fractal\TransformerAbstract;
 
 class CasesController extends ApiController
 {
+    use ServiceLocatorTrait;
+
     /**
      * Datatable model
      * @return string
@@ -180,10 +183,11 @@ class CasesController extends ApiController
         return $this->response->collection($accident->checkpoints, new AccidentCheckpointTransformer());
     }
 
-    public function documents($id, DocumentService $documentService): Response
+    public function documents($id): Response
     {
         $accident = Accident::findOrFail($id);
-        return $this->response->collection($documentService->getDocuments($this->user(), $accident, 'accident'), new DocumentTransformer());
+        $documents = $this->getServiceLocator()->get(DocumentService::class)->getDocuments($this->user(), $accident, 'accident');
+        return $this->response->collection($documents, new DocumentTransformer());
     }
 
     public function createDocuments($id, Request $request, DocumentService $documentService): Response

@@ -75,8 +75,6 @@ class ModelService
                 if ($method->hasReturnType()) {
                     $type = $method->getReturnType();
                     if (is_subclass_of($type->getName(), Relation::class, true)) {
-                        // var_dump($method, $method->invoke($obj),1);die;
-                        // var_dump($method, $obj->createdBy()->getRelated());die;
                         /** @var Relation $relation */
                         $relation = $method->invoke($obj);
                         $relations[] = [

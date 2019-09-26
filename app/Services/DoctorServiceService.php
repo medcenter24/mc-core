@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Services;
 
 
+use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\DoctorService;
 
 class DoctorServiceService extends AbstractModelService
@@ -37,5 +38,10 @@ class DoctorServiceService extends AbstractModelService
             'created_by' => 0,
             'disease_code' => '',
         ];
+    }
+
+    public function isDoctor(int $userId): bool
+    {
+        return Doctor::where('user_id', $userId)->count() > 0;
     }
 }

@@ -20,17 +20,22 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\AccidentStatusHistory;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\UserService;
 use medcenter24\mcCore\App\User;
 use League\Fractal\TransformerAbstract;
 
 class AccidentStatusHistoryTransformer extends TransformerAbstract
 {
+    use ServiceLocatorTrait;
+
     /**
      * @param AccidentStatusHistory $history
      * @return array
-     * @throws \ErrorException
+     * @throws InconsistentDataException
      */
     public function transform(AccidentStatusHistory $history)
     {
@@ -43,8 +48,12 @@ class AccidentStatusHistoryTransformer extends TransformerAbstract
             'accident_status_id' => $history->accident_status_id,
             'status' => $history->accidentStatus->title,
             'commentary' => $history->commentary,
-            'created_at' => $history->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
-            'updated_at' => $history->updated_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
+            'created_at' => $history->created_at->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')),
+            'updated_at' => $history->updated_at->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')),
         ];
     }
 }

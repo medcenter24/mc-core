@@ -23,12 +23,12 @@ trait DoctorTrait
 {
     private $isDoctor = false;
 
-    public function markAsDoctor()
+    public function markAsDoctor(): void
     {
         $this->isDoctor = true;
     }
 
-    public function isDoctor()
+    public function isDoctor(): bool
     {
         return $this->isDoctor;
     }

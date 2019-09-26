@@ -41,4 +41,17 @@ class UserService extends Configurable
     {
         return !empty($password);
     }
+
+    /**
+     * Active user timezone or default timezone
+     * @return string
+     */
+    public function getTimezone(): string
+    {
+        $timezone = 'UTC';
+        if (auth()->check() && auth()->user()->timezone) {
+            $timezone = auth()->user()->timezone;
+        }
+        return $timezone;
+    }
 }

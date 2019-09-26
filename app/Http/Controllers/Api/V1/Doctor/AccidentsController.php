@@ -21,20 +21,17 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\AccidentType;
 use medcenter24\mcCore\App\Diagnostic;
-use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\DoctorAccident;
 use medcenter24\mcCore\App\DoctorService;
 use medcenter24\mcCore\App\DoctorSurvey;
-use medcenter24\mcCore\App\Document;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use medcenter24\mcCore\App\Services\DoctorsService;
 use medcenter24\mcCore\App\Services\DocumentService;
-use medcenter24\mcCore\App\Transformers\AccidentTransformer;
 use medcenter24\mcCore\App\Transformers\AccidentTypeTransformer;
 use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
 use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
@@ -68,11 +65,11 @@ class AccidentsController extends ApiController
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
-        $sort = explode('|', $request->get('sort', 'created_at|desc'));
+        $sort = explode('|', $request->get('sort', 'createdAt|desc'));
         switch ($sort[0]) {
             case 'status':
                 $sort[0] = 'accident_statuses.title';
@@ -80,10 +77,10 @@ class AccidentsController extends ApiController
             case 'city':
                 $sort[0] = 'cities.title';
                 break;
-            case 'ref_num':
+            case 'refNum':
                 $sort[0] = 'accidents.ref_num';
                 break;
-            case 'created_at':
+            case 'createdAt':
             default:
                 $sort[0] = 'accidents.created_at';
         }
@@ -91,8 +88,10 @@ class AccidentsController extends ApiController
         $accidents = Accident::select('accidents.*')
             ->join('accident_statuses', 'accidents.accident_status_id', '=', 'accident_statuses.id')
             ->leftJoin('cities', 'accidents.city_id', '=', 'cities.id')
+            ->leftJoin('doctor_accidents', 'accidents.caseable_id', '=', 'doctor_accidents.id')
+            // doctors accidents only
             ->where('accidents.caseable_type', DoctorAccident::class)
-            ->whereIn('accidents.caseable_id', DoctorAccident::where('doctor_id', $this->getDoctor()->id)->pluck('id')->toArray())
+            // doctors status
             ->where('accident_statuses.type', AccidentStatusesService::TYPE_DOCTOR)
             ->whereIn('accident_statuses.title', [
                 AccidentStatusesService::STATUS_IN_PROGRESS,
@@ -107,16 +106,21 @@ class AccidentsController extends ApiController
 
     /**
      * Closed or accident which were sent which can't be changed
-     *
-     * @param  int  $id
+     * @param $id
      * @param DoctorsService $doctorService
+     * @param AccidentService $accidentService
      * @param AccidentStatusesService $accidentStatusesService
-     *
-     * @return \Illuminate\Http\Response
+     * @return Response
+     * @throws InconsistentDataException
      */
-    public function show($id, DoctorsService $doctorService, AccidentStatusesService $accidentStatusesService)
+    public function show(
+        int $id,
+        DoctorsService $doctorService,
+        AccidentService $accidentService,
+        AccidentStatusesService $accidentStatusesService
+    ): Response
     {
-        $accident = Accident::find($id);
+        $accident = Accident::findOrFail($id);
         if (!$accident) {
             $this->response->errorNotFound();
         }
@@ -125,11 +129,15 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
-        $accidentStatusesService->moveDoctorAccidentToInProgressState($accident, 'Updated by doctor');
+        $accidentService->setStatus($accident, $accidentStatusesService->getDoctorInProgressStatus());
         return $this->response->item($accident, new DoctorAccidentTransformer());
     }
 
-    public function patient($id)
+    /**
+     * @param $id
+     * @return Response
+     */
+    public function patient($id): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
@@ -143,6 +151,14 @@ class AccidentsController extends ApiController
         return $this->response->item($patient, new PatientTransformer());
     }
 
+    /**
+     * @param $id
+     * @param Request $request
+     * @param AccidentService $accidentService
+     * @param AccidentStatusesService $statusesService
+     * @return Response
+     * @throws InconsistentDataException
+     */
     public function updatePatient($id, Request $request, AccidentService $accidentService, AccidentStatusesService $statusesService): Response
     {
         $accident = Accident::find($id);
@@ -268,17 +284,25 @@ class AccidentsController extends ApiController
         return $this->response->accepted(null, $transformer->transform($service));
     }
 
-    public function type($id)
+    public function type($id): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
         }
 
-        return $this->response->item($accident->type, new AccidentTypeTransformer());
+        $accidentType = $accident->type;
+        if (!$accidentType) {
+            $accidentType = new AccidentType([
+                'title' => 'Not Set',
+                'description' => 'Accident type was not selected',
+            ]);
+        }
+
+        return $this->response->item($accidentType, new AccidentTypeTransformer());
     }
 
-    public function diagnostics($id)
+    public function diagnostics($id): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
@@ -407,11 +431,11 @@ class AccidentsController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): Response
     {
         \Log::info('Request to update accident', ['id' => $id, 'data' => $request->toArray()]);
         $accident = Accident::find($id);
@@ -420,12 +444,12 @@ class AccidentsController extends ApiController
         }
 
         if (
-            !$accident->accidentStatus->type == AccidentStatusesService::TYPE_DOCTOR
+            !$accident->accidentStatus->type === AccidentStatusesService::TYPE_DOCTOR
             || (
                 !in_array($accident->accidentStatus->title, [
                     AccidentStatusesService::STATUS_ASSIGNED,
                     AccidentStatusesService::STATUS_IN_PROGRESS,
-                ])
+                ], false)
             )) {
 
             $this->response->errorMethodNotAllowed(trans('You cant\'t change this case'));
@@ -459,7 +483,7 @@ class AccidentsController extends ApiController
      * @return \Dingo\Api\Http\Response
      * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded
      */
-    public function createDocument($id, Request $request, DocumentService $documentService)
+    public function createDocument($id, Request $request, DocumentService $documentService): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
@@ -473,25 +497,44 @@ class AccidentsController extends ApiController
         return $this->response->item($document, new DocumentTransformer());
     }
 
-    public function documents($id, DocumentService $documentService)
+    /**
+     * @param $id
+     * @param DocumentService $documentService
+     * @return Response
+     */
+    public function documents($id, DocumentService $documentService): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
         }
 
-        return $this->response->collection($documentService->getDocuments($this->user(), $accident), new DocumentTransformer());
+        return $this->response->collection(
+            $documentService->getDocuments($this->user(), $accident, 'accident'),
+            new DocumentTransformer()
+        );
     }
 
-    public function reject($id, Request $request, AccidentStatusesService $accidentStatusesService)
+    /**
+     * @param $id
+     * @param Request $request
+     * @param AccidentStatusesService $accidentStatusesService
+     * @param AccidentService $accidentService
+     * @return Response
+     * @throws InconsistentDataException
+     */
+    public function reject(
+        $id,
+        Request $request,
+        AccidentStatusesService $accidentStatusesService,
+        AccidentService $accidentService): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
         }
 
-        $accidentStatusesService->rejectDoctorAccident($accident, $request->get('comment', 'Updated by doctor without commentary'));
-
+        $accidentService->setStatus($accident, $accidentStatusesService->getDoctorRejectedStatus());
         return $this->response->noContent();
     }
 
@@ -518,7 +561,7 @@ class AccidentsController extends ApiController
                     ['accidentId' => $accidentId, 'userId' => $this->user()->id]);
                 continue;
             }
-            $status = $accidentStatusesService->getSentDoctorStatus();
+            $status = $accidentStatusesService->getDoctorSentStatus();
             $accidentService->setStatus($accident, $status, 'Sent by doctor');
         }
 

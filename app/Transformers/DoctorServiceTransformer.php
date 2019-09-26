@@ -24,14 +24,15 @@ use League\Fractal\TransformerAbstract;
 
 class DoctorServiceTransformer extends TransformerAbstract
 {
-    public function transform(DoctorService $service)
+    public function transform(DoctorService $service): array
     {
+        $type = $service->created_by ? 'director' : 'system';
         return [
             'id' => $service->id,
             'title' => $service->title,
             'description' => $service->description,
             'diseaseCode' => $service->disease_code,
-            'type' => $service->isDoctor() ? 'doctor' : ($service->created_by ? 'director' : 'system')
+            'type' => $service->isDoctor() ? 'doctor' : $type,
         ];
     }
 }

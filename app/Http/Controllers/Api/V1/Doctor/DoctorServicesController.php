@@ -18,13 +18,17 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\DoctorService;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Transformers\DoctorServiceTransformer;
 
 class DoctorServicesController extends ApiController
 {
-    public function index()
+    /**
+     * @return Response
+     */
+    public function index(): Response
     {
         $services = DoctorService::orderBy('title', 'desc')->get();
         return $this->response->collection($services, new DoctorServiceTransformer());

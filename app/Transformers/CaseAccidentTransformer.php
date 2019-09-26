@@ -21,6 +21,8 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use medcenter24\mcCore\App\Accident;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\UserService;
 
 /**
  * Used for the output into the data table
@@ -29,6 +31,8 @@ use League\Fractal\TransformerAbstract;
  */
 class CaseAccidentTransformer extends TransformerAbstract
 {
+    use ServiceLocatorTrait;
+
     /**
      * @param Accident $accident
      * @return array
@@ -43,7 +47,10 @@ class CaseAccidentTransformer extends TransformerAbstract
             'refNum' => $accident->ref_num ,
             'assistantRefNum' => $accident->assistant_ref_num,
             'caseType' => $accident->caseable_type,
-            'createdAt' => $accident->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')), // formatting should be provided by the gui part ->format(config('date.actionFormat')),
+            'createdAt' => $accident->created_at
+                ->setTimezone($this->getServiceLocator()
+                    ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')), // formatting should be provided by the gui part ->format(config('date.actionFormat')),
             'checkpoints' => $accident->checkpoints->implode('title', ', '),
             'status' => $accident->accidentStatus ? $accident->accidentStatus->title : '',
             'city' => $accident->city_id && $accident->city ? $accident->city->title : '',

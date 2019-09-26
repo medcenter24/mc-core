@@ -21,15 +21,24 @@ namespace medcenter24\mcCore\App\Transformers\statistics;
 
 use medcenter24\mcCore\App\Accident;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\UserService;
 
 class CalendarEventTransformer extends TransformerAbstract
 {
-    public function transform(Accident $accident) {
+    use ServiceLocatorTrait;
+
+    public function transform(Accident $accident): array
+    {
         return [
             'id' => $accident->id,
             'title' => $accident->ref_num,
-            'start' => $accident->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
-            'end' => $accident->visited_at ? $accident->visited_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')) : '',
+            'start' => $accident->created_at->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')),
+            'end' => $accident->visited_at ? $accident->visited_at->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')) : '',
             'status' => $accident->accidentStatus ? $accident->accidentStatus->title : '',
         ];
     }

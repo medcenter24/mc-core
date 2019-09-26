@@ -30,8 +30,9 @@ use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Patient;
 use medcenter24\mcCore\App\Payment;
 use medcenter24\mcCore\App\Services\AccidentService;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use medcenter24\mcCore\App\Services\AccidentTypeService;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\UserService;
 use medcenter24\mcCore\App\Upload;
 use medcenter24\mcCore\App\User;
 use Carbon\Carbon;
@@ -45,6 +46,7 @@ class CasesControllerUpdateActionTest extends TestCase
     use DatabaseMigrations;
     use JwtHeaders;
     use LoggedUser;
+    use ServiceLocatorTrait;
 
     public function testUpdateWithoutData()
     {
@@ -178,14 +180,18 @@ class CasesControllerUpdateActionTest extends TestCase
                     'address' => '',
                     'assistantId' => '',
                     'assistantRefNum' => '',
-                    'caseableId' => $accident->caseable_id . "",
-                    'caseableType' => $accident->caseable_type . "",
+                    'caseableId' => (string) $accident->caseable_id,
+                    'caseableType' => (string) $accident->caseable_type,
                     'cityId' => '',
                     'closedAt' => $accident->closed_at ?: null,
                     'contacts' => '',
-                    'createdAt' => $accident->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
-                    'createdBy' => $accident->created_by . "",
-                    'deletedAt' => $accident->deleted_at ? $accident->deleted_at->setTimezone($this->getUser()->timezone)->format(config('date.systemFormat')) : null,
+                    'createdAt' => $accident->created_at->setTimezone($this->getServiceLocator()
+                        ->get(UserService::class)->getTimezone())
+                        ->format(config('date.systemFormat')),
+                    'createdBy' => (string) $accident->created_by,
+                    'deletedAt' => $accident->deleted_at ? $accident->deleted_at->setTimezone($this->getServiceLocator()
+                        ->get(UserService::class)->getTimezone())
+                        ->format(config('date.systemFormat')) : null,
                     'formReportId' => '',
                     'handlingTime' => null,
                     'id' => $accident->id,

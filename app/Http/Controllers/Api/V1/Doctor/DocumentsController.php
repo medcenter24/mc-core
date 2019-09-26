@@ -18,9 +18,15 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Document;
+use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\DoctorDocumentRequest;
 use medcenter24\mcCore\App\Services\DocumentService;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Transformers\DocumentTransformer;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * The main difference from the directors controller is that doctor can delete only his documents
@@ -31,7 +37,9 @@ use medcenter24\mcCore\App\Services\DocumentService;
  */
 class DocumentsController extends ApiController
 {
-    private function checkAccess(Document $document)
+    use ServiceLocatorTrait;
+
+    private function checkAccess(Document $document): void
     {
         if ($document->created_by != $this->user()->id) {
             $this->response->errorForbidden();
@@ -41,9 +49,9 @@ class DocumentsController extends ApiController
     /**
      * Upload
      * @param $id
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return BinaryFileResponse
      */
-    public function show($id)
+    public function show($id): BinaryFileResponse
     {
         $document = Document::findOrFail($id);
         if (!$document->hasMedia(DocumentService::CASES_FOLDERS)) {
@@ -53,12 +61,33 @@ class DocumentsController extends ApiController
         return response()->download($media->getPath());
     }
 
-    public function destroy($id)
+    /**
+     * @param $id
+     * @return Response
+     */
+    public function destroy($id): Response
     {
         $document = Document::findOrFail($id);
         $this->checkAccess($document);
         $document->delete();
         \Log::info('Document deleted', [$document, $this->user()]);
         return $this->response->noContent();
+    }
+
+    /**
+     * @param int $id
+     * @param DoctorDocumentRequest $request
+     * @return Response
+     */
+    public function update(int $id, DoctorDocumentRequest $request): Response
+    {
+        $document = Document::findOrFail($id);
+        try {
+            $this->getServiceLocator()->get(DocumentService::class)
+                ->changeDocType($document, $request->json('type', DocumentService::TYPE_PASSPORT));
+        }catch (CommonException $e) {
+            $this->response->errorForbidden();
+        }
+        return $this->response->item($document, new DocumentTransformer());
     }
 }

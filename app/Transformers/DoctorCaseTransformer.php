@@ -22,15 +22,24 @@ namespace medcenter24\mcCore\App\Transformers;
 use medcenter24\mcCore\App\DoctorAccident;
 use InvalidArgumentException;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\UserService;
 
 class DoctorCaseTransformer extends TransformerAbstract
 {
-    public function transform(DoctorAccident $doctorAccident)
+    use ServiceLocatorTrait;
+
+    /**
+     * @param DoctorAccident $doctorAccident
+     * @return array
+     */
+    public function transform(DoctorAccident $doctorAccident): array
     {
         try {
             $visitTime = $doctorAccident->visit_time
                 ? $doctorAccident->visit_time
-                    ->setTimezone(auth()->user()->timezone)
+                    ->setTimezone($this->getServiceLocator()
+                        ->get(UserService::class)->getTimezone())
                     ->format(config('date.systemFormat'))
                 : '';
         } catch (InvalidArgumentException $e) {
@@ -41,7 +50,9 @@ class DoctorCaseTransformer extends TransformerAbstract
             'doctorId' => $doctorAccident->doctor_id,
             'city_id' => $doctorAccident->accident->city_id,
             // api uses only system format if we need to convert it - do it at the frontend
-            'createdAt' => $doctorAccident->created_at->setTimezone(auth()->user()->timezone)->format(config('date.systemFormat')),
+            'createdAt' => $doctorAccident->created_at->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')),
             'visitTime' => $visitTime,
             'recommendation' => $doctorAccident->recommendation,
             'investigation' => $doctorAccident->investigation,

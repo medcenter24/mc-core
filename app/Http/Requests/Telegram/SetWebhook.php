@@ -29,7 +29,7 @@ class SetWebhook extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Roles::hasRole(auth()->user(), Role::ROLE_ADMIN);
     }
@@ -39,7 +39,7 @@ class SetWebhook extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'webhook' => 'required|url'

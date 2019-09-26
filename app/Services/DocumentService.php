@@ -18,12 +18,14 @@
 
 namespace medcenter24\mcCore\App\Services;
 
-
-
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Document;
+use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\User;
 use Illuminate\Support\Collection;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
 
 class DocumentService extends AbstractModelService
 {
@@ -52,6 +54,9 @@ class DocumentService extends AbstractModelService
      * @param $file
      * @param User $user
      * @return Document
+     * @throws DiskDoesNotExist
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
      */
     public function createDocumentFromFile($file, User $user): Document
     {
@@ -71,6 +76,9 @@ class DocumentService extends AbstractModelService
      * @param $files
      * @param User $user
      * @return Collection
+     * @throws DiskDoesNotExist
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
      */
     public function createDocumentsFromFiles($files, User $user): Collection
     {
@@ -108,11 +116,11 @@ class DocumentService extends AbstractModelService
     /**
      * @param Document $document
      * @param User $user
-     * @param RoleService $roleService
      * @return bool
      */
-    public function checkAccess(Document $document, User $user, RoleService $roleService): bool
+    public function checkAccess(Document $document, User $user): bool
     {
+        $roleService = $this->getServiceLocator()->get(RoleService::class);
         return $roleService->hasRole($user, 'director')
             || ($roleService->hasRole($user, 'doctor') && $document->created_by == $user->id);
     }
@@ -123,7 +131,7 @@ class DocumentService extends AbstractModelService
      * @param string $type
      * @return Collection
      */
-    public function getAccidentDocuments(Accident $accident, $type = '')
+    public function getAccidentDocuments(Accident $accident, $type = ''): Collection
     {
         $res = new Collection();
         if ($accident->caseable && $accident->caseable->documents) {
@@ -141,9 +149,26 @@ class DocumentService extends AbstractModelService
      * @param Accident $accident
      * @return Collection
      */
-    public function getOrderedAccidentDocuments(Accident $accident)
+    public function getOrderedAccidentDocuments(Accident $accident): Collection
     {
         return $this->getAccidentDocuments($accident, DocumentService::TYPE_INSURANCE)
             ->merge($this->getAccidentDocuments($accident, DocumentService::TYPE_PASSPORT));
+    }
+
+    /**
+     * Changing document type
+     * @param Document $document
+     * @param string $type
+     * @throws CommonException
+     */
+    public function changeDocType(Document $document, string $type): void
+    {
+        if (!$this->checkAccess($document, auth()->user())) {
+            throw new CommonException('Access denied');
+        }
+        $document->type = $type;
+        $document->save();
+
+        \Log::info('Document updated', ['documentId' => $document->id, 'type' => $type]);
     }
 }

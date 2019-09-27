@@ -61,11 +61,11 @@ class AdminMenuService extends MenuService
                 ],
             ],
         ],
-        3 => [
+        /*3 => [
             'role' => 'admin',
             'name' => 'content.translate',
             'slug' => 'admin/translation',
-        ],
+        ],*/
         4 => [
             'role' => 'admin',
             'name' => 'content.messengers',

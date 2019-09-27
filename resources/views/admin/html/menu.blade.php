@@ -20,7 +20,7 @@
 
                 <ul class="navbar-nav mr-2">
                     <li class="nav-item">
-                        <a href="{{ url('profile') }}"
+                        <a href="{{ url('/admin') }}"
                            class="nav-link"
                            title="{{ trans('content.profile') }}">{{ auth()->user()->name }}</a>
                     </li>

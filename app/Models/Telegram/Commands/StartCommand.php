@@ -40,7 +40,7 @@ class StartCommand extends Command
         $user = $this->getUpdate()->getMessage()->getFrom();
         \App::setLocale($user->languageCode);
         $this->description = trans($this->description);
-        // \Log::info('i', [$user->id, $user->username, $user->languageCode, $user->first_name, $user->last_name]);
+        \Log::info('telegram user info', [$user->id, $user->username, $user->languageCode, $user->first_name, $user->last_name]);
 
         $this->replyWithChatAction(['action' => Actions::TYPING]);
         $telegramUser = TelegramUser::where('telegram_id', $user->id)->first();

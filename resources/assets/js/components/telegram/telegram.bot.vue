@@ -63,7 +63,6 @@
                     </div>
                 </div>
                 <button class="btn btn-info" v-on:click="setWebhook()">Set new webhook</button>
-                <button class="btn btn-default" v-on:click="restoreWebhook()">Restore default webhook</button>
             </div>
             <div class="col-6">
                 <h3>Information from Telegram about Webhook</h3>
@@ -149,7 +148,6 @@
             },
             getWebhookInfo () {
                 TelegramBotProvider.getWebhookInfo().then(response => {
-                    console.log(response);
                     this.webhookInfoUrl = response.data.webhookUrl;
                     this.webhookInfoCert = response.data.certificate;
                     this.webhookInfoPendingCount = response.data.pendingUpdateCount;
@@ -157,16 +155,6 @@
                     this.webhookLastError = response.data.lastErrorDate;
                     this.webhookAllowedUpdates = response.data.allowedUpdates;
                 });
-            },
-            restoreWebhook() {
-                TelegramBotProvider.restoreWebhook().then(response => {
-                    if (response.data.status) {
-                        this.$refs.webhookAlert.success({message: 'Webhook has been restored to default'});
-                    } else {
-                        this.$refs.webhookAlert.warning({message: 'Response status is not correct, needs to be investigated'});
-                    }
-                    this.getWebhookInfo();
-                }).catch(err => this.$refs.webhookAlert.httpError(err));
             },
             deleteWebhook() {
                 TelegramBotProvider.deleteWebhook().then(response => {

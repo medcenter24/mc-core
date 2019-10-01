@@ -40,9 +40,5 @@
         deleteWebhook () {
             return Vue.axios.delete(this.getUrl('webhook/1'));
         },
-
-        restoreWebhook () {
-            return Vue.axios.post(this.getUrl('webhook'));
-        }
     }
 </script>

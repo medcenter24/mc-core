@@ -19,6 +19,8 @@
 namespace medcenter24\mcCore\App\Http\Controllers\Admin\Telegram;
 
 
+use ErrorException;
+use Illuminate\Http\JsonResponse;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Http\Requests\Telegram\SendMessage;
 use medcenter24\mcCore\App\Services\Bot\BotInstance;
@@ -29,10 +31,10 @@ class MessageController extends AdminController
     /**
      * @param SendMessage $request
      * @param BotInstance $botInstance
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \ErrorException
+     * @return JsonResponse
+     * @throws ErrorException
      */
-    public function send(SendMessage $request, BotInstance $botInstance)
+    public function send(SendMessage $request, BotInstance $botInstance): JsonResponse
     {
         /** @see \Telegram\Bot\Objects\Message $response */
         $messageId = $botInstance->getBot('telegram')->sendTextMessage([

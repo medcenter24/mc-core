@@ -19,6 +19,8 @@
 namespace medcenter24\mcCore\App\Http\Controllers\Telegram;
 
 
+use Illuminate\Http\Response;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\Controller;
 use medcenter24\mcCore\App\Models\Telegram\Replies\DoctorCasePickupReply;
 use medcenter24\mcCore\App\Models\Telegram\Replies\TelegramInviteReply;
@@ -29,10 +31,10 @@ class TelegramApiController extends Controller
 {
     /**
      * Callback for the telegrams requests
-     *
-     * @return string
+     * @return Response
+     * @throws InconsistentDataException
      */
-    public function index(): string
+    public function index(): Response
     {
         $updates = Telegram::commandsHandler(true);
 
@@ -41,6 +43,6 @@ class TelegramApiController extends Controller
         new DoctorCasePickupReply($updates);
 
         Log::info('Turn Commands Handler on', ['updates' => $updates]);
-        return 'ok';
+        return response('ok');
     }
 }

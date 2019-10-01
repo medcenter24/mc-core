@@ -41,11 +41,6 @@ class TelegramInviteReply
     private $message;
 
     /**
-     * @var InviteService
-     */
-    private $inviteService;
-
-    /**
      * @var null|Update
      */
     private $update;
@@ -68,8 +63,7 @@ class TelegramInviteReply
     {
         $token = $this->inviteSeeker();
         if ($token) {
-            if ($this->inviteService->isValidInvite($token)) {
-                /** @var InviteService $invite */
+            if ($this->getServiceLocator()->get(InviteService::class)->isValidInvite($token)) {
                 $invite = $this->getServiceLocator()->get(InviteService::class)->getInviteByToken($token);
                 $user = $invite->user;
                 $telegramUser = TelegramUser::create([

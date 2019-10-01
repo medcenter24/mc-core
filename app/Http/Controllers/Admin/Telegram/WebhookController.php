@@ -21,6 +21,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Admin\Telegram;
 
 use ErrorException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Http\Requests\Telegram\SetWebhook;
 use medcenter24\mcCore\App\Services\Bot\BotInstance;
@@ -62,6 +63,9 @@ class WebhookController extends AdminController
         try {
             $telegram = $botInstance->getBot('telegram');
             $response = $telegram->setWebhook($conf);
+            if (App::environment('production')) {
+                $response['webhookUrl'] = 'hidden';
+            }
         } catch (TelegramSDKException $e) {
             return response()->json(['message' => $e->getMessage() . '('.$conf['url'].')'], 500);
         }
@@ -70,36 +74,11 @@ class WebhookController extends AdminController
 
     /**
      * @param BotInstance $botInstance
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \ErrorException
+     * @return JsonResponse
+     * @throws ErrorException
      */
-    public function destroy (BotInstance $botInstance)
+    public function destroy (BotInstance $botInstance): JsonResponse
     {
         return response()->json(['status' => $botInstance->getBot('telegram')->removeWebhook()]);
     }
-
-    /**
-     * set default webhook in order to the Telegrams configuration file
-     * @param BotInstance $botInstance
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \ErrorException
-     */
-    public function store (BotInstance $botInstance)
-    {
-        $conf = [
-            'url' => env('TELEGRAM_WEBHOOK_URL')
-        ];
-        $cert = env('TELEGRAM_CERTIFICATE_PATH', false);
-        if ($cert) {
-            $conf['certificate'] = $cert;
-        }
-        try {
-            $telegram = $botInstance->getBot('telegram');
-            $response = $telegram->setWebhook($conf);
-        } catch (TelegramSDKException $e) {
-            return response()->json(['message' => $e->getMessage() . '('.$conf['url'].')'], 500);
-        }
-        return response()->json(['status' => $response]);
-    }
-
 }

@@ -40,6 +40,9 @@ class WebhookController extends AdminController
     {
         $telegram = $botInstance->getBot('telegram');
         $info = $telegram->getWebhookInformation();
+        if (App::environment('production')) {
+            $response['webhookUrl'] = 'hidden';
+        }
         return response()->json($info);
     }
 
@@ -63,9 +66,6 @@ class WebhookController extends AdminController
         try {
             $telegram = $botInstance->getBot('telegram');
             $response = $telegram->setWebhook($conf);
-            if (App::environment('production')) {
-                $response['webhookUrl'] = 'hidden';
-            }
         } catch (TelegramSDKException $e) {
             return response()->json(['message' => $e->getMessage() . '('.$conf['url'].')'], 500);
         }

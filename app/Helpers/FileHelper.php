@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Helpers;
 
 
 use FilesystemIterator;
+use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -110,30 +111,50 @@ class FileHelper
     }
 
     /**
+     * Checks that file match excluded masks
+     * @param SplFileInfo $fileInfo
+     * @param array $rules
+     * @return bool
+     */
+    private static function isExcluded(SplFileInfo $fileInfo, array $rules): bool
+    {
+        $excluded = false;
+        foreach($rules as $key => $rule) {
+            if ($key === 'startsWith') {
+                $fileName = $fileInfo->getFilename();
+                $excluded = Str::startsWith($fileName, $rule);
+            }
+        }
+        return $excluded;
+    }
+
+    /**
      * Calculates size
      * @param string $path
      * @param array $extensions
+     * @param array $excludeRules
+     *  'startsWith' - the files that starts with string
      * @return int
      */
-    public static function getSize(string $path, array $extensions = []): int
+    public static function getSize(string $path, array $extensions = [], $excludeRules = []): int
     {
         $bytes = 0;
         self::mapFiles($path, static function (SplFileInfo $fileInfo) use (&$bytes) {
             $bytes += $fileInfo->getSize();
-        }, $extensions);
+        }, $extensions, $excludeRules);
         return $bytes;
     }
 
-    public static function filesCount(string $path, array $extensions = []): int
+    public static function filesCount(string $path, array $extensions = [], $excludeRules = []): int
     {
         $count = 0;
-        self::mapFiles($path, static function () use (&$count) {
+        self::mapFiles($path, static function (SplFileInfo $fileInfo) use (&$count) {
             $count++;
-        }, $extensions);
+        }, $extensions, $excludeRules);
         return $count;
     }
 
-    public static function mapFiles(string $path, $closure, array $extensions = []): void
+    public static function mapFiles(string $path, $closure, array $extensions = [], $excludeRules = []): void
     {
         $path = realpath($path);
         if ($path !== false && $path !== '' && file_exists($path)) {
@@ -141,20 +162,29 @@ class FileHelper
                 /** @var SplFileInfo $object */
                 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path,
                     FilesystemIterator::SKIP_DOTS)) as $object) {
-
-                    $ext = $object->getExtension();
-                    if (!count($extensions) || in_array($ext, $extensions, false)) {
+                    if (
+                        static::isExpectedExtension($object, $extensions)
+                        && !static::isExcluded($object, $excludeRules)
+                    ) {
                         $closure($object);
                     }
                 }
             } else {
                 $object = new SplFileInfo($path);
-                $ext = $object->getExtension();
-                if (!count($extensions) || in_array($ext, $extensions, false)) {
+                if (
+                    static::isExpectedExtension($object, $extensions)
+                    && !static::isExcluded($object, $excludeRules)
+                ) {
                     $closure($object);
                 }
             }
         }
+    }
+
+    private static function isExpectedExtension(SplFileInfo $fileInfo, array $extensions): bool
+    {
+        $ext = $fileInfo->getExtension();
+        return !count($extensions) || in_array($ext, $extensions, false);
     }
 
     /**

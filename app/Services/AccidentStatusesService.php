@@ -37,6 +37,7 @@ class AccidentStatusesService extends AbstractModelService
     public const STATUS_PAID = 'paid';
     public const STATUS_REJECT = 'reject';
     public const STATUS_CLOSED = 'closed';
+    public const STATUS_IMPORTED = 'imported';
 
     public const STATUS_HOSPITAL_GUARANTEE = 'hospital_guarantee';
     public const STATUS_HOSPITAL_INVOICE = 'hospital_invoice';
@@ -78,6 +79,18 @@ class AccidentStatusesService extends AbstractModelService
     {
         return $this->firstOrCreate([
             'title' => self::STATUS_CLOSED,
+            'type' => self::TYPE_ACCIDENT,
+        ]);
+    }
+
+    /**
+     * After the case import it would be great to check case and then close it
+     * @return Model
+     */
+    public function getImportedStatus(): Model
+    {
+        return $this->firstOrCreate([
+            'title' => self::STATUS_IMPORTED,
             'type' => self::TYPE_ACCIDENT,
         ]);
     }

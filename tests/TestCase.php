@@ -20,6 +20,9 @@ namespace medcenter24\mcCore\Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\TestResponse;
+use medcenter24\mcCore\App\Services\ServiceLocator;
+use PHPUnit\Framework\MockObject\MockObject;
+use Prophecy\Prophecy\ObjectProphecy;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -42,10 +45,21 @@ abstract class TestCase extends BaseTestCase
 
         if ($res->getStatusCode() === 500) {
             echo "\n <================ PRINT CONTENT ==============> \n";
-            print_r(json_decode($res->getContent()));
+            print_r(json_decode($res->getContent(), false, 512,JSON_THROW_ON_ERROR));
             echo "\n <================ / END PRINT CONTENT ==============> \n";
         }
 
         return $res;
+    }
+
+    protected function mockServiceLocator(array $services): ServiceLocator
+    {
+        /** @var ServiceLocator|ObjectProphecy $serviceLocator */
+        $serviceLocatorProphecy = $this->prophesize(ServiceLocator::class);
+        foreach ($services as $key => $service) {
+            $serviceLocatorProphecy->get($key)->willReturn($service);
+        }
+
+        return $serviceLocatorProphecy->reveal();
     }
 }

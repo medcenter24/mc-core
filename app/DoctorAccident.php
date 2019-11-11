@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use medcenter24\mcCore\App\Services\AccidentService;
-use medcenter24\mcCore\App\Services\ServiceLocator;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 
 /**
  * Accident that needs Doctor involvement

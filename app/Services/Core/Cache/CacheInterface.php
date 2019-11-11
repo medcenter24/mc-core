@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,27 +15,33 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+namespace medcenter24\mcCore\App\Services\Core\Cache;
 
 
-trait ServiceLocatorTrait
+interface CacheInterface
 {
-    private $serviceLocator;
-
-    public function getServiceLocator(): ServiceLocator
-    {
-        if (!$this->serviceLocator) {
-            $this->serviceLocator = ServiceLocator::instance();
-        }
-        return $this->serviceLocator;
-    }
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getCache(string $key);
 
     /**
-     * Allow to rewrite
-     * @param ServiceLocator $serviceLocator
+     * @param string $key
+     * @param $val
+     * @return void
      */
-    public function setServiceLocator(ServiceLocator $serviceLocator): void
-    {
-        $this->serviceLocator = $serviceLocator;
-    }
+    public function setCache(string $key, $val): void;
+
+    /**
+     * Checking the data exists
+     * @param string $key
+     * @return bool
+     */
+    public function hasCache(string $key): bool;
+
+    /**
+     * Drop the data
+     */
+    public function dropCache(): void;
 }

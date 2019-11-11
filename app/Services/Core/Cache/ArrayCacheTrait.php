@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,23 +15,45 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+namespace medcenter24\mcCore\App\Services\Core\Cache;
 
 
-class ServiceLocator
+trait ArrayCacheTrait
 {
-    private static $inst;
+    private $cache = [];
 
-    public static function instance(): self
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function getCache(string $key)
     {
-        if (!self::$inst) {
-            self::$inst = new self();
-        }
-        return self::$inst;
+        return $this->hasCache($key) ? $this->cache[$key] : null;
     }
 
-    public function get(string $name, array $parameters = [])
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function setCache(string $key, $value): void
     {
-        return resolve($name, ['options' => $parameters]);
+        $this->cache[$key] = $value;
+    }
+
+    /**
+     * Drop cached data
+     */
+    public function dropCache(): void
+    {
+        $this->cache = [];
+    }
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function hasCache(string $key): bool
+    {
+        return array_key_exists($key, $this->cache);
     }
 }

@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\App\Services;
 use Illuminate\Database\Query\Builder;
 use medcenter24\mcCore\App\Helpers\Arr;
 use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
 abstract class AbstractModelService
 {
@@ -60,7 +61,6 @@ abstract class AbstractModelService
      */
     public function create(array $data = []): Model
     {
-        //return $this->getClassName()::create($data);
         return call_user_func([$this->getClassName(), 'create'], $this->appendRequiredData($data));
     }
 

@@ -181,6 +181,22 @@ class FileHelper
         }
     }
 
+    /**
+     * Checking that the extension of the file is in the list of expected extensions
+     * @param string $path
+     * @param array $extensions
+     * @return bool
+     */
+    public static function isExpectedExtensions(string $path, array $extensions): bool
+    {
+        $isExpectedExtension = false;
+        if (static::isReadable($path) ) {
+            $object = new SplFileInfo($path);
+            $isExpectedExtension = static::isExpectedExtension($object, $extensions);
+        }
+        return $isExpectedExtension;
+    }
+
     private static function isExpectedExtension(SplFileInfo $fileInfo, array $extensions): bool
     {
         $ext = $fileInfo->getExtension();

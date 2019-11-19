@@ -166,7 +166,11 @@ class FileHelper
                         static::isExpectedExtension($object, $extensions)
                         && !static::isExcluded($object, $excludeRules)
                     ) {
-                        $closure($object);
+                        $stat = $closure($object);
+
+                        if ($stat === false) {
+                            break;
+                        }
                     }
                 }
             } else {

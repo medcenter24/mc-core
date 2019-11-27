@@ -29,11 +29,21 @@ use Exception;
 
 class FileHelper
 {
+    /**
+     * Check that directory is real
+     * @param string $path
+     * @return bool
+     */
     public static function isDirExists(string $path): bool
     {
         return file_exists($path) && is_dir($path);
     }
 
+    /**
+     * Creating directory if not exists
+     * @param string $path
+     * @return bool
+     */
     public static function createDir(string $path): bool
     {
         return self::isDirExists($path) ? true : mkdir($path, 0764, true);
@@ -59,27 +69,54 @@ class FileHelper
         return true;
     }
 
+    /**
+     * Check if we have permissions to write to the directory
+     * @param string $path
+     * @return bool
+     */
     public static function isWritable(string $path): bool
     {
         return file_exists($path) && is_writable($path);
     }
 
+    /**
+     * Checks that path is readable
+     * @param string $path
+     * @return bool
+     */
     public static function isReadable(string $path): bool
     {
         return file_exists($path) && is_readable($path);
     }
 
+    /**
+     * Content of the file
+     * @param string $path
+     * @return string
+     */
     public static function getContent(string $path): string
     {
         return file_get_contents($path);
     }
 
+    /**
+     * Creates php configuration file
+     * @param string $path
+     * @param array $params
+     * @return bool
+     */
     public static function writeConfig(string $path, array $params=[]): bool
     {
         $config = var_export($params, true);
         return file_put_contents($path, "<?php return $config ;");
     }
 
+    /**
+     * Write the file content to the file
+     * @param string $path
+     * @param string $content
+     * @return bool
+     */
     public static function writeFile(string $path, string $content): bool
     {
         return file_put_contents($path, $content);
@@ -201,6 +238,12 @@ class FileHelper
         return $isExpectedExtension;
     }
 
+    /**
+     * Check that extension is in expected list
+     * @param SplFileInfo $fileInfo
+     * @param array $extensions
+     * @return bool
+     */
     private static function isExpectedExtension(SplFileInfo $fileInfo, array $extensions): bool
     {
         $ext = $fileInfo->getExtension();
@@ -232,6 +275,12 @@ class FileHelper
         });
     }
 
+    /**
+     * Generates unique for the folder file name
+     * @param string $dir
+     * @param string $name
+     * @return string
+     */
     public static function generateFileName(string $dir, string $name): string
     {
         $postfix = '';
@@ -260,5 +309,17 @@ class FileHelper
         } catch (Exception $e) {
             throw new CommonException($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
+    }
+
+    /**
+     * Convert string to the file name string
+     * @param string $tmp
+     * @return string
+     */
+    public static function purifiedFileName(string $tmp): string
+    {
+        $name = preg_replace('/[^a-zA-Z0-9 -]/', ' ', $tmp);
+        $name = ucwords($name);
+        return str_replace(' ', '', $name);
     }
 }

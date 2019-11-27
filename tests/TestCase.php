@@ -20,8 +20,7 @@ namespace medcenter24\mcCore\Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\TestResponse;
-use medcenter24\mcCore\App\Services\ServiceLocator;
-use PHPUnit\Framework\MockObject\MockObject;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 use Prophecy\Prophecy\ObjectProphecy;
 
 abstract class TestCase extends BaseTestCase

@@ -15,25 +15,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+namespace medcenter24\mcCore\App\Helpers;
 
 
-use medcenter24\mcCore\App\Payment;
-
-class PaymentService extends AbstractModelService
+class StrHelper
 {
-    protected function getClassName(): string
+    public static function getLetters(string $string): string
     {
-        return Payment::class;
-    }
-
-    protected function getRequiredFields(): array
-    {
-        return [
-            'value' => 0,
-            'currency_id' => 0,
-            'fixed' => 1,
-            'description' => '',
-        ];
+        $string = preg_replace('/\W/', '', $string);
+        $string = preg_replace('/\d/', '', $string);
+        return $string;
     }
 }

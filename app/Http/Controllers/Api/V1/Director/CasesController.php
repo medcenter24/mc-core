@@ -317,7 +317,6 @@ class CasesController extends ApiController
     private function updateDoctorMorph(DoctorAccident $doctorAccident, Request $request, string $morphName): void
     {
         $morphs = $request->json($morphName, []);
-        // $morphs = [];
         /*
          * I need to go through the new parameters, not the already stored
          * (definitely for the services)

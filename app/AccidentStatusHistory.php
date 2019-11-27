@@ -18,7 +18,9 @@
 
 namespace medcenter24\mcCore\App;
 
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -34,12 +36,12 @@ class AccidentStatusHistory extends Model
 
     protected $fillable = ['user_id', 'accident_status_id', 'historyable_id', 'historyable_type', 'commentary'];
 
-    public function accidentStatus()
+    public function accidentStatus(): BelongsTo
     {
         return $this->belongsTo(AccidentStatus::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

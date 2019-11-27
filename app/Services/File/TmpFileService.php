@@ -15,25 +15,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+namespace medcenter24\mcCore\App\Services\File;
 
 
-use medcenter24\mcCore\App\Payment;
-
-class PaymentService extends AbstractModelService
+class TmpFileService
 {
-    protected function getClassName(): string
+    public const DISC = 'tmpDisk';
+    public const FOLDER = 'tmp';
+
+    public function getStoragePath(): string
     {
-        return Payment::class;
+        return storage_path(self::FOLDER);
     }
 
-    protected function getRequiredFields(): array
+    public function createTmpFile(string $prefix): string
     {
-        return [
-            'value' => 0,
-            'currency_id' => 0,
-            'fixed' => 1,
-            'description' => '',
-        ];
+        return tempnam($this->getStoragePath(), $prefix);
     }
 }

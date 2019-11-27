@@ -34,19 +34,19 @@ class CaseHistoryService
      */
     private $history;
 
-    public function generate(Accident $accident)
+    public function generate(Accident $accident): self
     {
         $this->accident = $accident;
         $this->history = $accident->history()->orderBy('created_at')->get();
         return $this;
     }
 
-    public function getHistory()
+    public function getHistory(): Collection
     {
         return $this->history;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->history->toArray();
     }

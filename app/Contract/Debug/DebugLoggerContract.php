@@ -15,25 +15,29 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+namespace medcenter24\mcCore\App\Contract\Debug;
 
 
-use medcenter24\mcCore\App\Payment;
-
-class PaymentService extends AbstractModelService
+interface DebugLoggerContract
 {
-    protected function getClassName(): string
-    {
-        return Payment::class;
-    }
+    /**
+     * Turn debug mode on
+     */
+    public function debugModeOn(): void;
 
-    protected function getRequiredFields(): array
-    {
-        return [
-            'value' => 0,
-            'currency_id' => 0,
-            'fixed' => 1,
-            'description' => '',
-        ];
-    }
+    /**
+     * Turn off debug mode
+     */
+    public function debugModeOff(): void;
+
+    /**
+     * @param string $channel
+     */
+    public function setLogChannel(string $channel): void;
+
+    /**
+     * Write to the log
+     * @param string $msg
+     */
+    public function log(string $msg): void;
 }

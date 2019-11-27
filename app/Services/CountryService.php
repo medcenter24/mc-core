@@ -18,22 +18,21 @@
 namespace medcenter24\mcCore\App\Services;
 
 
-use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Country;
 
-class PaymentService extends AbstractModelService
+class CountryService extends AbstractModelService
 {
-    protected function getClassName(): string
+
+    public function getClassName(): string
     {
-        return Payment::class;
+        return Country::class;
     }
 
     protected function getRequiredFields(): array
     {
         return [
-            'value' => 0,
-            'currency_id' => 0,
-            'fixed' => 1,
-            'description' => '',
+            'title' => '',
         ];
     }
+
 }

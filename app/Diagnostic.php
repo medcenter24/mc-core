@@ -40,7 +40,7 @@ class Diagnostic extends Model
     use ServiceLocatorTrait;
 
     protected $fillable = ['title', 'description', 'diagnostic_category_id', 'disease_code', 'created_by'];
-    protected $visible = ['title', 'description', 'diagnostic_category_id', 'disease_code'];
+    protected $visible = ['id', 'title', 'description', 'diagnostic_category_id', 'disease_code'];
 
     public function category(): BelongsTo
     {

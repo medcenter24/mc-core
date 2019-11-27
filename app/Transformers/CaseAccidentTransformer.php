@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use medcenter24\mcCore\App\Accident;
 use League\Fractal\TransformerAbstract;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\UserService;
 
 /**

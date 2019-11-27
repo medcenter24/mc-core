@@ -31,7 +31,7 @@ use medcenter24\mcCore\App\Patient;
 use medcenter24\mcCore\App\Payment;
 use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\AccidentTypeService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\UserService;
 use medcenter24\mcCore\App\Upload;
 use medcenter24\mcCore\App\User;

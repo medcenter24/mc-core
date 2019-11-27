@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\DoctorSurvey;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DoctorSurveyRequest;
@@ -36,14 +37,15 @@ class SurveysController extends ApiController
         return DoctorSurvey::class;
     }
 
-    public function index()
+    public function index(): Response
     {
-        $services = DoctorSurvey::orderBy('title', 'desc')->get();
-        return $this->response->collection($services, new DoctorSurveyTransformer());
+        $surveys = DoctorSurvey::orderBy('title', 'desc')->get();
+        return $this->response->collection($surveys, new DoctorSurveyTransformer());
     }
 
-    public function update($id, DoctorSurveyRequest $request)
+    public function update($id, DoctorSurveyRequest $request): Response
     {
+        /** @var DoctorSurvey $doctorService */
         $doctorService = DoctorSurvey::find($id);
         if (!$doctorService) {
             $this->response->errorNotFound();
@@ -58,7 +60,7 @@ class SurveysController extends ApiController
         return $this->response->accepted(null, $transformer->transform($doctorService));
     }
 
-    public function store(DoctorSurveyRequest $request)
+    public function store(DoctorSurveyRequest $request): Response
     {
         $doctorService = DoctorSurvey::create([
             'title' => $request->json('title', ''),
@@ -69,7 +71,7 @@ class SurveysController extends ApiController
         return $this->response->created(null, $transformer->transform($doctorService));
     }
     
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $service = DoctorSurvey::find($id);
         if (!$service) {

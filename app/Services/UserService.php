@@ -20,8 +20,10 @@ namespace medcenter24\mcCore\App\Services;
 
 
 use medcenter24\mcCore\App\Support\Core\Configurable;
+use medcenter24\mcCore\App\User;
 
-class UserService extends Configurable
+class UserService extends AbstractModelService
+    // extends Configurable don't know why it is here, but if I need it Have to create new Configurable service instead
 {
     // We can define rule in the configuration maybe
     /**
@@ -53,5 +55,30 @@ class UserService extends Configurable
             $timezone = auth()->user()->timezone;
         }
         return $timezone;
+    }
+
+    /**
+     * Name of the Model (ex: City::class)
+     * @return string
+     */
+    protected function getClassName(): string
+    {
+        return User::class;
+    }
+
+    /**
+     * Initialize defaults to avoid database exceptions
+     * (different storage have different rules, so it is correct to set defaults instead of nothing)
+     * @return array
+     */
+    protected function getRequiredFields(): array
+    {
+        return [
+            'name' => '',
+            'email' => '',
+            'phone' => '',
+            'lang' => 'en',
+            'timezone' => 'UTC'
+        ];
     }
 }

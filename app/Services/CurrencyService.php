@@ -31,7 +31,7 @@ class CurrencyService extends AbstractModelService
 
     private $defaultCurrencies = [
         ['title' => 'Euro', 'code' => 'eu', 'ico' => 'fa fa-euro', 'markers' => ['€']],
-        ['title' => 'Dollar', 'code' => 'us', 'ico' => 'fa fa-dollar'],
+        ['title' => 'Dollar', 'code' => 'us', 'ico' => 'fa fa-dollar', 'markers' => ['$']],
     ];
 
     /**
@@ -54,7 +54,8 @@ class CurrencyService extends AbstractModelService
     public function getDefaultCurrency(): FinanceCurrency
     {
         if (!$this->defaultCurrency) {
-            $this->defaultCurrency = FinanceCurrency::firstOrFail();
+            $data = current($this->defaultCurrencies);
+            $this->defaultCurrency = $this->firstOrCreate($data);
         }
 
         return $this->defaultCurrency;
@@ -102,7 +103,6 @@ class CurrencyService extends AbstractModelService
         foreach ($this->defaultCurrencies as $defaultCurrency) {
             if (in_array($marker, $defaultCurrency['markers'], true)) {
                 $data = $defaultCurrency;
-                break;
             }
         }
         $currency = null;
@@ -111,6 +111,11 @@ class CurrencyService extends AbstractModelService
             /** @var FinanceCurrency $currency */
             $currency = $this->firstOrCreate($data);
         }
+
+        if (!$currency) {
+            $currency = $this->getDefaultCurrency();
+        }
+
         return $currency;
     }
 }

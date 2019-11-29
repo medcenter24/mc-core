@@ -18,6 +18,9 @@
 @import "variables";
 
 .container {
+
+  padding: 1em;
+
   &.white {
     background: $white;
   }

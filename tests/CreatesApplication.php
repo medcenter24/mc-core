@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\Tests;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Hash;
-use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 
 trait CreatesApplication
 {

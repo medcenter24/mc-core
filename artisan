@@ -13,7 +13,7 @@
 |
 */
 
-use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 
 require __DIR__.'/bootstrap/autoload.php';
 

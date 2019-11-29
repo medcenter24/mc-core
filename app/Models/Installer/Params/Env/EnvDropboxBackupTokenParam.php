@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Models\Installer\Params\Env;
 
 use medcenter24\mcCore\App\Contract\Installer\EnvParam;
 use medcenter24\mcCore\App\Models\Installer\Params\StringParam;
-use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 
 class EnvDropboxBackupTokenParam extends StringParam implements EnvParam
 {

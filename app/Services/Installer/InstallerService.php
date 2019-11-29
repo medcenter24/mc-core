@@ -78,7 +78,7 @@ use medcenter24\mcCore\App\Models\Installer\Params\System\ConfigDirParam;
 use medcenter24\mcCore\App\Models\Installer\Params\System\ConfigFilenameParam;
 use medcenter24\mcCore\App\Models\Installer\Params\System\DataDirParam;
 use medcenter24\mcCore\App\Models\Installer\Params\System\EnvFilenameParam;
-use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 use medcenter24\mcCore\App\Support\Core\Configurable;
 
 /**

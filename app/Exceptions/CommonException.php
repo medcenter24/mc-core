@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Exceptions;
 
 use Exception;
 use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 use Throwable;
 
 class CommonException extends Exception

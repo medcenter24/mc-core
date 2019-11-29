@@ -19,7 +19,7 @@
 namespace medcenter24\mcCore\Tests\Feature\Console;
 
 
-use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\Tests\SamplePath;
 use medcenter24\mcCore\Tests\TestCase;

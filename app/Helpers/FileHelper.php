@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\App\Helpers;
 use FilesystemIterator;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\CommonException;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -93,9 +94,13 @@ class FileHelper
      * Content of the file
      * @param string $path
      * @return string
+     * @throws InconsistentDataException
      */
     public static function getContent(string $path): string
     {
+        if (!self::isReadable($path)) {
+            throw new InconsistentDataException('File not found "'.$path.'"');
+        }
         return file_get_contents($path);
     }
 

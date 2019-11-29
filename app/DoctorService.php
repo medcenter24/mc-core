@@ -23,8 +23,8 @@ use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\DoctorServiceService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
 
 /**
  * Services provided by a Doctor

@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,20 +15,29 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\System;
+namespace medcenter24\mcCore\App\Contract\Debug;
 
 
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Services\Core\ExtensionManagerService;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-
-class ExtensionsController extends ApiController
+interface DebugLoggerContract
 {
-    use ServiceLocatorTrait;
+    /**
+     * Turn debug mode on
+     */
+    public function debugModeOn(): void;
 
-    public function index(string $extName)
-    {
-        $service = $this->getServiceLocator()->get(ExtensionManagerService::class);
-        return response()->json(['installed' => $service->has($extName)]);
-    }
+    /**
+     * Turn off debug mode
+     */
+    public function debugModeOff(): void;
+
+    /**
+     * @param string $channel
+     */
+    public function setLogChannel(string $channel): void;
+
+    /**
+     * Write to the log
+     * @param string $msg
+     */
+    public function log(string $msg): void;
 }

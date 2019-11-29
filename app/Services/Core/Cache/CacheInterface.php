@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,20 +15,33 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\System;
+namespace medcenter24\mcCore\App\Services\Core\Cache;
 
 
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Services\Core\ExtensionManagerService;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-
-class ExtensionsController extends ApiController
+interface CacheInterface
 {
-    use ServiceLocatorTrait;
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getCache(string $key);
 
-    public function index(string $extName)
-    {
-        $service = $this->getServiceLocator()->get(ExtensionManagerService::class);
-        return response()->json(['installed' => $service->has($extName)]);
-    }
+    /**
+     * @param string $key
+     * @param $val
+     * @return void
+     */
+    public function setCache(string $key, $val): void;
+
+    /**
+     * Checking the data exists
+     * @param string $key
+     * @return bool
+     */
+    public function hasCache(string $key): bool;
+
+    /**
+     * Drop the data
+     */
+    public function dropCache(): void;
 }

@@ -37,6 +37,7 @@ class AccidentStatusesService extends AbstractModelService
     public const STATUS_PAID = 'paid';
     public const STATUS_REJECT = 'reject';
     public const STATUS_CLOSED = 'closed';
+    public const STATUS_IMPORTED = 'imported';
 
     public const STATUS_HOSPITAL_GUARANTEE = 'hospital_guarantee';
     public const STATUS_HOSPITAL_INVOICE = 'hospital_invoice';
@@ -72,9 +73,9 @@ class AccidentStatusesService extends AbstractModelService
     }
 
     /**
-     * @return AccidentStatus
+     * @return AccidentStatus|Model
      */
-    public function getClosedStatus(): Model
+    public function getClosedStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
             'title' => self::STATUS_CLOSED,
@@ -83,9 +84,21 @@ class AccidentStatusesService extends AbstractModelService
     }
 
     /**
-     * @return AccidentStatus
+     * After the case import it would be great to check case and then close it
+     * @return AccidentStatus|Model
      */
-    public function getNewStatus(): Model
+    public function getImportedStatus(): AccidentStatus
+    {
+        return $this->firstOrCreate([
+            'title' => self::STATUS_IMPORTED,
+            'type' => self::TYPE_ACCIDENT,
+        ]);
+    }
+
+    /**
+     * @return AccidentStatus|Model
+     */
+    public function getNewStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
             'title' => self::STATUS_NEW,
@@ -94,9 +107,9 @@ class AccidentStatusesService extends AbstractModelService
     }
 
     /**
-     * @return AccidentStatus
+     * @return AccidentStatus|Model
      */
-    public function getDoctorSentStatus(): Model
+    public function getDoctorSentStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
             'title' => self::STATUS_SENT,
@@ -105,9 +118,9 @@ class AccidentStatusesService extends AbstractModelService
     }
 
     /**
-     * @return AccidentStatus
+     * @return AccidentStatus|Model
      */
-    public function getDoctorInProgressStatus(): Model
+    public function getDoctorInProgressStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
             'title' => self::STATUS_IN_PROGRESS,
@@ -116,9 +129,9 @@ class AccidentStatusesService extends AbstractModelService
     }
 
     /**
-     * @return AccidentStatus
+     * @return AccidentStatus|Model
      */
-    public function getDoctorAssignedStatus(): Model
+    public function getDoctorAssignedStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
             'title' => self::STATUS_ASSIGNED,
@@ -127,9 +140,9 @@ class AccidentStatusesService extends AbstractModelService
     }
 
     /**
-     * @return AccidentStatus
+     * @return AccidentStatus|Model
      */
-    public function getDoctorRejectedStatus(): Model
+    public function getDoctorRejectedStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
             'title' => self::STATUS_REJECT,

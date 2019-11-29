@@ -19,13 +19,13 @@
 namespace medcenter24\mcCore\App\Services;
 
 
+use DOMText;
 use medcenter24\mcCore\App\Support\Core\Configurable;
 
 class DomDocumentService extends Configurable
 {
-
-    const CONFIG_WITHOUT_ATTRIBUTES = 'no_attributes';
-    const STRIP_STRING = 'strip_string';
+    public const CONFIG_WITHOUT_ATTRIBUTES = 'no_attributes';
+    public const STRIP_STRING = 'strip_string';
 
     /**
      * Convert dom to array
@@ -47,13 +47,13 @@ class DomDocumentService extends Configurable
 
         if ($root->hasChildNodes()) {
             $children = $root->childNodes;
-            if ($children->length == 1) {
+            if ($children->length === 1) {
                 $child = $children->item(0);
 
-                if ($child->nodeType == XML_TEXT_NODE) {
+                if ($child && $child->nodeType === XML_TEXT_NODE) {
                     $result['_value'] = $this->getString($child->nodeValue);
 
-                    if (count($result) == 1) {
+                    if (count($result) === 1) {
                         return $result['_value'];
                     } else {
                         return $result;
@@ -64,9 +64,13 @@ class DomDocumentService extends Configurable
             $group = [];
             foreach ($children as $child) {
 
+                if (!$child) {
+                    continue;
+                }
+
                 $resultChild = $this->toArray($child);
-                if ($this->getOption(self::STRIP_STRING)
-                    && !$resultChild && (!is_string($resultChild) || !mb_strlen($resultChild))) {
+                if (!$resultChild && $this->getOption(self::STRIP_STRING)
+                    && (!is_string($resultChild) || !mb_strlen($resultChild))) {
 
                     continue;
                 }
@@ -84,7 +88,7 @@ class DomDocumentService extends Configurable
                     $result[$child->nodeName . ':' . ++$group[$child->nodeName]][] = $resultChild;
                 }
             }
-        } elseif ($root instanceof \DOMText) {
+        } elseif ($root instanceof DOMText) {
             return $this->getString($root->wholeText);
         }
 

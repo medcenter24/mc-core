@@ -25,7 +25,7 @@ use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use medcenter24\mcCore\App\Services\DoctorServiceService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
 /**
  * Kinds of the diagnostics that should be done by the Doctor through the Accident
@@ -40,7 +40,7 @@ class Diagnostic extends Model
     use ServiceLocatorTrait;
 
     protected $fillable = ['title', 'description', 'diagnostic_category_id', 'disease_code', 'created_by'];
-    protected $visible = ['title', 'description', 'diagnostic_category_id', 'disease_code'];
+    protected $visible = ['id', 'title', 'description', 'diagnostic_category_id', 'disease_code'];
 
     public function category(): BelongsTo
     {

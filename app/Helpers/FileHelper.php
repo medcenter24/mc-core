@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Helpers;
 
 
 use FilesystemIterator;
+use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -28,11 +29,21 @@ use Exception;
 
 class FileHelper
 {
+    /**
+     * Check that directory is real
+     * @param string $path
+     * @return bool
+     */
     public static function isDirExists(string $path): bool
     {
         return file_exists($path) && is_dir($path);
     }
 
+    /**
+     * Creating directory if not exists
+     * @param string $path
+     * @return bool
+     */
     public static function createDir(string $path): bool
     {
         return self::isDirExists($path) ? true : mkdir($path, 0764, true);
@@ -58,27 +69,54 @@ class FileHelper
         return true;
     }
 
+    /**
+     * Check if we have permissions to write to the directory
+     * @param string $path
+     * @return bool
+     */
     public static function isWritable(string $path): bool
     {
         return file_exists($path) && is_writable($path);
     }
 
+    /**
+     * Checks that path is readable
+     * @param string $path
+     * @return bool
+     */
     public static function isReadable(string $path): bool
     {
         return file_exists($path) && is_readable($path);
     }
 
+    /**
+     * Content of the file
+     * @param string $path
+     * @return string
+     */
     public static function getContent(string $path): string
     {
         return file_get_contents($path);
     }
 
+    /**
+     * Creates php configuration file
+     * @param string $path
+     * @param array $params
+     * @return bool
+     */
     public static function writeConfig(string $path, array $params=[]): bool
     {
         $config = var_export($params, true);
         return file_put_contents($path, "<?php return $config ;");
     }
 
+    /**
+     * Write the file content to the file
+     * @param string $path
+     * @param string $content
+     * @return bool
+     */
     public static function writeFile(string $path, string $content): bool
     {
         return file_put_contents($path, $content);
@@ -110,30 +148,50 @@ class FileHelper
     }
 
     /**
+     * Checks that file match excluded masks
+     * @param SplFileInfo $fileInfo
+     * @param array $rules
+     * @return bool
+     */
+    private static function isExcluded(SplFileInfo $fileInfo, array $rules): bool
+    {
+        $excluded = false;
+        foreach($rules as $key => $rule) {
+            if ($key === 'startsWith') {
+                $fileName = $fileInfo->getFilename();
+                $excluded = Str::startsWith($fileName, $rule);
+            }
+        }
+        return $excluded;
+    }
+
+    /**
      * Calculates size
      * @param string $path
      * @param array $extensions
+     * @param array $excludeRules
+     *  'startsWith' - the files that starts with string
      * @return int
      */
-    public static function getSize(string $path, array $extensions = []): int
+    public static function getSize(string $path, array $extensions = [], $excludeRules = []): int
     {
         $bytes = 0;
         self::mapFiles($path, static function (SplFileInfo $fileInfo) use (&$bytes) {
             $bytes += $fileInfo->getSize();
-        }, $extensions);
+        }, $extensions, $excludeRules);
         return $bytes;
     }
 
-    public static function filesCount(string $path, array $extensions = []): int
+    public static function filesCount(string $path, array $extensions = [], $excludeRules = []): int
     {
         $count = 0;
-        self::mapFiles($path, static function () use (&$count) {
+        self::mapFiles($path, static function (SplFileInfo $fileInfo) use (&$count) {
             $count++;
-        }, $extensions);
+        }, $extensions, $excludeRules);
         return $count;
     }
 
-    public static function mapFiles(string $path, $closure, array $extensions = []): void
+    public static function mapFiles(string $path, $closure, array $extensions = [], $excludeRules = []): void
     {
         $path = realpath($path);
         if ($path !== false && $path !== '' && file_exists($path)) {
@@ -141,20 +199,55 @@ class FileHelper
                 /** @var SplFileInfo $object */
                 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path,
                     FilesystemIterator::SKIP_DOTS)) as $object) {
+                    if (
+                        static::isExpectedExtension($object, $extensions)
+                        && !static::isExcluded($object, $excludeRules)
+                    ) {
+                        $stat = $closure($object);
 
-                    $ext = $object->getExtension();
-                    if (!count($extensions) || in_array($ext, $extensions, false)) {
-                        $closure($object);
+                        if ($stat === false) {
+                            break;
+                        }
                     }
                 }
             } else {
                 $object = new SplFileInfo($path);
-                $ext = $object->getExtension();
-                if (!count($extensions) || in_array($ext, $extensions, false)) {
+                if (
+                    static::isExpectedExtension($object, $extensions)
+                    && !static::isExcluded($object, $excludeRules)
+                ) {
                     $closure($object);
                 }
             }
         }
+    }
+
+    /**
+     * Checking that the extension of the file is in the list of expected extensions
+     * @param string $path
+     * @param array $extensions
+     * @return bool
+     */
+    public static function isExpectedExtensions(string $path, array $extensions): bool
+    {
+        $isExpectedExtension = false;
+        if (static::isReadable($path) ) {
+            $object = new SplFileInfo($path);
+            $isExpectedExtension = static::isExpectedExtension($object, $extensions);
+        }
+        return $isExpectedExtension;
+    }
+
+    /**
+     * Check that extension is in expected list
+     * @param SplFileInfo $fileInfo
+     * @param array $extensions
+     * @return bool
+     */
+    private static function isExpectedExtension(SplFileInfo $fileInfo, array $extensions): bool
+    {
+        $ext = $fileInfo->getExtension();
+        return !count($extensions) || in_array($ext, $extensions, false);
     }
 
     /**
@@ -182,6 +275,12 @@ class FileHelper
         });
     }
 
+    /**
+     * Generates unique for the folder file name
+     * @param string $dir
+     * @param string $name
+     * @return string
+     */
     public static function generateFileName(string $dir, string $name): string
     {
         $postfix = '';
@@ -210,5 +309,17 @@ class FileHelper
         } catch (Exception $e) {
             throw new CommonException($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
+    }
+
+    /**
+     * Convert string to the file name string
+     * @param string $tmp
+     * @return string
+     */
+    public static function purifiedFileName(string $tmp): string
+    {
+        $name = preg_replace('/[^a-zA-Z0-9 -]/', ' ', $tmp);
+        $name = ucwords($name);
+        return str_replace(' ', '', $name);
     }
 }

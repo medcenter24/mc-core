@@ -41,7 +41,7 @@ use medcenter24\mcCore\App\Services\ReferralNumberService;
 use medcenter24\mcCore\App\Services\RoleService;
 use medcenter24\mcCore\App\Services\Scenario\ScenarioService;
 use medcenter24\mcCore\App\Services\Scenario\StoryService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
 use medcenter24\mcCore\App\Transformers\AccidentStatusHistoryTransformer;
 use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
@@ -317,7 +317,6 @@ class CasesController extends ApiController
     private function updateDoctorMorph(DoctorAccident $doctorAccident, Request $request, string $morphName): void
     {
         $morphs = $request->json($morphName, []);
-        // $morphs = [];
         /*
          * I need to go through the new parameters, not the already stored
          * (definitely for the services)

@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,20 +15,46 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\System;
+namespace medcenter24\mcCore\App\Services\Core\Logger;
 
 
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Services\Core\ExtensionManagerService;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use Illuminate\Support\Facades\Log;
 
-class ExtensionsController extends ApiController
+trait DebugLoggerTrait
 {
-    use ServiceLocatorTrait;
+    /**
+     * @var bool
+     */
+    protected $debugMode = false;
 
-    public function index(string $extName)
+    /**
+     * @var string Channel
+     */
+    protected $channel;
+
+    public function debugModeOn(): void
     {
-        $service = $this->getServiceLocator()->get(ExtensionManagerService::class);
-        return response()->json(['installed' => $service->has($extName)]);
+        $this->debugMode = true;
+    }
+
+    public function debugModeOff(): void
+    {
+        $this->debugMode = false;
+    }
+
+    public function log(string $msg): void
+    {
+        if ($this->debugMode) {
+            if ($this->channel) {
+                Log::channel($this->channel)->debug($msg);
+            } else {
+                Log::debug($msg);
+            }
+        }
+    }
+
+    public function setLogChannel(string $channel): void
+    {
+        $this->channel = $channel;
     }
 }

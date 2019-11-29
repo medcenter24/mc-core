@@ -204,9 +204,9 @@ class AccidentsController extends ApiController
     /**
      * Get case status (new/old)
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function status($id)
+    public function status($id): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
@@ -221,16 +221,16 @@ class AccidentsController extends ApiController
         return $this->response->item($doctorAccident, new DoctorAccidentStatusTransformer());
     }
 
-    public function services($id)
+    public function services($id): Response
     {
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
         }
 
-        /** @var \Illuminate\Support\Collection $services */
+        /** @var Collection $services */
         $services = $accident->caseable->services->each(function (DoctorService $service) {
-            if ($service->created_by == $this->user()->id) {
+            if ($service->created_by === $this->user()->id) {
                 $service->markAsDoctor();
             }
         });
@@ -239,7 +239,7 @@ class AccidentsController extends ApiController
         return $this->response->collection($services, new DoctorServiceTransformer());
     }
 
-    public function saveService($id, Request $request)
+    public function saveService($id, Request $request): Response
     {
         \Log::info('Request to create new services', ['data' => $request->toArray()]);
         $accident = Accident::find($id);
@@ -309,7 +309,7 @@ class AccidentsController extends ApiController
             $this->response->errorNotFound();
         }
 
-        /** @var \Illuminate\Support\Collection $diagnostics */
+        /** @var Collection $diagnostics */
         $diagnostics = $accident->caseable->diagnostics->each(function (Diagnostic $diagnostic) {
             if ($diagnostic->created_by == $this->user()->id) {
                 $diagnostic->markAsDoctor();
@@ -480,7 +480,7 @@ class AccidentsController extends ApiController
      * @param $id
      * @param Request $request
      * @param DocumentService $documentService
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded
      */
     public function createDocument($id, Request $request, DocumentService $documentService): Response

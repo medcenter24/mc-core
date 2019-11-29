@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,20 +15,24 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\System;
+namespace medcenter24\mcCore\App\Services;
 
 
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Services\Core\ExtensionManagerService;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Country;
 
-class ExtensionsController extends ApiController
+class CountryService extends AbstractModelService
 {
-    use ServiceLocatorTrait;
 
-    public function index(string $extName)
+    public function getClassName(): string
     {
-        $service = $this->getServiceLocator()->get(ExtensionManagerService::class);
-        return response()->json(['installed' => $service->has($extName)]);
+        return Country::class;
     }
+
+    protected function getRequiredFields(): array
+    {
+        return [
+            'title' => '',
+        ];
+    }
+
 }

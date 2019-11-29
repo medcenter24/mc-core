@@ -19,7 +19,7 @@
 namespace medcenter24\mcCore\App\Http\Controllers;
 
 use medcenter24\mcCore\App\Services\Menu\AdminMenuService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
 /**
  * Admin part just for the developer, to see where was last backup,

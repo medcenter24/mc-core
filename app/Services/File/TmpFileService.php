@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,20 +15,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\System;
+namespace medcenter24\mcCore\App\Services\File;
 
 
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Services\Core\ExtensionManagerService;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-
-class ExtensionsController extends ApiController
+class TmpFileService
 {
-    use ServiceLocatorTrait;
+    public const DISC = 'tmpDisk';
+    public const FOLDER = 'tmp';
 
-    public function index(string $extName)
+    public function getStoragePath(): string
     {
-        $service = $this->getServiceLocator()->get(ExtensionManagerService::class);
-        return response()->json(['installed' => $service->has($extName)]);
+        return storage_path(self::FOLDER);
+    }
+
+    public function createTmpFile(string $prefix): string
+    {
+        return tempnam($this->getStoragePath(), $prefix);
     }
 }

@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,20 +18,21 @@
 namespace medcenter24\mcCore\App\Services;
 
 
-class ServiceLocator
+use medcenter24\mcCore\App\Hospital;
+
+class HospitalService extends AbstractModelService
 {
-    private static $inst;
 
-    public static function instance(): self
+    public function getClassName(): string
     {
-        if (!self::$inst) {
-            self::$inst = new self();
-        }
-        return self::$inst;
+        return Hospital::class;
     }
 
-    public function get(string $name, array $parameters = [])
+    protected function getRequiredFields(): array
     {
-        return resolve($name, ['options' => $parameters]);
+        return [
+            'title' => '',
+        ];
     }
+
 }

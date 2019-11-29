@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use medcenter24\mcCore\App\Services\ServiceLocator;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 
 /**
  * Case|Accident|...

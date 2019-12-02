@@ -55,6 +55,7 @@ class CurrencyService extends AbstractModelService
     {
         if (!$this->defaultCurrency) {
             $data = current($this->defaultCurrencies);
+            unset($data['markers']);
             $this->defaultCurrency = $this->firstOrCreate($data);
         }
 

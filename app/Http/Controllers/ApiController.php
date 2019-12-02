@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Database\Eloquent\Builder;
@@ -134,7 +135,7 @@ class ApiController extends Controller
             /** @var Model $model */
             $model = new $class;
             $fields = $model->getVisible();
-            $field = camel_case($fieldName);
+            $field = Str::camel($fieldName);
         }
         return in_array($field, $fields) ? $field : 'id';
     }

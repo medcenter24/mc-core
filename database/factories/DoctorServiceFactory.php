@@ -17,9 +17,10 @@
  */
 
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 $factory->define(medcenter24\mcCore\App\DoctorService::class, function (Faker $faker) {
-    $refKey = $faker->toUpper(str_random(3));
+    $refKey = $faker->toUpper(Str::random(3));
     return [
         'title' => 'DoctorService ' . $refKey,
         'description' => $faker->text(),

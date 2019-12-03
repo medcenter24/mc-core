@@ -16,6 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use Illuminate\Support\Str;
 use medcenter24\mcCore\App\AccidentStatus;
 use medcenter24\mcCore\App\AccidentType;
 use medcenter24\mcCore\App\Assistant;
@@ -31,7 +32,7 @@ use Faker\Generator as Faker;
  * Everything changed to create to have real id's otherwise phpunit tests will be failed
  */
 $factory->define(\medcenter24\mcCore\App\Accident::class, function (Faker $faker) {
-    $refNum = $faker->toUpper(str_random(3)) . '-' . $faker->toUpper(str_random(3)) . $faker->toUpper(str_random(3));
+    $refNum = $faker->toUpper(Str::random(3)) . '-' . $faker->toUpper(Str::random(3)) . $faker->toUpper(Str::random(3));
     return [
         'created_by' => function () {
             return factory(User::class)->create()->id;
@@ -53,7 +54,7 @@ $factory->define(\medcenter24\mcCore\App\Accident::class, function (Faker $faker
         'assistant_id' => function () {
             return factory(Assistant::class)->create()->id;
         },
-        'assistant_ref_num' => $faker->toUpper(str_random(3)) . '-' . $faker->toUpper(str_random(3)),
+        'assistant_ref_num' => $faker->toUpper(Str::random(3)) . '-' . $faker->toUpper(Str::random(3)),
         'caseable_id' => function () {
             return factory(DoctorAccident::class)->create()->id;
         },

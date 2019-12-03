@@ -19,8 +19,10 @@
 namespace medcenter24\mcCore\Tests\Unit\Services\Formula;
 
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
 use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
+use Throwable;
 
 class FormulaViewServiceTest extends AbstractDataProvider
 {
@@ -41,7 +43,7 @@ class FormulaViewServiceTest extends AbstractDataProvider
      * @param string $view
      * @param int $expectedResult
      * @param string $description
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testView(FormulaBuilder $builder, $view = '', $expectedResult = 0, $description = ''): void
     {
@@ -49,24 +51,26 @@ class FormulaViewServiceTest extends AbstractDataProvider
     }
 
     /**
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
-     * @throws \Throwable
-     * @expectedException \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
-     * @expectedExceptionMessage Divide by zero
+     * @throws FormulaException
+     * @throws Throwable
      */
     public function testDivideByZero(): void
     {
+        $this->expectException(FormulaException::class);
+        $this->expectExceptionMessage('Divide by zero');
+
         $this->service->render( (new FormulaBuilderModel())->divInteger(0) );
     }
 
     /**
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
-     * @throws \Throwable
-     * @expectedException \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
-     * @expectedExceptionMessage Divide by zero
+     * @throws FormulaException
+     * @throws Throwable
      */
     public function testDivideByZero2(): void
     {
+        $this->expectException(FormulaException::class);
+        $this->expectExceptionMessage('Divide by zero');
+
         $this->service->render( (new FormulaBuilderModel())->divInteger(1)->divInteger(0) );
     }
 }

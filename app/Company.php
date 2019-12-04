@@ -20,9 +20,9 @@ namespace medcenter24\mcCore\App;
 
 
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Services\SignatureService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -33,30 +33,21 @@ class Company extends Model implements HasMedia
     use SoftDeletes;
     use HasMediaTrait;
 
-    const THUMB_250 = 'thumb_250';
-    const THUMB_300X100 = 'thumb_300x100';
+    public const THUMB_250 = 'thumb_250';
 
     protected $fillable = ['title', 'hospital_accident_form_id', 'doctor_accident_form_id'];
     protected $visible = ['title'];
 
     /**
      * @param Media|null $media
-     * @throws \Spatie\Image\Exceptions\InvalidManipulation
-     * todo has no sense as I become using of the Forms where all images will be placed as images with sizes
-     * todo needs to be removed
+     * @throws InvalidManipulation
      */
-    public function registerMediaConversions(Media $media = null)
+    public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion(self::THUMB_250)
             ->sharpen(10)
             ->quality(80)
             ->fit(Manipulations::FIT_CROP, 250, 250)
             ->performOnCollections(LogoService::FOLDER);
-
-        $this->addMediaConversion(self::THUMB_300X100)
-            ->sharpen(10)
-            ->quality(80)
-            ->fit(Manipulations::FIT_CROP, 300, 100)
-            ->performOnCollections(SignatureService::FOLDER);
     }
 }

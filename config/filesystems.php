@@ -20,9 +20,7 @@ use medcenter24\mcCore\App\Services\DocumentService;
 use medcenter24\mcCore\App\Services\File\TmpFileService;
 use medcenter24\mcCore\App\Services\FormService;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Services\SignatureService;
 use medcenter24\mcCore\App\Services\UploaderService;
-use medcenter24\McImport\Services\CaseImporterService;
 
 return [
 
@@ -103,11 +101,6 @@ return [
         LogoService::DISC => [
             'driver' => 'local',
             'root' => storage_path(LogoService::FOLDER)
-        ],
-
-        SignatureService::DISC => [
-            'driver' => 'local',
-            'root' => storage_path(SignatureService::FOLDER),
         ],
 
         FormService::PDF_DISK => [

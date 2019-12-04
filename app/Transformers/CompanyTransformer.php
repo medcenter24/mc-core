@@ -20,9 +20,9 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Company;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Services\SignatureService;
 use League\Fractal\TransformerAbstract;
 
 class CompanyTransformer extends TransformerAbstract
@@ -30,18 +30,15 @@ class CompanyTransformer extends TransformerAbstract
     /**
      * @param Company $company
      * @return array
-     * @throws \ErrorException
+     * @throws InconsistentDataException
      */
-    public function transform(Company $company)
+    public function transform(Company $company): array
     {
         return [
             'id' => $company->id,
             'title' => $company->title,
             'logo250' => $company->hasMedia(LogoService::FOLDER)
                 ? MediaHelper::b64($company, LogoService::FOLDER, Company::THUMB_250)
-                : '',
-            'sign' => $company->hasMedia(SignatureService::FOLDER)
-                ? MediaHelper::b64($company, SignatureService::FOLDER, Company::THUMB_300X100)
                 : '',
         ];
     }

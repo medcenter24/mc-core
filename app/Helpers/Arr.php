@@ -29,10 +29,10 @@ class Arr
      * @param $arr
      * @return string
      */
-    public static function multiArrayToString ($arr): string
+    public static function multiArrayToString (array $arr): string
     {
         $result = [];
-        array_walk_recursive($arr, function($v) use (&$result) {
+        array_walk_recursive($arr, static function($v) use (&$result) {
             $result[] = $v;
         });
         return implode(' ', $result);

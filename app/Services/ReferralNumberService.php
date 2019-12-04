@@ -106,10 +106,10 @@ class ReferralNumberService
         return $ref;
     }
 
-    private function getAssistantKey(Accident $accident)
+    private function getAssistantKey(Accident $accident): string
     {
-        return $accident->assistant && $accident->assistant->id ?
-            $accident->assistant->ref_key
+        return $accident->getAttribute('assistant') && $accident->getAttribute('assistant')->getAttribute('id') ?
+            $accident->getAttribute('assistant')->getAttribute('ref_key')
             : 'NA';
     }
 

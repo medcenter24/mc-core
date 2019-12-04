@@ -479,7 +479,6 @@ class InstallerService extends Configurable
             'medialibrary' => [],
             'pdfCaseReports' => [],
             'pdfForms' => [],
-            'signature' => [],
             'tmp' => [],
             'uploads' => [],
             'bootstrap' => ['cache'],

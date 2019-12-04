@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Services;
 
 
+use DOMNode;
 use DOMText;
 use medcenter24\mcCore\App\Support\Core\Configurable;
 
@@ -30,10 +31,10 @@ class DomDocumentService extends Configurable
     /**
      * Convert dom to array
      *
-     * @param \DOMNode $root
+     * @param DOMNode $root
      * @return array|bool|string
      */
-    public function toArray(\DOMNode $root)
+    public function toArray(DOMNode $root)
     {
         $result = [];
         if (!$this->getOption(self::CONFIG_WITHOUT_ATTRIBUTES) && $root->hasAttributes())
@@ -55,9 +56,9 @@ class DomDocumentService extends Configurable
 
                     if (count($result) === 1) {
                         return $result['_value'];
-                    } else {
-                        return $result;
                     }
+
+                    return $result;
                 }
             }
 
@@ -69,8 +70,8 @@ class DomDocumentService extends Configurable
                 }
 
                 $resultChild = $this->toArray($child);
-                if (!$resultChild && $this->getOption(self::STRIP_STRING)
-                    && (!is_string($resultChild) || !mb_strlen($resultChild))) {
+                if ((!is_string($resultChild) || $resultChild === '')
+                    && !$resultChild && $this->getOption(self::STRIP_STRING)) {
 
                     continue;
                 }
@@ -99,7 +100,7 @@ class DomDocumentService extends Configurable
     {
         if ($this->getOption(self::STRIP_STRING)) {
             $string = trim($string);
-            if (!mb_strlen($string)) {
+            if ($string == '') {
                 $string = false;
             }
         }

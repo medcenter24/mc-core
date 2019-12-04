@@ -23,9 +23,17 @@ class Number
 {
     public static function toNumber($str = '')
     {
-        $value = preg_replace('/[^0-9,\.]/', '', $str);
+        $value = preg_replace('/[^0-9,.]/', '', $str);
         $value = str_replace(',', '.', $value);
-        $value *= 1;
+        if (mb_substr_count($value, '.') > 1) { // trying to make it less expensive for CPU
+            $parts = explode('.', $value);
+            if (count($parts) > 2) {
+                // leave only the very first dot in the number
+                $p1 = array_shift($parts);
+                $value = $p1 . '.' . implode('', $parts);
+            }
+        }
+        $value *= 1; // convert to number
         return $value;
     }
 }

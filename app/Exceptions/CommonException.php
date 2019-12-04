@@ -20,25 +20,8 @@ namespace medcenter24\mcCore\App\Exceptions;
 
 
 use Exception;
-use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Services\Core\EnvironmentService;
-use Throwable;
 
 class CommonException extends Exception
 {
-    /**
-     * CommonException constructor.
-     * @param string $message
-     * @param int $code
-     * @param Throwable|null $previous
-     */
-    public function __construct($message = '', $code = 0, Throwable $previous = null)
-    {
-        if (EnvironmentService::isInstalled()) {
-            // logging only when we can use logger
-            Log::error(' :: CommonException: ' . $message);
-        }
-
-        parent::__construct($message, $code, $previous);
-    }
+    // we can't write anything to log or other file here, it is too heavy
 }

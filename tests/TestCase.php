@@ -44,7 +44,7 @@ abstract class TestCase extends BaseTestCase
 
         if ($res->getStatusCode() === 500) {
             echo "\n <================ PRINT CONTENT ==============> \n";
-            print_r(json_decode($res->getContent(), false, 512,JSON_THROW_ON_ERROR));
+            print_r(json_decode($res->getContent(), false));
             echo "\n <================ / END PRINT CONTENT ==============> \n";
         }
 

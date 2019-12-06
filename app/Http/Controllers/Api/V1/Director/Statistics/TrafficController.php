@@ -43,7 +43,7 @@ class TrafficController extends ApiController
         }
 
         $statistic = DB::table('accidents')
-            ->join('doctor_accidents', function($join){
+            ->join('doctor_accidents', static function ($join) {
                 $join->where('accidents.caseable_type', '=', 'medcenter24\mcCore\App\DoctorAccident')
                     ->on('accidents.caseable_id', '=', 'doctor_accidents.id');
             })
@@ -85,13 +85,13 @@ class TrafficController extends ApiController
         if (env('DB_CONNECTION') === 'sqlite') {
             $years = DB::table('accidents')
                 ->distinct()
-                ->select(DB::raw('strftime(\'%Y\', accidents.created_at) as `year`'))
+                ->select(DB::raw('strftime(\'%Y\', accidents.created_at) as year'))
                 ->groupBy(DB::raw('strftime(\'%Y\', accidents.created_at)'))
                 ->get();
         } else {
             $years = DB::table('accidents')
                 ->distinct()
-                ->select(DB::raw('EXTRACT(YEAR FROM accidents.created_at) as `year`'))
+                ->select(DB::raw('EXTRACT(YEAR FROM accidents.created_at) as year'))
                 ->whereNotNull('accidents.created_at')
                 ->groupBy(DB::raw('EXTRACT(YEAR FROM accidents.created_at)'))
                 ->get();

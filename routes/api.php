@@ -219,6 +219,7 @@ $api->group([
                     $api->get('calendar', CalendarController::class . '@index');
                     $api->get('doctorsTraffic', TrafficController::class . '@doctors');
                     $api->get('assistantsTraffic', TrafficController::class . '@assistants');
+                    $api->get('years', TrafficController::class . '@years');
                 });
 
                 $api->post('finance/search', FinanceController::class . '@search');

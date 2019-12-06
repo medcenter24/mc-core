@@ -19,15 +19,23 @@
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
 
 
+use Dingo\Api\Http\Response;
+use Exception;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Transformers\statistics\TrafficTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use medcenter24\mcCore\App\Transformers\statistics\YearsTransformer;
 
 class TrafficController extends ApiController
 {
-    public function doctors(Request $request)
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws Exception
+     */
+    public function doctors(Request $request): Response
     {
         $year = $request->input('year');
         if (!$year) {
@@ -49,7 +57,12 @@ class TrafficController extends ApiController
         return $this->response->collection($statistic, new TrafficTransformer());
     }
 
-    public function assistants(Request $request)
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws Exception
+     */
+    public function assistants(Request $request): Response
     {
         $year = $request->input('year');
         if (!$year) {
@@ -65,5 +78,27 @@ class TrafficController extends ApiController
             ->get();
 
         return $this->response->collection($statistic, new TrafficTransformer());
+    }
+    
+    public function years(): Response
+    {
+        if (env('DB_CONNECTION') === 'sqlite') {
+            $years = DB::table('accidents')
+                ->distinct()
+                ->select(DB::raw('strftime(\'%Y\', accidents.created_at) as `year`'))
+                ->groupBy(DB::raw('strftime(\'%Y\', accidents.created_at)'))
+                ->get();
+        } else {
+            $years = DB::table('accidents')
+                ->distinct()
+                ->select(DB::raw('EXTRACT(YEAR FROM accidents.created_at) as `year`'))
+                ->whereNotNull('accidents.created_at')
+                ->groupBy(DB::raw('EXTRACT(YEAR FROM accidents.created_at)'))
+                ->get();
+        }
+        $years = $years->filter(static function($y) {
+            return $y->year;
+        });
+        return $this->response->collection($years, new YearsTransformer());
     }
 }

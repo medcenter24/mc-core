@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Accident;
@@ -64,7 +65,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
-
 
 class CasesController extends ApiController
 {

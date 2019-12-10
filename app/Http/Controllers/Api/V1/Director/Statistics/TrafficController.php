@@ -99,6 +99,7 @@ class TrafficController extends ApiController
         $years = $years->filter(static function($y) {
             return $y->year;
         });
+        $years = $years->sortBy('year');
         return $this->response->collection($years, new YearsTransformer());
     }
 }

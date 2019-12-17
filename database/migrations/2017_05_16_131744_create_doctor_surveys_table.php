@@ -35,6 +35,7 @@ class CreateDoctorSurveysTable extends Migration
             $table->string('title')->default('')->index();
             $table->text('description');
             $table->string('disease_code')->default('');
+            $table->string('status')->default('active')->index();
             $table->timestamps();
             $table->softDeletes();
         });

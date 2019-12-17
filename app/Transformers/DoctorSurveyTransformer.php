@@ -30,7 +30,8 @@ class DoctorSurveyTransformer extends TransformerAbstract
             'id' => $doctorSurvey->id,
             'title' => $doctorSurvey->title,
             'description' => $doctorSurvey->description,
-            'type' => $doctorSurvey->isDoctor() ? 'doctor' : ''
+            'type' => $doctorSurvey->isDoctor() ? 'doctor' : '',
+            'status' => $doctorSurvey->getAttribute('status'),
         ];
     }
 }

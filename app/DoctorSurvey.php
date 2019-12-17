@@ -32,8 +32,8 @@ class DoctorSurvey extends Model
     use DoctorTrait;
     use ServiceLocatorTrait;
 
-    protected $fillable = ['title', 'description', 'created_by', 'disease_code'];
-    protected $visible = ['id', 'title', 'description', 'disease_code'];
+    protected $fillable = ['title', 'description', 'created_by', 'disease_code', 'status'];
+    protected $visible = ['id', 'title', 'description', 'disease_code', 'status'];
 
     /**
      * @return MorphTo

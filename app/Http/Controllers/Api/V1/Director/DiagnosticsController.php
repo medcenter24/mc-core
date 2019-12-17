@@ -37,12 +37,6 @@ class DiagnosticsController extends ApiController
         return Diagnostic::class;
     }
 
-    public function index(): Response
-    {
-        $diagnostics = Diagnostic::orderBy('title')->get();
-        return $this->response->collection($diagnostics, new DiagnosticTransformer());
-    }
-
     public function update($id, DiagnosticRequest $request): Response
     {
         /** @var Diagnostic $diagnostic */

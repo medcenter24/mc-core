@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\DiagnosticCategory;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticCategoryUpdate;
@@ -37,19 +38,13 @@ class CategoriesController extends ApiController
         return DiagnosticCategory::class;
     }
 
-    public function index()
-    {
-        $categories = DiagnosticCategory::orderBy('title')->get();
-        return $this->response->collection($categories, new CategoryTransformer());
-    }
-
-    public function show($id)
+    public function show($id): Response
     {
         $category = DiagnosticCategory::findOrFail($id);
         return $this->response->item($category, new CategoryTransformer());
     }
 
-    public function update($id, DiagnosticCategoryUpdate $request)
+    public function update($id, DiagnosticCategoryUpdate $request): Response
     {
         $category = DiagnosticCategory::findOrFail($id);
         $category->title = $request->json('title', 'Category ' . $category->id);
@@ -58,7 +53,7 @@ class CategoriesController extends ApiController
         return $this->response->item($category, new CategoryTransformer());
     }
 
-    public function store(DiagnosticCategoryUpdate $request)
+    public function store(DiagnosticCategoryUpdate $request): Response
     {
         $category = DiagnosticCategory::create([
             'title' => $request->json('title', 'NewCategory')

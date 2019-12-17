@@ -33,6 +33,7 @@ class DoctorServiceTransformer extends TransformerAbstract
             'description' => $service->description,
             'diseaseCode' => $service->disease_code,
             'type' => $service->isDoctor() ? 'doctor' : $type,
+            'status' => $service->getAttribute('status'),
         ];
     }
 }

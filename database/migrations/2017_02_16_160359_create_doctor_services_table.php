@@ -27,7 +27,7 @@ class CreateDoctorServicesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('doctor_services', function (Blueprint $table) {
             $table->increments('id');
@@ -36,6 +36,7 @@ class CreateDoctorServicesTable extends Migration
             $table->text('description');
             $table->string('disease_code')->default('');
             $table->index('disease_code', 'idx_disease_code');
+            $table->string('status')->default('active')->index();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -46,7 +47,7 @@ class CreateDoctorServicesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('doctor_services');
     }

@@ -65,7 +65,26 @@ class ApiController extends Controller
      */
     protected function applyCondition($eloquent, Request $request = null): Builder
     {
+        if ($request) {
+            // apply filters
+            $filters = $request->json('filters');
+            if (is_array($filters) && count($filters)) {
+                foreach ($filters as $field => $filter) {
+                    $eloquent->where($field, $this->getAction($filter['matchMode']), $filter['value']);
+                }
+            }
+        }
+
         return $eloquent;
+    }
+
+    private function getAction(string $act): string {
+        switch ($act) {
+            case 'eq':
+            default:
+                $action = '=';
+        }
+        return $action;
     }
 
     /**

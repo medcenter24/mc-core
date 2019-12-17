@@ -24,6 +24,8 @@ use medcenter24\mcCore\App\Diagnostic;
 class DiagnosticService extends AbstractModelService
 {
 
+    public const STATUS_ACTIVE = 'active';
+
     protected function getClassName(): string
     {
         return Diagnostic::class;

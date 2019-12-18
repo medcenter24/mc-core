@@ -24,7 +24,11 @@ use League\Fractal\TransformerAbstract;
 
 class DiagnosticTransformer extends TransformerAbstract
 {
-    public function transform(Diagnostic $diagnostic)
+    /**
+     * @param Diagnostic $diagnostic
+     * @return array
+     */
+    public function transform(Diagnostic $diagnostic): array
     {
         return [
             'id' => $diagnostic->id,
@@ -32,7 +36,8 @@ class DiagnosticTransformer extends TransformerAbstract
             'description' => $diagnostic->description,
             'diagnosticCategoryId' => $diagnostic->diagnostic_category_id,
             'diseaseCode' => $diagnostic->disease_code,
-            'type' => $diagnostic->isDoctor() ? 'doctor' : ''
+            'type' => $diagnostic->isDoctor() ? 'doctor' : '',
+            'status' => $diagnostic->getAttribute('status'),
         ];
     }
 }

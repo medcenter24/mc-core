@@ -25,7 +25,7 @@ use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\FormVariable;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Services\Form\FormVariableService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Transformers\Form\FormVariableTransformer;
 use Symfony\Component\HttpFoundation\Response;
 

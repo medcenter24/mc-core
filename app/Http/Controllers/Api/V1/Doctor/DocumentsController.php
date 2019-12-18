@@ -23,8 +23,8 @@ use medcenter24\mcCore\App\Document;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DoctorDocumentRequest;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\DocumentService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Transformers\DocumentTransformer;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -41,7 +41,7 @@ class DocumentsController extends ApiController
 
     private function checkAccess(Document $document): void
     {
-        if ($document->created_by != $this->user()->id) {
+        if ($document->getAttribute('created_by') !== $this->user()->id) {
             $this->response->errorForbidden();
         }
     }

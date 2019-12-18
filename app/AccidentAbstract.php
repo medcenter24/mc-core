@@ -84,6 +84,4 @@ abstract class AccidentAbstract extends Model
     {
         return $this->morphToMany(Document::class, 'documentable');
     }
-
-
 }

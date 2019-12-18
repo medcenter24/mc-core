@@ -22,7 +22,7 @@ namespace medcenter24\mcCore\App\Foundation;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
-use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 use Illuminate\Foundation\Application as BaseApplication;
 
 class Application extends BaseApplication

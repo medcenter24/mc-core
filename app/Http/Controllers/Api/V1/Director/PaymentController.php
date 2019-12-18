@@ -21,6 +21,11 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 
+/**
+ * @TODO REDUNDANT?
+ * Class PaymentController
+ * @package medcenter24\mcCore\App\Http\Controllers\Api\V1\Director
+ */
 class PaymentController extends ApiController
 {
 

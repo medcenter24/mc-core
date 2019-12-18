@@ -18,50 +18,51 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
+use Log;
 use medcenter24\mcCore\App\Company;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Services\SignatureService;
 use medcenter24\mcCore\App\Transformers\CompanyTransformer;
 use Illuminate\Http\Request;
 
 class CompaniesController extends ApiController
 {
-    public function index()
+    public function index(): Response
     {
         $companies = Company::orderBy('title')->get();
         return $this->response->collection($companies, new CompanyTransformer());
     }
 
-    public function store(Request $request)
+    public function store(Request $request): Response
     {
         $company = Company::create([
             'title' => $request->json('title', ''),
         ]);
-        \Log::info('Company created', [$company, $this->user()]);
+        Log::info('Company created', [$company, $this->user()]);
         $transformer = new CompanyTransformer();
         return $this->response->created(null, $transformer->transform($company));
     }
 
-    public function update($id, Request $request)
+    public function update($id, Request $request): Response
     {
         $company = Company::findOrFail($id);
         $company->title = $request->json('title', '');
         $company->save();
 
-        \Log::info('Company updated', [$company, $this->user()]);
+        Log::info('Company updated', [$company, $this->user()]);
         return $this->response->item($company, new CompanyTransformer());
     }
 
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $company = Company::findOrFail($id);
-        \Log::info('Company deleted', [$company, $this->user()]);
+        Log::info('Company deleted', [$company, $this->user()]);
         $company->delete();
         return $this->response->noContent();
     }
 
-    public function uploadLogo($id)
+    public function uploadLogo($id): Response
     {
         $company = Company::findOrFail($id);
         $company->clearMediaCollection(LogoService::FOLDER);
@@ -70,26 +71,11 @@ class CompaniesController extends ApiController
         return $this->response->item($company, new CompanyTransformer());
     }
 
-    public function uploadSign($id)
+    public function deleteLogo($id): Response
     {
-        $company = Company::findOrFail($id);
-        $company->clearMediaCollection(SignatureService::FOLDER);
-        $company->addMediaFromRequest('file')
-            ->toMediaCollection(SignatureService::FOLDER, SignatureService::DISC);
-        return $this->response->item($company, new CompanyTransformer());
-    }
-
-    public function deleteLogo($id)
-    {
+        /** @var Company $company */
         $company = Company::findOrFail($id);
         $company->clearMediaCollection(LogoService::FOLDER);
-        return $this->response->noContent();
-    }
-
-    public function deleteSign($id)
-    {
-        $company = Company::findOrFail($id);
-        $company->clearMediaCollection(SignatureService::FOLDER);
         return $this->response->noContent();
     }
 }

@@ -23,7 +23,6 @@ use DOMDocument;
 use DOMElement;
 use DOMNodeList;
 use DOMXPath;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -31,6 +30,8 @@ use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Form;
 use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\File\TmpFileService;
 use medcenter24\mcCore\App\Services\Form\FormVariableService;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
@@ -38,6 +39,7 @@ use Mpdf\Output\Destination;
 class FormService
 {
     use ServiceLocatorTrait;
+
     /**
      * Filesystem constants
      */
@@ -94,9 +96,11 @@ class FormService
      */
     public function toPdf(Form $form, Model $source, $path = 'file.pdf'): void
     {
+        /** @var TmpFileService $tmpFileService */
+        $tmpFileService = $this->getServiceLocator()->get(TmpFileService::class);
         try {
             $mpdf = new Mpdf([
-                'tempDir' => storage_path('tmp'),
+                'tempDir' => $tmpFileService->getStoragePath(),
                 'debug' => true,
                 'useSubstitutions' => false,
                 'simpleTables' => true,

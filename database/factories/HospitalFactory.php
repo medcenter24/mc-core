@@ -17,12 +17,13 @@
  */
 
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 $factory->define(medcenter24\mcCore\App\Hospital::class, function (Faker $faker) {
     return [
         'title' => $faker->text(30),
         'description' => $faker->text(),
-        'ref_key' => str_random(2),
+        'ref_key' => Str::random(2),
         'address' => $faker->address,
         'phones' => $faker->phoneNumber.','.$faker->phoneNumber,
     ];

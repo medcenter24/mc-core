@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Models\Installer\Params\Env;
 
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Contract\Installer\EnvParam;
-use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 use medcenter24\mcCore\App\Models\Installer\Params\StringParam;
 
 class EnvRedisPasswordParam extends StringParam implements EnvParam

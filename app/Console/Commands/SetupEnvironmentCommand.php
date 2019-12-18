@@ -24,7 +24,7 @@ use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Models\Installer\Params\ConfigurableParam;
-use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 use medcenter24\mcCore\App\Services\Installer\InstallerService;
 use Dotenv\Dotenv;
 use Illuminate\Console\Command;

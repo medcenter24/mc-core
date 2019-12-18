@@ -29,7 +29,7 @@ use medcenter24\mcCore\App\Transformers\UserTransformer;
 use medcenter24\mcCore\App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 
 class AuthenticateController extends ApiController

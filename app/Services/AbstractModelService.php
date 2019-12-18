@@ -19,9 +19,10 @@
 namespace medcenter24\mcCore\App\Services;
 
 
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use medcenter24\mcCore\App\Helpers\Arr;
 use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
 abstract class AbstractModelService
 {
@@ -60,7 +61,6 @@ abstract class AbstractModelService
      */
     public function create(array $data = []): Model
     {
-        //return $this->getClassName()::create($data);
         return call_user_func([$this->getClassName(), 'create'], $this->appendRequiredData($data));
     }
 
@@ -85,11 +85,22 @@ abstract class AbstractModelService
      */
     public function first(array $filters = []): ?Model
     {
+        return $this->getQuery($filters)->first();
+    }
+
+    private function getQuery(array $filters = []): Builder
+    {
+        $filters = $this->appendRequiredData($filters);
         /** @var Builder $query */
         $query = call_user_func([$this->getClassName(), 'query']);
         foreach ($filters as $key => $filter) {
             $query->where($key, $filter);
         }
-        return $query->first();
+        return $query;
+    }
+
+    public function count(array $filters = []): int
+    {
+        return $this->getQuery($filters)->count();
     }
 }

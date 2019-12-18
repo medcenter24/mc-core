@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,23 +15,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+namespace medcenter24\mcCore\App\Helpers;
 
 
-class ServiceLocator
+class StrHelper
 {
-    private static $inst;
-
-    public static function instance(): self
+    public static function getLetters(string $string): string
     {
-        if (!self::$inst) {
-            self::$inst = new self();
-        }
-        return self::$inst;
-    }
-
-    public function get(string $name, array $parameters = [])
-    {
-        return resolve($name, ['options' => $parameters]);
+        $string = preg_replace('/\W/', '', $string);
+        $string = preg_replace('/\d/', '', $string);
+        return $string;
     }
 }

@@ -22,8 +22,18 @@ namespace medcenter24\mcCore\App\Services;
 use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Invoice;
 
-class HospitalAccidentService
+class HospitalAccidentService extends AbstractModelService
 {
+    protected function getClassName(): string
+    {
+        return HospitalAccident::class;
+    }
+
+    protected function getRequiredFields(): array
+    {
+        return [];
+    }
+
     public function saveHospitalInvoice(HospitalAccident $hospitalAccident, array $data = null)
     {
         $this->saveInvoice($hospitalAccident, $data, 'hospital');

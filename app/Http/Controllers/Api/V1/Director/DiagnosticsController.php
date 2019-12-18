@@ -37,24 +37,20 @@ class DiagnosticsController extends ApiController
         return Diagnostic::class;
     }
 
-    public function index(): Response
-    {
-        $diagnostics = Diagnostic::orderBy('title')->get();
-        return $this->response->collection($diagnostics, new DiagnosticTransformer());
-    }
-
     public function update($id, DiagnosticRequest $request): Response
     {
+        /** @var Diagnostic $diagnostic */
         $diagnostic = Diagnostic::find($id);
         if (!$diagnostic) {
             $this->response->errorNotFound();
         }
 
-        $diagnostic->title= $request->json('title', '');
-        $diagnostic->disease_code = $request->json('diseaseCode', '');
-        $diagnostic->description = $request->json('description', '');
-        $diagnostic->diagnostic_category_id = $request->json('diagnosticCategoryId', 0);
-        $diagnostic->created_by = $this->user()->id;
+        $diagnostic->setAttribute('title', $request->json('title', ''));
+        $diagnostic->setAttribute('disease_code', $request->json('diseaseCode', ''));
+        $diagnostic->setAttribute('description', $request->json('description', ''));
+        $diagnostic->setAttribute('diagnostic_category_id', $request->json('diagnosticCategoryId', 0));
+        $diagnostic->setAttribute('created_by', $this->user()->id);
+        $diagnostic->setAttribute('status', $request->json('status', 'active'));
         $diagnostic->save();
 
         $transformer = new DiagnosticTransformer();
@@ -69,6 +65,7 @@ class DiagnosticsController extends ApiController
             'description' => $request->json('description', ''),
             'diagnostic_category_id' => $request->json('diagnosticCategoryId', 0),
             'created_by' => $this->user()->id,
+            'status' => $request->json('status', 'active'),
         ]);
         $transformer = new DiagnosticTransformer();
         return $this->response->created(null, $transformer->transform($diagnostic));

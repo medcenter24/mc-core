@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -18,9 +17,22 @@
 
 namespace medcenter24\mcCore\App\Services;
 
-// todo needs to be deleted
-class SignatureService
+
+use medcenter24\mcCore\App\Hospital;
+
+class HospitalService extends AbstractModelService
 {
-    const DISC = 'signature';
-    const FOLDER = 'signature';
+
+    public function getClassName(): string
+    {
+        return Hospital::class;
+    }
+
+    protected function getRequiredFields(): array
+    {
+        return [
+            'title' => '',
+        ];
+    }
+
 }

@@ -25,11 +25,11 @@ use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\Arr;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Models\Installer\Params\System\AutoModeParam;
-use medcenter24\mcCore\App\Services\EnvironmentService;
+use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 use medcenter24\mcCore\App\Services\Installer\GuiSettingsService;
 use medcenter24\mcCore\App\Services\Installer\InstallerService;
 use medcenter24\mcCore\App\Services\Installer\JsonSeedReaderService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
 /**
  * php artisan setup:seed [--force]

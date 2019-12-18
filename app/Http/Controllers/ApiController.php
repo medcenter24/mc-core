@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Database\Eloquent\Builder;
@@ -64,7 +65,26 @@ class ApiController extends Controller
      */
     protected function applyCondition($eloquent, Request $request = null): Builder
     {
+        if ($request) {
+            // apply filters
+            $filters = $request->json('filters');
+            if (is_array($filters) && count($filters)) {
+                foreach ($filters as $field => $filter) {
+                    $eloquent->where($field, $this->getAction($filter['matchMode']), $filter['value']);
+                }
+            }
+        }
+
         return $eloquent;
+    }
+
+    private function getAction(string $act): string {
+        switch ($act) {
+            case 'eq':
+            default:
+                $action = '=';
+        }
+        return $action;
     }
 
     /**
@@ -134,7 +154,7 @@ class ApiController extends Controller
             /** @var Model $model */
             $model = new $class;
             $fields = $model->getVisible();
-            $field = camel_case($fieldName);
+            $field = Str::camel($fieldName);
         }
         return in_array($field, $fields) ? $field : 'id';
     }

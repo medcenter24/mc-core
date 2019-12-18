@@ -22,6 +22,7 @@
 namespace medcenter24\mcCore\App\Services\Core;
 
 
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 
 class ExtensionManagerService
@@ -33,6 +34,12 @@ class ExtensionManagerService
      */
     public function has(string $extName = ''): bool
     {
-        return FileHelper::isDirExists(app_path('../'.$extName));
+        $status = false;
+        $modulesFilePath = app_path() . '/../modules_statuses.json';
+        try {
+            $modules = json_decode(FileHelper::getContent($modulesFilePath), 1);
+            $status = array_key_exists($extName, $modules) && $modules[$extName];
+        } catch (InconsistentDataException $e) {}
+        return $status;
     }
 }

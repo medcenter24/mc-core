@@ -19,7 +19,6 @@
 namespace medcenter24\mcCore\App\Services;
 
 
-use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\DoctorAccident;

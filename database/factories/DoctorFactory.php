@@ -16,12 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use Illuminate\Support\Str;
 use medcenter24\mcCore\App\City;
 use medcenter24\mcCore\App\Doctor;
 use Faker\Generator as Faker;
 
 $factory->define(Doctor::class, function (Faker $faker) {
-    $refKey = $faker->toUpper(str_random(3));
+    $refKey = $faker->toUpper(Str::random(3));
     return [
         'name' => $faker->firstName,
         'description' => 'Doctor ' . $refKey,

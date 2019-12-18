@@ -22,8 +22,10 @@ namespace medcenter24\mcCore\Tests\Unit\Services\Finance;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Invoice;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Payment;
 use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
@@ -155,8 +157,8 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * Case without anything should return 0 for all valuable variables
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws InconsistentDataException
+     * @throws FormulaException
      */
     public function testEmptyDoctorCase(): void
     {
@@ -177,8 +179,8 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * Case without anything should return 0 for all valuable variables
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws InconsistentDataException
+     * @throws FormulaException
      */
     public function testEmptyHospitalCase(): void
     {
@@ -197,26 +199,28 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @expectedException \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @expectedExceptionMessage Hospital Case only
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws InconsistentDataException
+     * @throws FormulaException
      */
     public function testWrongHospitalCaseException(): void
     {
+        $this->expectException(InconsistentDataException::class);
+        $this->expectExceptionMessage('Hospital Case only');
+
         /** @var Accident $accident */
         $accident = $this->getDoctorAccidentMock()->reveal();
         $this->financeService()->getToHospitalFormula($accident);
     }
 
     /**
-     * @expectedException \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @expectedExceptionMessage DoctorAccident only
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws InconsistentDataException
+     * @throws FormulaException
      */
     public function testWrongDoctorCaseException(): void
     {
+        $this->expectException(InconsistentDataException::class);
+        $this->expectExceptionMessage('DoctorAccident only');
+
         /** @var Accident $accident */
         $accident = $this->getHospitalAccidentMock()->reveal();
         $this->financeService()->getToDoctorFormula($accident);
@@ -224,7 +228,7 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * When the payment already stored (when we had static digit in the DB) - Doesn't need to calculate again
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     public function testStoredFromAssistantPayment(): void
     {
@@ -248,7 +252,7 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * This is payment that needs to be calculated according to the conditions
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     public function testCalculateFromAssistantEmptyPayment(): void
     {
@@ -264,7 +268,7 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * This is payment that needs to be calculated according to the conditions
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     public function testCalculateFromAssistantPaymentWithCondition(): void
     {
@@ -298,8 +302,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws InconsistentDataException
+     * @throws FormulaException
      */
     public function testCalculateToDoctorPayment(): void
     {
@@ -323,8 +327,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws InconsistentDataException
+     * @throws FormulaException
      */
     public function testCalculateToDoctorPaymentWithCondition(): void
     {
@@ -350,8 +354,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws InconsistentDataException
+     * @throws FormulaException
      */
     public function testStoredToDoctorPayment(): void
     {
@@ -380,8 +384,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws InconsistentDataException
+     * @throws FormulaException
      */
     public function testCalculateToHospitalPayment(): void
     {
@@ -414,8 +418,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws InconsistentDataException
+     * @throws FormulaException
      */
     public function testCalculateToHospitalPaymentWithCondition(): void
     {
@@ -448,8 +452,8 @@ class CaseFinanceServiceTest extends TestCase
     }
 
     /**
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws InconsistentDataException
+     * @throws FormulaException
      */
     public function testStoredToHospitalPayment(): void
     {

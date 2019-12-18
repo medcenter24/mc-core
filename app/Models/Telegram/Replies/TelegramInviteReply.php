@@ -20,7 +20,7 @@ namespace medcenter24\mcCore\App\Models\Telegram\Replies;
 
 
 use medcenter24\mcCore\App\Services\InviteService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\TelegramUser;
 use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\Update;

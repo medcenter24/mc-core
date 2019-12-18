@@ -29,10 +29,10 @@ class Arr
      * @param $arr
      * @return string
      */
-    public static function multiArrayToString ($arr): string
+    public static function multiArrayToString (array $arr): string
     {
         $result = [];
-        array_walk_recursive($arr, function($v) use (&$result) {
+        array_walk_recursive($arr, static function($v) use (&$result) {
             $result[] = $v;
         });
         return implode(' ', $result);
@@ -56,12 +56,16 @@ class Arr
         }, $arr);
     }
 
+    /**
+     * @param array $arr
+     * @return array
+     */
     public static function collectTableRows (array $arr): array
     {
         $result = [];
         foreach (self::convertTableToKeyValue($arr) as $row) {
             foreach ($row as $key => $value) {
-                if (!isset($result[$key])) {
+                if (!array_key_exists($key, $result)) {
                     $result[$key] = [];
                 }
                 $result[$key][] = $value;
@@ -97,7 +101,7 @@ class Arr
     {
         $array = $data;
         foreach ($keys as $key) {
-            if (!array_key_exists($key, $array)) {
+            if (!is_array($array) || !array_key_exists($key, $array)) {
                 return false;
             }
 
@@ -105,5 +109,20 @@ class Arr
         }
 
         return true;
+    }
+
+    /**
+     * Convert any array (associative) to the values only (with numbers in the key)
+     * @param array $table
+     * @return array
+     */
+    public static function recursiveValues(array $table): array
+    {
+        foreach ($table as $key => $sub) {
+            if (is_array($sub)) {
+                $table[$key] = self::recursiveValues($sub);
+            }
+        }
+        return array_values($table);
     }
 }

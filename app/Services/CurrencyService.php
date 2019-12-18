@@ -22,12 +22,17 @@ namespace medcenter24\mcCore\App\Services;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\FinanceCurrency;
 
-class CurrencyService
+class CurrencyService extends AbstractModelService
 {
     /**
      * @var FinanceCurrency
      */
     private $defaultCurrency;
+
+    private $defaultCurrencies = [
+        ['title' => 'Euro', 'code' => 'eu', 'ico' => 'fa fa-euro', 'markers' => ['€']],
+        ['title' => 'Dollar', 'code' => 'us', 'ico' => 'fa fa-dollar', 'markers' => ['$']],
+    ];
 
     /**
      * Converts value to the other currencies
@@ -49,9 +54,69 @@ class CurrencyService
     public function getDefaultCurrency(): FinanceCurrency
     {
         if (!$this->defaultCurrency) {
-            $this->defaultCurrency = FinanceCurrency::firstOrFail();
+            $data = current($this->defaultCurrencies);
+            unset($data['markers']);
+            $this->defaultCurrency = $this->firstOrCreate($data);
         }
 
         return $this->defaultCurrency;
+    }
+
+    public function byCode(string $currencyCode): FinanceCurrency
+    {
+        /** @var FinanceCurrency $currency */
+        $currency = $this->firstOrCreate([
+            'code' => $currencyCode,
+        ]);
+        return $currency;
+    }
+
+    /**
+     * Name of the Model (ex: City::class)
+     * @return string
+     */
+    protected function getClassName(): string
+    {
+        return FinanceCurrency::class;
+    }
+
+    /**
+     * Initialize defaults to avoid database exceptions
+     * (different storage have different rules, so it is correct to set defaults instead of nothing)
+     * @return array
+     */
+    protected function getRequiredFields(): array
+    {
+        return [
+            'title' => '',
+            'code' => '',
+            'ico' => '',
+        ];
+    }
+
+    /**
+     * @param string $marker
+     * @return FinanceCurrency|null
+     */
+    public function byMarker(string $marker): ?FinanceCurrency
+    {
+        $data = null;
+        foreach ($this->defaultCurrencies as $defaultCurrency) {
+            if (in_array($marker, $defaultCurrency['markers'], true)) {
+                $data = $defaultCurrency;
+            }
+        }
+        $currency = null;
+        if ($data) {
+            unset($data['markers']);
+            /** @var FinanceCurrency $currency */
+            $currency = $this->firstOrCreate($data);
+        }
+
+        if (!$currency) {
+            $currency = $this->getDefaultCurrency();
+        }
+
+        return $currency;
     }
 }

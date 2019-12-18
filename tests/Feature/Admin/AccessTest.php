@@ -20,12 +20,10 @@ namespace medcenter24\mcCore\Tests\Feature\Admin;
 
 use medcenter24\mcCore\App\User;
 use medcenter24\mcCore\Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AccessTest extends TestCase
 {
+    // redirect to the admin page
     public function testMain(): void
     {
         \Roles::shouldReceive('hasRole')->times(0);
@@ -34,13 +32,15 @@ class AccessTest extends TestCase
             ->actingAs(factory(User::class)->make())
             ->get('/');
 
-        $response->assertStatus(200);
+        $response
+            ->assertRedirect('/admin')
+            ->assertStatus(302);
     }
 
     public function testAdmin(): void
     {
         \Roles::shouldReceive('hasRole')
-            ->times(11)
+            ->times(9)
             ->andReturnUsing(static function ($user, $role) {
                 return true;
             });
@@ -55,7 +55,7 @@ class AccessTest extends TestCase
     public function testDoctor(): void
     {
         \Roles::shouldReceive('hasRole')
-            ->times(6)
+            ->times(5)
             ->andReturnUsing(function ($user, $role) {
                 return false;
             });
@@ -70,7 +70,7 @@ class AccessTest extends TestCase
     public function testDirector(): void
     {
         \Roles::shouldReceive('hasRole')
-            ->times(6)
+            ->times(5)
             ->andReturnUsing(function ($user, $role) {
                 return false;
             });

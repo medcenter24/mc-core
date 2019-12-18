@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use medcenter24\mcCore\App\Accident;
 use League\Fractal\TransformerAbstract;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\UserService;
 
 /**
@@ -39,6 +39,9 @@ class CaseAccidentTransformer extends TransformerAbstract
      */
     public function transform (Accident $accident): array
     {
+
+        $incomePayment = $accident->getAttribute('incomePayment');
+        $paymentToCaseable = $accident->getAttribute('paymentToCaseable');
         return [
             'id' => $accident->id, // accident id
             'assistantId' => $accident->assistant_id,
@@ -55,8 +58,8 @@ class CaseAccidentTransformer extends TransformerAbstract
             'status' => $accident->accidentStatus ? $accident->accidentStatus->title : '',
             'city' => $accident->city_id && $accident->city ? $accident->city->title : '',
             'symptoms' => $accident->symptoms,
-            'price' => $accident->income,
-            'fee' => $accident->caseable_cost,
+            'price' => $incomePayment ? $incomePayment->getAttribute('value') : 0,
+            'doctorsFee' => $paymentToCaseable ? $paymentToCaseable->getAttribute('value') : 0,
         ];
     }
 }

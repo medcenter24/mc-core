@@ -20,11 +20,13 @@ namespace medcenter24\mcCore\App;
 
 
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use medcenter24\mcCore\App\Services\AccidentService;
-use medcenter24\mcCore\App\Services\ServiceLocator;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 
 class HospitalAccident extends AccidentAbstract
 {
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -46,16 +48,16 @@ class HospitalAccident extends AccidentAbstract
 
     /**
      * Hospital of this accident
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function hospital()
+    public function hospital(): BelongsTo
     {
         return $this->belongsTo(Hospital::class);
     }
 
     /**
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function hospitalGuarantee()
     {
@@ -63,9 +65,9 @@ class HospitalAccident extends AccidentAbstract
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function hospitalInvoice()
+    public function hospitalInvoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
     }

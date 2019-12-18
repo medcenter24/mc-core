@@ -37,12 +37,6 @@ class DoctorServicesController extends ApiController
         return DoctorService::class;
     }
 
-    public function index(): Response
-    {
-        $services = DoctorService::orderBy('title', 'desc')->get();
-        return $this->response->collection($services, new DoctorServiceTransformer());
-    }
-
     public function update($id, DoctorServiceRequest $request): Response
     {
         $doctorService = DoctorService::find($id);
@@ -54,6 +48,7 @@ class DoctorServicesController extends ApiController
         $doctorService->description = $request->json('description', '');
         $doctorService->disease_code = $request->json('diseaseCode', '');
         $doctorService->created_by = $this->user()->id;
+        $doctorService->setAttribute('status', $request->json('status', 'active'));
         $doctorService->save();
 
         $transformer = new DoctorServiceTransformer();
@@ -67,6 +62,7 @@ class DoctorServicesController extends ApiController
             'description' => $request->json('description', ''),
             'disease_code' => $request->json('diseaseCode', ''),
             'created_by' => $this->user()->id,
+            'status' => $request->json('status', 'active'),
         ]);
         $transformer = new DoctorServiceTransformer();
         return $this->response->created(null, $transformer->transform($doctorService));

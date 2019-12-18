@@ -18,6 +18,8 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+
+use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Accident;
@@ -41,7 +43,7 @@ use medcenter24\mcCore\App\Services\ReferralNumberService;
 use medcenter24\mcCore\App\Services\RoleService;
 use medcenter24\mcCore\App\Services\Scenario\ScenarioService;
 use medcenter24\mcCore\App\Services\Scenario\StoryService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
 use medcenter24\mcCore\App\Transformers\AccidentStatusHistoryTransformer;
 use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
@@ -64,7 +66,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
-
 
 class CasesController extends ApiController
 {
@@ -317,7 +318,6 @@ class CasesController extends ApiController
     private function updateDoctorMorph(DoctorAccident $doctorAccident, Request $request, string $morphName): void
     {
         $morphs = $request->json($morphName, []);
-        // $morphs = [];
         /*
          * I need to go through the new parameters, not the already stored
          * (definitely for the services)
@@ -449,7 +449,7 @@ class CasesController extends ApiController
      * @param StoryService $storyService
      * @param AccidentStatusesService $accidentStatusesService
      * @param ScenarioService $scenariosService
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function story(
         int $id,
@@ -485,7 +485,7 @@ class CasesController extends ApiController
     /**
      * Delete accident
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function destroy($id): Response
     {
@@ -494,7 +494,12 @@ class CasesController extends ApiController
         return $this->response->noContent();
     }
 
-    public function history(int $id, CaseHistoryService $service)
+    /**
+     * @param int $id
+     * @param CaseHistoryService $service
+     * @return Response
+     */
+    public function history(int $id, CaseHistoryService $service): Response
     {
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
@@ -505,13 +510,17 @@ class CasesController extends ApiController
         );
     }
 
+    /**
+     * @param int $id
+     * @return Response
+     */
     public function comments(int $id): Response
     {
         // I need to be sure that there is such accident
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
         $thread = Thread::firstOrCreate(['subject' => 'Accident_'.$accident->id]);
-        $userId = \Auth::id();
+        $userId = Auth::id();
         // $users = User::whereNotIn('id', $thread->participantsUserIds($userId))->get();
         $thread->markAsRead($userId);
 
@@ -524,14 +533,14 @@ class CasesController extends ApiController
     /**
      * @param Request $request
      * @param int $id
-     * @return \Dingo\Api\Http\Response
-     * @throws \ErrorException
+     * @return Response
+     * @throws InconsistentDataException
      */
     public function addComment(Request $request, int $id): Response
     {
         $accident = Accident::findOrFail($id);
         $thread = Thread::firstOrCreate(['subject' => 'Accident_'.$accident->id]);
-        $userId = \Auth::id();
+        $userId = Auth::id();
 
         $message = Message::create([
             'thread_id' => $thread->id,

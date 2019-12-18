@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\System;
 
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Services\Core\ExtensionManagerService;
-use medcenter24\mcCore\App\Services\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
 class ExtensionsController extends ApiController
 {

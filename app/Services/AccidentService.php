@@ -44,7 +44,22 @@ class AccidentService extends AbstractModelService
      */
     public function getCountByReferralNum (string $ref = ''): int
     {
-        return Accident::where('ref_num', $ref)->count();
+        return $this->count([
+            'ref_num' => $ref
+        ]);
+    }
+
+    /**
+     * @param string $ref
+     * @return Accident|null
+     */
+    public function getByAssistantRefNum(string $ref): ?Accident
+    {
+        /** @var Accident $accident */
+        $accident = $this->first([
+            'assistant_ref_num' => $ref
+        ]);
+        return $accident;
     }
 
     /**
@@ -53,7 +68,9 @@ class AccidentService extends AbstractModelService
      */
     public function getByRefNum (string $ref = ''): ?Accident
     {
-        return Accident::where('ref_num', $ref)->first();
+        /** @var Accident $accident */
+        $accident = $this->first(['ref_num' => $ref]);
+        return $accident;
     }
 
     /**
@@ -85,7 +102,7 @@ class AccidentService extends AbstractModelService
      */
     public function getCity(Accident $accident)
     {
-        return $accident->city_id ?: new City();
+        return $accident->getAttribute('city_id') ?: new City();
     }
 
     /**
@@ -114,6 +131,8 @@ class AccidentService extends AbstractModelService
             'accident_type_id' => 0,
             'accident_status_id' => 0,
             'assistant_id' => 0,
+            'assistant_invoice_id' => 0,
+            'assistant_guarantee_id' => 0,
             'city_id' => 0,
             'ref_num' => '',
             'title' => '',

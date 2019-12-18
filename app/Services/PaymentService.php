@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,15 +18,22 @@
 namespace medcenter24\mcCore\App\Services;
 
 
-trait ServiceLocatorTrait
-{
-    private $serviceLocator;
+use medcenter24\mcCore\App\Payment;
 
-    public function getServiceLocator(): ServiceLocator
+class PaymentService extends AbstractModelService
+{
+    protected function getClassName(): string
     {
-        if (!$this->serviceLocator) {
-            $this->serviceLocator = ServiceLocator::instance();
-        }
-        return $this->serviceLocator;
+        return Payment::class;
+    }
+
+    protected function getRequiredFields(): array
+    {
+        return [
+            'value' => 0,
+            'currency_id' => 0,
+            'fixed' => 1,
+            'description' => '',
+        ];
     }
 }

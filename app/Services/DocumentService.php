@@ -18,6 +18,8 @@
 
 namespace medcenter24\mcCore\App\Services;
 
+
+use Illuminate\Http\UploadedFile;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Document;
 use medcenter24\mcCore\App\Exceptions\CommonException;
@@ -58,7 +60,7 @@ class DocumentService extends AbstractModelService
      * @throws FileDoesNotExist
      * @throws FileIsTooBig
      */
-    public function createDocumentFromFile($file, User $user): Document
+    public function createDocumentFromFile(UploadedFile $file, User $user): Document
     {
         /** @var Document $document */
         $document = $this->create([
@@ -73,16 +75,17 @@ class DocumentService extends AbstractModelService
     }
 
     /**
-     * @param $files
+     * @param array $files instance of UploadedFile
      * @param User $user
      * @return Collection
      * @throws DiskDoesNotExist
      * @throws FileDoesNotExist
      * @throws FileIsTooBig
      */
-    public function createDocumentsFromFiles($files, User $user): Collection
+    public function createDocumentsFromFiles(array $files, User $user): Collection
     {
         $documents = new Collection();
+        /** @var UploadedFile $file */
         foreach ($files as $file) {
             $document = $this->createDocumentFromFile($file, $user);
             $documents->push($document);

@@ -17,11 +17,10 @@
  */
 
 use medcenter24\mcCore\App\Services\DocumentService;
+use medcenter24\mcCore\App\Services\File\TmpFileService;
 use medcenter24\mcCore\App\Services\FormService;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Services\SignatureService;
 use medcenter24\mcCore\App\Services\UploaderService;
-use medcenter24\McImport\Services\CaseImporterService;
 
 return [
 
@@ -104,11 +103,6 @@ return [
             'root' => storage_path(LogoService::FOLDER)
         ],
 
-        SignatureService::DISC => [
-            'driver' => 'local',
-            'root' => storage_path(SignatureService::FOLDER),
-        ],
-
         FormService::PDF_DISK => [
             'driver' => 'local',
             'root' => storage_path(FormService::PDF_FOLDER),
@@ -118,6 +112,11 @@ return [
             'driver' => 'local',
             'root' => storage_path(UploaderService::CONF_DEFAULT),
         ],
+
+        TmpFileService::DISC => [
+            'driver' => 'local',
+            'root' => storage_path(TmpFileService::FOLDER),
+        ]
 
         /*
          * @deprecated We can't store in the public path files! everything should be stored in the storage folder

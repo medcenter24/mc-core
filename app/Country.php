@@ -27,4 +27,9 @@ class Country extends Model
 
     protected $fillable = ['title'];
     protected $visible = ['id', 'title'];
+
+    public function regions()
+    {
+
+    }
 }

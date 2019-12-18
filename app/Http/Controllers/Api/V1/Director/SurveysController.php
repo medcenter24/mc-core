@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\DoctorSurvey;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DoctorSurveyRequest;
@@ -36,40 +37,37 @@ class SurveysController extends ApiController
         return DoctorSurvey::class;
     }
 
-    public function index()
+    public function update($id, DoctorSurveyRequest $request): Response
     {
-        $services = DoctorSurvey::orderBy('title', 'desc')->get();
-        return $this->response->collection($services, new DoctorSurveyTransformer());
-    }
-
-    public function update($id, DoctorSurveyRequest $request)
-    {
-        $doctorService = DoctorSurvey::find($id);
-        if (!$doctorService) {
+        /** @var DoctorSurvey $doctorSurvey */
+        $doctorSurvey = DoctorSurvey::find($id);
+        if (!$doctorSurvey) {
             $this->response->errorNotFound();
         }
 
-        $doctorService->title= $request->json('title', '');
-        $doctorService->description = $request->json('description', '');
-        $doctorService->created_by = $this->user()->id;
-        $doctorService->save();
+        $doctorSurvey->title= $request->json('title', '');
+        $doctorSurvey->description = $request->json('description', '');
+        $doctorSurvey->created_by = $this->user()->id;
+        $doctorSurvey->setAttribute('status', $request->json('status', 'active'));
+        $doctorSurvey->save();
 
         $transformer = new DoctorSurveyTransformer();
-        return $this->response->accepted(null, $transformer->transform($doctorService));
+        return $this->response->accepted(null, $transformer->transform($doctorSurvey));
     }
 
-    public function store(DoctorSurveyRequest $request)
+    public function store(DoctorSurveyRequest $request): Response
     {
-        $doctorService = DoctorSurvey::create([
+        $doctorSurvey = DoctorSurvey::create([
             'title' => $request->json('title', ''),
             'description' => $request->json('description', ''),
             'created_by' => $this->user()->id,
+            'status' => $request->json('status', 'active'),
         ]);
         $transformer = new DoctorSurveyTransformer();
-        return $this->response->created(null, $transformer->transform($doctorService));
+        return $this->response->created(null, $transformer->transform($doctorSurvey));
     }
     
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $service = DoctorSurvey::find($id);
         if (!$service) {

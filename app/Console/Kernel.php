@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Console;
 
 use medcenter24\mcCore\App\Console\Commands\CleanInvites;
+use medcenter24\mcCore\App\Console\Commands\CleanStorageDev;
 use medcenter24\mcCore\App\Console\Commands\CopierCommand;
 use medcenter24\mcCore\App\Console\Commands\CreateUserCommand;
 use medcenter24\mcCore\App\Console\Commands\SeedInstallerCommand;
@@ -39,6 +40,7 @@ class Kernel extends ConsoleKernel
         SetupEnvironmentCommand::class,
         CopierCommand::class,
         SeedInstallerCommand::class,
+        CleanStorageDev::class,
     ];
 
     /**

@@ -90,7 +90,8 @@ abstract class AbstractModelService
 
     private function getQuery(array $filters = []): Builder
     {
-        $filters = $this->appendRequiredData($filters);
+        // I can't extend filters filters have to be correct from request
+        // $filters = $this->appendRequiredData($filters);
         /** @var Builder $query */
         $query = call_user_func([$this->getClassName(), 'query']);
         foreach ($filters as $key => $filter) {

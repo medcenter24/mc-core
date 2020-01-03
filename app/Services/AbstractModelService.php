@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Services;
 
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Helpers\Arr;
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
@@ -79,6 +80,22 @@ abstract class AbstractModelService
         return $obj;
     }
 
+    protected function convertEmptyDatesToNull(array &$data): void
+    {
+        $className = $this->getClassName();
+        /** @var Model $modelObj */
+        $modelObj = new $className;
+        $modelDates = $modelObj->getDates();
+        Log::error($className .'   '. print_r($modelDates, 1));
+        if (is_array($modelDates)) {
+            foreach ($data as $key => $item) {
+                if ($item === '' && in_array($key, $modelDates, true)) {
+                    $data[$key] = null;
+                }
+            }
+        }
+    }
+
     /**
      * @param array $filters
      * @return Model|null
@@ -90,6 +107,9 @@ abstract class AbstractModelService
 
     private function getQuery(array $filters = []): Builder
     {
+        // dates should be a null instead of empty string
+        $this->convertEmptyDatesToNull($filters);
+
         // I can't extend filters filters have to be correct from request
         // $filters = $this->appendRequiredData($filters);
         /** @var Builder $query */

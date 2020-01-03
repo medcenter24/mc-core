@@ -18,7 +18,9 @@
 
 namespace medcenter24\mcCore\App;
 
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Patient extends Model
@@ -32,9 +34,9 @@ class Patient extends Model
     /**
      * Photos of the documents from the patient
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return MorphToMany
      */
-    public function documents()
+    public function documents(): MorphToMany
     {
         return $this->morphToMany(Document::class, 'documentable');
     }

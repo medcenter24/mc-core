@@ -71,7 +71,6 @@ class ApiController extends Controller
             if (is_array($filters) && count($filters)) {
                 foreach ($filters as $field => $filter) {
                     $eloquent->where($field, $this->getAction($filter['matchMode']), $filter['value']);
-                    Log::error('a', [$eloquent->toSql()]);
                 }
             }
         }

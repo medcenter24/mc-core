@@ -39,7 +39,6 @@ class CaseAccidentTransformer extends TransformerAbstract
      */
     public function transform (Accident $accident): array
     {
-
         $incomePayment = $accident->getAttribute('incomePayment');
         $paymentToCaseable = $accident->getAttribute('paymentToCaseable');
         return [

@@ -90,22 +90,6 @@ class CasesController extends ApiController
     }
 
     /**
-     * @param $eloquent
-     * @param Request|null $request
-     * @return Builder
-     */
-    protected function applyCondition($eloquent, Request $request = null): Builder
-    {
-        if ($request) {
-            $filters = $request->json('filters', false);
-            if (is_array($filters) && array_key_exists('find', $filters) && !empty($filters['find'])) {
-                $eloquent->where('ref_num', $filters['find']);
-            }
-        }
-        return $eloquent;
-    }
-
-    /**
      * Maybe onetime it would be helpful for optimization, but for now I need a lot of queries
      * Load all data that needed by director for the case editing
      * (Will return big json data)

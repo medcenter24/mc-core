@@ -45,7 +45,7 @@ class ApiController extends Controller
      * @param array $parameters
      * @return Response
      */
-    public function callAction($method, $parameters): Response
+    public function callAction($method, $parameters): ?Response
     {
         try {
             return parent::callAction($method, $parameters);
@@ -59,11 +59,11 @@ class ApiController extends Controller
      * To have possibility to add some conditions
      * # notice: do not want to search by all of the visible properties because we need to control that
      * # we need to control filter's types and not all filters are able to be searchable
-     * @param $eloquent
+     * @param Builder $eloquent
      * @param Request $request
      * @return mixed
      */
-    protected function applyCondition($eloquent, Request $request = null): Builder
+    protected function applyCondition(Builder $eloquent, Request $request = null): Builder
     {
         if ($request) {
             // apply filters
@@ -71,6 +71,7 @@ class ApiController extends Controller
             if (is_array($filters) && count($filters)) {
                 foreach ($filters as $field => $filter) {
                     $eloquent->where($field, $this->getAction($filter['matchMode']), $filter['value']);
+                    Log::error('a', [$eloquent->toSql()]);
                 }
             }
         }
@@ -80,6 +81,9 @@ class ApiController extends Controller
 
     private function getAction(string $act): string {
         switch ($act) {
+            case 'like':
+                $action = 'like';
+                break;
             case 'eq':
             default:
                 $action = '=';

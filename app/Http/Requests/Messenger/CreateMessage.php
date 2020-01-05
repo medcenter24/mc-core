@@ -18,8 +18,8 @@
 
 namespace medcenter24\mcCore\App\Http\Requests\Messenger;
 
-use medcenter24\mcCore\App\Role;
 use Illuminate\Foundation\Http\FormRequest;
+use medcenter24\mcCore\App\Services\RoleService;
 
 class CreateMessage extends FormRequest
 {
@@ -30,7 +30,7 @@ class CreateMessage extends FormRequest
      */
     public function authorize()
     {
-        return \Roles::hasRole(auth()->user(), Role::ROLE_ADMIN);
+        return \Roles::hasRole(auth()->user(), RoleService::ADMIN_ROLE);
     }
 
     /**

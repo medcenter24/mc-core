@@ -18,22 +18,23 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
+
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Transformers\DoctorProfileTransformer;
-
 
 class ProfileController extends ApiController
 {
     /**
      * Get information about logged user
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function me()
+    public function me(): Response
     {
         $doctor = $this->user()->doctor;
         if (!$doctor) {
             \Log::warning('User has role doctor but has not an assigned doctor', ['user' => ['id' => $this->user()->id, 'name' => $this->user()->name]]);
-            $this->response->errorNotFound('User is not a doctor');
+            $this->response->errorBadRequest('User is not a doctor');
         }
 
         return $this->response->item(
@@ -44,8 +45,10 @@ class ProfileController extends ApiController
 
     /**
      * Change language for the logged user
+     * @param $lang
+     * @return Response
      */
-    public function lang($lang)
+    public function lang($lang): Response
     {
         $user = $this->user();
         $user->lang = $lang;

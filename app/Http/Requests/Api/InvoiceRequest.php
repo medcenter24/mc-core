@@ -18,7 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Services\RoleService;
 
 class InvoiceRequest extends JsonRequest
 {
@@ -31,8 +31,8 @@ class InvoiceRequest extends JsonRequest
     public function authorize(): bool
     {
         return \Auth::check()
-            && (\Roles::hasRole(auth()->user(), Role::ROLE_DIRECTOR)
-                || \Roles::hasRole(auth()->user(), Role::ROLE_DOCTOR));
+            && (\Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)
+                || \Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE));
     }
 
     /**

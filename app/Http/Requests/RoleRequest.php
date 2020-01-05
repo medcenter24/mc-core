@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Http\Requests;
 
 use medcenter24\mcCore\App\Role;
 use Illuminate\Foundation\Http\FormRequest;
+use medcenter24\mcCore\App\Services\RoleService;
 
 class RoleRequest extends FormRequest
 {
@@ -28,9 +29,9 @@ class RoleRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return \Roles::hasRole(auth()->user(), Role::ROLE_ADMIN);
+        return \Roles::hasRole(auth()->user(), RoleService::ADMIN_ROLE);
     }
 
     /**
@@ -38,7 +39,7 @@ class RoleRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => 'required|unique:roles',

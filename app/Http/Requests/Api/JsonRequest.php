@@ -19,8 +19,8 @@
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
 
-use medcenter24\mcCore\App\Role;
 use Dingo\Api\Http\FormRequest;
+use medcenter24\mcCore\App\Services\RoleService;
 
 abstract class JsonRequest extends FormRequest
 {
@@ -31,7 +31,7 @@ abstract class JsonRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return \Auth::check() && \Roles::hasRole(auth()->user(), Role::ROLE_DIRECTOR);
+        return \Auth::check() && \Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
     }
 
     /**

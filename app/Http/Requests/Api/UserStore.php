@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
 use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Services\RoleService;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserStore extends JsonRequest
@@ -32,8 +33,8 @@ class UserStore extends JsonRequest
     public function authorize(): bool
     {
         return \Auth::check()
-            && (\Roles::hasRole(auth()->user(), Role::ROLE_DIRECTOR)
-                || \Roles::hasRole(auth()->user(), Role::ROLE_DOCTOR));
+            && (\Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)
+                || \Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE));
     }
 
     public function validationData(): array
@@ -41,7 +42,8 @@ class UserStore extends JsonRequest
         $data = parent::validationData();
 
         // if doctor access - he can change only his data
-        if (\Roles::hasRole(auth()->user(), Role::ROLE_DOCTOR) && auth()->user()->id != $data['id']) {
+        if (\Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE)
+            && auth()->user()->id != $data['id']) {
             throw new HttpException(403);
         }
 

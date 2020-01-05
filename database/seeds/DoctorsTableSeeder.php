@@ -19,6 +19,7 @@
 use medcenter24\mcCore\App\City;
 use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Services\RoleService;
 use medcenter24\mcCore\App\User;
 use Illuminate\Database\Seeder;
 
@@ -29,7 +30,7 @@ class DoctorsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         if (App::environment('production') && Doctor::all()->count()) {
             return;
@@ -42,8 +43,8 @@ class DoctorsTableSeeder extends Seeder
                 }
             ]);
 
-            $loginRoleId = Role::firstOrCreate(['title' => Role::ROLE_LOGIN])->id;
-            $doctorRoleId = Role::firstOrCreate(['title' => Role::ROLE_DOCTOR])->id;
+            $loginRoleId = Role::firstOrCreate(['title' => RoleService::LOGIN_ROLE])->id;
+            $doctorRoleId = Role::firstOrCreate(['title' => RoleService::DOCTOR_ROLE])->id;
 
             $doctor = factory(\App\Doctor::class)->create([
                 'name' => 'Doctor Aibolit',

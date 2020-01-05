@@ -18,14 +18,10 @@
 
 use medcenter24\mcCore\App\Role;
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Services\RoleService;
 
 $factory->define(Role::class, function (Faker $faker) {
     return [
-        'title' => $faker->randomElement([
-            Role::ROLE_LOGIN,
-            Role::ROLE_DIRECTOR,
-            Role::ROLE_DOCTOR,
-            Role::ROLE_ADMIN,
-        ]),
+        'title' => $faker->randomElement(RoleService::ROLES),
     ];
 });

@@ -19,9 +19,8 @@
 namespace medcenter24\mcCore\App\Http\Requests;
 
 
-use medcenter24\mcCore\App\Role;
 use Illuminate\Foundation\Http\FormRequest;
-
+use medcenter24\mcCore\App\Services\RoleService;
 
 class StoreAccidentStatus extends FormRequest
 {
@@ -30,9 +29,9 @@ class StoreAccidentStatus extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return \Auth::check() && \Roles::hasRole(auth()->user(), Role::ROLE_DIRECTOR);
+        return \Auth::check() && \Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
     }
 
     /**
@@ -40,7 +39,7 @@ class StoreAccidentStatus extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => 'required|max:70',

@@ -54,7 +54,7 @@ class AccidentsController extends ApiController
         if (!isset($this->doctor)) {
             $this->doctor = $this->user()->doctor;
             if (!$this->doctor) {
-                $this->response->errorForbidden('Current user should be a doctor');
+                $this->response->errorBadRequest('Current user should be a doctor');
             }
         }
 

@@ -29,12 +29,12 @@ use medcenter24\mcCore\App\User;
  */
 class RoleService
 {
-    const LOGIN_ROLE = 'login';
-    const DIRECTOR_ROLE = 'director';
-    const DOCTOR_ROLE = 'doctor';
-    const ADMIN_ROLE = 'admin';
+    public const LOGIN_ROLE = 'login';
+    public const DIRECTOR_ROLE = 'director';
+    public const DOCTOR_ROLE = 'doctor';
+    public const ADMIN_ROLE = 'admin';
 
-    const ROLES = [
+    public const ROLES = [
         self::LOGIN_ROLE,
         self::DIRECTOR_ROLE,
         self::DIRECTOR_ROLE,

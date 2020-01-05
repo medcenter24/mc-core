@@ -18,11 +18,13 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\UserStore;
 use medcenter24\mcCore\App\Http\Requests\Api\UserUpdate;
 use medcenter24\mcCore\App\Role;
 use medcenter24\mcCore\App\Services\LogoService;
+use medcenter24\mcCore\App\Services\RoleService;
 use medcenter24\mcCore\App\Transformers\UserTransformer;
 use medcenter24\mcCore\App\User;
 use Hash;
@@ -57,28 +59,28 @@ class UsersController extends ApiController
     }
 
     // get only users which assigned to doctors
-    public function index()
+    public function index(): Response
     {
-        $users = Role::where('title', Role::ROLE_DOCTOR)->get()->first()->users;
+        $users = Role::where('title', RoleService::DOCTOR_ROLE)->get()->first()->users;
         return $this->response->collection($users, new UserTransformer());
     }
 
     /**
      * Director has access only for himself or for all doctors
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function show($id)
+    public function show($id): Response
     {
         $user = User::findOrFail($id);
-        if ($user->id != $this->user()->id && !\Roles::hasRole($user, Role::ROLE_DOCTOR)) {
+        if ($user->id != $this->user()->id && !\Roles::hasRole($user, RoleService::DOCTOR_ROLE)) {
             \Log::info('Director has no access to the user', [$user]);
             $this->response->errorMethodNotAllowed();
         }
         return $this->response->item($user, new UserTransformer());
     }
 
-    public function update($id, UserUpdate $request)
+    public function update($id, UserUpdate $request): Response
     {
         $user = User::findOrFail($id);
         $user->name = $request->json('name', '');
@@ -100,7 +102,7 @@ class UsersController extends ApiController
         return $this->response->item($user, new UserTransformer());
     }
 
-    public function store(UserStore $request)
+    public function store(UserStore $request): Response
     {
         $user = User::create([
             'name' => $request->json('name', ''),
@@ -111,12 +113,12 @@ class UsersController extends ApiController
             'timezone' => $request->json('timezone', 'UTC'),
         ]);
         // director could create only users with doctor role
-        $user->roles()->attach(Role::where('title', Role::ROLE_DOCTOR)->get()->first());
+        $user->roles()->attach(Role::where('title', RoleService::DOCTOR_ROLE)->get()->first());
         $transformer = new UserTransformer();
         return $this->response->created(null, $transformer->transform($user));
     }
 
-    public function updatePhoto($id)
+    public function updatePhoto($id): Response
     {
         /** @var User $user */
         $user = User::findOrFail($id);
@@ -137,7 +139,7 @@ class UsersController extends ApiController
         return $this->response->item($user, new UserTransformer());
     }
 
-    public function deletePhoto($id)
+    public function deletePhoto($id): Response
     {
         $user = User::findOrFail($id);
         $user->clearMediaCollection(LogoService::FOLDER);

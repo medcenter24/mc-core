@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Http;
 
 use medcenter24\mcCore\App\Http\Middleware\Authenticate;
+use medcenter24\mcCore\App\Http\Middleware\DoctorMiddleware;
 use medcenter24\mcCore\App\Http\Middleware\EncryptCookies;
 use medcenter24\mcCore\App\Http\Middleware\RedirectIfAuthenticated;
 use medcenter24\mcCore\App\Http\Middleware\RoleMiddleware;
@@ -95,5 +96,6 @@ class Kernel extends HttpKernel
         'guest' => RedirectIfAuthenticated::class,
         'throttle' => ThrottleRequests::class,
         'role' => RoleMiddleware::class,
+        'doctor' => DoctorMiddleware::class,
     ];
 }

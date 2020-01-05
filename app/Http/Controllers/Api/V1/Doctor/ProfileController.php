@@ -20,6 +20,8 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
 
 use Dingo\Api\Http\Response;
+use Illuminate\Http\Request;
+use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Transformers\DoctorProfileTransformer;
 
@@ -39,6 +41,33 @@ class ProfileController extends ApiController
 
         return $this->response->item(
             $this->user()->doctor,
+            new DoctorProfileTransformer()
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function update(Request $request): Response
+    {
+        /** @var Doctor $doctor */
+        $doctor = $this->user()->getAttribute('doctor');
+        $name = $request->get('name','');
+        if ($name) {
+            $doctor->setAttribute('name', $name);
+            $doctor->save();
+        }
+
+        $phones = $request->get('phones', '');
+        if ($phones) {
+            $user = $doctor->getAttribute('user');
+            $user->setAttribute('phone', $phones);
+            $user->save();
+        }
+
+        return $this->response->item(
+            $doctor,
             new DoctorProfileTransformer()
         );
     }

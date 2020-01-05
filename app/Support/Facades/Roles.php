@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Facade;
 
 class Roles extends Facade
 {
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return RoleService::class;
     }

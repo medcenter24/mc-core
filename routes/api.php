@@ -81,7 +81,7 @@ $api->group([
             $api->get('user/company', AuthenticateController::class . '@getCompany');
             $api->get('system/extensions/{extName}', ExtensionsController::class . '@index');
 
-            $api->group(['prefix' => 'doctor', 'middleware' => ['role:doctor']], static function ($api) {
+            $api->group(['prefix' => 'doctor', 'middleware' => ['doctor']], static function ($api) {
                 $api->post('accidents/send', DoctorAccidentsController::class . '@send');
                 $api->get('accidents/{id}/patient', DoctorAccidentsController::class . '@patient');
                 $api->patch('accidents/{id}/patient', DoctorAccidentsController::class . '@updatePatient');
@@ -98,6 +98,7 @@ $api->group([
                 $api->patch('accidents/{id}/reject', DoctorAccidentsController::class . '@reject');
                 $api->resource('accidents', DoctorAccidentsController::class);
                 $api->get('me', ProfileController::class . '@me');
+                $api->put('me', ProfileController::class . '@update');
                 $api->get('lang/{lang}', ProfileController::class . '@lang');
                 $api->get('services', DoctorDoctorServicesController::class . '@index');
                 $api->get('surveys', DoctorSurveysController::class . '@index');

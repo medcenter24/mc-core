@@ -27,8 +27,6 @@
 |
 */
 
-use medcenter24\mcCore\App\Http\Controllers\Admin\Slack\SlackController;
-
 Route::get('/', static function () {
     return redirect('admin');
 });

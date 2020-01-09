@@ -39,7 +39,6 @@ class CaseAccidentTransformer extends TransformerAbstract
      */
     public function transform (Accident $accident): array
     {
-
         $incomePayment = $accident->getAttribute('incomePayment');
         $paymentToCaseable = $accident->getAttribute('paymentToCaseable');
         return [
@@ -60,6 +59,9 @@ class CaseAccidentTransformer extends TransformerAbstract
             'symptoms' => $accident->symptoms,
             'price' => $incomePayment ? $incomePayment->getAttribute('value') : 0,
             'doctorsFee' => $paymentToCaseable ? $paymentToCaseable->getAttribute('value') : 0,
+            'handlingTime' => $accident->getAttribute('handling_time')->setTimezone($this->getServiceLocator()
+                ->get(UserService::class)->getTimezone())
+                ->format(config('date.systemFormat')),
         ];
     }
 }

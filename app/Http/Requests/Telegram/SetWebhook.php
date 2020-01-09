@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Http\Requests\Telegram;
 
 use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Services\RoleService;
 use medcenter24\mcCore\App\Support\Facades\Roles;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -31,7 +32,7 @@ class SetWebhook extends FormRequest
      */
     public function authorize(): bool
     {
-        return Roles::hasRole(auth()->user(), Role::ROLE_ADMIN);
+        return Roles::hasRole(auth()->user(), RoleService::ADMIN_ROLE);
     }
 
     /**

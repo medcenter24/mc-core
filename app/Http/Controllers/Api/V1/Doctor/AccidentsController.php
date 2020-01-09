@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
 use Dingo\Api\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\AccidentType;
@@ -33,10 +34,10 @@ use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use medcenter24\mcCore\App\Services\DoctorsService;
 use medcenter24\mcCore\App\Services\DocumentService;
 use medcenter24\mcCore\App\Transformers\AccidentTypeTransformer;
-use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
 use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
 use medcenter24\mcCore\App\Transformers\DoctorAccidentStatusTransformer;
 use medcenter24\mcCore\App\Transformers\DoctorAccidentTransformer;
+use medcenter24\mcCore\App\Transformers\DoctorCaseAccidentTransformer;
 use medcenter24\mcCore\App\Transformers\DoctorServiceTransformer;
 use medcenter24\mcCore\App\Transformers\DoctorSurveyTransformer;
 use medcenter24\mcCore\App\Transformers\DocumentTransformer;
@@ -54,7 +55,7 @@ class AccidentsController extends ApiController
         if (!isset($this->doctor)) {
             $this->doctor = $this->user()->doctor;
             if (!$this->doctor) {
-                $this->response->errorForbidden('Current user should be a doctor');
+                $this->response->errorBadRequest('Current user should be a doctor');
             }
         }
 
@@ -101,7 +102,7 @@ class AccidentsController extends ApiController
             ->paginate($request->get('per_page', 10),
                 $columns = ['*'], $pageName = 'page', $request->get('page', null));
 
-        return $this->response->paginator($accidents, new CaseAccidentTransformer());
+        return $this->response->paginator($accidents, new DoctorCaseAccidentTransformer());
     }
 
     /**
@@ -458,6 +459,10 @@ class AccidentsController extends ApiController
         $accident->accident_type_id = (int)$request->json('caseType', 1);
         $accident->caseable->recommendation = (string)$request->json('diagnose', '');
         $accident->caseable->investigation = (string)$request->json('investigation', '');
+        
+        $visitTime = $request->json('visitDateTime', '');
+        $time = Carbon::parse($visitTime);
+        $accident->caseable->visit_time = $time->format('Y-m-d H:i:s');
         $accident->caseable->save();
         $accident->save();
 

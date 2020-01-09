@@ -470,11 +470,16 @@
                         @yield('message')
                     </p>
 
-                    <a href="{{ app('router')->has('home') ? route('home') : url('/') }}">
-                        <button class="bg-transparent text-grey-darkest font-bold uppercase tracking-wide py-3 px-6 border-2 border-grey-light hover:border-grey rounded-lg">
-                            {{ __('Go Home') }}
-                        </button>
-                    </a>
+                    <a href="{{ app('router')->has('home') ? route('home') : url('/') }}"><button class="bg-transparent text-grey-darkest font-bold uppercase tracking-wide py-3 px-6 border-2 border-grey-light hover:border-grey rounded-lg">{{ __('Go Home') }}</button></a>
+
+                    <a href="{{ route('logout') }}"
+                       class="dropdown-item"
+                       onclick="event.preventDefault();
+                                                         document.getElementById('logout-form').submit();"><button class="bg-transparent text-grey-darker font-bold uppercase tracking-wide py-3 px-6 border-2 border-grey-light hover:border-grey rounded-lg">{{ __('Log Out') }}</button></a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
                 </div>
             </div>
 

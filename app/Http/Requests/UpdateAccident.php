@@ -18,8 +18,8 @@
 
 namespace medcenter24\mcCore\App\Http\Requests;
 
-use medcenter24\mcCore\App\Role;
 use Illuminate\Foundation\Http\FormRequest;
+use medcenter24\mcCore\App\Services\RoleService;
 
 class UpdateAccident extends FormRequest
 {
@@ -30,7 +30,7 @@ class UpdateAccident extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::check() && \Roles::hasRole(auth()->user(), Role::ROLE_DIRECTOR);
+        return \Auth::check() && \Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
     }
 
     /**

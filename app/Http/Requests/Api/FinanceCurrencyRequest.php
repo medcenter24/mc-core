@@ -18,7 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Services\RoleService;
 
 class FinanceCurrencyRequest extends JsonRequest
 {
@@ -30,7 +30,7 @@ class FinanceCurrencyRequest extends JsonRequest
     public function authorize(): bool
     {
         return \Auth::check()
-            && \Roles::hasRole(auth()->user(), Role::ROLE_DIRECTOR);
+            && \Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
     }
 
     /**

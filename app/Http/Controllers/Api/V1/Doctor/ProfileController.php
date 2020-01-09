@@ -18,22 +18,25 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
+
+use Dingo\Api\Http\Response;
+use Illuminate\Http\Request;
+use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Transformers\DoctorProfileTransformer;
-
 
 class ProfileController extends ApiController
 {
     /**
      * Get information about logged user
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function me()
+    public function me(): Response
     {
         $doctor = $this->user()->doctor;
         if (!$doctor) {
             \Log::warning('User has role doctor but has not an assigned doctor', ['user' => ['id' => $this->user()->id, 'name' => $this->user()->name]]);
-            $this->response->errorNotFound('User is not a doctor');
+            $this->response->errorBadRequest('User is not a doctor');
         }
 
         return $this->response->item(
@@ -43,9 +46,38 @@ class ProfileController extends ApiController
     }
 
     /**
-     * Change language for the logged user
+     * @param Request $request
+     * @return Response
      */
-    public function lang($lang)
+    public function update(Request $request): Response
+    {
+        /** @var Doctor $doctor */
+        $doctor = $this->user()->getAttribute('doctor');
+        $name = $request->get('name','');
+        if ($name) {
+            $doctor->setAttribute('name', $name);
+            $doctor->save();
+        }
+
+        $phones = $request->get('phones', '');
+        if ($phones) {
+            $user = $doctor->getAttribute('user');
+            $user->setAttribute('phone', $phones);
+            $user->save();
+        }
+
+        return $this->response->item(
+            $doctor,
+            new DoctorProfileTransformer()
+        );
+    }
+
+    /**
+     * Change language for the logged user
+     * @param $lang
+     * @return Response
+     */
+    public function lang($lang): Response
     {
         $user = $this->user();
         $user->lang = $lang;

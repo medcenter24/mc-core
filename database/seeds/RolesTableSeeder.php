@@ -18,6 +18,8 @@
 
 use medcenter24\mcCore\App\Role;
 use Illuminate\Database\Seeder;
+use medcenter24\mcCore\App\Services\RoleService;
+use App;
 
 class RolesTableSeeder extends Seeder
 {
@@ -35,7 +37,7 @@ class RolesTableSeeder extends Seeder
             Role::truncate();
         }
 
-        foreach ([Role::ROLE_LOGIN, Role::ROLE_ADMIN, Role::ROLE_DOCTOR, Role::ROLE_DIRECTOR] as $roleName) {
+        foreach (RoleService::ROLES as $roleName) {
             Role::firstOrCreate(['title' => $roleName]);
         }
     }

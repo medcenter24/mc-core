@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Http\Requests\Telegram;
 
 use medcenter24\mcCore\App\Role;
 use Illuminate\Foundation\Http\FormRequest;
+use medcenter24\mcCore\App\Services\RoleService;
 use Roles;
 
 class SendMessage extends FormRequest
@@ -31,7 +32,7 @@ class SendMessage extends FormRequest
      */
     public function authorize()
     {
-        return Roles::hasRole(auth()->user(), Role::ROLE_ADMIN);
+        return Roles::hasRole(auth()->user(), RoleService::ADMIN_ROLE);
     }
 
     /**

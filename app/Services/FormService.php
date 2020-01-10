@@ -345,6 +345,12 @@ class FormService
         return (string)$val;
     }
 
+    /**
+     * @param Model $accident
+     * @param string $var
+     * @return Collection
+     * @throws InconsistentDataException
+     */
     private function getAccidentResources(Model $accident, string $var): Collection
     {
         $map = trim($var, ':');
@@ -355,6 +361,9 @@ class FormService
             if ( isset($obj->$property) && is_object($obj->$property)) {
                 $obj = $obj->$property;
             }
+        }
+        if (!is_a($obj, Collection::class)) {
+            throw new InconsistentDataException('The map is not found in the model');
         }
         return $obj;
     }

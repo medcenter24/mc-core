@@ -36,8 +36,8 @@ class FormVariableService
     public const VAR_ACCIDENT_CASEABLE_DOCTOR_MEDICAL_BOARD_NUM = ':accident.caseable.doctor.medical_board_num';
     public const VAR_ACCIDENT_CASEABLE_HOSPITAL_TITLE = ':accident.caseable.hospital.title';
     public const VAR_ACCIDENT_INCOME_CURRENCY_ICO = ':accident.incomePayment.currency.ico';
-    public const VAR_ACCIDENT_DIAGNOSTICS = ':accident.diagnostics';
-    public const VAR_ACCIDENT_SERVICES = ':accident.services';
+    public const VAR_ACCIDENT_CASEABLE_DIAGNOSTICS = ':accident.caseable.diagnostics';
+    public const VAR_ACCIDENT_CASEABLE_SERVICES = ':accident.caseable.services';
     public const VAR_ACCIDENT_INCOME_CURRENCY_TITLE = ':accident.incomePayment.currency.title';
     public const VAR_ACCIDENT_INCOME_VALUE = ':accident.incomePayment.value';
     public const VAR_ACCIDENT_CASEABLE_VISIT_TIME_TIME = ':accident.caseable.visit_time.time';
@@ -64,8 +64,8 @@ class FormVariableService
             self::VAR_ACCIDENT_CASEABLE_DOCTOR_MEDICAL_BOARD_NUM,
             self::VAR_ACCIDENT_CASEABLE_HOSPITAL_TITLE,
             self::VAR_ACCIDENT_INCOME_CURRENCY_ICO,
-            self::VAR_ACCIDENT_DIAGNOSTICS,
-            self::VAR_ACCIDENT_SERVICES,
+            self::VAR_ACCIDENT_CASEABLE_DIAGNOSTICS,
+            self::VAR_ACCIDENT_CASEABLE_SERVICES,
             self::VAR_ACCIDENT_INCOME_CURRENCY_TITLE,
             self::VAR_ACCIDENT_INCOME_VALUE,
             self::VAR_ACCIDENT_CASEABLE_VISIT_TIME_TIME,

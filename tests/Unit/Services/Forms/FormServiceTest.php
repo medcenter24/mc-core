@@ -276,7 +276,7 @@ class FormServiceTest extends TestCase
 
         $form = new Form([
             'template' => 'covered by text <span '.FormService::CONDITION_FOR.'="'
-                .FormVariableService::VAR_ACCIDENT_SERVICES.'">'
+                .FormVariableService::VAR_ACCIDENT_CASEABLE_SERVICES.'">'
                 . FormService::CONDITION_FOR_RESOURCE .'.id'
                 . FormService::CONDITION_FOR_RESOURCE .'.title'
                 . '</span> after if',
@@ -291,8 +291,9 @@ class FormServiceTest extends TestCase
      */
     public function testForConditionTrue(): void
     {
+        /** @var Accident $accident */
         $accident = factory(Accident::class)->create();
-        $accident->services()->detach();
+        $accident->getAttribute('caseable')->services()->detach();
 
         factory(DoctorService::class)->create([
             'title' => 'service 1',
@@ -303,11 +304,11 @@ class FormServiceTest extends TestCase
         factory(DoctorService::class)->create([
             'title' => 'service 3',
         ]);
-        $accident->services()->attach([1, 2, 3]);
+        $accident->getAttribute('caseable')->services()->attach([1, 2, 3]);
 
         $form = new Form([
             'template' => 'covered by text <span :template.for="'
-                . FormVariableService::VAR_ACCIDENT_SERVICES.'">'
+                . FormVariableService::VAR_ACCIDENT_CASEABLE_SERVICES.'">'
                 . FormService::CONDITION_FOR_RESOURCE .'.id, '
                 . FormService::CONDITION_FOR_RESOURCE .'.title; '
                 . '</span> after if',
@@ -325,8 +326,9 @@ class FormServiceTest extends TestCase
      */
     public function testForConditionDiagnostics(): void
     {
+        /** @var Accident $accident */
         $accident = factory(Accident::class)->create();
-        $accident->diagnostics()->detach();
+        $accident->getAttribute('caseable')->diagnostics()->detach();
 
         factory(Diagnostic::class)->create([
             'title' => 'd 1',
@@ -337,11 +339,11 @@ class FormServiceTest extends TestCase
         factory(Diagnostic::class)->create([
             'title' => 'd 3',
         ]);
-        $accident->diagnostics()->attach([1, 2, 3]);
+        $accident->getAttribute('caseable')->diagnostics()->attach([1, 2, 3]);
 
         $form = new Form([
             'template' => 'covered by text <span '.FormService::CONDITION_FOR.'="'
-                . FormVariableService::VAR_ACCIDENT_DIAGNOSTICS.'">'
+                . FormVariableService::VAR_ACCIDENT_CASEABLE_DIAGNOSTICS.'">'
                 . FormService::CONDITION_FOR_RESOURCE .'.title; '
                 . '</span> after if',
             'formable_type' => Accident::class,
@@ -358,8 +360,9 @@ class FormServiceTest extends TestCase
      */
     public function testForConditionDiagnostics2(): void
     {
+        /** @var Accident $accident */
         $accident = factory(Accident::class)->create();
-        $accident->diagnostics()->detach();
+        $accident->getAttribute('caseable')->diagnostics()->detach();
 
         factory(Diagnostic::class)->create([
             'title' => 'd 1',
@@ -370,10 +373,10 @@ class FormServiceTest extends TestCase
         factory(Diagnostic::class)->create([
             'title' => 'd 3',
         ]);
-        $accident->diagnostics()->attach([1, 2, 3]);
+        $accident->getAttribute('caseable')->diagnostics()->attach([1, 2, 3]);
 
         $form = new Form([
-            'template' => '<span :template.for=":accident.diagnostics">
+            'template' => '<span :template.for="'.FormVariableService::VAR_ACCIDENT_CASEABLE_DIAGNOSTICS.'">
                             <div>:template.for.resource.title</div>
                         </span>',
             'formable_type' => Accident::class,

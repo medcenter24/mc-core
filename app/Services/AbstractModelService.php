@@ -20,7 +20,6 @@ namespace medcenter24\mcCore\App\Services;
 
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Helpers\Arr;
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
@@ -86,7 +85,6 @@ abstract class AbstractModelService
         /** @var Model $modelObj */
         $modelObj = new $className;
         $modelDates = $modelObj->getDates();
-        Log::error($className .'   '. print_r($modelDates, 1));
         if (is_array($modelDates)) {
             foreach ($data as $key => $item) {
                 if ($item === '' && in_array($key, $modelDates, true)) {

@@ -111,9 +111,9 @@ class AccidentService extends AbstractModelService
      */
     public function getAccidentServices(Accident $accident): Collection
     {
-        $accidentServices = $accident->services;
-        if ($accident->caseable) {
-            $accidentServices = $accidentServices->merge($accident->caseable->services);
+        $accidentServices = null;
+        if ($accident->isDoctorCaseable()) {
+            $accidentServices = $accident->getAttribute('caseable')->getAttribute('services');
         }
         return $accidentServices ?: collect([]);
     }

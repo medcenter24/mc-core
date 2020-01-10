@@ -266,6 +266,7 @@ class FormServiceTest extends TestCase
 
     /**
      * No records in the storage for the form
+     * @throws InconsistentDataException
      */
     public function testForConditionFalse(): void
     {

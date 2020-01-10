@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
 use medcenter24\mcCore\App\AccidentStatus;
 use medcenter24\mcCore\App\AccidentType;
 use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\City;
 use medcenter24\mcCore\App\DoctorAccident;
 use medcenter24\mcCore\App\FormReport;
 use medcenter24\mcCore\App\Patient;
@@ -65,7 +66,7 @@ $factory->define(\medcenter24\mcCore\App\Accident::class, function (Faker $faker
         'ref_num' => $refNum,
         'title' => 'Accident ' . $refNum,
         'city_id' => function () {
-            return factory(\medcenter24\mcCore\App\City::class)->create()->id;
+            return factory(City::class)->create()->id;
         },
         'address' => $faker->address,
         'contacts' => $faker->company . "\n" . $faker->companyEmail . "\n" . $faker->phoneNumber,

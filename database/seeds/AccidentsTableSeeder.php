@@ -79,16 +79,10 @@ class AccidentsTableSeeder extends Seeder
             ])->each(function (Accident $accident) {
                 $accident->checkpoints()->save(factory(AccidentCheckpoint::class)->create());
 
-                $accident->services()->attach(factory(DoctorService::class)->create());
-                $accident->services()->attach(factory(DoctorService::class)->create());
                 $accident->caseable->services()->attach(factory(DoctorService::class)->create());
 
-                $accident->diagnostics()->attach(factory(Diagnostic::class)->create());
-                $accident->diagnostics()->attach(factory(Diagnostic::class)->create());
                 $accident->caseable->diagnostics()->attach(factory(Diagnostic::class)->create());
 
-                $accident->surveys()->attach(factory(DoctorSurvey::class)->create());
-                $accident->surveys()->attach(factory(DoctorSurvey::class)->create());
                 $accident->caseable->surveys()->attach(factory(DoctorSurvey::class)->create());
                 $accident->caseable->surveys()->attach(factory(DoctorSurvey::class)->create());
             });

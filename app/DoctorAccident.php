@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App;
 
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 
@@ -78,5 +79,36 @@ class DoctorAccident extends AccidentAbstract
         }
 
         return $attributes;
+    }
+
+    /**
+     * Selected by doctor diagnostics
+     */
+    public function diagnostics(): MorphToMany
+    {
+        return $this->morphToMany(Diagnostic::class, 'diagnosticable');
+    }
+
+    /**
+     * Each DoctorAccident is able to has own services, created by a doctor
+     * but by default it could be defined by the director
+     *
+     * @return MorphToMany
+     */
+    public function services(): MorphToMany
+    {
+        return $this->morphToMany(DoctorService::class, 'doctor_serviceable');
+    }
+
+    /**
+     * As same as serviceable()
+     * each doctorAccident is able to has his own survey
+     * but by default it could be defined by the director
+     *
+     * @return MorphToMany
+     */
+    public function surveys(): MorphToMany
+    {
+        return $this->morphToMany(DoctorSurvey::class, 'doctor_surveable');
     }
 }

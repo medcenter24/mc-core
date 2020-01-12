@@ -123,10 +123,7 @@ class CasesController extends ApiController
     public function getDiagnostics($id, RoleService $roleService): Response
     {
         $accident = Accident::findOrFail($id);
-        $accidentDiagnostics = $accident->diagnostics;
-        if ($accident->caseable) {
-            $accidentDiagnostics = $accidentDiagnostics->merge($accident->caseable->diagnostics);
-        }
+        $accidentDiagnostics = $accident->caseable->diagnostics;
         $accidentDiagnostics->each(function (Diagnostic $diagnostic) use ($roleService) {
             if ($diagnostic->created_by && $roleService->hasRole($diagnostic->creator, 'doctor')) {
                 $diagnostic->markAsDoctor();
@@ -150,10 +147,7 @@ class CasesController extends ApiController
     public function getSurveys($id, RoleService $roleService): Response
     {
         $accident = Accident::findOrFail($id);
-        $accidentSurveys = $accident->surveys;
-        if ($accident->caseable) {
-            $accidentSurveys = $accidentSurveys->merge($accident->caseable->surveys);
-        }
+        $accidentSurveys = $accident->caseable->surveys;
         $accidentSurveys->each(function (DoctorSurvey $doctorSurvey) use ($roleService) {
             if ($doctorSurvey->created_by && $roleService->hasRole($doctorSurvey->creator, 'doctor')) {
                 $doctorSurvey->markAsDoctor();
@@ -225,9 +219,9 @@ class CasesController extends ApiController
             if ($accident->isDoctorCaseable()) {
                 $caseableAccidentData = $request->json('doctorAccident', []);
                 // attach services, surveys and diagnostics
-                $this->updateDoctorMorph($accident->caseable, $request, 'services');
-                $this->updateDoctorMorph($accident->caseable, $request, 'surveys');
-                $this->updateDoctorMorph($accident->caseable, $request, 'diagnostics');
+                $this->updateDoctorMorph($accident->getAttribute('caseable'), $request, 'services');
+                $this->updateDoctorMorph($accident->getAttribute('caseable'), $request, 'surveys');
+                $this->updateDoctorMorph($accident->getAttribute('caseable'), $request, 'diagnostics');
             } else {
                 $caseableAccidentData = $request->json('hospitalAccident', []);
             }
@@ -302,18 +296,6 @@ class CasesController extends ApiController
     private function updateDoctorMorph(DoctorAccident $doctorAccident, Request $request, string $morphName): void
     {
         $morphs = $request->json($morphName, []);
-        /*
-         * I need to go through the new parameters, not the already stored
-         * (definitely for the services)
-         *
-         * not clear why do I need it at all
-         * if ($doctorAccident->$morphName()) {
-            foreach ($doctorAccident->$morphName() as $morph) {
-                if ($morph && in_array($morph->id, $morphData, false) ) {
-                    $morphs[] = $morph->id;
-                }
-            }
-        }*/
         $doctorAccident->$morphName()->detach();
         $doctorAccident->$morphName()->attach($morphs);
     }

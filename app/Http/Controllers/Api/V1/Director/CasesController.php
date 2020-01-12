@@ -123,10 +123,7 @@ class CasesController extends ApiController
     public function getDiagnostics($id, RoleService $roleService): Response
     {
         $accident = Accident::findOrFail($id);
-        $accidentDiagnostics = $accident->diagnostics;
-        if ($accident->caseable) {
-            $accidentDiagnostics = $accidentDiagnostics->merge($accident->caseable->diagnostics);
-        }
+        $accidentDiagnostics = $accident->caseable->diagnostics;
         $accidentDiagnostics->each(function (Diagnostic $diagnostic) use ($roleService) {
             if ($diagnostic->created_by && $roleService->hasRole($diagnostic->creator, 'doctor')) {
                 $diagnostic->markAsDoctor();
@@ -150,10 +147,7 @@ class CasesController extends ApiController
     public function getSurveys($id, RoleService $roleService): Response
     {
         $accident = Accident::findOrFail($id);
-        $accidentSurveys = $accident->surveys;
-        if ($accident->caseable) {
-            $accidentSurveys = $accidentSurveys->merge($accident->caseable->surveys);
-        }
+        $accidentSurveys = $accident->caseable->surveys;
         $accidentSurveys->each(function (DoctorSurvey $doctorSurvey) use ($roleService) {
             if ($doctorSurvey->created_by && $roleService->hasRole($doctorSurvey->creator, 'doctor')) {
                 $doctorSurvey->markAsDoctor();

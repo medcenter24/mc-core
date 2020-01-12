@@ -40,9 +40,12 @@ class DoctorCaseAccidentTransformer extends CaseAccidentTransformer
     {
         $data = parent::transform($accident);
         $data['visitTime'] = $accident->getAttribute('caseable')
-            ->getAttribute('visit_time') ->setTimezone($this->getServiceLocator()
+            ->getAttribute('visit_time') ? $accident->getAttribute('caseable')
+            ->getAttribute('visit_time')
+            ->setTimezone($this->getServiceLocator()
             ->get(UserService::class)->getTimezone())
-            ->format(config('date.systemFormat'));
+            ->format(config('date.systemFormat'))
+        : '';
         return $data;
     }
 }

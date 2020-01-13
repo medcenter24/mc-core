@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Services;
 
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\Helpers\Arr;
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
@@ -103,13 +104,28 @@ abstract class AbstractModelService
         return $this->getQuery($filters)->first();
     }
 
-    private function getQuery(array $filters = []): Builder
+    /**
+     * Searching by model with a filters
+     * @param array $filters
+     * @return Collection
+     */
+    public function search(array $filters = []): Collection
+    {
+        return $this->getQuery($filters)->get();
+    }
+
+    /**
+     * @param array $filters
+     * @return Builder
+     */
+    protected function getQuery(array $filters = []): Builder
     {
         // dates should be a null instead of empty string
         $this->convertEmptyDatesToNull($filters);
 
         // I can't extend filters filters have to be correct from request
         // $filters = $this->appendRequiredData($filters);
+
         /** @var Builder $query */
         $query = call_user_func([$this->getClassName(), 'query']);
         foreach ($filters as $key => $filter) {
@@ -118,6 +134,10 @@ abstract class AbstractModelService
         return $query;
     }
 
+    /**
+     * @param array $filters
+     * @return int
+     */
     public function count(array $filters = []): int
     {
         return $this->getQuery($filters)->count();

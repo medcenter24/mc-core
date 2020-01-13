@@ -18,15 +18,18 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
-use medcenter24\mcCore\App\DoctorSurvey;
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Services\DoctorSurveyService;
 use medcenter24\mcCore\App\Transformers\DoctorSurveyTransformer;
 
 class DoctorSurveysController extends ApiController
 {
-    public function index()
+    public function index(): Response
     {
-        $surveys = DoctorSurvey::orderBy('title')->get();
+        /** @var DoctorSurveyService $service */
+        $service = $this->getServiceLocator()->get(DoctorSurveyService::class);
+        $surveys = $service->getActiveByDoctor(auth()->id());
         return $this->response->collection($surveys, new DoctorSurveyTransformer());
     }
 }

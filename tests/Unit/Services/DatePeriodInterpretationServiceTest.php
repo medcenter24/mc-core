@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\Tests\Unit\Services;
 
 
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodInterpretationService;
 use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -92,9 +93,9 @@ class DatePeriodInterpretationServiceTest extends TestCase
      *
      * @param array $period
      * @param array $expected
-     * @throwsmedcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws InconsistentDataException
      */
-    public function testInterpreter(array $period, array $expected)
+    public function testInterpreter(array $period, array $expected): void
     {
         self::assertEquals($expected, $this->service->interpret(DatePeriodFake::make($period)));
     }

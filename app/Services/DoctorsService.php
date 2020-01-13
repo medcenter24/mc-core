@@ -25,7 +25,6 @@ use medcenter24\mcCore\App\DoctorAccident;
 
 class DoctorsService extends AbstractModelService
 {
-
     protected function getClassName(): string
     {
         return Doctor::class;

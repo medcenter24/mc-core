@@ -21,9 +21,14 @@ namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
 
 class DoctorServiceService extends AbstractModelService
 {
+
+    use FiltersTrait;
+
+    public const STATUS_ACTIVE = 'active';
 
     protected function getClassName(): string
     {

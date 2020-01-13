@@ -20,9 +20,11 @@ namespace medcenter24\mcCore\App\Services;
 
 
 use medcenter24\mcCore\App\Diagnostic;
+use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
 
 class DiagnosticService extends AbstractModelService
 {
+    use FiltersTrait;
 
     public const STATUS_ACTIVE = 'active';
 

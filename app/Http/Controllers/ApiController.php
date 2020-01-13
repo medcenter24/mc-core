@@ -28,11 +28,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use \Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller
 {
     use Helpers;
+    use ServiceLocatorTrait;
 
     public function __construct()
     {

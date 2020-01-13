@@ -18,9 +18,9 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Diagnostic;
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Services\DiagnosticService;
 use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
 
 class DiagnosticsController extends ApiController
@@ -28,14 +28,13 @@ class DiagnosticsController extends ApiController
     /**
      * To make it easy and more usable we don't need diagnostics which were created by doctor
      * because they don't have all data and director should check all these cases
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function index()
+    public function index(): Response
     {
-        $diagnostics = Diagnostic::join('diagnosticables', 'diagnosticables.diagnostic_id', '=', 'diagnostics.id')
-            ->where('diagnosticables.diagnosticable_type', '=', Accident::class)
-            ->orderBy('diagnostics.title')
-            ->get();
+        /** @var DiagnosticService $diagnosticService */
+        $diagnosticService = $this->getServiceLocator()->get(DiagnosticService::class);
+        $diagnostics = $diagnosticService->getActiveByDoctor(auth()->id());
         return $this->response->collection($diagnostics, new DiagnosticTransformer());
     }
 }

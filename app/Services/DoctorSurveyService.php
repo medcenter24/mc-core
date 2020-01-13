@@ -23,11 +23,14 @@ use medcenter24\mcCore\App\DoctorSurvey;
 use medcenter24\mcCore\App\Helpers\StrHelper;
 use medcenter24\mcCore\App\Services\Core\Cache\ArrayCacheTrait;
 use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
 
 class DoctorSurveyService extends AbstractModelService
 {
-
+    use FiltersTrait;
     use ArrayCacheTrait;
+
+    public const STATUS_ACTIVE = 'active';
 
     /**
      * @return string

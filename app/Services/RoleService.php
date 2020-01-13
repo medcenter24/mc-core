@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Services;
 
 
+use medcenter24\mcCore\App\Role;
 use medcenter24\mcCore\App\User;
 
 /**
@@ -27,7 +28,7 @@ use medcenter24\mcCore\App\User;
  * Class RoleService
  * @package medcenter24\mcCore\App\Services
  */
-class RoleService
+class RoleService extends AbstractModelService
 {
     public const LOGIN_ROLE = 'login';
     public const DIRECTOR_ROLE = 'director';
@@ -56,5 +57,23 @@ class RoleService
     public function isValidRoles(array $roles): bool
     {
         return !count(array_diff($roles, self::ROLES));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getClassName(): string
+    {
+        return Role::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getRequiredFields(): array
+    {
+        return [
+            'title' => '',
+        ];
     }
 }

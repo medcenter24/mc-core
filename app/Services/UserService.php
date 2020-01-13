@@ -19,7 +19,6 @@
 namespace medcenter24\mcCore\App\Services;
 
 
-use medcenter24\mcCore\App\Support\Core\Configurable;
 use medcenter24\mcCore\App\User;
 
 class UserService extends AbstractModelService

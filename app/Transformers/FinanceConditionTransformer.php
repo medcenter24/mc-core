@@ -29,7 +29,7 @@ use League\Fractal\TransformerAbstract;
 
 class FinanceConditionTransformer extends TransformerAbstract
 {
-    public function transform(FinanceCondition $financeCondition)
+    public function transform(FinanceCondition $financeCondition): array
     {
         $assistantTransformer = new AssistantTransformer();
         $assistants = Assistant::whereIn('id', $financeCondition->conditions()

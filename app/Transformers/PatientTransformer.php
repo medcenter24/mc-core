@@ -19,19 +19,24 @@
 namespace medcenter24\mcCore\App\Transformers;
 
 
+use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Patient;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Services\UserService;
 
 class PatientTransformer extends TransformerAbstract
 {
-    public function transform(Patient $patient)
+    public function transform(Patient $patient): array
     {
         return [
             'id' => $patient->id,
             'name' => $patient->name,
             'address' => $patient->address,
             'phones' => $patient->phones,
-            'birthday' => $patient->birthday ? $patient->birthday->format(config('date.systemFormat')) : '',
+            'birthday' => Date::sysDate(
+                $patient->birthday,
+                $this->getServiceLocator()->get(UserService::class)->getTimezone(),
+                ),
             'comment' => $patient->comment
         ];
     }

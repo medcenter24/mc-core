@@ -20,6 +20,8 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Helpers\Date;
+use medcenter24\mcCore\App\Services\UserService;
 
 class HospitalAccidentTransformer extends AccidentTransformer
 {
@@ -27,14 +29,17 @@ class HospitalAccidentTransformer extends AccidentTransformer
      * @param Accident $accident
      * @return array
      */
-    public function transform (Accident $accident)
+    public function transform (Accident $accident): array
     {
         $transformedAccident = parent::transform($accident);
 
         $hospitalAccident = [
             'status' => $accident->caseable->status,
             'accidentStatusId' => $accident->caseable->accident_status_id,
-            'createdAt' => $accident->caseable->created_at->format(config('date.systemFormat')),
+            'createdAt' => Date::sysDate(
+                $accident->caseable->created_at,
+                $this->getServiceLocator()->get(UserService::class)->getTimezone(),
+            ),
             'hospitalId' => $accident->caseable->hospital_id,
         ];
 

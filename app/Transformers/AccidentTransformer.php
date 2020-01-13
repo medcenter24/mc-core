@@ -21,6 +21,7 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use medcenter24\mcCore\App\Accident;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\UserService;
 
@@ -58,19 +59,26 @@ class AccidentTransformer extends TransformerAbstract
             'contacts' => $accident->contacts,
             'symptoms' => $accident->symptoms,
             // system format needed by the director case editor
-            'createdAt' => $accident->created_at->setTimezone($this->getServiceLocator()
-                ->get(UserService::class)->getTimezone())
-                ->format(config('date.systemFormat')),
-            'updatedAt' => $accident->updated_at ? $accident->updated_at->setTimezone($this->getServiceLocator()
-                ->get(UserService::class)->getTimezone())
-                ->format(config('date.systemFormat')) : null,
-            'deletedAt' => $accident->deleted_at ? $accident->deleted_at->setTimezone($this->getServiceLocator()
-                ->get(UserService::class)->getTimezone())
-                ->format(config('date.systemFormat')) : null,
-            'closedAt' => $accident->closed_at,
-            'handlingTime' => $accident->handling_time ? $accident->handling_time->setTimezone($this->getServiceLocator()
-                ->get(UserService::class)->getTimezone())
-                ->format(config('date.systemFormat')) : null,
+            'createdAt' => Date::sysDate(
+                $accident->getAttribute('created_at'),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
+            ),
+            'updatedAt' => Date::sysDate(
+                $accident->getAttribute('updated_at'),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
+            ),
+            'deletedAt' => Date::sysDate(
+                $accident->getAttribute('deleted_at'),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
+            ),
+            'closedAt' => Date::sysDate(
+                $accident->getAttribute('closed_at'),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
+            ),
+            'handlingTime' => Date::sysDate(
+                $accident->getAttribute('handling_at'),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
+            ),
         ];
     }
 }

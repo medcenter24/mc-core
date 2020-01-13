@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,37 +12,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Transformers;
+namespace medcenter24\mcCore\App\Helpers;
 
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Helpers\Date;
+use Illuminate\Support\Carbon;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-use medcenter24\mcCore\App\Services\UserService;
 
-/**
- * Used for the output into the data table
- * Class CasesTransformer
- * @package medcenter24\mcCore\App\Transformers
- */
-class DoctorCaseAccidentTransformer extends CaseAccidentTransformer
+class Date
 {
     use ServiceLocatorTrait;
 
-    /**
-     * @param Accident $accident
-     * @return array
-     */
-    public function transform (Accident $accident): array
+    public static function sysDate(Carbon $date = null, string $tz = null): string
     {
-        $data = parent::transform($accident);
-        $data['visitTime'] = Date::sysDate(
-            $accident->caseable->visit_time,
-            $this->getServiceLocator()->get(UserService::class)->getTimezone(),
-        );
-        return $data;
+        $str = '';
+        if ($date) {
+            if ($tz) {
+                $date->setTimezone($tz);
+            }
+            $str = $date->format(config('date.systemFormat'));
+        }
+        return $str;
     }
 }

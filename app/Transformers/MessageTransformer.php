@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\LogoService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
@@ -46,9 +47,10 @@ class MessageTransformer extends TransformerAbstract
             'user_thumb' => $message->user_id && $message->user->hasMedia(LogoService::FOLDER)
                 ? MediaHelper::b64($message->user, LogoService::FOLDER, User::THUMB_45) : '',
             'body' => $message->body,
-            'created_at' => $message->created_at->setTimezone($this->getServiceLocator()
-                ->get(UserService::class)->getTimezone())
-                ->format(config('date.systemFormat')),
+            'created_at' => Date::sysDate(
+                $message->created_at,
+                $this->getServiceLocator()->get(UserService::class)->getTimezone(),
+            ),
         ];
     }
 }

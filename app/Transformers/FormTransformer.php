@@ -20,11 +20,10 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Form;
-use League\Fractal\TransformerAbstract;
 
-class FormTransformer extends TransformerAbstract
+class FormTransformer extends AbstractTransformer
 {
-    public function transform(Form $form)
+    public function transform(Form $form): array
     {
         return [
             'id' => (int)$form->id,

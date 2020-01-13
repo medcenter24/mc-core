@@ -209,7 +209,7 @@ class CasesControllerUpdateActionTest extends TestCase
         ]);
     }
 
-    public function testUpdateWithCorrectAccident()
+    public function testUpdateWithCorrectAccident(): void
     {
         $caseable = factory(DoctorAccident::class)->create();
         $accident = factory(Accident::class)->create([
@@ -236,18 +236,18 @@ class CasesControllerUpdateActionTest extends TestCase
                 'caseableType' => get_class($caseable2),
                 'cityId' => $city = factory(City::class)->create()->id,
                 'contacts' => $contacts = 'contacts',
-                'createdAt' => Carbon::create('2016', '02', '22', '22', '55', '55')->format('Y-m-d H:i:s'),
+                // 'createdAt' => '2016-02-22 22:55:55',
                 'createdBy' => factory(User::class)->create()->id,
                 'deletedAt' => date('Y-m-d H:i:s'),
                 'formReportId' => $formReport = factory(FormReport::class)->create()->id,
-                'handlingTime' => $handlingDate = Carbon::create('2016', '02', '22', '22', '55', '55')->format('Y-m-d H:i:s'),
+                'handlingTime' => '2016-02-22 22:55:55',
                 'id' => $accident->id,
                 'parentId' => $parent = factory(Accident::class)->create()->id,
                 'patientId' => $patient = factory(Patient::class)->create()->id,
                 'refNum' => $accidentRefNum = 'ref num',
                 'symptoms' => $accidentSymptoms = 'symptoms',
                 'title' => $title = 'title',
-                'updatedAt' => $updatedAt = Carbon::create('2016', '02', '22', '22', '55', '55')->format('Y-m-d H:i:s'),
+                // 'updatedAt' => '2016-02-22 22:55:55',
                 'assistantPaymentId' => factory(Payment::class)->create()->id,
                 'incomePaymentId' => factory(Payment::class)->create()->id,
                 'caseablePaymentId' => factory(Payment::class)->create()->id,
@@ -267,11 +267,11 @@ class CasesControllerUpdateActionTest extends TestCase
                     'caseableType' => get_class($caseable),
                     'cityId' => $city,
                     'contacts' => $contacts,
-                    'createdAt' => $accident->created_at->format('Y-m-d H:i:s'),
+                    // 'createdAt' => $accident->created_at->format('Y-m-d H:i:s'),
                     'createdBy' => $createdBy,
-                    'deletedAt' => null,
+                    'deletedAt' => '',
                     'formReportId' => $formReport,
-                    'handlingTime' => $handlingDate,
+                    'handlingTime' => '2016-02-22 22:55:55',
                     'id' => $accident->id,
                     'parentId' => $parent,
                     'patientId' => $patient,
@@ -287,7 +287,7 @@ class CasesControllerUpdateActionTest extends TestCase
             ]
         ]);
 
-        self::assertNotEquals($updatedAt, $response->json('data.accident.updatedAt'));
+        self::assertNotEquals('2016-02-22 22:55:55', $response->json('data.accident.updatedAt'));
     }
 
     /**

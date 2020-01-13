@@ -20,26 +20,31 @@ namespace medcenter24\mcCore\App\Transformers\statistics;
 
 
 use medcenter24\mcCore\App\Accident;
-use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\UserService;
+use medcenter24\mcCore\App\Transformers\AbstractTransformer;
 
-class CalendarEventTransformer extends TransformerAbstract
+class CalendarEventTransformer extends AbstractTransformer
 {
     use ServiceLocatorTrait;
 
     public function transform(Accident $accident): array
     {
         return [
-            'id' => $accident->id,
-            'title' => $accident->ref_num,
-            'start' => $accident->created_at->setTimezone($this->getServiceLocator()
-                ->get(UserService::class)->getTimezone())
-                ->format(config('date.systemFormat')),
-            'end' => $accident->visited_at ? $accident->visited_at->setTimezone($this->getServiceLocator()
-                ->get(UserService::class)->getTimezone())
-                ->format(config('date.systemFormat')) : '',
-            'status' => $accident->accidentStatus ? $accident->accidentStatus->title : '',
+            'id' => $accident->getAttribute('id'),
+            'title' => $accident->getAttribute('ref_num'),
+            'start' => Date::sysDate(
+                $accident->getAttribute('created_at'),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
+            ),
+            'end' => Date::sysDate(
+                $accident->getAttribute('visited_at'),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
+            ),
+            'status' => $accident->getAttribute('accidentStatus')
+                ? $accident->getAttribute('accidentStatus')->title
+                : '',
         ];
     }
 }

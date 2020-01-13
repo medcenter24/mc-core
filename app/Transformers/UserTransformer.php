@@ -19,19 +19,20 @@
 namespace medcenter24\mcCore\App\Transformers;
 
 
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\LogoService;
 use medcenter24\mcCore\App\User;
-use League\Fractal\TransformerAbstract;
 
-class UserTransformer extends TransformerAbstract
+class UserTransformer extends AbstractTransformer
 {
+
     /**
      * @param User $user
      * @return array
-     * @throws \ErrorException
+     * @throws InconsistentDataException
      */
-    public function transform (User $user)
+    public function transform (User $user): array
     {
         return [
             'id' => $user->id,

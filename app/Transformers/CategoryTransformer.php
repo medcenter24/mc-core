@@ -20,15 +20,14 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\DiagnosticCategory;
-use League\Fractal\TransformerAbstract;
 
-class CategoryTransformer extends TransformerAbstract
+class CategoryTransformer extends AbstractTransformer
 {
     /**
      * @param DiagnosticCategory $diagnosticCategory
      * @return array
      */
-    public function transform (DiagnosticCategory $diagnosticCategory)
+    public function transform (DiagnosticCategory $diagnosticCategory): array
     {
         return [
             'id' => $diagnosticCategory->id,

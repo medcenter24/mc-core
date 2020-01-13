@@ -20,7 +20,7 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Services\UserService;
 
 /**
@@ -30,8 +30,6 @@ use medcenter24\mcCore\App\Services\UserService;
  */
 class DoctorCaseAccidentTransformer extends CaseAccidentTransformer
 {
-    use ServiceLocatorTrait;
-
     /**
      * @param Accident $accident
      * @return array
@@ -39,13 +37,10 @@ class DoctorCaseAccidentTransformer extends CaseAccidentTransformer
     public function transform (Accident $accident): array
     {
         $data = parent::transform($accident);
-        $data['visitTime'] = $accident->getAttribute('caseable')
-            ->getAttribute('visit_time') ? $accident->getAttribute('caseable')
-            ->getAttribute('visit_time')
-            ->setTimezone($this->getServiceLocator()
-            ->get(UserService::class)->getTimezone())
-            ->format(config('date.systemFormat'))
-        : '';
+        $data['visitTime'] = Date::sysDateOrNow(
+            $accident->getAttribute('caseable')->getAttribute('visit_time'),
+            $this->getServiceLocator()->get(UserService::class)->getTimezone()
+        );
         return $data;
     }
 }

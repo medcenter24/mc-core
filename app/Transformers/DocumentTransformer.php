@@ -21,15 +21,14 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use medcenter24\mcCore\App\Document;
 use medcenter24\mcCore\App\Services\DocumentService;
-use League\Fractal\TransformerAbstract;
 
-class DocumentTransformer extends TransformerAbstract
+class DocumentTransformer extends AbstractTransformer
 {
     /**
      * @param Document $document
      * @return array
      */
-    public function transform (Document $document)
+    public function transform (Document $document): array
     {
         if ($document->doctorAccidents->count()) {
             $owner = 'doctor';

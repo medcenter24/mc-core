@@ -18,10 +18,9 @@
 namespace medcenter24\mcCore\App\Transformers;
 
 
-use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Country;
 
-class CountryTransformer extends TransformerAbstract
+class CountryTransformer extends AbstractTransformer
 {
     public function transform(Country $country): array
     {

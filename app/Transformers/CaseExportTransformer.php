@@ -22,9 +22,8 @@ namespace medcenter24\mcCore\App\Transformers;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\DoctorAccident;
 use medcenter24\mcCore\App\HospitalAccident;
-use League\Fractal\TransformerAbstract;
 
-class CaseExportTransformer extends TransformerAbstract
+class CaseExportTransformer extends AbstractTransformer
 {
     /**
      * @param Accident $accident

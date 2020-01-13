@@ -20,11 +20,10 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Doctor;
-use League\Fractal\TransformerAbstract;
 
-class DoctorProfileTransformer extends TransformerAbstract
+class DoctorProfileTransformer extends AbstractTransformer
 {
-    public function transform (Doctor $doctor)
+    public function transform (Doctor $doctor): array
     {
         return [
             'name' => $doctor->name,

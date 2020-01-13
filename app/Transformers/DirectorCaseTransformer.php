@@ -20,7 +20,6 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Accident;
-use League\Fractal\TransformerAbstract;
 
 /**
  * Load aggregated Data for the directors preview
@@ -28,13 +27,13 @@ use League\Fractal\TransformerAbstract;
  * Class CaseTransformer
  * @package medcenter24\mcCore\App\Transformers
  */
-class DirectorCaseTransformer extends TransformerAbstract
+class DirectorCaseTransformer extends AbstractTransformer
 {
     /**
      * @param Accident $accident
      * @return array
      */
-    public function transform (Accident $accident)
+    public function transform (Accident $accident): array
     {
         return [
             'accident' => (new AccidentTransformer())->transform($accident),

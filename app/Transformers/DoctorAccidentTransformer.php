@@ -20,6 +20,8 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Helpers\Date;
+use medcenter24\mcCore\App\Services\UserService;
 
 class DoctorAccidentTransformer extends AccidentTransformer
 {
@@ -34,8 +36,14 @@ class DoctorAccidentTransformer extends AccidentTransformer
         $doctorAccident = [
             'recommendation' => $accident->caseable->recommendation,
             'investigation' => $accident->caseable->investigation,
-            'visitTime' => $accident->caseable->visit_time ? $accident->caseable->visit_time->format(config('date.systemFormat')) : '',
-            'createdAt' => $accident->caseable->created_at->format(config('date.systemFormat')),
+            'visitTime' => Date::sysDateOrNow(
+                $accident->getAttribute('caseable')->getAttribute('visit_time'),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
+            ),
+            'createdAt' => Date::sysDate(
+                $accident->caseable->created_at,
+                $this->getServiceLocator()->get(UserService::class)->getTimezone(),
+            ),
             'cityId' => $accident->city_id,
             'doctorId' => $accident->caseable->doctor_id,
         ];

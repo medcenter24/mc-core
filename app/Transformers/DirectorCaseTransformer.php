@@ -34,7 +34,7 @@ class DirectorCaseTransformer extends TransformerAbstract
      * @param Accident $accident
      * @return array
      */
-    public function transform (Accident $accident)
+    public function transform (Accident $accident): array
     {
         return [
             'accident' => (new AccidentTransformer())->transform($accident),

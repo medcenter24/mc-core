@@ -76,7 +76,7 @@ class AccidentTransformer extends TransformerAbstract
                 $this->getServiceLocator()->get(UserService::class)->getTimezone()
             ),
             'handlingTime' => Date::sysDate(
-                $accident->getAttribute('handling_at'),
+                $accident->getAttribute('handling_time'),
                 $this->getServiceLocator()->get(UserService::class)->getTimezone()
             ),
         ];

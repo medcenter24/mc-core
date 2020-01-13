@@ -20,9 +20,8 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\FinanceCurrency;
-use League\Fractal\TransformerAbstract;
 
-class FinanceCurrencyTransformer extends TransformerAbstract
+class FinanceCurrencyTransformer extends AbstractTransformer
 {
     public function transform(FinanceCurrency $financeCurrency): array
     {

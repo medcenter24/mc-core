@@ -36,9 +36,9 @@ class DoctorAccidentTransformer extends AccidentTransformer
         $doctorAccident = [
             'recommendation' => $accident->caseable->recommendation,
             'investigation' => $accident->caseable->investigation,
-            'visitTime' => Date::sysDate(
-                $accident->caseable->visit_time,
-                $this->getServiceLocator()->get(UserService::class)->getTimezone(),
+            'visitTime' => Date::sysDateOrNow(
+                $accident->getAttribute('caseable')->getAttribute('visit_time'),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
             ),
             'createdAt' => Date::sysDate(
                 $accident->caseable->created_at,

@@ -20,15 +20,14 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Invoice;
-use League\Fractal\TransformerAbstract;
 
-class InvoiceTransformer extends TransformerAbstract
+class InvoiceTransformer extends AbstractTransformer
 {
     /**
      * @param Invoice $invoice
      * @return array
      */
-    public function transform (Invoice $invoice)
+    public function transform (Invoice $invoice): array
     {
         return [
             'id'   => $invoice->id,

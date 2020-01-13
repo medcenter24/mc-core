@@ -20,11 +20,10 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\DatePeriod;
-use League\Fractal\TransformerAbstract;
 
-class DatePeriodTransformer extends TransformerAbstract
+class DatePeriodTransformer extends AbstractTransformer
 {
-    public function transform(DatePeriod $datePeriod)
+    public function transform(DatePeriod $datePeriod): array
     {
         return [
             'id' => $datePeriod->id,

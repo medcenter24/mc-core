@@ -20,11 +20,10 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Scenario;
-use League\Fractal\TransformerAbstract;
 
-class ScenarioTransformer extends TransformerAbstract
+class ScenarioTransformer extends AbstractTransformer
 {
-    public function transform (Scenario $scenario)
+    public function transform (Scenario $scenario): array
     {
         return [
             'id' => $scenario->id,

@@ -20,9 +20,8 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\City;
-use League\Fractal\TransformerAbstract;
 
-class CityTransformer extends TransformerAbstract
+class CityTransformer extends AbstractTransformer
 {
     public function transform(City $city): array
     {

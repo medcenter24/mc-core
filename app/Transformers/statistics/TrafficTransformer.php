@@ -19,9 +19,9 @@
 namespace medcenter24\mcCore\App\Transformers\statistics;
 
 
-use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Transformers\AbstractTransformer;
 
-class TrafficTransformer extends TransformerAbstract
+class TrafficTransformer extends AbstractTransformer
 {
     public function transform($statistic) {
         return [

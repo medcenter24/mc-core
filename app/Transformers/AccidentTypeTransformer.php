@@ -20,11 +20,10 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\AccidentType;
-use League\Fractal\TransformerAbstract;
 
-class AccidentTypeTransformer extends TransformerAbstract
+class AccidentTypeTransformer extends AbstractTransformer
 {
-    public function transform(AccidentType $accidentType)
+    public function transform(AccidentType $accidentType): array
     {
         return [
             'id' => $accidentType->id,

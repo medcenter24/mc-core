@@ -20,9 +20,8 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Doctor;
-use League\Fractal\TransformerAbstract;
 
-class DoctorTransformer extends TransformerAbstract
+class DoctorTransformer extends AbstractTransformer
 {
     public function transform(Doctor $doctor): array
     {

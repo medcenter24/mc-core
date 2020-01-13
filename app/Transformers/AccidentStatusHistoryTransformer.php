@@ -27,9 +27,8 @@ use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\LogoService;
 use medcenter24\mcCore\App\Services\UserService;
 use medcenter24\mcCore\App\User;
-use League\Fractal\TransformerAbstract;
 
-class AccidentStatusHistoryTransformer extends TransformerAbstract
+class AccidentStatusHistoryTransformer extends AbstractTransformer
 {
     use ServiceLocatorTrait;
 

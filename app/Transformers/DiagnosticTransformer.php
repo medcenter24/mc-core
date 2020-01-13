@@ -20,9 +20,8 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Diagnostic;
-use League\Fractal\TransformerAbstract;
 
-class DiagnosticTransformer extends TransformerAbstract
+class DiagnosticTransformer extends AbstractTransformer
 {
     /**
      * @param Diagnostic $diagnostic

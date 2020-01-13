@@ -23,15 +23,12 @@ use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\UserService;
 use medcenter24\mcCore\App\User;
 use Cmgmyr\Messenger\Models\Message;
-use League\Fractal\TransformerAbstract;
 
-class MessageTransformer extends TransformerAbstract
+class MessageTransformer extends AbstractTransformer
 {
-    use ServiceLocatorTrait;
 
     /**
      * @param Message $message

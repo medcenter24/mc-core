@@ -20,11 +20,10 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\DoctorSurvey;
-use League\Fractal\TransformerAbstract;
 
-class DoctorSurveyTransformer extends TransformerAbstract
+class DoctorSurveyTransformer extends AbstractTransformer
 {
-    public function transform(DoctorSurvey $doctorSurvey)
+    public function transform(DoctorSurvey $doctorSurvey): array
     {
         return [
             'id' => $doctorSurvey->id,

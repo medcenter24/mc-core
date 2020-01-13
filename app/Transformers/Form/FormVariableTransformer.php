@@ -20,10 +20,10 @@ namespace medcenter24\mcCore\App\Transformers\Form;
 
 
 use Illuminate\Support\Str;
-use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\FormVariable;
+use medcenter24\mcCore\App\Transformers\AbstractTransformer;
 
-class FormVariableTransformer extends TransformerAbstract
+class FormVariableTransformer extends AbstractTransformer
 {
     public function transform(FormVariable $variable): array
     {

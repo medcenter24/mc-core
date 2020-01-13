@@ -20,11 +20,10 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Assistant;
-use League\Fractal\TransformerAbstract;
 
-class AssistantTransformer extends TransformerAbstract
+class AssistantTransformer extends AbstractTransformer
 {
-    public function transform(Assistant $assistant)
+    public function transform(Assistant $assistant): array
     {
         return [
             'id' => $assistant->id,

@@ -20,9 +20,7 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Accident;
-use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Helpers\Date;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\UserService;
 
 /**
@@ -30,10 +28,8 @@ use medcenter24\mcCore\App\Services\UserService;
  * Class CasesTransformer
  * @package medcenter24\mcCore\App\Transformers
  */
-class CaseAccidentTransformer extends TransformerAbstract
+class CaseAccidentTransformer extends AbstractTransformer
 {
-    use ServiceLocatorTrait;
-
     /**
      * @param Accident $accident
      * @return array

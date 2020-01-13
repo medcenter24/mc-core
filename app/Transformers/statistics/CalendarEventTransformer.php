@@ -20,12 +20,12 @@ namespace medcenter24\mcCore\App\Transformers\statistics;
 
 
 use medcenter24\mcCore\App\Accident;
-use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\UserService;
+use medcenter24\mcCore\App\Transformers\AbstractTransformer;
 
-class CalendarEventTransformer extends TransformerAbstract
+class CalendarEventTransformer extends AbstractTransformer
 {
     use ServiceLocatorTrait;
 

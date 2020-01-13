@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Helpers;
 
 use Illuminate\Support\Carbon;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\UserService;
 
 class Date
 {
@@ -33,6 +34,15 @@ class Date
                 $date->setTimezone($tz);
             }
             $str = $date->format(config('date.systemFormat'));
+        }
+        return $str;
+    }
+
+    public static function sysDateOrNow(Carbon $date = null, string $tz = null): string
+    {
+        $str = self::sysDate($date, $tz);
+        if (empty($str)) {
+            $str = self::sysDate(Carbon::now(), $tz);
         }
         return $str;
     }

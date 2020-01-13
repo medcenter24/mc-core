@@ -21,10 +21,9 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Patient;
-use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Services\UserService;
 
-class PatientTransformer extends TransformerAbstract
+class PatientTransformer extends AbstractTransformer
 {
     public function transform(Patient $patient): array
     {

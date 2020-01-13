@@ -20,15 +20,11 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\DoctorAccident;
-use InvalidArgumentException;
-use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Helpers\Date;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\UserService;
 
-class DoctorCaseTransformer extends TransformerAbstract
+class DoctorCaseTransformer extends AbstractTransformer
 {
-    use ServiceLocatorTrait;
 
     /**
      * @param DoctorAccident $doctorAccident

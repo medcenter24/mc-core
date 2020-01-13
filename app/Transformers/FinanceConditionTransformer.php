@@ -25,9 +25,8 @@ use medcenter24\mcCore\App\DatePeriod;
 use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\DoctorService;
 use medcenter24\mcCore\App\FinanceCondition;
-use League\Fractal\TransformerAbstract;
 
-class FinanceConditionTransformer extends TransformerAbstract
+class FinanceConditionTransformer extends AbstractTransformer
 {
     public function transform(FinanceCondition $financeCondition): array
     {

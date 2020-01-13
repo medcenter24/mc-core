@@ -23,9 +23,8 @@ use medcenter24\mcCore\App\Company;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\LogoService;
-use League\Fractal\TransformerAbstract;
 
-class CompanyTransformer extends TransformerAbstract
+class CompanyTransformer extends AbstractTransformer
 {
     /**
      * @param Company $company

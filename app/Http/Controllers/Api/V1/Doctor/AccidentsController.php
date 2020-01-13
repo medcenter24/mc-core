@@ -235,7 +235,6 @@ class AccidentsController extends ApiController
                 $service->markAsDoctor();
             }
         });
-        $services = $services->merge($accident->services)->reverse();
 
         return $this->response->collection($services, new DoctorServiceTransformer());
     }
@@ -316,7 +315,6 @@ class AccidentsController extends ApiController
                 $diagnostic->markAsDoctor();
             }
         });
-        $diagnostics = $diagnostics->merge($accident->diagnostics)->reverse();
 
         return $this->response->collection($diagnostics, new DiagnosticTransformer());
     }
@@ -379,7 +377,6 @@ class AccidentsController extends ApiController
                 $survey->markAsDoctor();
             }
         });
-        $surveys = $surveys->merge($accident->surveys)->reverse();
 
         return $this->response->collection($surveys, new DoctorSurveyTransformer());
     }

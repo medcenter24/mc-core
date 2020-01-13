@@ -20,14 +20,13 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use Illuminate\Support\Collection;
-use League\Fractal\TransformerAbstract;
 
 /**
  * Used for the output into the data table
  * Class CasesTransformer
  * @package medcenter24\mcCore\App\Transformers
  */
-class CaseFinanceTransformer extends TransformerAbstract
+class CaseFinanceTransformer extends AbstractTransformer
 {
     /**
      * @param \stdClass $obj

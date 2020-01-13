@@ -20,9 +20,8 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\Payment;
-use League\Fractal\TransformerAbstract;
 
-class PaymentTransformer extends TransformerAbstract
+class PaymentTransformer extends AbstractTransformer
 {
     public function transform(Payment $payment): array
     {

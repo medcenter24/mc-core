@@ -46,7 +46,7 @@ class MessageTransformer extends AbstractTransformer
             'body' => $message->body,
             'created_at' => Date::sysDate(
                 $message->created_at,
-                $this->getServiceLocator()->get(UserService::class)->getTimezone(),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
             ),
         ];
     }

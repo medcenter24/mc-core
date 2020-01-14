@@ -42,7 +42,7 @@ class DoctorAccidentTransformer extends AccidentTransformer
             ),
             'createdAt' => Date::sysDate(
                 $accident->caseable->created_at,
-                $this->getServiceLocator()->get(UserService::class)->getTimezone(),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
             ),
             'cityId' => $accident->city_id,
             'doctorId' => $accident->caseable->doctor_id,

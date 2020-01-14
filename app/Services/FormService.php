@@ -244,8 +244,12 @@ class FormService
         /** @var DOMElement $el */
         foreach ($this->findDomElements('starts-with(name(@*),"'.self::CONDITION_FOR.'")', $doc) as $el) {
             $attr = $el->getAttribute(self::CONDITION_FOR);
-            $attrResources = $this->getAccidentResources($source, $attr);
-            if (!$attrResources->count()) {
+            try {
+                $attrResources = $this->getAccidentResources($source, $attr);
+            } catch (InconsistentDataException $e) {
+                $attrResources = null;
+            }
+            if (!$attrResources || !$attrResources->count()) {
                 // no results - delete full element
                 $el->parentNode->removeChild($el);
             } else {

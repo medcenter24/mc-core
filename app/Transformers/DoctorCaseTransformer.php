@@ -39,11 +39,11 @@ class DoctorCaseTransformer extends AbstractTransformer
             // api uses only system format if we need to convert it - do it at the frontend
             'createdAt' => Date::sysDate(
                     $doctorAccident->created_at,
-                    $this->getServiceLocator()->get(UserService::class)->getTimezone(),
+                    $this->getServiceLocator()->get(UserService::class)->getTimezone()
             ),
             'visitTime' => Date::sysDate(
                 $doctorAccident->getAttribute('visit_time'),
-                $this->getServiceLocator()->get(UserService::class)->getTimezone(),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
             ),
             'recommendation' => $doctorAccident->recommendation,
             'investigation' => $doctorAccident->investigation,

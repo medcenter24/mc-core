@@ -38,7 +38,7 @@ class HospitalAccidentTransformer extends AccidentTransformer
             'accidentStatusId' => $accident->caseable->accident_status_id,
             'createdAt' => Date::sysDate(
                 $accident->caseable->created_at,
-                $this->getServiceLocator()->get(UserService::class)->getTimezone(),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
             ),
             'hospitalId' => $accident->caseable->hospital_id,
         ];

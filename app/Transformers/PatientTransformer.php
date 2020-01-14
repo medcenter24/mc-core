@@ -34,8 +34,8 @@ class PatientTransformer extends AbstractTransformer
             'phones' => $patient->phones,
             'birthday' => Date::sysDate(
                 $patient->birthday,
-                $this->getServiceLocator()->get(UserService::class)->getTimezone(),
-                ),
+                $this->getServiceLocator()->get(UserService::class)->getTimezone()
+            ),
             'comment' => $patient->comment
         ];
     }

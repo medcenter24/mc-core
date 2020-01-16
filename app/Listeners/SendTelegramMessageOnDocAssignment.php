@@ -18,11 +18,13 @@
 
 namespace medcenter24\mcCore\App\Listeners;
 
+use App;
+use Log;
 use medcenter24\mcCore\App\Events\DoctorAccidentUpdatedEvent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Telegram;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
+use Throwable;
 
 class SendTelegramMessageOnDocAssignment
 {
@@ -38,21 +40,29 @@ class SendTelegramMessageOnDocAssignment
 
     /**
      * @param DoctorAccidentUpdatedEvent $event
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function handle(DoctorAccidentUpdatedEvent $event)
+    public function handle(DoctorAccidentUpdatedEvent $event): void
     {
         $prev = $event->getPreviousData();
         $doctorAccident = $event->getDoctorAccident();
 
+        Log::info('Run Telegram message sender on event', [
+            'doc' => $doctorAccident->doctor_id,
+            'previousDoctorAccidentDoctor' => $prev ? $prev->doctor_id : '',
+            'accident_ref_num' => $doctorAccident->accident->ref_num,
+            'accident' => $doctorAccident->accident->id,
+            'doctorAccidentId' => $doctorAccident->id,
+        ]);
+
         if (
-            $doctorAccident->doctor_id &&
-            (!$prev || $prev->doctor_id != $doctorAccident->doctor_id)
+            $doctorAccident->doctor_id
+            && (!$prev || (int)$prev->doctor_id !== (int)$doctorAccident->doctor_id)
             && $doctorAccident->doctor->user_id
             && $doctorAccident->doctor->user->telegram
         ) {
             $doctorUser = $doctorAccident->doctor->user;
-            \App::setLocale($doctorUser->lang);
+            App::setLocale($doctorUser->lang);
             $keyboard = new Keyboard([
                 'keyboard' => [
                     [
@@ -66,23 +76,23 @@ class SendTelegramMessageOnDocAssignment
                 'one_time_keyboard' => true,
             ]);
 
-            \Telegram::sendMessage([
+            Telegram::sendMessage([
                 'chat_id' => $doctorAccident->doctor->user->telegram->telegram_id,
                 'text' => view('case.info', compact('doctorAccident'))->render(),
                 'parse_mode' => 'HTML',
                 'reply_markup' => $keyboard,
             ]);
         } elseif (!$doctorAccident->doctor) {
-            \Log::warning('Doctor will not receive any messages to the telegram, because we do not have doctor', [
+            Log::warning('Doctor will not receive any messages to the telegram, because we do not have doctor', [
                 'doctorAccidentId' => $doctorAccident->id,
             ]);
         } elseif(!$doctorAccident->doctor->user_id) {
-            \Log::warning('Doctor will not receive any messages to the telegram, because he does not have assignment to user', [
+            Log::warning('Doctor will not receive any messages to the telegram, because he does not have assignment to user', [
                 'doctorAccidentId' => $doctorAccident->id,
                 'userId' => $doctorAccident->doctor->user_id,
             ]);
         } elseif(!$doctorAccident->doctor->user->telegram) {
-            \Log::warning('Doctor will not receive any messages to the telegram, because he does not have assignment to telegram', [
+            Log::warning('Doctor will not receive any messages to the telegram, because he does not have assignment to telegram', [
                 'doctorAccidentId' => $doctorAccident->id,
                 'userId' => $doctorAccident->doctor->user_id,
                 'telegram' => $doctorAccident->doctor->user->telegram,

@@ -195,7 +195,7 @@ class AccidentService extends AbstractModelService
             foreach ($dirty as $key) {
                 if (array_key_exists($key, $events) && $model->$key) {
                     /** @var AccidentStatus $status */
-                    $status = $this->getServiceLocator()->get(AccidentStatusesService::class)->firstOrCreate([
+                    $status = $this->getAccidentStatusesService()->firstOrCreate([
                         'title' => $events[$key]['status'],
                         'type' => $events[$key]['type'],
                     ]);

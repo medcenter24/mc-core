@@ -195,13 +195,14 @@ class CasesController extends ApiController
      */
     private function createCaseableFromRequest(Accident $accident, Request $request): void
     {
-        $caseable = $accident->caseable_type === DoctorAccident::class
+        $caseable = $accident->isDoctorCaseable()
             ? DoctorAccident::create(['recommendation' => '', 'investigation' => ''])
             : HospitalAccident::create();
 
-        $accident->caseable_id = $caseable->id;
-        $accident->caseable_type = get_class($caseable);
-        $accident->save();
+        $accident->update([
+            'caseable_id' => $caseable->id
+        ]);
+        // $accident->save();
         $accident->refresh();
         $this->updateCaseableData($accident, $request);
     }
@@ -256,6 +257,7 @@ class CasesController extends ApiController
         $accidentData = $this->convertIndexes( $request->json('accident', []) );
         /** @var Accident $accident */
         $accident = $accidentService->create($accidentData);
+        Log::info('created', ['ref' => $accident->ref_num]); // will be added after all data stored
         $this->createCaseableFromRequest($accident, $request);
 
         if (!array_key_exists('patientId', $accidentData)) {

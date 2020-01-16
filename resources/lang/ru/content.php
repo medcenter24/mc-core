@@ -17,6 +17,20 @@
  */
 
 return [
+    'address' => 'Адрес',
+    'symptoms' => 'Симптомы',
+    'new_case_created' => 'Вам назначено новое дело',
+    'id_not_provided' => 'ID не указан',
+    'npp_sign' => '№',
+    'Ref. num. not provided' => 'Реф.номер не указан',
+    'assistant_ref_num_not_provided' => 'Реф.номер ассистанской компании не указан',
+    'patient_name_not_provided' => 'Имя пациента не указано',
+    'birthday_not_provided' => 'День рождения не указан',
+    'patient_not_provided' => 'Пациент не указан',
+    'city_not_provided' => 'Город не указан',
+    'contacts_not_provided' => 'Контакты не указаны',
+    'symptoms_not_provided' => 'Симптомы не указаны',
+    'accident_not_provided' => 'Дело не указано',
     'slack' => 'Slack',
     'messengers' => 'Мессенжеры',
     'profile' => 'Профиль',

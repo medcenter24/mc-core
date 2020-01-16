@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Events;
 
+
 use medcenter24\mcCore\App\DoctorAccident;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -45,7 +46,7 @@ class DoctorAccidentUpdatedEvent
      * Commentary to the operation
      * @var string
      */
-    private $commentary = '';
+    private $commentary;
 
     /**
      * Create a new event instance.
@@ -55,7 +56,7 @@ class DoctorAccidentUpdatedEvent
      * @param DoctorAccident $doctorAccident
      * @param string $commentary
      */
-    public function __construct(DoctorAccident $previousData = null, DoctorAccident $doctorAccident, $commentary = '')
+    public function __construct(DoctorAccident $previousData = null, DoctorAccident $doctorAccident = null, $commentary = '')
     {
         $this->previousData = $previousData;
         $this->doctorAccident = $doctorAccident;

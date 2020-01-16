@@ -96,7 +96,9 @@ class Accident extends AccidentAbstract
 
         self::saved(static function(Accident $accident) {
             $serviceLocator = ServiceLocator::instance();
-            $serviceLocator->get(AccidentService::class)->updateAccidentStatus($accident);
+            /** @var AccidentService $accidentService */
+            $accidentService = $serviceLocator->get(AccidentService::class);
+            $accidentService->updateAccidentStatus($accident);
         });
     }
 

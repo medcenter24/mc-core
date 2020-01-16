@@ -17,6 +17,20 @@
  */
 
 return [
+    'address' => 'Address',
+    'symptoms' => 'Symptoms',
+    'new_case_created' => 'You have new case',
+    'npp_sign' => '#',
+    'Ref. num. not provided' => 'Ref. num. not provided',
+    'id_not_provided' => 'ID not provided',
+    'assistant_ref_num_not_provided' => 'Assistant ref. num. not provided',
+    'patient_name_not_provided' => 'Patient name not provided',
+    'birthday_not_provided' => 'Birthday not provided',
+    'patient_not_provided' => 'Patient not provided',
+    'city_not_provided' => 'City not provided',
+    'contacts_not_provided' => 'Contacts not provided',
+    'symptoms_not_provided' => 'Symptoms not provided',
+    'accident_not_provided' => 'Accident not provided',
     'slack' => 'Slack',
     'messengers' => 'Messengers',
     'profile' => 'Profile',

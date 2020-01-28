@@ -20,7 +20,6 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 
 use Auth;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Diagnostic;

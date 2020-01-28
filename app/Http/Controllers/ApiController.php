@@ -70,9 +70,15 @@ class ApiController extends Controller
         if ($request) {
             // apply filters
             $filters = $request->json('filters');
-            if (is_array($filters) && count($filters)) {
-                foreach ($filters as $field => $filter) {
-                    $eloquent->where($field, $this->getAction($filter['matchMode']), $filter['value']);
+            if (is_array($filters)
+                && array_key_exists('fields', $filters)
+                && count($filters['fields']))
+            {
+                foreach ($filters['fields'] as $key => $filter) {
+                    if ($filter['value'] !== null) {
+                        $eloquent->where($filter['field'], $this->getFilterAction($filter['match']),
+                            $this->getFilterValue($filter));
+                    }
                 }
             }
         }
@@ -80,10 +86,35 @@ class ApiController extends Controller
         return $eloquent;
     }
 
-    private function getAction(string $act): string {
+    private function getFilterValue(array $filter): string {
+        switch($filter['match']) {
+            case 'like%':
+                return $filter['value'] . '%';
+            case '%like':
+                return '%'.$filter['value'];
+            case '%like%':
+                return '%'.$filter['value'].'%';
+        }
+        return $filter['value'];
+    }
+
+    private function getFilterAction(string $act): string {
         switch ($act) {
             case 'like':
+            case 'like%':
                 $action = 'like';
+                break;
+            case 'lt':
+                $action = '<';
+                break;
+            case 'gt':
+                $action = '>';
+                break;
+            case 'lte':
+                $action = '<=';
+                break;
+            case 'gte':
+                $action = '>=';
                 break;
             case 'eq':
             default:

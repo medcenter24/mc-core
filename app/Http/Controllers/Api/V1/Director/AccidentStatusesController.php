@@ -22,9 +22,20 @@ use medcenter24\mcCore\App\AccidentStatus;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AccidentStatusRequest;
 use medcenter24\mcCore\App\Transformers\AccidentStatusTransformer;
+use League\Fractal\TransformerAbstract;
 
 class AccidentStatusesController extends ApiController
 {
+    protected function getDataTransformer(): TransformerAbstract
+    {
+        return new AccidentStatusTransformer();
+    }
+
+    protected function getModelClass(): string
+    {
+        return AccidentStatus::class;
+    }
+
     public function index()
     {
         $accidentStatus = AccidentStatus::orderBy('title')->get();

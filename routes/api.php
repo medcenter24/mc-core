@@ -115,6 +115,7 @@ $api->group([
 
                 $api->post('checkpoints/search', AccidentCheckpointsController::class . '@search');
                 $api->resource('checkpoints', AccidentCheckpointsController::class);
+                $api->post('statuses/search', AccidentStatusesController::class . '@search');
                 $api->resource('statuses', AccidentStatusesController::class);
 
                 $api->post('users/search', UsersController::class . '@search');

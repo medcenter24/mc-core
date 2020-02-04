@@ -199,7 +199,8 @@ class CasesController extends ApiController
             : HospitalAccident::create();
 
         $accident->update([
-            'caseable_id' => $caseable->id
+            'caseable_id' => $caseable->id,
+            'caseable_type' => get_class($caseable),
         ]);
         // $accident->save();
         $accident->refresh();
@@ -226,8 +227,9 @@ class CasesController extends ApiController
                 $caseableAccidentData = $request->json('hospitalAccident', []);
             }
 
-            $before = clone $accident->caseable;
-            $caseable = $this->setData($accident->caseable, $caseableAccidentData);
+            $before = clone $accident->getAttribute('caseable');
+            /** @var DoctorAccident|HospitalAccident $caseable */
+            $caseable = $this->setData($accident->getAttribute('caseable'), $caseableAccidentData);
             $caseable->save();
 
             if ($accident->isDoctorCaseable()) {

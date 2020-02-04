@@ -62,9 +62,6 @@ class AuthorizationTest extends TestCase
             'password' => $passwd,
         ], $this->headers());
 
-        if ($response->getStatusCode() !== 200) {
-            var_dump($response->getContent());
-        }
         $response->assertStatus(200);
     }
 
@@ -83,7 +80,7 @@ class AuthorizationTest extends TestCase
             'expires_in' => 3600,
             'lang' => '',
             'thumb' => '',
-        ]);
+        ], true);
         $token = $response->assertJsonStructure([
             'token_type',
             'expires_in',

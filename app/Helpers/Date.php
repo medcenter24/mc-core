@@ -18,6 +18,7 @@
 namespace medcenter24\mcCore\App\Helpers;
 
 
+use DateTime;
 use Illuminate\Support\Carbon;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\UserService;
@@ -45,5 +46,12 @@ class Date
             $str = self::sysDate(Carbon::now(), $tz);
         }
         return $str;
+    }
+
+    public static function validateDate($date, $format = 'Y-m-d'): bool
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        // The Y ( 4 digits year ) returns TRUE for any integer with any number of digits so changing the comparison from == to === fixes the issue.
+        return $d && $d->format($format) === $date;
     }
 }

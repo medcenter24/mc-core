@@ -29,6 +29,11 @@ class Sorter extends RequestBuilder
      */
     private $sortBy;
 
+    public static function create(): Sorter
+    {
+        return new Sorter();
+    }
+
     public function inject(array $config): void
     {
         parent::inject($config);

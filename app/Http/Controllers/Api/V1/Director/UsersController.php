@@ -28,26 +28,11 @@ use medcenter24\mcCore\App\Services\LogoService;
 use medcenter24\mcCore\App\Services\RoleService;
 use medcenter24\mcCore\App\Transformers\UserTransformer;
 use medcenter24\mcCore\App\User;
-use Illuminate\Database\Eloquent\Builder;
 use League\Fractal\TransformerAbstract;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded;
-use Illuminate\Http\Request;
 
 class UsersController extends ApiController
 {
-    /**
-     * For director allowed only Doctors
-     * @param $eloquent
-     * @param $request
-     * @return mixed
-     */
-    protected function applyCondition($eloquent, Request $request = null): Builder
-    {
-        return $eloquent->whereHas('roles', function ($query) {
-            $query->where('title', 'doctor');
-        });
-    }
-
     protected function getModelClass(): string
     {
         return User::class;

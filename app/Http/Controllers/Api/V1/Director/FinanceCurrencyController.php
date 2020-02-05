@@ -23,23 +23,10 @@ use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FinanceCurrencyRequest;
 use medcenter24\mcCore\App\Transformers\FinanceCurrencyTransformer;
 use Dingo\Api\Http\Response;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use League\Fractal\TransformerAbstract;
 
 class FinanceCurrencyController extends ApiController
 {
-    protected function applyCondition($eloquent, Request $request = null): Builder
-    {
-        if ($request) {
-            $id = (int) $request->json('id', false);
-            if ($id) {
-                $eloquent->where('id', $id);
-            }
-        }
-        return $eloquent;
-    }
-
     protected function getDataTransformer(): TransformerAbstract
     {
         return new FinanceCurrencyTransformer();

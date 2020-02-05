@@ -18,6 +18,7 @@
 namespace medcenter24\mcCore\App\Services\Core\Http\Filter;
 
 
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 
 /**
@@ -27,14 +28,12 @@ use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
  */
 class RequestBuilderFilterTransformer
 {
-    public const BOOLEAN = 'boolean';
-
     public function transform(array $filter): array
     {
         $filter = $this->transformValue($filter);
         $filter = $this->transformMatch($filter);
 
-        return $filter;
+        return [$filter];
     }
 
     private function transformValue(array $filter): array
@@ -67,6 +66,10 @@ class RequestBuilderFilterTransformer
 
     private function transformMatch(array $filter): array
     {
+        if (!array_key_exists(Filter::FIELD_MATCH, $filter)) {
+            $filter[Filter::FIELD_MATCH] = Filter::MATCH_EQ;
+        }
+
         switch ($filter[Filter::FIELD_MATCH]) {
             case Filter::MATCH_GREATER:
                 $filter[Filter::FIELD_MATCH] = '>';
@@ -81,15 +84,15 @@ class RequestBuilderFilterTransformer
                 $filter[Filter::FIELD_MATCH] = '<=';
                 break;
             case Filter::MATCH_CONTENTS:
-                $filter[Filter::FIELD_MATCH] = 'like';
+                $filter[Filter::FIELD_MATCH] = 'ilike';
                 $filter[Filter::FIELD_VALUE] = '%'.$filter[Filter::FIELD_VALUE].'%';
                 break;
             case Filter::MATCH_ENDS_WITH:
-                $filter[Filter::FIELD_MATCH] = 'like';
+                $filter[Filter::FIELD_MATCH] = 'ilike';
                 $filter[Filter::FIELD_VALUE] = '%'.$filter[Filter::FIELD_VALUE];
                 break;
             case Filter::MATCH_START_WITH:
-                $filter[Filter::FIELD_MATCH] = 'like';
+                $filter[Filter::FIELD_MATCH] = 'ilike';
                 $filter[Filter::FIELD_VALUE] .= '%';
                 break;
             case Filter::MATCH_EQ:

@@ -66,6 +66,7 @@ class CasesExport implements FromCollection, WithHeadings, ShouldAutoSize
     public function collection(): Collection
     {
         $caseSeekerService = new CaseSeekerService();
+        // todo search should be configured with ApiController::
         $accidents = $caseSeekerService->search($this->filters);
         $transformer = new CaseExportTransformer();
         $npp = 0;

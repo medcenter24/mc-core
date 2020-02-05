@@ -71,6 +71,11 @@ class Filter extends RequestBuilder
      */
     private $filters;
 
+    public static function create(): Filter
+    {
+        return new self();
+    }
+
     public function inject(array $config): void
     {
         parent::inject($config);

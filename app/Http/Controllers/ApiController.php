@@ -18,11 +18,9 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers;
 
-use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +28,6 @@ use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
-use medcenter24\mcCore\App\Services\Core\Http\Builders\RequestBuilder;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Sorter;
 use medcenter24\mcCore\App\Services\Core\Http\DataLoaderRequestBuilder;
 use medcenter24\mcCore\App\Services\Core\Http\Filter\RequestBuilderFilterTransformer;
@@ -64,32 +61,13 @@ class ApiController extends Controller
     }
 
     /**
-     * To have possibility to add some conditions
-     * # notice: do not want to search by all of the visible properties because we need to control that
-     * # we need to control filter's types and not all filters are able to be searchable
-     * @param Builder $eloquent
-     * @param Request $request
-     * @return mixed
+     * Internal transformer for the current model search
+     * @param $eloquent
+     * @param array $filters
+     * @return array
      */
-    protected function applyCondition(Builder $eloquent, Request $request = null): Builder
-    {
-        if ($request) {
-            // apply filters
-            $filters = $request->json('filters');
-            if (is_array($filters)
-                && array_key_exists('fields', $filters)
-                && count($filters['fields']))
-            {
-                foreach ($filters['fields'] as $key => $filter) {
-                    if ($filter['value'] !== null) {
-                        $eloquent->where($filter['field'], $this->getFilterAction($filter['match']),
-                            $this->getFilterValue($filter));
-                    }
-                }
-            }
-        }
-
-        return $eloquent;
+    protected function searchTransformer(Builder $eloquent, array $filters): array {
+        return $filters;
     }
 
     /**
@@ -101,19 +79,31 @@ class ApiController extends Controller
     {
         /** @var DataLoaderRequestBuilder $requestBuilder */
         $requestBuilder = $this->getServiceLocator()->get(DataLoaderRequestBuilder::class);
-        $requestBuilder->setPaginator($this->getServiceLocator()->get(Paginator::class)->inject($request->json(DataLoaderRequestBuilder::PAGINATOR)));
-        $requestBuilder->setSorter($this->getServiceLocator()->get(Sorter::class)->inject($request->json(DataLoaderRequestBuilder::SORTER)));
-        $requestBuilder->setFilter($this->getServiceLocator()->get(Filter::class)->inject($request->json(DataLoaderRequestBuilder::FILTER)));
+        /** @var Paginator $paginator */
+        $paginator = $this->getServiceLocator()->get(Paginator::class)->create();
+        $paginator->inject($request->json(DataLoaderRequestBuilder::PAGINATOR, []));
+        $requestBuilder->setPaginator($paginator);
+        /** @var Sorter $sorter */
+        $sorter = $this->getServiceLocator()->get(Sorter::class)->create();
+        $sorter->inject($request->json(DataLoaderRequestBuilder::SORTER, []));
+        $requestBuilder->setSorter($sorter);
+        /** @var Filter $filter */
+        $filter = $this->getServiceLocator()->get(Filter::class)->create();
+        $filter->inject($request->json(DataLoaderRequestBuilder::FILTER, []));
+        $requestBuilder->setFilter($filter);
 
         /** @var Builder $eloquent */
         $eloquent = call_user_func(array($this->getModelClass(), 'query'));
 
+        /** @var RequestBuilderFilterTransformer $filterTransformer */
         $filterTransformer = $this->getServiceLocator()->get(RequestBuilderFilterTransformer::class);
-        /** @var Filter $filter */
+        /** @var array $filter */
         foreach ($requestBuilder->getFilter()->getFilters() as $filter) {
+            // general transformer
             $transformed = $filterTransformer->transform($filter);
+            // internal transformer
+            $transformed = $this->searchTransformer($eloquent, $transformed);
             foreach ($transformed as $transform) {
-
                 switch ($transform[Filter::FIELD_MATCH]) {
                     case Filter::MATCH_BETWEEN:
                         $eloquent->whereBetween($transform[Filter::FIELD_NAME], $transform[Filter::FIELD_VALUE]);
@@ -121,9 +111,14 @@ class ApiController extends Controller
                     case Filter::MATCH_IN:
                         $eloquent->whereIn($transform[Filter::FIELD_NAME], $transform[Filter::FIELD_VALUE]);
                         break;
+                    case 'ilike':
+                        $eloquent->whereRaw('UPPER('
+                            . $transform[Filter::FIELD_NAME]
+                            . ") LIKE '" .mb_strtoupper($transform[Filter::FIELD_VALUE])."'");
+                        break;
                     default:
                         $eloquent->where($transform[Filter::FIELD_NAME], $transform[Filter::FIELD_MATCH],
-                            $transform[Filter::FIELD_VALUE], $transform[RequestBuilderFilterTransformer::BOOLEAN]);
+                            $transform[Filter::FIELD_VALUE]);
                 }
             }
         }
@@ -132,44 +127,11 @@ class ApiController extends Controller
             $eloquent->orderBy($sortField[Filter::FIELD_NAME], $sortField[Filter::FIELD_VALUE]);
         }
 
+        // debug
+        Log::info($eloquent->toSql(), [$eloquent]);
+
         // pagination here
         $data = $eloquent->paginate($requestBuilder->getPaginator()->getOffset(), ['*'], 'page', $requestBuilder->getPage());
-        return $this->response->paginator($data, $this->getDataTransformer());
-    }
-
-    /**
-     * Implement models seeker to find data with filters
-     * @param Request $request
-     * @return \Dingo\Api\Http\Response
-     * @throws NotImplementedException
-     */
-    public function searchOld(Request $request): Response
-    {
-        // first
-        $first = (int)$request->json('first', false);
-        // 3000 like a all but not to overload server
-        $rows = (int)$request->json('rows', 3000);
-        if ($first !== false) {
-            $page = ($first / $rows) + 1;
-        } else {
-            $page = (int)$request->json('page', 0);
-        }
-
-        $sortField = $this->getSortField($request->json('sortField', 'id'));
-        $sortField = $sortField ?: 'id';
-
-        $sortOrder = $request->json('sortOrder', 1) > 0 ? 'asc' : 'desc';
-
-        $eloquent = call_user_func(array($this->getModelClass(), 'orderBy'), $sortField, $sortOrder);
-        $eloquent = $this->applyCondition($eloquent, $request);
-
-        // default conditions for all models
-        $ids = $request->json('ids', []);
-        if (count($ids)) {
-            $eloquent->whereIn('id', $ids);
-        }
-
-        $data = $eloquent->paginate($rows, ['*'], 'page', $page);
         return $this->response->paginator($data, $this->getDataTransformer());
     }
 
@@ -187,25 +149,5 @@ class ApiController extends Controller
      */
     protected function getDataTransformer(): TransformerAbstract {
         throw new NotImplementedException('ApiController::getDataTransformer needs to be rewrote by the child');
-    }
-
-    /**
-     * @param $fieldName
-     * @return string
-     * @throws NotImplementedException
-     */
-    private function getSortField($fieldName): string
-    {
-        $field = '';
-        $fields = [];
-
-        $class = $this->getModelClass();
-        if (class_exists($class)) {
-            /** @var Model $model */
-            $model = new $class;
-            $fields = $model->getVisible();
-            $field = Str::camel($fieldName);
-        }
-        return in_array($field, $fields) ? $field : 'id';
     }
 }

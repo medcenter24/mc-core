@@ -81,6 +81,6 @@ class DataLoaderRequestBuilder
 
     public function getPage(): int
     {
-        return ceil($this->getPaginator()->getOffset() / $this->getPaginator()->getLimit());
+        return floor($this->getPaginator()->getOffset() / $this->getPaginator()->getLimit()) + 1;
     }
 }

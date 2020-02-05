@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Services\CaseServices;
 use Illuminate\Database\Eloquent\Builder;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 
-class CaseSearchFilterTransformer
+class CaseSearchFieldsTransformer
 {
     protected const FIELD_PATIENT_NAME = 'patientName';
     protected const FIELD_REF_NUM = 'refNum';

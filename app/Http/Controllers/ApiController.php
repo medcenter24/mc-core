@@ -123,14 +123,14 @@ class ApiController extends Controller
             }
         }
 
-        foreach ($requestBuilder->getSorter()->getSortBy() as $sortField) {
+        $sortBy = $requestBuilder->getSorter()->getSortBy();
+        $sortBy = $this->searchTransformer($eloquent, $sortBy->toArray());
+        foreach ($sortBy as $sortField) {
             $eloquent->orderBy($sortField[Filter::FIELD_NAME], $sortField[Filter::FIELD_VALUE]);
         }
 
-        // debug
-        Log::info($eloquent->toSql(), [$eloquent]);
-
         // pagination here
+        Log::info('', [$requestBuilder->getPaginator()->getOffset(), $requestBuilder->getPaginator()->getOffset(), $requestBuilder->getPage()]);
         $data = $eloquent->paginate($requestBuilder->getPaginator()->getOffset(), ['*'], 'page', $requestBuilder->getPage());
         return $this->response->paginator($data, $this->getDataTransformer());
     }

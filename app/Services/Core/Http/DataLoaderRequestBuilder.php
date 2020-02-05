@@ -18,16 +18,12 @@
 namespace medcenter24\mcCore\App\Services\Core\Http;
 
 
-use Illuminate\Support\Facades\Request;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Sorter;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
-class DatatableRequestBuilder
+class DataLoaderRequestBuilder
 {
-    use ServiceLocatorTrait;
-
     public const PAGINATOR = 'paginator';
     public const SORTER = 'sorter';
     public const FILTER = 'filter';
@@ -47,10 +43,28 @@ class DatatableRequestBuilder
      */
     private $filter;
 
-    public function __construct(Request $request) {
-        $this->paginator = $this->getServiceLocator()->get(Paginator::class)->inject($request->json(self::PAGINATOR));
-        $this->sorter = $this->getServiceLocator()->get(Sorter::class)->inject($request->json(self::SORTER));
-        $this->filter = $this->getServiceLocator()->get(Filter::class)->inject($request->json(self::FILTER));
+    /**
+     * @param Paginator $paginator
+     */
+    public function setPaginator(Paginator $paginator): void
+    {
+        $this->paginator = $paginator;
+    }
+
+    /**
+     * @param Filter $filter
+     */
+    public function setFilter(Filter $filter): void
+    {
+        $this->filter = $filter;
+    }
+
+    /**
+     * @param Sorter $sorter
+     */
+    public function setSorter(Sorter $sorter): void
+    {
+        $this->sorter = $sorter;
     }
 
     public function getPaginator(): Paginator {
@@ -63,5 +77,10 @@ class DatatableRequestBuilder
 
     public function getFilter(): Filter {
         return $this->filter;
+    }
+
+    public function getPage(): int
+    {
+        return ceil($this->getPaginator()->getOffset() / $this->getPaginator()->getLimit());
     }
 }

@@ -28,6 +28,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
+use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
+use medcenter24\mcCore\App\Services\Core\Http\Builders\RequestBuilder;
+use medcenter24\mcCore\App\Services\Core\Http\Builders\Sorter;
+use medcenter24\mcCore\App\Services\Core\Http\DataLoaderRequestBuilder;
+use medcenter24\mcCore\App\Services\Core\Http\Filter\RequestBuilderFilterTransformer;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use \Symfony\Component\HttpFoundation\Response;
 
@@ -86,41 +92,49 @@ class ApiController extends Controller
         return $eloquent;
     }
 
-    private function getFilterValue(array $filter): string {
-        switch($filter['match']) {
-            case 'like%':
-                return $filter['value'] . '%';
-            case '%like':
-                return '%'.$filter['value'];
-            case '%like%':
-                return '%'.$filter['value'].'%';
-        }
-        return $filter['value'];
-    }
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws NotImplementedException
+     */
+    public function search(Request $request): Response
+    {
+        /** @var DataLoaderRequestBuilder $requestBuilder */
+        $requestBuilder = $this->getServiceLocator()->get(DataLoaderRequestBuilder::class);
+        $requestBuilder->setPaginator($this->getServiceLocator()->get(Paginator::class)->inject($request->json(DataLoaderRequestBuilder::PAGINATOR)));
+        $requestBuilder->setSorter($this->getServiceLocator()->get(Sorter::class)->inject($request->json(DataLoaderRequestBuilder::SORTER)));
+        $requestBuilder->setFilter($this->getServiceLocator()->get(Filter::class)->inject($request->json(DataLoaderRequestBuilder::FILTER)));
 
-    private function getFilterAction(string $act): string {
-        switch ($act) {
-            case 'like':
-            case 'like%':
-                $action = 'like';
-                break;
-            case 'lt':
-                $action = '<';
-                break;
-            case 'gt':
-                $action = '>';
-                break;
-            case 'lte':
-                $action = '<=';
-                break;
-            case 'gte':
-                $action = '>=';
-                break;
-            case 'eq':
-            default:
-                $action = '=';
+        /** @var Builder $eloquent */
+        $eloquent = call_user_func(array($this->getModelClass(), 'query'));
+
+        $filterTransformer = $this->getServiceLocator()->get(RequestBuilderFilterTransformer::class);
+        /** @var Filter $filter */
+        foreach ($requestBuilder->getFilter()->getFilters() as $filter) {
+            $transformed = $filterTransformer->transform($filter);
+            foreach ($transformed as $transform) {
+
+                switch ($transform[Filter::FIELD_MATCH]) {
+                    case Filter::MATCH_BETWEEN:
+                        $eloquent->whereBetween($transform[Filter::FIELD_NAME], $transform[Filter::FIELD_VALUE]);
+                        break;
+                    case Filter::MATCH_IN:
+                        $eloquent->whereIn($transform[Filter::FIELD_NAME], $transform[Filter::FIELD_VALUE]);
+                        break;
+                    default:
+                        $eloquent->where($transform[Filter::FIELD_NAME], $transform[Filter::FIELD_MATCH],
+                            $transform[Filter::FIELD_VALUE], $transform[RequestBuilderFilterTransformer::BOOLEAN]);
+                }
+            }
         }
-        return $action;
+
+        foreach ($requestBuilder->getSorter()->getSortBy() as $sortField) {
+            $eloquent->orderBy($sortField[Filter::FIELD_NAME], $sortField[Filter::FIELD_VALUE]);
+        }
+
+        // pagination here
+        $data = $eloquent->paginate($requestBuilder->getPaginator()->getOffset(), ['*'], 'page', $requestBuilder->getPage());
+        return $this->response->paginator($data, $this->getDataTransformer());
     }
 
     /**
@@ -129,7 +143,7 @@ class ApiController extends Controller
      * @return \Dingo\Api\Http\Response
      * @throws NotImplementedException
      */
-    public function search(Request $request): Response
+    public function searchOld(Request $request): Response
     {
         // first
         $first = (int)$request->json('first', false);

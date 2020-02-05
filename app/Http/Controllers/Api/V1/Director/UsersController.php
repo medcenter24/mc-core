@@ -19,6 +19,7 @@
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Http\Response;
+use Illuminate\Support\Facades\Hash;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\UserStore;
 use medcenter24\mcCore\App\Http\Requests\Api\UserUpdate;
@@ -27,7 +28,6 @@ use medcenter24\mcCore\App\Services\LogoService;
 use medcenter24\mcCore\App\Services\RoleService;
 use medcenter24\mcCore\App\Transformers\UserTransformer;
 use medcenter24\mcCore\App\User;
-use Hash;
 use Illuminate\Database\Eloquent\Builder;
 use League\Fractal\TransformerAbstract;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded;

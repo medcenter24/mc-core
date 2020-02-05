@@ -24,8 +24,8 @@ abstract class RequestBuilder
 {
     private const FIELDS = 'fields';
 
-    private const FIELD_NAME = 'field';
-    protected const FIELD_VALUE = 'value';
+    public const FIELD_NAME = 'field';
+    public const FIELD_VALUE = 'value';
 
     /**
      * @var array

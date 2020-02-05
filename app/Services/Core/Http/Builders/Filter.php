@@ -24,22 +24,23 @@ use medcenter24\mcCore\App\Helpers\Date;
 
 class Filter extends RequestBuilder
 {
-    private const DATE_SEPARATOR = '>';
 
-    private const FIELD_MATCH = 'match';
-    private const FIELD_EL_TYPE = 'elType';
+    public const FIELD_MATCH = 'match';
+    public const FIELD_EL_TYPE = 'elType';
 
-    private const MATCH_EQ = 'eq';
-    private const MATCH_LIKE = 'like';
-    private const MATCH_START_WITH = 'like%';
-    private const MATCH_ENDS_WITH = '%like';
-    private const MATCH_CONTENTS = '%like%';
-    private const MATCH_LESS = 'lt';
-    private const MATCH_LESS_EQUAL = 'lte';
-    private const MATCH_GREATER = 'gt';
-    private const MATCH_GREATER_EQUAL = 'gte';
-    private const MATCH_IN = 'in';
-    private const MATCH_BETWEEN = 'between';
+    public const DATE_SEPARATOR = '>';
+
+    public const MATCH_EQ = 'eq';
+    public const MATCH_LIKE = 'like';
+    public const MATCH_START_WITH = 'like%';
+    public const MATCH_ENDS_WITH = '%like';
+    public const MATCH_CONTENTS = '%like%';
+    public const MATCH_LESS = 'lt';
+    public const MATCH_LESS_EQUAL = 'lte';
+    public const MATCH_GREATER = 'gt';
+    public const MATCH_GREATER_EQUAL = 'gte';
+    public const MATCH_IN = 'in';
+    public const MATCH_BETWEEN = 'between';
 
     private const MATCHES = [
         self::MATCH_EQ,
@@ -55,9 +56,9 @@ class Filter extends RequestBuilder
         self::MATCH_BETWEEN,
     ];
 
-    private const TYPE_TEXT = 'text';
-    private const TYPE_DATE_RANGE = 'dateRange';
-    private const TYPE_SELECT = 'select';
+    public const TYPE_TEXT = 'text';
+    public const TYPE_DATE_RANGE = 'dateRange';
+    public const TYPE_SELECT = 'select';
 
     private const TYPES = [
         self::TYPE_TEXT,
@@ -83,6 +84,7 @@ class Filter extends RequestBuilder
                 $value = $el[self::FIELD_VALUE];
                 if (mb_strpos($value, self::DATE_SEPARATOR) !== false) {
                     $dates = explode(self::DATE_SEPARATOR, $value);
+                    $valid = count($dates) === 2 && $valid;
                     foreach ($dates as $date) {
                         $valid = $valid && Date::validateDate($date);
                     }

@@ -130,7 +130,6 @@ class ApiController extends Controller
         }
 
         // pagination here
-        Log::info('', [$requestBuilder->getPaginator()->getOffset(), $requestBuilder->getPaginator()->getOffset(), $requestBuilder->getPage()]);
         $data = $eloquent->paginate($requestBuilder->getPaginator()->getOffset(), ['*'], 'page', $requestBuilder->getPage());
         return $this->response->paginator($data, $this->getDataTransformer());
     }

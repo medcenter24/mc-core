@@ -18,7 +18,6 @@
 namespace medcenter24\mcCore\App\Services\Core\Http\Filter;
 
 
-use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 
 /**
@@ -43,6 +42,12 @@ class RequestBuilderFilterTransformer
                 $value = $filter[Filter::FIELD_VALUE];
                 if (mb_strpos($value, Filter::DATE_SEPARATOR) !== false) {
                     $filter[Filter::FIELD_VALUE] = explode(Filter::DATE_SEPARATOR, $value);
+                    foreach ($filter[Filter::FIELD_VALUE] as $k => $item) {
+                        // default times if not provided
+                        if (mb_strpos($item, ':') === false) {
+                            $filter[Filter::FIELD_VALUE][$k] .= !$k ? ' 00:00:00' : ' 23:59:59';
+                        }
+                    }
                     $filter[Filter::FIELD_MATCH] = Filter::MATCH_BETWEEN;
                 } elseif (!in_array($filter[Filter::FIELD_MATCH], [
                     Filter::MATCH_LESS_EQUAL,

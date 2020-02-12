@@ -13,25 +13,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
 namespace medcenter24\mcCore\App\Transformers;
 
 
-use medcenter24\mcCore\App\DoctorSurvey;
 
-class DoctorSurveyTransformer extends AbstractTransformer
+use medcenter24\mcCore\App\Disease;
+
+class DiseaseTransformer extends AbstractTransformer
 {
-    public function transform(DoctorSurvey $doctorSurvey): array
+    public function transform(Disease $disease): array
     {
         return [
-            'id' => $doctorSurvey->getAttribute('id'),
-            'title' => $doctorSurvey->getAttribute('title'),
-            'description' => $doctorSurvey->getAttribute('description'),
-            'type' => $doctorSurvey->isDoctor() ? 'doctor' : 'director',
-            'status' => $doctorSurvey->getAttribute('status'),
-            'diseaseCode' => $doctorSurvey->getAttribute('disease_code'),
+            'id' => $disease->getAttribute('id'),
+            'title' => $disease->getAttribute('title'),
+            'description' => $disease->getAttribute('description'),
+            'code' => $disease->getAttribute('code'),
         ];
     }
 }

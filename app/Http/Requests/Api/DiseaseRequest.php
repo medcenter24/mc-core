@@ -13,25 +13,41 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Transformers;
+namespace medcenter24\mcCore\App\Http\Requests\Api;
 
 
-use medcenter24\mcCore\App\DoctorSurvey;
+use Auth;
+use medcenter24\mcCore\App\Services\RoleService;
+use Roles;
 
-class DoctorSurveyTransformer extends AbstractTransformer
+class DiseaseRequest extends JsonRequest
 {
-    public function transform(DoctorSurvey $doctorSurvey): array
+
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize(): bool
+    {
+        return Auth::check()
+            && Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules(): array
     {
         return [
-            'id' => $doctorSurvey->getAttribute('id'),
-            'title' => $doctorSurvey->getAttribute('title'),
-            'description' => $doctorSurvey->getAttribute('description'),
-            'type' => $doctorSurvey->isDoctor() ? 'doctor' : 'director',
-            'status' => $doctorSurvey->getAttribute('status'),
-            'diseaseCode' => $doctorSurvey->getAttribute('disease_code'),
+            'title' => 'required|min:3',
+            'description' => 'max:250',
+            'code' => 'required|min:1',
         ];
     }
 }

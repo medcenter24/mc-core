@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Services\Core\Http\Builders;
 
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Helpers\Date;
 
 class Filter extends RequestBuilder

@@ -20,17 +20,13 @@ namespace medcenter24\mcCore\App\Http\Controllers;
 
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use Dingo\Api\Routing\Helpers;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
-use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
-use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
-use medcenter24\mcCore\App\Services\Core\Http\Builders\Sorter;
-use medcenter24\mcCore\App\Services\Core\Http\DataLoaderRequestBuilder;
-use medcenter24\mcCore\App\Services\Core\Http\Filter\RequestBuilderFilterTransformer;
+use medcenter24\mcCore\App\Services\ApiSearch\ApiSearchService;
+use medcenter24\mcCore\App\Services\ApiSearch\SearchFieldLogic;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use \Symfony\Component\HttpFoundation\Response;
 
@@ -61,13 +57,12 @@ class ApiController extends Controller
     }
 
     /**
-     * Internal transformer for the current model search
-     * @param $eloquent
-     * @param array $filters
-     * @return array
+     * Complex search with relations
+     * @return SearchFieldLogic
      */
-    protected function searchTransformer(Builder $eloquent, array $filters): array {
-        return $filters;
+    protected function searchFieldLogic(): ?SearchFieldLogic
+    {
+        return null; // will be used default SearchFieldLogic
     }
 
     /**
@@ -77,60 +72,10 @@ class ApiController extends Controller
      */
     public function search(Request $request): Response
     {
-        /** @var DataLoaderRequestBuilder $requestBuilder */
-        $requestBuilder = $this->getServiceLocator()->get(DataLoaderRequestBuilder::class);
-        /** @var Paginator $paginator */
-        $paginator = $this->getServiceLocator()->get(Paginator::class)->create();
-        $paginator->inject($request->json(DataLoaderRequestBuilder::PAGINATOR, []));
-        $requestBuilder->setPaginator($paginator);
-        /** @var Sorter $sorter */
-        $sorter = $this->getServiceLocator()->get(Sorter::class)->create();
-        $sorter->inject($request->json(DataLoaderRequestBuilder::SORTER, []));
-        $requestBuilder->setSorter($sorter);
-        /** @var Filter $filter */
-        $filter = $this->getServiceLocator()->get(Filter::class)->create();
-        $filter->inject($request->json(DataLoaderRequestBuilder::FILTER, []));
-        $requestBuilder->setFilter($filter);
-
-        /** @var Builder $eloquent */
-        $eloquent = call_user_func(array($this->getModelClass(), 'query'));
-
-        /** @var RequestBuilderFilterTransformer $filterTransformer */
-        $filterTransformer = $this->getServiceLocator()->get(RequestBuilderFilterTransformer::class);
-        /** @var array $filter */
-        foreach ($requestBuilder->getFilter()->getFilters() as $filter) {
-            // general transformer
-            $transformed = $filterTransformer->transform($filter);
-            // internal transformer
-            $transformed = $this->searchTransformer($eloquent, $transformed);
-            foreach ($transformed as $transform) {
-                switch ($transform[Filter::FIELD_MATCH]) {
-                    case Filter::MATCH_BETWEEN:
-                        $eloquent->whereBetween($transform[Filter::FIELD_NAME], $transform[Filter::FIELD_VALUE]);
-                        break;
-                    case Filter::MATCH_IN:
-                        $eloquent->whereIn($transform[Filter::FIELD_NAME], $transform[Filter::FIELD_VALUE]);
-                        break;
-                    case 'ilike':
-                        $eloquent->whereRaw('UPPER('
-                            . $transform[Filter::FIELD_NAME]
-                            . ") LIKE '" .mb_strtoupper($transform[Filter::FIELD_VALUE])."'");
-                        break;
-                    default:
-                        $eloquent->where($transform[Filter::FIELD_NAME], $transform[Filter::FIELD_MATCH],
-                            $transform[Filter::FIELD_VALUE]);
-                }
-            }
-        }
-
-        $sortBy = $requestBuilder->getSorter()->getSortBy();
-        $sortBy = $this->searchTransformer($eloquent, $sortBy->toArray());
-        foreach ($sortBy as $sortField) {
-            $eloquent->orderBy($sortField[Filter::FIELD_NAME], $sortField[Filter::FIELD_VALUE]);
-        }
-
-        // pagination here
-        $data = $eloquent->paginate($requestBuilder->getPaginator()->getOffset(), ['*'], 'page', $requestBuilder->getPage());
+        /** @var ApiSearchService $searchService */
+        $searchService = $this->getServiceLocator()->get(ApiSearchService::class);
+        $searchService->setFieldLogic($this->searchFieldLogic());
+        $data = $searchService->search($request, $this->getModelClass());
         return $this->response->paginator($data, $this->getDataTransformer());
     }
 

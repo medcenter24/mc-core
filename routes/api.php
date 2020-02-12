@@ -30,6 +30,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CitiesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CompaniesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CountriesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DatePeriodController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DiseasesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DoctorsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\FinanceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\FinanceCurrencyController;
@@ -249,12 +250,13 @@ $api->group([
                     $api->get('/{formId}/{srcId}/html', FormsController::class . '@html');
                 });
 
-                // @TODO do not use such records at all, we need to create group then all references of this group
-
                 $api->post('invoice/search', InvoiceController::class . '@search');
                 $api->get('invoice/{id}/form', InvoiceController::class . '@form');
                 $api->get('invoice/{id}/file', InvoiceController::class . '@file');
                 $api->resource('invoice', InvoiceController::class);
+
+                $api->post('diseases/search', DiseasesController::class . '@search');
+                $api->resource('diseases', DiseasesController::class);
             });
         });
     });

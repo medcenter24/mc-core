@@ -36,8 +36,9 @@ use medcenter24\mcCore\App\Http\Requests\Api\CaseRequest;
 use medcenter24\mcCore\App\Models\Scenario\ScenarioModel;
 use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\ApiSearch\SearchFieldLogic;
 use medcenter24\mcCore\App\Services\CaseServices\CaseHistoryService;
-use medcenter24\mcCore\App\Services\CaseServices\CaseSearchFieldsTransformer;
+use medcenter24\mcCore\App\Services\CaseServices\CaseSearchFieldLogic;
 use medcenter24\mcCore\App\Services\DocumentService;
 use medcenter24\mcCore\App\Services\PatientService;
 use medcenter24\mcCore\App\Services\ReferralNumberService;
@@ -91,14 +92,11 @@ class CasesController extends ApiController
     }
 
     /**
-     * @param Builder $eloquent
-     * @param array $filters
-     * @return array
+     * @return SearchFieldLogic
      */
-    protected function searchTransformer(Builder $eloquent, array $filters): array
+    protected function searchFieldLogic(): SearchFieldLogic
     {
-        $transformer = $this->getServiceLocator()->get(CaseSearchFieldsTransformer::class);
-        return $transformer->transform($eloquent, $filters);
+        return $this->getServiceLocator()->get(CaseSearchFieldLogic::class);
     }
 
     /**

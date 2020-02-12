@@ -31,8 +31,7 @@ class RequestBuilderFilterTransformer
     {
         $filter = $this->transformValue($filter);
         $filter = $this->transformMatch($filter);
-
-        return [$filter];
+        return $filter;
     }
 
     private function transformValue(array $filter): array

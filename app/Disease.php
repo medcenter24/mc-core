@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,25 +12,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Transformers;
+namespace medcenter24\mcCore\App;
 
 
-use medcenter24\mcCore\App\DoctorSurvey;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DoctorSurveyTransformer extends AbstractTransformer
+class Disease extends Model
 {
-    public function transform(DoctorSurvey $doctorSurvey): array
-    {
-        return [
-            'id' => $doctorSurvey->getAttribute('id'),
-            'title' => $doctorSurvey->getAttribute('title'),
-            'description' => $doctorSurvey->getAttribute('description'),
-            'type' => $doctorSurvey->isDoctor() ? 'doctor' : 'director',
-            'status' => $doctorSurvey->getAttribute('status'),
-            'diseaseCode' => $doctorSurvey->getAttribute('disease_code'),
-        ];
-    }
+    use SoftDeletes;
+
+    protected $fillable = ['title', 'description', 'code'];
+    protected $visible = ['title', 'description', 'code'];
 }

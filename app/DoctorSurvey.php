@@ -50,9 +50,4 @@ class DoctorSurvey extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
-    public function isDoctor(): bool
-    {
-        return $this->getServiceLocator()->get(DoctorServiceService::class)->isDoctor($this->created_by);
-    }
 }

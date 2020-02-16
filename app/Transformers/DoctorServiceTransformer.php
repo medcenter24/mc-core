@@ -20,19 +20,25 @@ namespace medcenter24\mcCore\App\Transformers;
 
 
 use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Services\DoctorServiceService;
 
 class DoctorServiceTransformer extends AbstractTransformer
 {
     public function transform(DoctorService $service): array
     {
-        $type = $service->created_by ? 'director' : 'system';
+        $createdBy = $service->getAttribute('created_by');
+        $type = $createdBy ? 'director' : 'system';
         return [
             'id' => $service->id,
             'title' => $service->title,
             'description' => $service->description,
             'diseaseCode' => $service->disease_code,
-            'type' => $service->isDoctor() ? 'doctor' : $type,
+            'type' => $this->getDoctorService()->isDoctor($createdBy) ? 'doctor' : $type,
             'status' => $service->getAttribute('status'),
         ];
+    }
+
+    private function getDoctorService(): DoctorServiceService {
+        return $this->getServiceLocator()->get(DoctorServiceService::class);
     }
 }

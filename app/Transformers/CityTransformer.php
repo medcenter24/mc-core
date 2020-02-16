@@ -29,6 +29,12 @@ class CityTransformer extends AbstractTransformer
             'id' => (int)$city->id,
             'title' => $city->title,
             'regionId' => $city->region_id,
+            'regionTitle' => $city->getAttribute('region')
+                ? $city->getAttribute('region')->title
+                : '',
+            'countryTitle' => $city->getAttribute('region') && $city->getAttribute('region')->getAttribute('country')
+                ? $city->getAttribute('region')->getAttribute('country')->title
+                : '',
         ];
     }
 }

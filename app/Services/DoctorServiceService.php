@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,7 +18,6 @@
  */
 
 namespace medcenter24\mcCore\App\Services;
-
 
 use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\DoctorService;
@@ -47,6 +47,6 @@ class DoctorServiceService extends AbstractModelService
 
     public function isDoctor(int $userId): bool
     {
-        return Doctor::where('user_id', $userId)->count() > 0;
+        return $userId && Doctor::where('user_id', $userId)->count() > 0;
     }
 }

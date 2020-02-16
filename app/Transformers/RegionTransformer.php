@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,7 +18,6 @@
 
 namespace medcenter24\mcCore\App\Transformers;
 
-
 use medcenter24\mcCore\App\Region;
 
 class RegionTransformer extends AbstractTransformer
@@ -25,9 +25,12 @@ class RegionTransformer extends AbstractTransformer
     public function transform(Region $region): array
     {
         return [
-            'id' => (int)$region->id,
-            'title' => $region->title,
-            'countryId' => (int)$region->country_id,
+            'id' => (int) $region->getAttribute('id'),
+            'title' => $region->getAttribute('title'),
+            'countryId' => (int) $region->getAttribute('country_id'),
+            'countryTitle' => $region->getAttribute('country')
+                ? $region->getAttribute('country')->getAttribute('title')
+                : '',
         ];
     }
 }

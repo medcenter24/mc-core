@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +19,8 @@
 
 namespace medcenter24\mcCore\App\Transformers;
 
-
 use medcenter24\mcCore\App\Diagnostic;
+use medcenter24\mcCore\App\Services\DoctorServiceService;
 
 class DiagnosticTransformer extends AbstractTransformer
 {
@@ -29,14 +30,20 @@ class DiagnosticTransformer extends AbstractTransformer
      */
     public function transform(Diagnostic $diagnostic): array
     {
+        $createdBy = $diagnostic->getAttribute('created_by');
+        $type = $createdBy ? 'director' : 'system';
         return [
             'id' => $diagnostic->id,
             'title' => $diagnostic->title,
             'description' => $diagnostic->description,
             'diagnosticCategoryId' => $diagnostic->diagnostic_category_id,
             'diseaseCode' => $diagnostic->disease_code,
-            'type' => $diagnostic->isDoctor() ? 'doctor' : '',
+            'type' => $this->getDoctorService() ? 'doctor' : $type,
             'status' => $diagnostic->getAttribute('status'),
         ];
+    }
+
+    private function getDoctorService(): DoctorServiceService {
+        return $this->getServiceLocator()->get(DoctorServiceService::class);
     }
 }

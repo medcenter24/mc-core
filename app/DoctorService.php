@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,7 +18,6 @@
  */
 
 namespace medcenter24\mcCore\App;
-
 
 use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -38,8 +38,8 @@ class DoctorService extends Model
     use DoctorTrait;
     use ServiceLocatorTrait;
 
-    protected $fillable = ['title', 'description', 'created_by', 'disease_code', 'status'];
-    protected $visible = ['id', 'title', 'description', 'created_by', 'disease_code', 'status'];
+    protected $fillable = ['title', 'description', 'created_by', 'disease_id', 'status'];
+    protected $visible = ['id', 'title', 'description', 'created_by', 'disease_id', 'status'];
 
     public function creator(): BelongsTo
     {
@@ -49,5 +49,10 @@ class DoctorService extends Model
     public function isDoctor(): bool
     {
         return $this->getServiceLocator()->get(DoctorServiceService::class)->isDoctor($this->created_by);
+    }
+
+    public function disease(): BelongsTo
+    {
+        return $this->belongsTo(Disease::class);
     }
 }

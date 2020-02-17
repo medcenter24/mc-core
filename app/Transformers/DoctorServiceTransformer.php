@@ -32,7 +32,7 @@ class DoctorServiceTransformer extends AbstractTransformer
             'id' => $service->id,
             'title' => $service->title,
             'description' => $service->description,
-            'diseaseCode' => $service->disease_code,
+            'diseaseId' => $service->getAttribute('disease_id'),
             'type' => $this->getDoctorService()->isDoctor($createdBy) ? 'doctor' : $type,
             'status' => $service->getAttribute('status'),
         ];

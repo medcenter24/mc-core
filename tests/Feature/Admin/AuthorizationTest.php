@@ -36,7 +36,6 @@ class AuthorizationTest extends TestCase
 
     public function testUnauthorizedRedirect(): void
     {
-        echo env('APP_MODE');
         /** @var TestResponse $response */
         $response = $this->get('/admin');
         $response->assertRedirect('login');

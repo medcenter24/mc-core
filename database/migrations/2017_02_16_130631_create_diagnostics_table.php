@@ -34,7 +34,7 @@ class CreateDiagnosticsTable extends Migration
             $table->unsignedInteger('created_by')->default(0)->index();
             $table->unsignedInteger('diagnostic_category_id')->default(0)->index();
             $table->string('title')->default('')->index();
-            $table->string('disease_code')->default('')->index();
+            $table->unsignedBigInteger('disease_id')->default(0)->index('idx_doc_diagnostics_disease_id');
             $table->string('status')->default('active')->index();
             $table->text('description');
             $table->timestamps();

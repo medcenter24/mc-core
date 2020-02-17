@@ -48,7 +48,7 @@ class DoctorSurveyService extends AbstractModelService
         return [
             'title' => '',
             'description' => '',
-            'disease_code' => '',
+            'disease_id' => 0,
         ];
     }
 

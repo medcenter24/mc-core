@@ -60,7 +60,7 @@ class DoctorServicesController extends ApiController
         $doctorService = DoctorService::create([
             'title' => $request->json('title', ''),
             'description' => $request->json('description', ''),
-            'disease_code' => $request->json('diseaseCode', ''),
+            'disease_id' => $request->json('diseaseId', 0),
             'created_by' => $this->user()->id,
             'status' => $request->json('status', 'active'),
         ]);

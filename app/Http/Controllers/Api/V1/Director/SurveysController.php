@@ -46,9 +46,9 @@ class SurveysController extends ApiController
             $this->response->errorNotFound();
         }
 
-        $doctorSurvey->title= $request->json('title', '');
-        $doctorSurvey->description = $request->json('description', '');
-        $doctorSurvey->created_by = $this->user()->id;
+        $doctorSurvey->setAttribute('title', $request->json('title', ''));
+        $doctorSurvey->setAttribute('description', $request->json('description', ''));
+        $doctorSurvey->setAttribute('disease_id', $request->json('diseaseId'));
         $doctorSurvey->setAttribute('status', $request->json('status', 'active'));
         $doctorSurvey->save();
 
@@ -63,6 +63,7 @@ class SurveysController extends ApiController
             'description' => $request->json('description', ''),
             'created_by' => $this->user()->id,
             'status' => $request->json('status', 'active'),
+            'disease_id' => $request->json('diseaseId', 0),
         ]);
         $transformer = new DoctorSurveyTransformer();
         return $this->response->created(null, $transformer->transform($doctorSurvey));

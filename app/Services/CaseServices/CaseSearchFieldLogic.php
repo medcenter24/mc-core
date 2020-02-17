@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,9 +18,8 @@
 
 namespace medcenter24\mcCore\App\Services\CaseServices;
 
-
 use Illuminate\Support\Collection;
-use medcenter24\mcCore\App\Models\Datatable\Relation;
+use medcenter24\mcCore\App\Models\Database\Relation;
 use medcenter24\mcCore\App\Services\ApiSearch\SearchFieldLogic;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 

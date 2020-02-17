@@ -34,7 +34,10 @@ class DoctorSurveyTransformer extends AbstractTransformer
             'description' => $doctorSurvey->getAttribute('description'),
             'type' => $this->getDoctorService()->isDoctor($createdBy) ? 'doctor' : $type,
             'status' => $doctorSurvey->getAttribute('status'),
-            'diseaseCode' => $doctorSurvey->getAttribute('disease_code'),
+            'diseaseId' => $doctorSurvey->getAttribute('disease_id'),
+            'diseaseTitle' => $doctorSurvey->getAttribute('disease')
+                ? $doctorSurvey->getAttribute('disease')->title
+                : '',
         ];
     }
 

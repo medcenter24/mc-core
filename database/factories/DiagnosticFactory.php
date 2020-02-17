@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,17 +17,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use Illuminate\Support\Str;
 use medcenter24\mcCore\App\DiagnosticCategory;
 use Faker\Generator as Faker;
 
 $factory->define(medcenter24\mcCore\App\Diagnostic::class, function (Faker $faker) {
-    $refKey = $faker->toUpper(Str::random(3));
     return [
-        'title' => 'Diagnostic ' . $refKey,
-        'disease_code' => $refKey,
+        'title' => 'Diagnostic Title ',
+        'disease_id' => 0,
         'description' => $faker->text(),
-        'diagnostic_category_id' => function () {
+        'diagnostic_category_id' => static function () {
             return factory(DiagnosticCategory::class)->create()->id;
         }
     ];

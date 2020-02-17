@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,7 +18,6 @@
  */
 
 namespace medcenter24\mcCore\App;
-
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -39,8 +39,8 @@ class Diagnostic extends Model
     use DoctorTrait;
     use ServiceLocatorTrait;
 
-    protected $fillable = ['title', 'description', 'diagnostic_category_id', 'disease_code', 'created_by', 'status'];
-    protected $visible = ['id', 'title', 'description', 'diagnostic_category_id', 'disease_code', 'status'];
+    protected $fillable = ['title', 'description', 'diagnostic_category_id', 'disease_id', 'created_by', 'status'];
+    protected $visible = ['id', 'title', 'description', 'diagnostic_category_id', 'disease_id', 'status'];
 
     public function category(): BelongsTo
     {
@@ -60,5 +60,10 @@ class Diagnostic extends Model
     public function isDoctor(): bool
     {
         return $this->getServiceLocator()->get(DoctorServiceService::class)->isDoctor($this->created_by);
+    }
+
+    public function disease(): BelongsTo
+    {
+        return $this->belongsTo(Disease::class);
     }
 }

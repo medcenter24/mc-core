@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,20 +33,19 @@ class DoctorServicesControllerTest extends TestCase
 
     public function testStore(): void
     {
-        $dC = '001';
         $d = 'description';
         $title = 'ServiceName';
         $response = $this->json('POST', self::URI, [
             'title' => $title,
             'description' => $d,
-            'diseaseCode' => $dC,
+            'diseaseId' => 1,
         ], $this->headers($this->getUser()));
         $response->assertStatus(201);
         $response->assertJson([
             'id' => 1,
             'title' => $title,
             'description' => $d,
-            'diseaseCode' => $dC,
+            'diseaseId' => 1,
         ]);
     }
 

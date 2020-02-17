@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use medcenter24\mcCore\App\Services\DoctorServiceService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
 class DoctorSurvey extends Model
@@ -32,8 +32,8 @@ class DoctorSurvey extends Model
     use DoctorTrait;
     use ServiceLocatorTrait;
 
-    protected $fillable = ['title', 'description', 'created_by', 'disease_code', 'status'];
-    protected $visible = ['id', 'title', 'description', 'disease_code', 'status'];
+    protected $fillable = ['title', 'description', 'created_by', 'disease_id', 'status'];
+    protected $visible = ['id', 'title', 'description', 'disease_id', 'status'];
 
     /**
      * @return MorphTo
@@ -49,5 +49,13 @@ class DoctorSurvey extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function disease(): BelongsTo
+    {
+        return $this->belongsTo(Disease::class);
     }
 }

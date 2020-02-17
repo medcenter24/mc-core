@@ -37,7 +37,7 @@ class DiagnosticService extends AbstractModelService
     {
         return [
             'title' => '',
-            'disease_code' => '',
+            'disease_id' => 0,
             'description' => '',
         ];
     }

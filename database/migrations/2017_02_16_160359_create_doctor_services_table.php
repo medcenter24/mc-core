@@ -35,7 +35,7 @@ class CreateDoctorServicesTable extends Migration
             $table->string('title')->default('')->index();
             $table->text('description');
             $table->string('disease_code')->default('');
-            $table->index('disease_code', 'idx_disease_code');
+            $table->unsignedBigInteger('disease_id')->default(0)->index('idx_doc_services_disease_id');
             $table->string('status')->default('active')->index();
             $table->timestamps();
             $table->softDeletes();

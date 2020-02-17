@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,13 +18,10 @@
  */
 
 use Faker\Generator as Faker;
-use Illuminate\Support\Str;
 
 $factory->define(medcenter24\mcCore\App\DoctorService::class, function (Faker $faker) {
-    $refKey = $faker->toUpper(Str::random(3));
     return [
-        'title' => 'DoctorService ' . $refKey,
+        'title' => 'DoctorService',
         'description' => $faker->text(),
-        'disease_code' => $refKey,
     ];
 });

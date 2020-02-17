@@ -41,7 +41,7 @@ class DoctorServiceService extends AbstractModelService
             'title' => '',
             'description' => '',
             'created_by' => 0,
-            'disease_code' => '',
+            'disease_id' => 0,
         ];
     }
 

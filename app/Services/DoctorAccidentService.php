@@ -73,9 +73,4 @@ class DoctorAccidentService extends AbstractModelService
             'investigation' => '',
         ];
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

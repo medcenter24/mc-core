@@ -83,9 +83,4 @@ class RoleService extends AbstractModelService
             self::FIELD_TITLE => '',
         ];
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

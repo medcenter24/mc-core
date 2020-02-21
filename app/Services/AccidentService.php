@@ -292,8 +292,8 @@ class AccidentService extends AbstractModelService
                 if (array_key_exists($key, $events) && $model->$key) {
                     /** @var AccidentStatus $status */
                     $status = $this->getAccidentStatusesService()->firstOrCreate([
-                        'title' => $events[$key]['status'],
-                        'type' => $events[$key]['type'],
+                        AccidentStatusesService::FIELD_TITLE => $events[$key]['status'],
+                        AccidentStatusesService::FIELD_TYPE => $events[$key]['type'],
                     ]);
                     $this->setStatus($accident, $status);
                 }
@@ -435,10 +435,5 @@ class AccidentService extends AbstractModelService
     public function closeAccident(Accident $accident, $comment = 'closed'): void
     {
         $this->setStatus($accident, $this->getAccidentStatusesService()->getClosedStatus(), $comment);
-    }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
     }
 }

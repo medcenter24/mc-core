@@ -90,9 +90,4 @@ class HospitalAccidentService extends AbstractModelService
             }
         }
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

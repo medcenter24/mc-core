@@ -78,9 +78,4 @@ class DiagnosticService extends AbstractModelService
             self::FIELD_DESCRIPTION => '',
         ];
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

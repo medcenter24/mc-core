@@ -73,9 +73,4 @@ class PatientService extends AbstractModelService
             self::FIELD_BIRTHDAY => null,
         ];
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

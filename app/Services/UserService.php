@@ -118,9 +118,4 @@ class UserService extends AbstractModelService
             self::FIELD_TIMEZONE => 'UTC'
         ];
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

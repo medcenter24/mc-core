@@ -83,9 +83,4 @@ class InvoiceService extends AbstractModelService
             self::FIELD_STATUS => '',
         ];
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

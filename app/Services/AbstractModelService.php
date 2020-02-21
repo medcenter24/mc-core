@@ -23,7 +23,6 @@ namespace medcenter24\mcCore\App\Services;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Helpers\Arr;
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
@@ -44,6 +43,10 @@ abstract class AbstractModelService
         self::FIELD_UPDATED_AT,
     ];
 
+    public const UPDATABLE = [];
+    public const FILLABLE = [];
+    public const VISIBLE = [];
+
     /**
      * Name of the Model (ex: City::class)
      * @return string
@@ -56,8 +59,6 @@ abstract class AbstractModelService
      * @return array
      */
     abstract protected function getFillableFieldDefaults(): array;
-
-    abstract protected function getUpdatableFields(): array;
 
     /**
      * Extend data with default data (for undeclared vars only)
@@ -72,6 +73,16 @@ abstract class AbstractModelService
         return $data;
     }
 
+    private function filterWith(array $keys, array $data): array
+    {
+        foreach ($data as $key => $val) {
+            if (!in_array($key, $keys, true)) {
+                unset($data[$key]);
+            }
+        }
+        return $data;
+    }
+
     /**
      * Model::create
      * @param array $data
@@ -79,32 +90,23 @@ abstract class AbstractModelService
      */
     public function create(array $data = []): Model
     {
-        $data = $this->snakeKeys($data);
-        return call_user_func([$this->getClassName(), 'create'], $this->appendRequiredData($data));
-    }
-
-    private function snakeKeys(array $data = []): array
-    {
-        foreach ($data as $key => $datum) {
-            unset($data[$key]);
-            $data[Str::snake($key)] = $datum;
-        }
-        return $data;
+        $data = $this->filterWith(static::FILLABLE, $data);
+        $data = $this->appendRequiredData($data);
+        return call_user_func([$this->getClassName(), 'create'], $data);
     }
 
     /**
      * Update model with data
-     * @param Collection $data
-     * @return Model
+     * @param Model $model
+     * @param array $data
+     * @return void
      */
-    public function update(Model $model, Collection $data): Model
+    public function updateModel(Model $model, array $data): void
     {
-        $fields = collect(DoctorSurveyService::FILLABLE);
-        $fields->filter(static function ($field) use ($model, $data) {
-            if ($field !== DoctorSurveyService::FIELD_CREATED_BY && $data->has($field)) {
-                $model->setAttribute($field, $data->get($field));
-            }
-        });
+        $data = $this->filterWith(static::UPDATABLE, $data);
+        foreach ($data as $key => $val) {
+            $model->setAttribute($key, $val);
+        }
         $model->save();
     }
 
@@ -165,9 +167,6 @@ abstract class AbstractModelService
     {
         // dates should be a null instead of empty string
         $this->convertEmptyDatesToNull($filters);
-
-        // I can't extend filters filters have to be correct from request
-        // $filters = $this->appendRequiredData($filters);
 
         /** @var Builder $query */
         $query = call_user_func([$this->getClassName(), 'query']);

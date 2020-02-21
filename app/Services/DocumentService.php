@@ -202,9 +202,4 @@ class DocumentService extends AbstractModelService
 
         Log::info('Document updated', ['documentId' => $document->id, 'type' => $type]);
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

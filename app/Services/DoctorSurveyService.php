@@ -41,15 +41,15 @@ class DoctorSurveyService extends AbstractModelService
     /**
      * Visible and selectable
      */
-    private const STATUS_ACTIVE = 'active';
+    public const STATUS_ACTIVE = 'active';
     /**
      * Visible but not selectable
      */
-    private const STATUS_HIDDEN = 'hidden';
+    public const STATUS_HIDDEN = 'hidden';
     /**
      * Hidden and not accessible
      */
-    private const STATUS_DISABLED = 'disabled';
+    public const STATUS_DISABLED = 'disabled';
 
     /**
      * That can be modified
@@ -104,11 +104,6 @@ class DoctorSurveyService extends AbstractModelService
             self::FIELD_CREATED_BY => 0,
             self::FIELD_STATUS => self::STATUS_ACTIVE,
         ];
-    }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
     }
 
     /**

@@ -56,9 +56,4 @@ class RegionService extends AbstractModelService
             self::FIELD_COUNTRY_ID => 0,
         ];
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

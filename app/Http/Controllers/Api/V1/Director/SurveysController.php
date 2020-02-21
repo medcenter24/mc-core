@@ -17,6 +17,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Http\Response;
@@ -62,8 +64,13 @@ class SurveysController extends ApiController
     public function store(DoctorSurveyRequest $request, DoctorSurveyService $doctorSurveyService): Response
     {
         $data = $request->json()->all();
-        $data[DoctorSurveyService::FIELD_CREATED_BY] = $this->user()->id;
-        $doctorSurvey = $doctorSurveyService->create($data);
+        $doctorSurvey = $doctorSurveyService->create([
+            DoctorSurveyService::FIELD_TITLE => $data['title'],
+            DoctorSurveyService::FIELD_DESCRIPTION => $data['description'],
+            DoctorSurveyService::FIELD_DISEASE_ID => $data['diseaseId'],
+            DoctorSurveyService::FIELD_CREATED_BY => $this->user()->id,
+            DoctorSurveyService::FIELD_STATUS => DoctorSurveyService::STATUS_ACTIVE,
+        ]);
         $doctorSurvey->save();
         $transformer = new DoctorSurveyTransformer();
         return $this->response->created(null, $transformer->transform($doctorSurvey));

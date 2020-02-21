@@ -141,9 +141,4 @@ class InviteService extends AbstractModelService
             self::FIELD_VALID_TO => '',
         ];
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

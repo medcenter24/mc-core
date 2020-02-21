@@ -58,9 +58,4 @@ class AccidentTypeService extends AbstractModelService
     {
         return $this->firstOrCreate([self::FIELD_TITLE => self::TYPE_INSURANCE]);
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

@@ -524,7 +524,7 @@ class CaseControllerScenarioActionTest extends TestCase
     public function testDoctorCaseScenarioNew(): void
     {
         $accidentId = (new AccidentService)->create([
-            'accident_status_id' => (new AccidentStatusesService())->getNewStatus(),
+            'accident_status_id' => (new AccidentStatusesService())->getNewStatus()->getAttribute('id'),
             'caseable_type' => DoctorAccident::class,
         ])->getAttribute('id');
 

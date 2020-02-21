@@ -96,9 +96,4 @@ class DoctorsService extends AbstractModelService
     {
         return $userId > 0 && Doctor::where(self::FIELD_USER_ID, $userId)->count() > 0;
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

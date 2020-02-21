@@ -71,9 +71,4 @@ class AssistantService extends AbstractModelService
             self::FIELD_COMMENT => '',
         ];
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

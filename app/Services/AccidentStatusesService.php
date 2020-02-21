@@ -159,9 +159,4 @@ class AccidentStatusesService extends AbstractModelService
             self::FIELD_TYPE => self::TYPE_DOCTOR,
         ]);
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

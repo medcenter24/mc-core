@@ -145,9 +145,4 @@ class CurrencyService extends AbstractModelService
 
         return $currency;
     }
-
-    protected function getUpdatableFields(): array
-    {
-        return self::UPDATABLE;
-    }
 }

@@ -35,12 +35,15 @@ use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CaseRequest;
 use medcenter24\mcCore\App\Models\Scenario\ScenarioModel;
+use medcenter24\mcCore\App\Services\AbstractModelService;
 use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\AccidentStatusesService;
 use medcenter24\mcCore\App\Services\ApiSearch\SearchFieldLogic;
 use medcenter24\mcCore\App\Services\CaseServices\CaseHistoryService;
 use medcenter24\mcCore\App\Services\CaseServices\CaseSearchFieldLogic;
+use medcenter24\mcCore\App\Services\DoctorAccidentService;
 use medcenter24\mcCore\App\Services\DocumentService;
+use medcenter24\mcCore\App\Services\HospitalAccidentService;
 use medcenter24\mcCore\App\Services\PatientService;
 use medcenter24\mcCore\App\Services\ReferralNumberService;
 use medcenter24\mcCore\App\Services\RoleService;
@@ -206,15 +209,20 @@ class CasesController extends ApiController
      */
     private function createCaseableFromRequest(Accident $accident, Request $request): void
     {
-        $caseable = $accident->isDoctorCaseable()
-            ? DoctorAccident::create(['recommendation' => '', 'investigation' => ''])
-            : HospitalAccident::create();
+        if ($accident->isDoctorCaseable()) {
+            /** @var AbstractModelService $service */
+            $service = $this->getServiceLocator()->get(DoctorAccidentService::class);
+            $caseable = $service->create(['recommendation' => '', 'investigation' => '']);
+        } else {
+            $service = $this->getServiceLocator()->get(HospitalAccidentService::class);
+            $caseable = $service->create();
+        }
 
         $accident->update([
-            'caseable_id' => $caseable->id,
-            'caseable_type' => get_class($caseable),
+            AccidentService::FIELD_CASEABLE_ID => $caseable->getAttribute('id'),
+            AccidentService::FIELD_CASEABLE_TYPE => get_class($caseable),
         ]);
-        // $accident->save();
+
         $accident->refresh();
         $this->updateCaseableData($accident, $request);
     }

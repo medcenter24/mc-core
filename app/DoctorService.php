@@ -38,17 +38,12 @@ class DoctorService extends Model
     use DoctorTrait;
     use ServiceLocatorTrait;
 
-    protected $fillable = ['title', 'description', 'created_by', 'disease_id', 'status'];
-    protected $visible = ['id', 'title', 'description', 'created_by', 'disease_id', 'status'];
+    protected $fillable = DoctorServiceService::FILLABLE;
+    protected $visible = DoctorServiceService::VISIBLE;
 
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function isDoctor(): bool
-    {
-        return $this->getServiceLocator()->get(DoctorServiceService::class)->isDoctor($this->created_by);
     }
 
     public function disease(): BelongsTo

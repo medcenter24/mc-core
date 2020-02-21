@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,21 +16,24 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App;
 
-
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\CountryService;
 
 class Country extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title'];
-    protected $visible = ['id', 'title'];
+    protected $fillable = CountryService::FILLABLE;
+    protected $visible = CountryService::VISIBLE;
 
-    public function regions()
+    public function regions(): HasMany
     {
-
+        return $this->hasMany(Region::class);
     }
 }

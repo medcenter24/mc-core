@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,15 +17,75 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services;
 
+use medcenter24\mcCore\App\Invoice;
 
-class InvoiceService
+class InvoiceService extends AbstractModelService
 {
+
+    public const FIELD_TITLE = 'title';
+    public const FIELD_PAYMENT_ID = 'payment_id';
+    public const FIELD_CREATED_BY = 'created_by';
+    public const FIELD_TYPE = 'type';
+    public const FIELD_STATUS = 'status';
+
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_CREATED_BY,
+        self::FIELD_TITLE,
+        self::FIELD_PAYMENT_ID,
+        self::FIELD_TYPE,
+        self::FIELD_STATUS,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_PAYMENT_ID,
+        self::FIELD_TYPE,
+        self::FIELD_STATUS,
+    ];
+
+    public const FILLABLE = [
+        self::FIELD_CREATED_BY,
+        self::FIELD_TITLE,
+        self::FIELD_PAYMENT_ID,
+        self::FIELD_TYPE,
+        self::FIELD_STATUS,
+    ];
+
     /**
      * Types of the source
      * can be uploaded or has some form
      */
     const TYPE_UPLOAD = 'upload';
     const TYPE_FORM = 'form';
+
+    /**
+     * @inheritDoc
+     */
+    protected function getClassName(): string
+    {
+        return Invoice::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getFillableFieldDefaults(): array
+    {
+        return [
+            self::FIELD_TITLE => '',
+            self::FIELD_PAYMENT_ID => 0,
+            self::FIELD_TYPE => '',
+            self::FIELD_STATUS => '',
+        ];
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
+    }
 }

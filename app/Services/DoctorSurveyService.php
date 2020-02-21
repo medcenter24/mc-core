@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,7 +18,6 @@
 
 namespace medcenter24\mcCore\App\Services;
 
-
 use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\DoctorSurvey;
 use medcenter24\mcCore\App\Helpers\StrHelper;
@@ -30,7 +30,59 @@ class DoctorSurveyService extends AbstractModelService
     use FiltersTrait;
     use ArrayCacheTrait;
 
-    public const STATUS_ACTIVE = 'active';
+    public const FIELD_ID = 'id';
+    public const FIELD_TITLE = 'title';
+    public const FIELD_DESCRIPTION = 'description';
+    public const FIELD_DISEASE_ID = 'disease_id';
+    public const FIELD_STATUS = 'status';
+    public const FIELD_CREATED_AT = 'created_at';
+    public const FIELD_CREATED_BY = 'created_by';
+
+    /**
+     * Visible and selectable
+     */
+    private const STATUS_ACTIVE = 'active';
+    /**
+     * Visible but not selectable
+     */
+    private const STATUS_HIDDEN = 'hidden';
+    /**
+     * Hidden and not accessible
+     */
+    private const STATUS_DISABLED = 'disabled';
+
+    /**
+     * That can be modified
+     */
+    public const FILLABLE = [
+        DoctorSurveyService::FIELD_TITLE,
+        DoctorSurveyService::FIELD_DESCRIPTION,
+        DoctorSurveyService::FIELD_CREATED_BY,
+        DoctorSurveyService::FIELD_DISEASE_ID,
+        DoctorSurveyService::FIELD_STATUS,
+    ];
+
+    /**
+     * That can be updated
+     */
+    public const UPDATABLE = [
+        DoctorSurveyService::FIELD_TITLE,
+        DoctorSurveyService::FIELD_DESCRIPTION,
+        DoctorSurveyService::FIELD_DISEASE_ID,
+        DoctorSurveyService::FIELD_STATUS,
+    ];
+
+    /**
+     * That can be viewed
+     */
+    public const VISIBLE = [
+        DoctorSurveyService::FIELD_ID,
+        DoctorSurveyService::FIELD_TITLE,
+        DoctorSurveyService::FIELD_DESCRIPTION,
+        DoctorSurveyService::FIELD_CREATED_BY,
+        DoctorSurveyService::FIELD_DISEASE_ID,
+        DoctorSurveyService::FIELD_STATUS,
+    ];
 
     /**
      * @return string
@@ -43,13 +95,20 @@ class DoctorSurveyService extends AbstractModelService
     /**
      * @return array
      */
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'title' => '',
-            'description' => '',
-            'disease_id' => 0,
+            self::FIELD_TITLE => '',
+            self::FIELD_DESCRIPTION => '',
+            self::FIELD_DISEASE_ID => 0,
+            self::FIELD_CREATED_BY => 0,
+            self::FIELD_STATUS => self::STATUS_ACTIVE,
         ];
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
     }
 
     /**
@@ -71,7 +130,7 @@ class DoctorSurveyService extends AbstractModelService
         if (!$this->hasCache('letteredSurveys')) {
             $surveys = [];
             $this->getSurveys()->each(static function (DoctorSurvey $survey) use (&$surveys) {
-                $surveys[StrHelper::getLetters($survey->getAttribute('title'))] = $survey;
+                $surveys[StrHelper::getLetters($survey->getAttribute(self::FIELD_TITLE))] = $survey;
             });
             $this->setCache('letteredSurveys', $surveys);
         }
@@ -101,7 +160,7 @@ class DoctorSurveyService extends AbstractModelService
         /** @var DoctorSurvey $survey */
         $survey = parent::create($data);
         $list = $this->getCache('letteredSurveys');
-        $list[StrHelper::getLetters($survey->getAttribute('title'))] = $survey;
+        $list[StrHelper::getLetters($survey->getAttribute(self::FIELD_TITLE))] = $survey;
         $this->setCache('letteredSurveys', $list);
         return $survey;
     }
@@ -112,7 +171,7 @@ class DoctorSurveyService extends AbstractModelService
      */
     public function byTitleLettersOrCreate(array $params): DoctorSurvey
     {
-        $survey = $this->getByTitleLetters($params['title']);
+        $survey = $this->getByTitleLetters($params[self::FIELD_TITLE]);
         if (!$survey) {
             $survey = $this->create($params);
         }

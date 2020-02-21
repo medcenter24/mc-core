@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,15 +17,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\HospitalService;
 
 class Hospital extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'address', 'phones', 'ref_key'];
-    protected $visible = ['title', 'description', 'address', 'phones', 'ref_key'];
+    protected $fillable = HospitalService::FILLABLE;
+    protected $visible = HospitalService::VISIBLE;
 }

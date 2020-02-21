@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,12 +17,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\DoctorsService;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 
@@ -30,8 +34,8 @@ class Doctor extends Model implements HasMedia
     use SoftDeletes;
     use HasMediaTrait;
 
-    protected $fillable = ['name', 'description', 'ref_key', 'gender', 'medical_board_num', 'user_id'];
-    protected $visible  = ['id', 'name', 'description', 'ref_key', 'gender', 'medical_board_num', 'user_id'];
+    protected $fillable = DoctorsService::FILLABLE;
+    protected $visible  = DoctorsService::VISIBLE;
 
     public function user()
     {

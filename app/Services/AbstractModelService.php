@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,11 +17,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Helpers\Arr;
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
@@ -28,6 +31,18 @@ use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 abstract class AbstractModelService
 {
     use ServiceLocatorTrait;
+
+    public const FIELD_ID = 'id';
+
+    public const FIELD_CREATED_AT = 'created_at';
+    public const FIELD_DELETED_AT = 'created_at';
+    public const FIELD_UPDATED_AT = 'created_at';
+
+    public const DATE_FIELDS = [
+        self::FIELD_CREATED_AT,
+        self::FIELD_DELETED_AT,
+        self::FIELD_UPDATED_AT,
+    ];
 
     /**
      * Name of the Model (ex: City::class)
@@ -40,7 +55,9 @@ abstract class AbstractModelService
      * (different storage have different rules, so it is correct to set defaults instead of nothing)
      * @return array
      */
-    abstract protected function getRequiredFields(): array;
+    abstract protected function getFillableFieldDefaults(): array;
+
+    abstract protected function getUpdatableFields(): array;
 
     /**
      * Extend data with default data (for undeclared vars only)
@@ -49,7 +66,7 @@ abstract class AbstractModelService
      */
     protected function appendRequiredData(array $data = []): array
     {
-        foreach ($this->getRequiredFields() as $key => $val) {
+        foreach ($this->getFillableFieldDefaults() as $key => $val) {
             Arr::setDefault($data, $key, $val);
         }
         return $data;
@@ -62,7 +79,33 @@ abstract class AbstractModelService
      */
     public function create(array $data = []): Model
     {
+        $data = $this->snakeKeys($data);
         return call_user_func([$this->getClassName(), 'create'], $this->appendRequiredData($data));
+    }
+
+    private function snakeKeys(array $data = []): array
+    {
+        foreach ($data as $key => $datum) {
+            unset($data[$key]);
+            $data[Str::snake($key)] = $datum;
+        }
+        return $data;
+    }
+
+    /**
+     * Update model with data
+     * @param Collection $data
+     * @return Model
+     */
+    public function update(Model $model, Collection $data): Model
+    {
+        $fields = collect(DoctorSurveyService::FILLABLE);
+        $fields->filter(static function ($field) use ($model, $data) {
+            if ($field !== DoctorSurveyService::FIELD_CREATED_BY && $data->has($field)) {
+                $model->setAttribute($field, $data->get($field));
+            }
+        });
+        $model->save();
     }
 
     /**

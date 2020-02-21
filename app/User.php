@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,14 +17,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App;
 
 use medcenter24\mcCore\App\Services\LogoService;
 use Cmgmyr\Messenger\Traits\Messagable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticable;
+use medcenter24\mcCore\App\Services\UserService;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -52,7 +55,8 @@ class User extends Authenticable implements JWTSubject, HasMedia
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password', 'phone', 'lang', 'timezone'];
+    protected $fillable = UserService::FILLABLE;
+    protected $visible = UserService::VISIBLE;
 
     /**
      * The attributes that should be hidden for arrays.

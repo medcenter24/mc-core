@@ -15,25 +15,50 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\Region;
 
 class RegionService extends AbstractModelService
 {
 
+    public const FIELD_ID = 'id';
+    public const FIELD_TITLE = 'title';
+    public const FIELD_COUNTRY_ID = 'country_id';
+
+    public const FILLABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_COUNTRY_ID,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_COUNTRY_ID,
+    ];
+
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_TITLE,
+        self::FIELD_COUNTRY_ID,
+    ];
+
     public function getClassName(): string
     {
         return Region::class;
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'title' => '',
-            'country_id' => 0,
+            self::FIELD_TITLE => '',
+            self::FIELD_COUNTRY_ID => 0,
         ];
     }
 
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
+    }
 }

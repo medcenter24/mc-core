@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,8 +17,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\AccidentStatus;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
@@ -25,6 +27,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class AccidentStatusesService extends AbstractModelService
 {
+    public const FIELD_ID = 'id';
+    public const FIELD_TITLE = 'title';
+    public const FIELD_TYPE = 'type';
+    
     public const TYPE_ACCIDENT = 'accident';
     public const TYPE_DOCTOR = 'doctor';
     public const TYPE_HOSPITAL = 'hospital';
@@ -43,17 +49,21 @@ class AccidentStatusesService extends AbstractModelService
     public const STATUS_HOSPITAL_INVOICE = 'hospital_invoice';
     public const STATUS_ASSISTANT_INVOICE = 'assistant_invoice';
     public const STATUS_ASSISTANT_GUARANTEE = 'assistant_guarantee';
+    
+    public const FILLABLE = [self::FIELD_TITLE, self::FIELD_TYPE];
+    public const VISIBLE = [self::FIELD_ID, self::FIELD_TITLE, self::FIELD_TYPE];
+    public const UPDATABLE = [self::FIELD_TITLE, self::FIELD_TYPE];
 
     protected function getClassName(): string
     {
         return AccidentStatus::class;
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'title' => '',
-            'type' => '',
+            self::FIELD_TITLE => '',
+            self::FIELD_TYPE => '',
         ];
     }
 
@@ -78,8 +88,8 @@ class AccidentStatusesService extends AbstractModelService
     public function getClosedStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
-            'title' => self::STATUS_CLOSED,
-            'type' => self::TYPE_ACCIDENT,
+            self::FIELD_TITLE => self::STATUS_CLOSED,
+            self::FIELD_TYPE => self::TYPE_ACCIDENT,
         ]);
     }
 
@@ -90,8 +100,8 @@ class AccidentStatusesService extends AbstractModelService
     public function getImportedStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
-            'title' => self::STATUS_IMPORTED,
-            'type' => self::TYPE_ACCIDENT,
+            self::FIELD_TITLE => self::STATUS_IMPORTED,
+            self::FIELD_TYPE => self::TYPE_ACCIDENT,
         ]);
     }
 
@@ -101,8 +111,8 @@ class AccidentStatusesService extends AbstractModelService
     public function getNewStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
-            'title' => self::STATUS_NEW,
-            'type' => self::TYPE_ACCIDENT,
+            self::FIELD_TITLE => self::STATUS_NEW,
+            self::FIELD_TYPE => self::TYPE_ACCIDENT,
         ]);
     }
 
@@ -112,8 +122,8 @@ class AccidentStatusesService extends AbstractModelService
     public function getDoctorSentStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
-            'title' => self::STATUS_SENT,
-            'type' => self::TYPE_DOCTOR,
+            self::FIELD_TITLE => self::STATUS_SENT,
+            self::FIELD_TYPE => self::TYPE_DOCTOR,
         ]);
     }
 
@@ -123,8 +133,8 @@ class AccidentStatusesService extends AbstractModelService
     public function getDoctorInProgressStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
-            'title' => self::STATUS_IN_PROGRESS,
-            'type' => self::TYPE_DOCTOR,
+            self::FIELD_TITLE => self::STATUS_IN_PROGRESS,
+            self::FIELD_TYPE => self::TYPE_DOCTOR,
         ]);
     }
 
@@ -134,8 +144,8 @@ class AccidentStatusesService extends AbstractModelService
     public function getDoctorAssignedStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
-            'title' => self::STATUS_ASSIGNED,
-            'type' => self::TYPE_DOCTOR,
+            self::FIELD_TITLE => self::STATUS_ASSIGNED,
+            self::FIELD_TYPE => self::TYPE_DOCTOR,
         ]);
     }
 
@@ -145,9 +155,13 @@ class AccidentStatusesService extends AbstractModelService
     public function getDoctorRejectedStatus(): AccidentStatus
     {
         return $this->firstOrCreate([
-            'title' => self::STATUS_REJECT,
-            'type' => self::TYPE_DOCTOR,
+            self::FIELD_TITLE => self::STATUS_REJECT,
+            self::FIELD_TYPE => self::TYPE_DOCTOR,
         ]);
     }
 
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
+    }
 }

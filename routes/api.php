@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,6 +16,8 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+
+declare(strict_types = 1);
 
 use Dingo\Api\Routing\Router;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\AuthenticateController;
@@ -170,8 +173,12 @@ $api->group([
                 // $api->post('services', DirectorDoctorServicesController::class . '@store');
                 $api->resource('services', DirectorDoctorServicesController::class);
 
-                $api->post('surveys/search', SurveysController::class . '@search');
                 $api->resource('surveys', SurveysController::class);
+                $api->group(['prefix' => 'surveys'], static function ($api) {
+                    $api->post('search', SurveysController::class . '@search');
+                    // $api->put('{id}', SurveysController::class . '@update');
+
+                });
 
                 $api->post('assistants/search', AssistantsController::class . '@search');
                 $api->resource('assistants', AssistantsController::class);

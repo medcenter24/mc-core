@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\AccidentStatusesService;
 
 /**
  * Statuses of the Accident
@@ -31,8 +32,8 @@ class AccidentStatus extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'type'];
-    protected $visible  = ['id', 'title', 'type'];
+    protected $fillable = AccidentStatusesService::FILLABLE;
+    protected $visible  = AccidentStatusesService::VISIBLE;
 
     public function accidents()
     {

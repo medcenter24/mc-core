@@ -15,19 +15,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\RegionService;
 
 class Region extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'country_id'];
-    protected $visible = ['id', 'title'];
+    protected $fillable = RegionService::FILLABLE;
+    protected $visible = RegionService::VISIBLE;
 
     public function country(): BelongsTo
     {

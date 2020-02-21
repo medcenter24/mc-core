@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +21,7 @@ namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\AccidentTypeService;
 
 /**
  * Can be different cases
@@ -32,6 +34,6 @@ class AccidentType extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description'];
-    protected $visible = ['title', 'description'];
+    protected $fillable = AccidentTypeService::FILLABLE;
+    protected $visible = AccidentTypeService::VISIBLE;
 }

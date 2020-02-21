@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +17,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -26,6 +29,13 @@ use Prophecy\Prophecy\ObjectProphecy;
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
+
+    private $doNotPrintCallResponse = false;
+
+    protected function doNotPrintErrResponse($tumbler = false): void
+    {
+        $this->doNotPrintCallResponse = $tumbler;
+    }
 
     /**
      * I want to see all 500 errors
@@ -42,7 +52,7 @@ abstract class TestCase extends BaseTestCase
     {
         $res = parent::call($method, $uri, $parameters, $cookies, $files, $server, $content);
 
-        if ($res->getStatusCode() === 500) {
+        if (!$this->doNotPrintCallResponse && in_array($res->getStatusCode(), [500, 422, 405], true)) {
             echo "\n <================ PRINT CONTENT ==============> \n";
             print_r(json_decode($res->getContent(), false));
             echo "\n <================ / END PRINT CONTENT ==============> \n";

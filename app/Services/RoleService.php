@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,8 +17,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\Role;
 use medcenter24\mcCore\App\User;
@@ -42,6 +44,11 @@ class RoleService extends AbstractModelService
         self::ADMIN_ROLE,
     ];
 
+    public const FIELD_TITLE = 'title';
+
+    public const FILLABLE = [self::FIELD_TITLE];
+    public const UPDATABLE = [self::FIELD_TITLE];
+
     /**
      * Check that user has role permissions
      *
@@ -51,7 +58,7 @@ class RoleService extends AbstractModelService
      */
     public function hasRole(User $user = null, string $role = ''): bool
     {
-        return $user ? $user->roles()->where('title', $role)->count() : false;
+        return $user ? $user->roles()->where(self::FIELD_TITLE, $role)->count() > 0 : false;
     }
 
     public function isValidRoles(array $roles): bool
@@ -70,10 +77,15 @@ class RoleService extends AbstractModelService
     /**
      * @inheritDoc
      */
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'title' => '',
+            self::FIELD_TITLE => '',
         ];
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
     }
 }

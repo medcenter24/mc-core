@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,26 +17,61 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services;
 
-
+use ErrorException;
 use Illuminate\Support\Str;
+use Log;
 use medcenter24\mcCore\App\Invite;
 use medcenter24\mcCore\App\User;
 use Carbon\Carbon;
 
-class InviteService
+class InviteService extends AbstractModelService
 {
+    public const FIELD_USER_ID = 'user_id';
+    public const FIELD_TOKEN = 'token';
+    public const FIELD_VALID_FROM = 'valid_from';
+    public const FIELD_VALID_TO = 'valid_to';
+
+    public const FILLABLE = [
+        self::FIELD_USER_ID,
+        self::FIELD_TOKEN,
+        self::FIELD_VALID_FROM,
+        self::FIELD_VALID_TO,
+    ];
+
+    public const DATE_FIELDS = [
+        self::FIELD_VALID_TO,
+        self::FIELD_VALID_FROM,
+        self::FIELD_CREATED_AT,
+        self::FIELD_UPDATED_AT,
+    ];
+
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_USER_ID,
+        self::FIELD_TOKEN,
+        self::FIELD_VALID_FROM,
+        self::FIELD_VALID_TO,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_VALID_FROM,
+        self::FIELD_VALID_TO,
+    ];
+
     /**
      * Generate new invite for the user
      * @param User $user
      * @return mixed
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function generate(User $user)
     {
         if (!$user->id) {
-            throw new \ErrorException('Token can not be generated without user');
+            throw new ErrorException('Token can not be generated without user');
         }
 
         $invite = Invite::create([
@@ -67,7 +103,7 @@ class InviteService
     public function getInviteByToken($token)
     {
         $now = Carbon::now();
-        \Log::info('Token is not valid', [
+        Log::info('Token is not valid', [
             'token' => $token,
             'now' => $now->format(config('date.systemFormat')),
         ]);
@@ -83,5 +119,31 @@ class InviteService
     public function clean()
     {
         Invite::where('valid_to', '<=', Carbon::now())->delete();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getClassName(): string
+    {
+        return Invite::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getFillableFieldDefaults(): array
+    {
+        return [
+            self::FIELD_USER_ID => 0,
+            self::FIELD_TOKEN => '',
+            self::FIELD_VALID_FROM => '',
+            self::FIELD_VALID_TO => '',
+        ];
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
     }
 }

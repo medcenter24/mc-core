@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,25 +17,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App;
-
-
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
+use medcenter24\mcCore\App\Services\HospitalAccidentService;
 
 class HospitalAccident extends AccidentAbstract
 {
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
-
-    protected $fillable = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id'];
-    protected $visible = ['hospital_id', 'hospital_guarantee_id', 'hospital_invoice_id'];
+    protected $dates = HospitalAccidentService::DATE_FIELDS;
+    protected $fillable = HospitalAccidentService::FILLABLE;
+    protected $visible = HospitalAccidentService::VISIBLE;
 
     public static function boot(): void
     {

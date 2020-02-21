@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,19 +17,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\PatientService;
 
 class Patient extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'address', 'phones', 'birthday', 'comment'];
-    protected $visible = ['name', 'address', 'phones', 'birthday', 'comment'];
+    protected $fillable = PatientService::FILLABLE;
+    protected $visible = PatientService::VISIBLE;
     protected $dates = ['created_at', 'updated_at', 'deleted_at', 'birthday'];
 
     /**

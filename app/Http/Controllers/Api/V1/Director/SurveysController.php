@@ -23,6 +23,7 @@ use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\DoctorSurvey;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DoctorSurveyRequest;
+use medcenter24\mcCore\App\Services\DoctorSurveyService;
 use medcenter24\mcCore\App\Transformers\DoctorSurveyTransformer;
 use League\Fractal\TransformerAbstract;
 
@@ -46,25 +47,24 @@ class SurveysController extends ApiController
             $this->response->errorNotFound();
         }
 
-        $doctorSurvey->setAttribute('title', $request->json('title', ''));
-        $doctorSurvey->setAttribute('description', $request->json('description', ''));
-        $doctorSurvey->setAttribute('disease_id', $request->json('diseaseId'));
-        $doctorSurvey->setAttribute('status', $request->json('status', 'active'));
+        $fields = collect(DoctorSurveyService::FILLABLE);
+        $fields->filter(static function ($field) use ($doctorSurvey, $request) {
+            if ($field !== DoctorSurveyService::FIELD_CREATED_BY && $request->has($field)) {
+                $doctorSurvey->setAttribute($field, $request->get($field));
+            }
+        });
         $doctorSurvey->save();
 
         $transformer = new DoctorSurveyTransformer();
         return $this->response->accepted(null, $transformer->transform($doctorSurvey));
     }
 
-    public function store(DoctorSurveyRequest $request): Response
+    public function store(DoctorSurveyRequest $request, DoctorSurveyService $doctorSurveyService): Response
     {
-        $doctorSurvey = DoctorSurvey::create([
-            'title' => $request->json('title', ''),
-            'description' => $request->json('description', ''),
-            'created_by' => $this->user()->id,
-            'status' => $request->json('status', 'active'),
-            'disease_id' => $request->json('diseaseId', 0),
-        ]);
+        $data = $request->json()->all();
+        $data[DoctorSurveyService::FIELD_CREATED_BY] = $this->user()->id;
+        $doctorSurvey = $doctorSurveyService->create($data);
+        $doctorSurvey->save();
         $transformer = new DoctorSurveyTransformer();
         return $this->response->created(null, $transformer->transform($doctorSurvey));
     }

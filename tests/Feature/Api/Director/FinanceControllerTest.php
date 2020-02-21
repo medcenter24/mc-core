@@ -40,7 +40,9 @@ class FinanceControllerTest extends TestCase
     public function testStoreError(): void
     {
         $newFinanceCondition = [];
+        $this->doNotPrintErrResponse(true);
         $response = $this->json('POST', '/api/director/finance', $newFinanceCondition, $this->headers($this->getUser()));
+        $this->doNotPrintErrResponse(false);
         $response->assertStatus(422);
         self::assertArrayHasKey('title', $response->json('errors'), 'Error with `title` message exists');
         self::assertArrayHasKey('value', $response->json('errors'), 'Error with `value` message exists');

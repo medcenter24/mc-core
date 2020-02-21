@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,20 +17,55 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\DoctorAccident;
 
 class DoctorAccidentService extends AbstractModelService
 {
 
+    public const FIELD_DOCTOR_ID = 'doctor_id';
+    public const FIELD_RECOMMENDATION = 'recommendation';
+    public const FIELD_INVESTIGATION = 'investigation';
+    public const FIELD_VISIT_TIME = 'visit_time';
+
+    public const DATE_FIELDS = [
+        self::FIELD_CREATED_AT,
+        self::FIELD_DELETED_AT,
+        self::FIELD_UPDATED_AT,
+        self::FIELD_VISIT_TIME,
+    ];
+
+    public const FILLABLE = [
+        self::FIELD_DOCTOR_ID,
+        self::FIELD_RECOMMENDATION,
+        self::FIELD_INVESTIGATION,
+        self::FIELD_VISIT_TIME,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_DOCTOR_ID,
+        self::FIELD_RECOMMENDATION,
+        self::FIELD_INVESTIGATION,
+        self::FIELD_VISIT_TIME,
+    ];
+
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_DOCTOR_ID,
+        self::FIELD_RECOMMENDATION,
+        self::FIELD_INVESTIGATION,
+        self::FIELD_VISIT_TIME,
+    ];
+
     public function getClassName(): string
     {
         return DoctorAccident::class;
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
             'doctor_id' => 0,
@@ -38,4 +74,8 @@ class DoctorAccidentService extends AbstractModelService
         ];
     }
 
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
+    }
 }

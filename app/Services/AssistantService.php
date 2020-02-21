@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,13 +17,42 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\Assistant;
 
 class AssistantService extends AbstractModelService
 {
+
+    public const FIELD_ID = 'id';
+    public const FIELD_TITLE = 'title';
+    public const FIELD_REF_KEY = 'ref_key';
+    public const FIELD_EMAIL = 'email';
+    public const FIELD_COMMENT = 'comment';
+
+    public const FILLABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_REF_KEY,
+        self::FIELD_EMAIL,
+        self::FIELD_COMMENT,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_REF_KEY,
+        self::FIELD_EMAIL,
+        self::FIELD_COMMENT,
+    ];
+
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_TITLE,
+        self::FIELD_REF_KEY,
+        self::FIELD_EMAIL,
+        self::FIELD_COMMENT,
+    ];
 
     public function getClassName(): string
     {
@@ -32,14 +62,18 @@ class AssistantService extends AbstractModelService
     /**
      * @return array
      */
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'title' => '',
-            'ref_key' => '',
-            'email' => '',
-            'comment' => '',
+            self::FIELD_TITLE => '',
+            self::FIELD_REF_KEY => '',
+            self::FIELD_EMAIL => '',
+            self::FIELD_COMMENT => '',
         ];
     }
 
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
+    }
 }

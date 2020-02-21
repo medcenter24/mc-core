@@ -17,36 +17,85 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services;
 
-use medcenter24\mcCore\App\Doctor;
 use medcenter24\mcCore\App\DoctorService;
 use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
 
 class DoctorServiceService extends AbstractModelService
 {
-
     use FiltersTrait;
 
-    public const STATUS_ACTIVE = 'active';
+    public const FIELD_ID = 'id';
+    public const FIELD_TITLE = 'title';
+    public const FIELD_DESCRIPTION = 'description';
+    public const FIELD_DISEASE_ID = 'disease_id';
+    public const FIELD_STATUS = 'status';
+    public const FIELD_CREATED_AT = 'created_at';
+    public const FIELD_CREATED_BY = 'created_by';
+
+    /**
+     * Visible and selectable
+     */
+    private const STATUS_ACTIVE = 'active';
+    /**
+     * Visible but not selectable
+     */
+    private const STATUS_HIDDEN = 'hidden';
+    /**
+     * Hidden and not accessible
+     */
+    private const STATUS_DISABLED = 'disabled';
+
+    /**
+     * That can be modified
+     */
+    public const FILLABLE = [
+        DoctorSurveyService::FIELD_TITLE,
+        DoctorSurveyService::FIELD_DESCRIPTION,
+        DoctorSurveyService::FIELD_CREATED_BY,
+        DoctorSurveyService::FIELD_DISEASE_ID,
+        DoctorSurveyService::FIELD_STATUS,
+    ];
+
+    public const UPDATABLE = [
+        DoctorSurveyService::FIELD_TITLE,
+        DoctorSurveyService::FIELD_DESCRIPTION,
+        DoctorSurveyService::FIELD_DISEASE_ID,
+        DoctorSurveyService::FIELD_STATUS,
+    ];
+
+    /**
+     * That can be viewed
+     */
+    public const VISIBLE = [
+        DoctorSurveyService::FIELD_ID,
+        DoctorSurveyService::FIELD_TITLE,
+        DoctorSurveyService::FIELD_DESCRIPTION,
+        DoctorSurveyService::FIELD_DISEASE_ID,
+        DoctorSurveyService::FIELD_STATUS,
+    ];
 
     protected function getClassName(): string
     {
         return DoctorService::class;
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'title' => '',
-            'description' => '',
-            'created_by' => 0,
-            'disease_id' => 0,
+            self::FIELD_TITLE => '',
+            self::FIELD_DESCRIPTION => '',
+            self::FIELD_DISEASE_ID => 0,
+            self::FIELD_CREATED_BY => 0,
+            self::FIELD_STATUS => self::STATUS_ACTIVE,
         ];
     }
 
-    public function isDoctor(int $userId): bool
+    protected function getUpdatableFields(): array
     {
-        return $userId && Doctor::where('user_id', $userId)->count() > 0;
+        return self::UPDATABLE;
     }
 }

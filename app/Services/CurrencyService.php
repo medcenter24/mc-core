@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,22 +17,47 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\FinanceCurrency;
 
 class CurrencyService extends AbstractModelService
 {
+    public const FIELD_TITLE = 'title';
+    public const FIELD_CODE = 'code';
+    public const FIELD_ICO = 'ico';
+    public const FIELD_MARKERS = 'markers';
+
+    public const FILLABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_CODE,
+        self::FIELD_ICO,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_CODE,
+        self::FIELD_ICO,
+    ];
+
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_TITLE,
+        self::FIELD_CODE,
+        self::FIELD_ICO,
+    ];
+
     /**
      * @var FinanceCurrency
      */
     private $defaultCurrency;
 
     private $defaultCurrencies = [
-        ['title' => 'Euro', 'code' => 'eu', 'ico' => 'fa fa-euro', 'markers' => ['€']],
-        ['title' => 'Dollar', 'code' => 'us', 'ico' => 'fa fa-dollar', 'markers' => ['$']],
+        [self::FIELD_TITLE => 'Euro', self::FIELD_CODE => 'eu', self::FIELD_ICO => 'fa fa-euro', self::FIELD_MARKERS => ['€']],
+        [self::FIELD_TITLE => 'Dollar', self::FIELD_CODE => 'us', self::FIELD_ICO => 'fa fa-dollar', self::FIELD_MARKERS => ['$']],
     ];
 
     /**
@@ -44,7 +70,7 @@ class CurrencyService extends AbstractModelService
      */
     public function convertCurrency($val, FinanceCurrency $currency, FinanceCurrency $toCurrency = null)
     {
-        if (isset($toCurrency) && $toCurrency->getAttribute('code') !== $currency->getAttribute('code')) {
+        if (isset($toCurrency) && $toCurrency->getAttribute(self::FIELD_CODE) !== $currency->getAttribute(self::FIELD_CODE)) {
             throw new InconsistentDataException('Currency Convert has not been implemented yet');
         }
         // when it will be more supported currencies - needs to be implemented CurrencyConverterService
@@ -55,7 +81,7 @@ class CurrencyService extends AbstractModelService
     {
         if (!$this->defaultCurrency) {
             $data = current($this->defaultCurrencies);
-            unset($data['markers']);
+            unset($data[self::FIELD_MARKERS]);
             $this->defaultCurrency = $this->firstOrCreate($data);
         }
 
@@ -66,7 +92,7 @@ class CurrencyService extends AbstractModelService
     {
         /** @var FinanceCurrency $currency */
         $currency = $this->firstOrCreate([
-            'code' => $currencyCode,
+            self::FIELD_CODE => $currencyCode,
         ]);
         return $currency;
     }
@@ -85,12 +111,12 @@ class CurrencyService extends AbstractModelService
      * (different storage have different rules, so it is correct to set defaults instead of nothing)
      * @return array
      */
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'title' => '',
-            'code' => '',
-            'ico' => '',
+            self::FIELD_TITLE => '',
+            self::FIELD_CODE => '',
+            self::FIELD_ICO => '',
         ];
     }
 
@@ -118,5 +144,10 @@ class CurrencyService extends AbstractModelService
         }
 
         return $currency;
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
     }
 }

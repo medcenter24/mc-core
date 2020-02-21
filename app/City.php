@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,20 +17,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\CityService;
 
 class City extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['region_id', 'title'];
-    protected $visible = ['id', 'title'];
+    protected $fillable = CityService::FILLABLE;
+    protected $visible = CityService::VISIBLE;
+    protected $dates = CityService::DATE_FIELDS;
 
     /**
      * @return MorphToMany

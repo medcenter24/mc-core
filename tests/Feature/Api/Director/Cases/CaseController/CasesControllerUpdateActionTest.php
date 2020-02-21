@@ -317,7 +317,9 @@ class CasesControllerUpdateActionTest extends TestCase
                 'caseablePaymentId' => 100,
             ]
         ];
+        $this->doNotPrintErrResponse(true);
         $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
+        $this->doNotPrintErrResponse(false);
 
         $content = $response->assertStatus(422)->getContent();
         $ans = json_decode($content);

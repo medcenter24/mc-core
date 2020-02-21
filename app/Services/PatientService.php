@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,26 +17,65 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\Patient;
 
 class PatientService extends AbstractModelService
 {
+
+    public const FIELD_ID = 'id';
+    public const FIELD_NAME = 'name';
+    public const FIELD_ADDRESS = 'address';
+    public const FIELD_PHONES = 'phones';
+    public const FIELD_BIRTHDAY = 'birthday';
+    public const FIELD_COMMENT = 'comment';
+
+    public const FILLABLE = [
+        self::FIELD_NAME,
+        self::FIELD_ADDRESS,
+        self::FIELD_PHONES,
+        self::FIELD_BIRTHDAY,
+        self::FIELD_COMMENT,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_NAME,
+        self::FIELD_ADDRESS,
+        self::FIELD_PHONES,
+        self::FIELD_BIRTHDAY,
+        self::FIELD_COMMENT,
+    ];
+
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_NAME,
+        self::FIELD_ADDRESS,
+        self::FIELD_PHONES,
+        self::FIELD_BIRTHDAY,
+        self::FIELD_COMMENT,
+    ];
+
     public function getClassName(): string
     {
         return Patient::class;
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'name' => '',
-            'address' => '',
-            'phones' => '',
-            'comment' => '',
-            'birthday' => null,
+            self::FIELD_NAME => '',
+            self::FIELD_ADDRESS => '',
+            self::FIELD_PHONES => '',
+            self::FIELD_COMMENT => '',
+            self::FIELD_BIRTHDAY => null,
         ];
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
     }
 }

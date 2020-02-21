@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,23 +18,58 @@
 
 namespace medcenter24\mcCore\App\Services;
 
-
 use medcenter24\mcCore\App\Payment;
 
 class PaymentService extends AbstractModelService
 {
+    public const FIELD_CREATED_BY = 'created_by';
+    public const FIELD_VALUE = 'value';
+    public const FIELD_CURRENCY_ID = 'currency_id';
+    public const FIELD_FIXED = 'fixed';
+    public const FIELD_DESCRIPTION = 'description';
+
+    public const FILLABLE = [
+        self::FIELD_CREATED_BY,
+        self::FIELD_VALUE,
+        self::FIELD_CURRENCY_ID,
+        self::FIELD_FIXED,
+        self::FIELD_DESCRIPTION,
+    ];
+
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_CREATED_BY,
+        self::FIELD_VALUE,
+        self::FIELD_CURRENCY_ID,
+        self::FIELD_FIXED,
+        self::FIELD_DESCRIPTION,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_CREATED_BY,
+        self::FIELD_VALUE,
+        self::FIELD_CURRENCY_ID,
+        self::FIELD_FIXED,
+        self::FIELD_DESCRIPTION,
+    ];
+
     protected function getClassName(): string
     {
         return Payment::class;
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'value' => 0,
-            'currency_id' => 0,
-            'fixed' => 1,
-            'description' => '',
+            self::FIELD_VALUE=> 0,
+            self::FIELD_CURRENCY_ID => 0,
+            self::FIELD_FIXED => 1,
+            self::FIELD_DESCRIPTION => '',
         ];
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,8 +17,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Log;
 use medcenter24\mcCore\App\FinanceCondition;
 use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FinanceRequest;
@@ -40,7 +44,7 @@ class FinanceController extends ApiController
 
     /**
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function show($id): Response
     {
@@ -52,7 +56,7 @@ class FinanceController extends ApiController
      * Add new rule
      * @param FinanceRequest $request
      * @param CaseFinanceService $caseFinanceService
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function store(FinanceRequest $request, CaseFinanceService $caseFinanceService): Response
     {
@@ -66,7 +70,7 @@ class FinanceController extends ApiController
      * @param $id
      * @param FinanceRequest $request
      * @param CaseFinanceService $caseFinanceService
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function update($id, FinanceRequest $request, CaseFinanceService $caseFinanceService): Response
     {
@@ -79,11 +83,11 @@ class FinanceController extends ApiController
      * Neither Real finance condition or finance rules from the finance_storage will be deleted
      *   for the support and backward data compatibility
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function destroy($id) {
         $condition = FinanceCondition::findOrFail($id);
-        \Log::info('Finance condition deleted', [$condition, $this->user()]);
+        Log::info('Finance condition deleted', [$condition, $this->user()]);
         $condition->delete();
         return $this->response->noContent();
     }

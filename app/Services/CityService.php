@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,24 +17,48 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\City;
 
 class CityService extends AbstractModelService
 {
 
+    public const FIELD_ID = 'id';
+    public const FIELD_TITLE = 'title';
+    public const FIELD_REGION_ID = 'region_id';
+
+    public const FILLABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_REGION_ID,
+    ];
+    public const UPDATABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_REGION_ID,
+    ];
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_TITLE,
+        self::FIELD_REGION_ID,
+    ];
+
     public function getClassName(): string
     {
         return City::class;
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'title' => '',
+            self::FIELD_TITLE => '',
+            self::FIELD_REGION_ID => 0,
         ];
     }
 
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
+    }
 }

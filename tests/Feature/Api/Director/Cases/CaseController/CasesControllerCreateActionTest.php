@@ -164,8 +164,9 @@ class CasesControllerCreateActionTest extends TestCase
                 'caseablePaymentId' => 8,
             ]
         ];
+        $this->doNotPrintErrResponse(true);
         $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
-
+        $this->doNotPrintErrResponse(false);
         $content = $response->assertStatus(422)->getContent();
         $ans = json_decode($content);
         self::assertJson($ans->errors->accident[0]);

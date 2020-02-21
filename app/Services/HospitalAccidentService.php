@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,20 +17,45 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\HospitalAccident;
 use medcenter24\mcCore\App\Invoice;
 
 class HospitalAccidentService extends AbstractModelService
 {
+
+    public const FIELD_HOSPITAL_ID = 'hospital_id';
+    public const FIELD_HOSPITAL_GUARANTEE_ID = 'hospital_guarantee_id';
+    public const FIELD_HOSPITAL_INVOICE_ID = 'hospital_invoice_id';
+
+    public const FILLABLE = [
+        self::FIELD_HOSPITAL_ID,
+        self::FIELD_HOSPITAL_GUARANTEE_ID,
+        self::FIELD_HOSPITAL_INVOICE_ID,
+    ];
+
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_HOSPITAL_ID,
+        self::FIELD_HOSPITAL_GUARANTEE_ID,
+        self::FIELD_HOSPITAL_INVOICE_ID,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_HOSPITAL_ID,
+        self::FIELD_HOSPITAL_GUARANTEE_ID,
+        self::FIELD_HOSPITAL_INVOICE_ID,
+    ];
+
     protected function getClassName(): string
     {
         return HospitalAccident::class;
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [];
     }
@@ -63,5 +89,10 @@ class HospitalAccidentService extends AbstractModelService
                 $invoice->price = $data['price'];
             }
         }
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
     }
 }

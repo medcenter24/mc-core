@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +17,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services;
 
-
 use Illuminate\Http\UploadedFile;
+use Log;
 use medcenter24\mcCore\App\Accident;
 use medcenter24\mcCore\App\Document;
 use medcenter24\mcCore\App\Exceptions\CommonException;
@@ -34,21 +37,45 @@ class DocumentService extends AbstractModelService
     public const DISC_IMPORTS = 'documents';
     public const CASES_FOLDERS = 'patients';
 
+    public const FIELD_TITLE = 'title';
+    public const FIELD_CREATED_BY = 'created_by';
+    public const FIELD_TYPE = 'type';
+
+    public const TYPE_ALL = 'all';
+    public const TYPE_ACCIDENT = 'accident';
+    public const TYPE_USER = 'user';
+
     public const TYPE_PASSPORT = 'passport';
     public const TYPE_INSURANCE = 'insurance';
 
-    public const TYPES = [self::TYPE_PASSPORT, self::TYPE_INSURANCE];
+    public const TYPES = [
+        self::TYPE_PASSPORT,
+        self::TYPE_INSURANCE,
+    ];
+
+    public const FILLABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_CREATED_BY,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_TITLE,
+        self::FIELD_CREATED_BY,
+    ];
+
+    public const THUMB = 'thumb';
+    public const PIC = 'pic';
 
     protected function getClassName(): string
     {
         return Document::class;
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'created_by' => 0,
-            'title' => '',
+            self::FIELD_TITLE => '',
+            self::FIELD_CREATED_BY => 0,
         ];
     }
 
@@ -64,8 +91,8 @@ class DocumentService extends AbstractModelService
     {
         /** @var Document $document */
         $document = $this->create([
-            'created_by' => $user->id,
-            'title' => $file->getClientOriginalName()
+            self::FIELD_CREATED_BY => $user->id,
+            self::FIELD_TITLE => $file->getClientOriginalName()
         ]);
         $document->addMedia($file)
             ->toMediaCollection(self::CASES_FOLDERS, self::DISC_IMPORTS);
@@ -99,14 +126,15 @@ class DocumentService extends AbstractModelService
      * @param string $type - all, user or accident
      * @return Collection
      */
-    public function getDocuments(User $user = null, Accident $accident = null, $type = 'all'): Collection
+    public function getDocuments(User $user = null, Accident $accident = null, $type = self::TYPE_ALL): Collection
     {
         $documents = new Collection();
-        if ($user && ($type === 'all' || $type === 'user')) {
-            $documents = $documents->merge($user->documents);
+        if ($user && in_array($type, [self::TYPE_ALL, self::TYPE_USER], true)) {
+            $docs = $user->getAttribute('documents');
+            $documents = $documents->merge($docs);
         }
 
-        if ($accident && ($type === 'all' || $type === 'accident')) {
+        if ($accident && in_array($type, [self::TYPE_ALL, self::TYPE_ACCIDENT], true)) {
             $documents = $documents->merge($accident->documents);
             if ($accident->getAttribute('caseable')) {
                 $documents = $documents->merge($accident->getAttribute('caseable')->documents);
@@ -138,9 +166,9 @@ class DocumentService extends AbstractModelService
     {
         $res = new Collection();
         if ($accident->caseable && $accident->caseable->documents) {
-            $query = $accident->documents()->orderBy('created_at');
+            $query = $accident->documents()->orderBy(self::FIELD_CREATED_BY);
             if ($type) {
-                $query->where('type', $type);
+                $query->where(self::FIELD_TYPE, $type);
             }
             $res = $query->get();
         }
@@ -154,8 +182,8 @@ class DocumentService extends AbstractModelService
      */
     public function getOrderedAccidentDocuments(Accident $accident): Collection
     {
-        return $this->getAccidentDocuments($accident, DocumentService::TYPE_INSURANCE)
-            ->merge($this->getAccidentDocuments($accident, DocumentService::TYPE_PASSPORT));
+        return $this->getAccidentDocuments($accident, self::TYPE_INSURANCE)
+            ->merge($this->getAccidentDocuments($accident, self::TYPE_PASSPORT));
     }
 
     /**
@@ -172,6 +200,11 @@ class DocumentService extends AbstractModelService
         $document->type = $type;
         $document->save();
 
-        \Log::info('Document updated', ['documentId' => $document->id, 'type' => $type]);
+        Log::info('Document updated', ['documentId' => $document->id, 'type' => $type]);
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
     }
 }

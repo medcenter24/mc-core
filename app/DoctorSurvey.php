@@ -25,6 +25,7 @@ use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\DoctorSurveyService;
 
 class DoctorSurvey extends Model
 {
@@ -32,8 +33,8 @@ class DoctorSurvey extends Model
     use DoctorTrait;
     use ServiceLocatorTrait;
 
-    protected $fillable = ['title', 'description', 'created_by', 'disease_id', 'status'];
-    protected $visible = ['id', 'title', 'description', 'disease_id', 'status'];
+    protected $fillable = DoctorSurveyService::FILLABLE;
+    protected $visible = DoctorSurveyService::VISIBLE;
 
     /**
      * @return MorphTo
@@ -48,7 +49,7 @@ class DoctorSurvey extends Model
      */
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, DoctorSurveyService::FIELD_CREATED_BY);
     }
 
     /**

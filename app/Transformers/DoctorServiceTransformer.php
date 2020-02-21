@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,17 +17,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
 use medcenter24\mcCore\App\DoctorService;
-use medcenter24\mcCore\App\Services\DoctorServiceService;
+use medcenter24\mcCore\App\Services\DoctorsService;
 
 class DoctorServiceTransformer extends AbstractTransformer
 {
     public function transform(DoctorService $service): array
     {
-        $createdBy = $service->getAttribute('created_by');
+        $createdBy = (int) $service->getAttribute('created_by');
         $type = $createdBy ? 'director' : 'system';
         return [
             'id' => $service->id,
@@ -38,7 +40,7 @@ class DoctorServiceTransformer extends AbstractTransformer
         ];
     }
 
-    private function getDoctorService(): DoctorServiceService {
-        return $this->getServiceLocator()->get(DoctorServiceService::class);
+    private function getDoctorService(): DoctorsService {
+        return $this->getServiceLocator()->get(DoctorsService::class);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,28 +17,37 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\AccidentType;
 
 class AccidentTypeService extends AbstractModelService
 {
+
+    public const FIELD_TITLE = 'title';
+    public const FIELD_DESCRIPTION = 'description';
+
     public const TYPE_INSURANCE = 'insurance';
     public const TYPE_NON_INSURANCE = 'non-insurance';
-    public const ALLOWED_TYPES = ['insurance', 'non-insurance'];
+    public const ALLOWED_TYPES = [self::TYPE_INSURANCE, self::TYPE_NON_INSURANCE];
+
+    public const FILLABLE = [self::FIELD_TITLE, self::FIELD_DESCRIPTION];
+    public const VISIBLE = [self::FIELD_TITLE, self::FIELD_DESCRIPTION];
+    public const UPDATABLE = [self::FIELD_TITLE, self::FIELD_DESCRIPTION];
 
     protected function getClassName(): string
     {
         return AccidentType::class;
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'title' => '',
-            'description' => '',
+            self::FIELD_TITLE => '',
+            self::FIELD_DESCRIPTION => '',
         ];
     }
 
@@ -46,6 +56,11 @@ class AccidentTypeService extends AbstractModelService
      */
     public function getInsuranceType(): Model
     {
-        return $this->firstOrCreate(['title' => self::TYPE_INSURANCE]);
+        return $this->firstOrCreate([self::FIELD_TITLE => self::TYPE_INSURANCE]);
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
     }
 }

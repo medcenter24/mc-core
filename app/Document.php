@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use medcenter24\mcCore\App\Services\DocumentService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use PhpParser\Comment\Doc;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -40,12 +41,8 @@ class Document extends Model implements HasMedia
     use SoftDeletes;
     use HasMediaTrait;
 
-    // @todo move const to service
-    public const THUMB = 'thumb';
-    public const PIC = 'pic';
-
-    protected $fillable = ['title', 'created_by'];
-    protected $visible = ['title', 'created_by'];
+    protected $fillable = DocumentService::FILLABLE;
+    protected $visible = DocumentService::UPDATABLE;
 
     /**
      * @param Media|null $media
@@ -53,13 +50,13 @@ class Document extends Model implements HasMedia
      */
     public function registerMediaConversions(Media $media = null): void
     {
-        $this->addMediaConversion(self::THUMB)
+        $this->addMediaConversion(DocumentService::THUMB)
             ->sharpen(10)
             ->quality(50)
             ->fit(Manipulations::FIT_CROP, 368, 232)
             ->performOnCollections(DocumentService::CASES_FOLDERS);
 
-        $this->addMediaConversion(self::PIC)
+        $this->addMediaConversion(DocumentService::PIC)
             ->sharpen(10)
             ->quality(70)
             ->performOnCollections(DocumentService::CASES_FOLDERS);

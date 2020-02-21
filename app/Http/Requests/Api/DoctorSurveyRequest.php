@@ -18,7 +18,9 @@
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
+use Auth;
 use medcenter24\mcCore\App\Services\RoleService;
+use Roles;
 
 class DoctorSurveyRequest extends JsonRequest
 {
@@ -30,9 +32,9 @@ class DoctorSurveyRequest extends JsonRequest
      */
     public function authorize(): bool
     {
-        return \Auth::check()
-            && (\Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)
-                || \Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE));
+        return Auth::check()
+            && (Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)
+                || Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE));
     }
 
     /**
@@ -44,7 +46,7 @@ class DoctorSurveyRequest extends JsonRequest
     {
         return [
             'title' => 'required|min:3|max:255',
-            'description' => 'required|max:250',
+            'description' => 'max:250',
         ];
     }
 }

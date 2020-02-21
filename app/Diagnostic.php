@@ -17,6 +17,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,8 +26,9 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use medcenter24\mcCore\App\Services\DoctorServiceService;
+use medcenter24\mcCore\App\Services\DiagnosticService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\DoctorsService;
 
 /**
  * Kinds of the diagnostics that should be done by the Doctor through the Accident
@@ -39,8 +42,8 @@ class Diagnostic extends Model
     use DoctorTrait;
     use ServiceLocatorTrait;
 
-    protected $fillable = ['title', 'description', 'diagnostic_category_id', 'disease_id', 'created_by', 'status'];
-    protected $visible = ['id', 'title', 'description', 'diagnostic_category_id', 'disease_id', 'status'];
+    protected $fillable = DiagnosticService::FILLABLE;
+    protected $visible = DiagnosticService::VISIBLE;
 
     public function category(): BelongsTo
     {
@@ -59,7 +62,8 @@ class Diagnostic extends Model
 
     public function isDoctor(): bool
     {
-        return $this->getServiceLocator()->get(DoctorServiceService::class)->isDoctor($this->created_by);
+        return $this->getServiceLocator()->get(DoctorsService::class)
+            ->isDoctor($this->getAttribute('created_by'));
     }
 
     public function disease(): BelongsTo

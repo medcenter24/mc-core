@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
+use medcenter24\mcCore\App\Services\DoctorAccidentService;
 
 /**
  * Accident that needs Doctor involvement
@@ -32,14 +33,9 @@ use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
  */
 class DoctorAccident extends AccidentAbstract
 {
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'visit_time',
-    ];
+    protected $dates = DoctorAccidentService::DATE_FIELDS;
 
-    protected $fillable = ['doctor_id', 'recommendation', 'investigation', 'visit_time'];
+    protected $fillable = DoctorAccidentService::FILLABLE;
     protected $visible = ['doctor_id', 'recommendation', 'investigation', 'visit_time'];
 
     public static function boot(): void

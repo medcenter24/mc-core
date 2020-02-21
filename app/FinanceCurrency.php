@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,12 +21,13 @@ namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\CurrencyService;
 
 class FinanceCurrency extends Model
 {
     use SoftDeletes;
 
     protected $table = 'finance_currencies';
-    protected $fillable = ['title', 'code', 'ico'];
-    protected $visible = ['id', 'title', 'code', 'ico'];
+    protected $fillable = CurrencyService::FILLABLE;
+    protected $visible = CurrencyService::VISIBLE;
 }

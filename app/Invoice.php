@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +17,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App;
 
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\InvoiceService;
 
 /**
  * Invoice can be sent to the Assistant to paid for the guarantee patient
@@ -34,8 +38,8 @@ class Invoice extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'payment_id', 'type', 'created_by', 'status'];
-    protected $visible = ['created_by', 'title', 'payment_id', 'type', 'status'];
+    protected $fillable = InvoiceService::FILLABLE;
+    protected $visible = InvoiceService::VISIBLE;
 
     /**
      * File uploader

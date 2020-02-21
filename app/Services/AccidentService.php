@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,8 +17,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -32,6 +34,100 @@ use medcenter24\mcCore\App\HospitalAccident;
 
 class AccidentService extends AbstractModelService
 {
+    public const FIELD_ID = 'id';
+    public const FIELD_PARENT_ID = 'parent_id';
+    public const FIELD_PATIENT_ID = 'patient_id';
+    public const FIELD_ACCIDENT_TYPE_ID = 'accident_type_id';
+    public const FIELD_ACCIDENT_STATUS_ID = 'accident_status_id';
+    public const FIELD_ASSISTANT_ID = 'assistant_id';
+    public const FIELD_ASSISTANT_REF_NUM = 'assistant_ref_num';
+    public const FIELD_ASSISTANT_INVOICE_ID = 'assistant_invoice_id';
+    public const FIELD_ASSISTANT_GUARANTEE_ID = 'assistant_guarantee_id';
+    public const FIELD_FORM_REPORT_ID = 'form_report_id';
+    public const FIELD_CITY_ID = 'city_id';
+    public const FIELD_CASEABLE_PAYMENT_ID = 'caseable_payment_id';
+    public const FIELD_INCOME_PAYMENT_ID = 'income_payment_id';
+    public const FIELD_ASSISTANT_PAYMENT_ID = 'assistant_payment_id';
+    public const FIELD_CASEABLE_ID = 'caseable_id';
+    public const FIELD_CASEABLE_TYPE = 'caseable_type';
+    public const FIELD_REF_NUM = 'ref_num';
+    public const FIELD_TITLE = 'title';
+    public const FIELD_ADDRESS = 'address';
+    public const FIELD_HANDLING_TIME = 'handling_time';
+    public const FIELD_CONTACTS = 'contacts';
+    public const FIELD_SYMPTOMS = 'symptoms';
+    public const FIELD_CREATED_BY = 'created_by';
+
+    public const FILLABLE = [
+        self::FIELD_ID,
+        self::FIELD_PARENT_ID,
+        self::FIELD_PATIENT_ID,
+        self::FIELD_ACCIDENT_TYPE_ID,
+        self::FIELD_ACCIDENT_STATUS_ID,
+        self::FIELD_ASSISTANT_ID,
+        self::FIELD_ASSISTANT_REF_NUM,
+        self::FIELD_ASSISTANT_INVOICE_ID,
+        self::FIELD_ASSISTANT_GUARANTEE_ID,
+        self::FIELD_FORM_REPORT_ID,
+        self::FIELD_CITY_ID,
+        self::FIELD_CASEABLE_PAYMENT_ID,
+        self::FIELD_INCOME_PAYMENT_ID,
+        self::FIELD_ASSISTANT_PAYMENT_ID,
+        self::FIELD_CASEABLE_ID,
+        self::FIELD_CASEABLE_TYPE,
+        self::FIELD_REF_NUM,
+        self::FIELD_TITLE,
+        self::FIELD_ADDRESS,
+        self::FIELD_HANDLING_TIME,
+        self::FIELD_CONTACTS,
+        self::FIELD_SYMPTOMS,
+    ];
+
+    public const VISIBLE = [
+        self::FIELD_ID,
+        self::FIELD_PARENT_ID,
+        self::FIELD_PATIENT_ID,
+        self::FIELD_ACCIDENT_TYPE_ID,
+        self::FIELD_ACCIDENT_STATUS_ID,
+        self::FIELD_ASSISTANT_ID,
+        self::FIELD_ASSISTANT_REF_NUM,
+        self::FIELD_ASSISTANT_INVOICE_ID,
+        self::FIELD_ASSISTANT_GUARANTEE_ID,
+        self::FIELD_REF_NUM,
+        self::FIELD_TITLE,
+        self::FIELD_CITY_ID,
+        self::FIELD_ADDRESS,
+        self::FIELD_CONTACTS,
+        self::FIELD_SYMPTOMS,
+        self::FIELD_HANDLING_TIME,
+        self::FIELD_FORM_REPORT_ID,
+    ];
+
+    public const UPDATABLE = [
+        self::FIELD_ID,
+        self::FIELD_PARENT_ID,
+        self::FIELD_PATIENT_ID,
+        self::FIELD_ACCIDENT_TYPE_ID,
+        self::FIELD_ACCIDENT_STATUS_ID,
+        self::FIELD_ASSISTANT_ID,
+        self::FIELD_ASSISTANT_REF_NUM,
+        self::FIELD_ASSISTANT_INVOICE_ID,
+        self::FIELD_ASSISTANT_GUARANTEE_ID,
+        self::FIELD_FORM_REPORT_ID,
+        self::FIELD_CITY_ID,
+        self::FIELD_CASEABLE_PAYMENT_ID,
+        self::FIELD_INCOME_PAYMENT_ID,
+        self::FIELD_ASSISTANT_PAYMENT_ID,
+        self::FIELD_CASEABLE_ID,
+        self::FIELD_CASEABLE_TYPE,
+        self::FIELD_REF_NUM,
+        self::FIELD_TITLE,
+        self::FIELD_ADDRESS,
+        self::FIELD_HANDLING_TIME,
+        self::FIELD_CONTACTS,
+        self::FIELD_SYMPTOMS,
+    ];
+
     public function getClassName(): string
     {
         return Accident::class;
@@ -45,7 +141,7 @@ class AccidentService extends AbstractModelService
     public function getCountByReferralNum (string $ref = ''): int
     {
         return $this->count([
-            'ref_num' => $ref
+            self::FIELD_REF_NUM => $ref
         ]);
     }
 
@@ -57,7 +153,7 @@ class AccidentService extends AbstractModelService
     {
         /** @var Accident $accident */
         $accident = $this->first([
-            'assistant_ref_num' => $ref
+            self::FIELD_ASSISTANT_REF_NUM => $ref
         ]);
         return $accident;
     }
@@ -69,7 +165,7 @@ class AccidentService extends AbstractModelService
     public function getByRefNum (string $ref = ''): ?Accident
     {
         /** @var Accident $accident */
-        $accident = $this->first(['ref_num' => $ref]);
+        $accident = $this->first([self::FIELD_REF_NUM => $ref]);
         return $accident;
     }
 
@@ -81,7 +177,7 @@ class AccidentService extends AbstractModelService
      */
     public function getCountByAssistance($assistanceId, $fromDate): int
     {
-        return Accident::where('created_at', '>=', $fromDate)
+        return Accident::where(self::FIELD_CREATED_AT, '>=', $fromDate)
             ->where('assistant_id', '=', $assistanceId)
             ->count();
     }
@@ -93,7 +189,7 @@ class AccidentService extends AbstractModelService
      */
     public function getCasesQuery(array $filters = [])
     {
-        return Accident::orderBy('created_at', 'desc');
+        return Accident::orderBy(self::FIELD_CREATED_AT, 'desc');
     }
 
     /**
@@ -102,7 +198,7 @@ class AccidentService extends AbstractModelService
      */
     public function getCity(Accident $accident)
     {
-        return $accident->getAttribute('city_id') ?: new City();
+        return $accident->getAttribute(self::FIELD_CITY_ID) ?: new City();
     }
 
     /**
@@ -118,29 +214,29 @@ class AccidentService extends AbstractModelService
         return $accidentServices ?: collect([]);
     }
 
-    protected function getRequiredFields(): array
+    protected function getFillableFieldDefaults(): array
     {
         return [
-            'handling_time' => null,
-            'assistant_ref_num' => '',
-            'contacts' => '',
-            'symptoms' => '',
-            'created_by' => 0,
-            'parent_id' => 0,
-            'patient_id' => 0,
-            'accident_type_id' => 0,
-            'accident_status_id' => 0,
-            'assistant_id' => 0,
-            'assistant_invoice_id' => 0,
-            'assistant_guarantee_id' => 0,
-            'city_id' => 0,
-            'ref_num' => '',
-            'title' => '',
-            'address' => '',
-            'form_report_id' => 0,
-            'caseable_payment_id' => 0,
-            'income_payment_id' => 0,
-            'assistant_payment_id' => 0,
+            self::FIELD_HANDLING_TIME => null,
+            self::FIELD_ASSISTANT_REF_NUM => '',
+            self::FIELD_CONTACTS => '',
+            self::FIELD_SYMPTOMS => '',
+            self::FIELD_CREATED_BY => 0,
+            self::FIELD_PARENT_ID => 0,
+            self::FIELD_PATIENT_ID => 0,
+            self::FIELD_ACCIDENT_TYPE_ID => 0,
+            self::FIELD_ACCIDENT_STATUS_ID => 0,
+            self::FIELD_ASSISTANT_ID => 0,
+            self::FIELD_ASSISTANT_INVOICE_ID => 0,
+            self::FIELD_ASSISTANT_GUARANTEE_ID => 0,
+            self::FIELD_CITY_ID => 0,
+            self::FIELD_REF_NUM => '',
+            self::FIELD_TITLE => '',
+            self::FIELD_ADDRESS => '',
+            self::FIELD_FORM_REPORT_ID => 0,
+            self::FIELD_CASEABLE_PAYMENT_ID => 0,
+            self::FIELD_INCOME_PAYMENT_ID => 0,
+            self::FIELD_ASSISTANT_PAYMENT_ID => 0,
         ];
     }
 
@@ -169,11 +265,11 @@ class AccidentService extends AbstractModelService
 
         // I need to prevent all the times when I'm changing the status
         $accident->runStatusUpdating();
-        $accident->update(['accident_status_id' => $status->getAttribute('id')]);
+        $accident->update([self::FIELD_ACCIDENT_STATUS_ID => $status->getAttribute('id')]);
         $accident->refresh();
 
         Log::debug('Set new status to accident', [
-            'status_id' => $status->getAttribute('id'),
+            self::FIELD_ACCIDENT_STATUS_ID => $status->getAttribute('id'),
             'status_title' => $status->getAttribute('title'),
             'status_type' => $status->getAttribute('type'),
             'accident_id' => $accident->getAttribute('id'),
@@ -310,19 +406,19 @@ class AccidentService extends AbstractModelService
             return; // skip saving of the status
         }
         $events = [
-            'id' => [
+            self::FIELD_ID => [
                 'status' => AccidentStatusesService::STATUS_NEW,
                 'type' => AccidentStatusesService::TYPE_ACCIDENT,
             ],
-            'assistant_invoice_id' => [
+            self::FIELD_ASSISTANT_INVOICE_ID => [
                 'status' => AccidentStatusesService::STATUS_ASSISTANT_INVOICE,
                 'type' => AccidentStatusesService::TYPE_ASSISTANT,
             ],
-            'assistant_guarantee_id' => [
+            self::FIELD_ASSISTANT_GUARANTEE_ID => [
                 'status' => AccidentStatusesService::STATUS_ASSISTANT_GUARANTEE,
                 'type' => AccidentStatusesService::TYPE_ASSISTANT,
             ],
-            'assistant_payment_id' => [
+            self::FIELD_ASSISTANT_PAYMENT_ID => [
                 'status' => AccidentStatusesService::STATUS_PAID,
                 'type' => AccidentStatusesService::TYPE_ASSISTANT,
             ],
@@ -339,5 +435,10 @@ class AccidentService extends AbstractModelService
     public function closeAccident(Accident $accident, $comment = 'closed'): void
     {
         $this->setStatus($accident, $this->getAccidentStatusesService()->getClosedStatus(), $comment);
+    }
+
+    protected function getUpdatableFields(): array
+    {
+        return self::UPDATABLE;
     }
 }

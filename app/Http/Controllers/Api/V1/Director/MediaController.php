@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +17,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Dingo\Api\Http\Response;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Services\UploaderService;
 use medcenter24\mcCore\App\Transformers\UploadedFileTransformer;
 use Illuminate\Http\UploadedFile;
@@ -44,6 +47,7 @@ class MediaController extends ApiController
 
     public function __construct(UploaderService $uploaderService)
     {
+        parent::__construct();
         $this->service = $uploaderService;
         $this->service->setOptions([
             UploaderService::CONF_DISK => 'local',
@@ -51,7 +55,7 @@ class MediaController extends ApiController
         ]);
     }
 
-    public function upload(Request $request)
+    public function upload(Request $request): Response
     {
         if (!count($request->allFiles())) {
             $this->response->errorBadRequest('You need to provide files for upload');
@@ -79,9 +83,9 @@ class MediaController extends ApiController
 
     /**
      * Already loaded list of files
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function uploads()
+    public function uploads(): Response
     {
         $uploadedCases = $this->user()->uploads()->where('storage', $this->service->getOption(UploaderService::CONF_FOLDER))->get();
         return $this->response->collection($uploadedCases, new UploadedFileTransformer);
@@ -90,9 +94,9 @@ class MediaController extends ApiController
     /**
      * Delete uploaded file
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function destroy ($id)
+    public function destroy ($id): Response
     {
         $this->service->delete($id);
         return $this->response->noContent();

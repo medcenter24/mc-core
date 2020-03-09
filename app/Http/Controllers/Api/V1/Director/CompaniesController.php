@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,16 +17,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Http\Response;
-use Log;
-use medcenter24\mcCore\App\Company;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Entity\Company;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Services\LogoService;
 use medcenter24\mcCore\App\Transformers\CompanyTransformer;
 use Illuminate\Http\Request;
 
+/**
+ * @todo can be simplified with ModelApiController
+ * Class CompaniesController
+ * @package medcenter24\mcCore\App\Http\Controllers\Api\V1\Director
+ */
 class CompaniesController extends ApiController
 {
     public function index(): Response

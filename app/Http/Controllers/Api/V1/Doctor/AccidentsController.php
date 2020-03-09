@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,30 +17,33 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
 use Dingo\Api\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\AccidentType;
-use medcenter24\mcCore\App\Diagnostic;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\DoctorService;
-use medcenter24\mcCore\App\DoctorSurvey;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\AccidentType;
+use medcenter24\mcCore\App\Entity\Diagnostic;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\Service;
+use medcenter24\mcCore\App\Entity\Survey;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Services\AccidentService;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
-use medcenter24\mcCore\App\Services\DoctorsService;
-use medcenter24\mcCore\App\Services\DocumentService;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\DoctorService;
+use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use medcenter24\mcCore\App\Transformers\AccidentTypeTransformer;
 use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
 use medcenter24\mcCore\App\Transformers\DoctorAccidentStatusTransformer;
 use medcenter24\mcCore\App\Transformers\DoctorAccidentTransformer;
 use medcenter24\mcCore\App\Transformers\DoctorCaseAccidentTransformer;
-use medcenter24\mcCore\App\Transformers\DoctorServiceTransformer;
-use medcenter24\mcCore\App\Transformers\DoctorSurveyTransformer;
+use medcenter24\mcCore\App\Transformers\ServiceTransformer;
+use medcenter24\mcCore\App\Transformers\SurveyTransformer;
 use medcenter24\mcCore\App\Transformers\DocumentTransformer;
 use medcenter24\mcCore\App\Transformers\PatientTransformer;
 use Illuminate\Http\Request;
@@ -50,7 +54,7 @@ class AccidentsController extends ApiController
 
     private $doctor;
 
-    protected function getDoctor()
+    protected function getDoctor(): ?Doctor
     {
         if (!isset($this->doctor)) {
             $this->doctor = $this->user()->doctor;
@@ -108,7 +112,7 @@ class AccidentsController extends ApiController
     /**
      * Closed or accident which were sent which can't be changed
      * @param $id
-     * @param DoctorsService $doctorService
+     * @param DoctorService $doctorService
      * @param AccidentService $accidentService
      * @param AccidentStatusesService $accidentStatusesService
      * @return Response
@@ -116,7 +120,7 @@ class AccidentsController extends ApiController
      */
     public function show(
         int $id,
-        DoctorsService $doctorService,
+        DoctorService $doctorService,
         AccidentService $accidentService,
         AccidentStatusesService $accidentStatusesService
     ): Response
@@ -230,18 +234,18 @@ class AccidentsController extends ApiController
         }
 
         /** @var Collection $services */
-        $services = $accident->caseable->services->each(function (DoctorService $service) {
+        $services = $accident->caseable->services->each(function (Service $service) {
             if ($service->created_by === $this->user()->id) {
                 $service->markAsDoctor();
             }
         });
 
-        return $this->response->collection($services, new DoctorServiceTransformer());
+        return $this->response->collection($services, new ServiceTransformer());
     }
 
     public function saveService($id, Request $request): Response
     {
-        \Log::info('Request to create new services', ['data' => $request->toArray()]);
+        Log::info('Request to create new services', ['data' => $request->toArray()]);
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
@@ -251,9 +255,9 @@ class AccidentsController extends ApiController
 
         $serviceId = (int)$request->get('id', 0);
         if ($serviceId) {
-            $service = DoctorService::find($serviceId);
+            $service = Service::find($serviceId);
             if (!$service) {
-                \Log::error('Service not found');
+                Log::error('Service not found');
                 $this->response->errorNotFound();
             }
 
@@ -262,7 +266,7 @@ class AccidentsController extends ApiController
                 $serviceable->serviceable_id != $doctorAccident->id
                 || $serviceable->serviceable_type != DoctorAccident::class
             ) {
-                \Log::error('Service can not be updated, user has not permissions');
+                Log::error('Service can not be updated, user has not permissions');
                 $this->response->errorMethodNotAllowed();
             }
 
@@ -271,7 +275,7 @@ class AccidentsController extends ApiController
             $service->created_by = $this->user()->id;
             $service->save();
         } else {
-            $service = DoctorService::create([
+            $service = Service::create([
                 'title' => $request->get('title', ''),
                 'description' => $request->get('description', ''),
                 'created_by' => $this->user()->id,
@@ -280,7 +284,7 @@ class AccidentsController extends ApiController
             $service->markAsDoctor();
         }
 
-        $transformer = new DoctorServiceTransformer();
+        $transformer = new ServiceTransformer();
         return $this->response->accepted(null, $transformer->transform($service));
     }
 
@@ -321,7 +325,7 @@ class AccidentsController extends ApiController
 
     public function createDiagnostic($id, Request $request)
     {
-        \Log::info('Request to create new diagnostic', ['data' => $request->toArray()]);
+        Log::info('Request to create new diagnostic', ['data' => $request->toArray()]);
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
@@ -333,7 +337,7 @@ class AccidentsController extends ApiController
         if ($diagnosticId) {
             $diagnostic = Diagnostic::find($diagnosticId);
             if (!$diagnostic) {
-                \Log::error('Diagnostic not found');
+                Log::error('Diagnostic not found');
                 $this->response->errorNotFound();
             }
 
@@ -342,7 +346,7 @@ class AccidentsController extends ApiController
                 $diagnosticable->diagnosticable_id != $accident->caseable->id
                 || $diagnosticable->diagnosticable_type != DoctorAccident::class
             ) {
-                \Log::error('Diagnostic can not be updated, user has not permissions');
+                Log::error('Diagnostic can not be updated, user has not permissions');
                 $this->response->errorMethodNotAllowed();
             }
 
@@ -372,18 +376,18 @@ class AccidentsController extends ApiController
         }
 
         /** @var Collection $surveys */
-        $surveys = $accident->caseable->surveys->each(function (DoctorSurvey $survey) {
+        $surveys = $accident->caseable->surveys->each(function (Survey $survey) {
             if ($survey->created_by == $this->user()->id) {
                 $survey->markAsDoctor();
             }
         });
 
-        return $this->response->collection($surveys, new DoctorSurveyTransformer());
+        return $this->response->collection($surveys, new SurveyTransformer());
     }
 
     public function createSurvey($id, Request $request)
     {
-        \Log::info('Request to create new survey', ['data' => $request->toArray()]);
+        Log::info('Request to create new survey', ['data' => $request->toArray()]);
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();
@@ -395,7 +399,7 @@ class AccidentsController extends ApiController
         if ($surveyId) {
             $survey = Diagnostic::find($surveyId);
             if (!$survey) {
-                \Log::error('Survey not found');
+                Log::error('Survey not found');
                 $this->response->errorNotFound();
             }
 
@@ -403,7 +407,7 @@ class AccidentsController extends ApiController
                 $survey->surveable_id != $doctorAccident->id
                 || $survey->caseable_type != DoctorAccident::class
             ) {
-                \Log::error('Survey can not be updated, user has not permissions');
+                Log::error('Survey can not be updated, user has not permissions');
                 $this->response->errorMethodNotAllowed();
             }
 
@@ -412,7 +416,7 @@ class AccidentsController extends ApiController
             $survey->created_by = $this->user()->id;
             $survey->save();
         } else {
-            $survey = DoctorSurvey::create([
+            $survey = Survey::create([
                 'title' => $request->get('title', ''),
                 'description' => $request->get('description', ''),
                 'created_by' => $this->user()->id,
@@ -421,7 +425,7 @@ class AccidentsController extends ApiController
             $survey->markAsDoctor();
         }
 
-        $transformer = new DoctorSurveyTransformer();
+        $transformer = new SurveyTransformer();
         return $this->response->accepted(null, $transformer->transform($survey));
     }
 
@@ -435,7 +439,7 @@ class AccidentsController extends ApiController
      */
     public function update(Request $request, $id): Response
     {
-        \Log::info('Request to update accident', ['id' => $id, 'data' => $request->toArray()]);
+        Log::info('Request to update accident', ['id' => $id, 'data' => $request->toArray()]);
         $accident = Accident::find($id);
         if (!$accident) {
             $this->response->errorNotFound();

@@ -19,7 +19,7 @@ namespace medcenter24\mcCore\App\Services\DoctorLayer;
 
 
 use Illuminate\Database\Eloquent\Model;
-use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 use Illuminate\Database\Eloquent\Collection;
 
 trait FiltersTrait

@@ -18,7 +18,7 @@
 
 namespace medcenter24\mcCore\Tests\Feature\Admin;
 
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\Tests\TestCase;
 
 class AccessTest extends TestCase

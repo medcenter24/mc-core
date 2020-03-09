@@ -17,20 +17,22 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
 use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Services\DoctorSurveyService;
-use medcenter24\mcCore\App\Transformers\DoctorSurveyTransformer;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Entity\SurveyService;
+use medcenter24\mcCore\App\Transformers\SurveyTransformer;
 
 class DoctorSurveysController extends ApiController
 {
     public function index(): Response
     {
-        /** @var DoctorSurveyService $service */
-        $service = $this->getServiceLocator()->get(DoctorSurveyService::class);
+        /** @var SurveyService $service */
+        $service = $this->getServiceLocator()->get(SurveyService::class);
         $surveys = $service->getActiveByDoctor(auth()->id());
-        return $this->response->collection($surveys, new DoctorSurveyTransformer());
+        return $this->response->collection($surveys, new SurveyTransformer());
     }
 }

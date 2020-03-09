@@ -18,9 +18,7 @@
 
 namespace medcenter24\mcCore\App\Providers;
 
-use medcenter24\mcCore\App\Services\Formula\FormulaResultService;
 use medcenter24\mcCore\App\Services\Formula\FormulaService;
-use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
 use Illuminate\Support\ServiceProvider;
 
 class FormulaServiceProvider extends ServiceProvider

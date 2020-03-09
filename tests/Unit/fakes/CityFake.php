@@ -19,7 +19,7 @@
 namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
-use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\Entity\City;
 
 class CityFake implements Fake
 {

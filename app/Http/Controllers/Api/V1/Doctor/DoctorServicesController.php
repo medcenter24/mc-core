@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,12 +17,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
 use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Services\DoctorServiceService;
-use medcenter24\mcCore\App\Transformers\DoctorServiceTransformer;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Entity\ServiceService;
+use medcenter24\mcCore\App\Transformers\ServiceTransformer;
 
 class DoctorServicesController extends ApiController
 {
@@ -30,9 +33,9 @@ class DoctorServicesController extends ApiController
      */
     public function index(): Response
     {
-        /** @var DoctorServiceService $service */
-        $service = $this->getServiceLocator()->get(DoctorServiceService::class);
+        /** @var ServiceService $service */
+        $service = $this->getServiceLocator()->get(ServiceService::class);
         $services = $service->getActiveByDoctor(auth()->id());
-        return $this->response->collection($services, new DoctorServiceTransformer());
+        return $this->response->collection($services, new ServiceTransformer());
     }
 }

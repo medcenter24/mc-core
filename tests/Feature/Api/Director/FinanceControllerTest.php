@@ -19,8 +19,8 @@
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\FinanceCondition;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
@@ -40,9 +40,9 @@ class FinanceControllerTest extends TestCase
     public function testStoreError(): void
     {
         $newFinanceCondition = [];
-        $this->doNotPrintErrResponse(true);
+        $this->doNotPrintErrResponse([422]);
         $response = $this->json('POST', '/api/director/finance', $newFinanceCondition, $this->headers($this->getUser()));
-        $this->doNotPrintErrResponse(false);
+        $this->doNotPrintErrResponse();
         $response->assertStatus(422);
         self::assertArrayHasKey('title', $response->json('errors'), 'Error with `title` message exists');
         self::assertArrayHasKey('value', $response->json('errors'), 'Error with `value` message exists');

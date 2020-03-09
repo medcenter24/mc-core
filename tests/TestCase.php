@@ -30,11 +30,21 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    private $doNotPrintCallResponse = false;
+    private const ERR_CODES = [500, 422, 405];
+    private $errCodes = self::ERR_CODES;
 
-    protected function doNotPrintErrResponse($tumbler = false): void
+    protected function doNotPrintErrResponse($expectedErrCodes = []): void
     {
-        $this->doNotPrintCallResponse = $tumbler;
+        if (count($expectedErrCodes)) {
+            $this->errCodes = [];
+            foreach (self::ERR_CODES as $errCode) {
+                if (!in_array($errCode, $expectedErrCodes, true)) {
+                    $this->errCodes[] = $errCode;
+                }
+            }
+        } else {
+            $this->errCodes = self::ERR_CODES;
+        }
     }
 
     /**
@@ -52,7 +62,7 @@ abstract class TestCase extends BaseTestCase
     {
         $res = parent::call($method, $uri, $parameters, $cookies, $files, $server, $content);
 
-        if (!$this->doNotPrintCallResponse && in_array($res->getStatusCode(), [500, 422, 405], true)) {
+        if (in_array($res->getStatusCode(), $this->errCodes, true)) {
             echo "\n <================ PRINT CONTENT ==============> \n";
             print_r(json_decode($res->getContent(), false));
             echo "\n <================ / END PRINT CONTENT ==============> \n";
@@ -61,6 +71,10 @@ abstract class TestCase extends BaseTestCase
         return $res;
     }
 
+    /**
+     * @param array $services
+     * @return ServiceLocator
+     */
     protected function mockServiceLocator(array $services): ServiceLocator
     {
         /** @var ServiceLocator|ObjectProphecy $serviceLocator */

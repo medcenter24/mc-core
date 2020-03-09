@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,16 +17,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases;
 
-
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
 use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceViewService;
 use medcenter24\mcCore\App\Transformers\CaseFinanceTransformer;
 use Illuminate\Http\Request;
 use Dingo\Api\Http\Response;
+use stdClass;
+use Throwable;
 
 class CaseFinanceController extends ApiController
 {
@@ -34,9 +40,9 @@ class CaseFinanceController extends ApiController
      * @param int $id
      * @param CaseFinanceViewService $caseFinanceViewService
      * @return Response
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
-     * @throws \Throwable
+     * @throws InconsistentDataException
+     * @throws FormulaException
+     * @throws Throwable
      */
     public function show(Request $request, int $id, CaseFinanceViewService $caseFinanceViewService): Response
     {
@@ -56,9 +62,9 @@ class CaseFinanceController extends ApiController
      * @param Request $request
      * @param CaseFinanceViewService $caseFinanceViewService
      * @return Response
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
-     * @throws \Throwable
+     * @throws InconsistentDataException
+     * @throws FormulaException
+     * @throws Throwable
      */
     public function save(
         int $id,
@@ -69,7 +75,10 @@ class CaseFinanceController extends ApiController
     {
         /** @var Accident $accident */
         $accident = Accident::findOrFail($id);
-        $caseFinanceService->save($accident, $type, json_decode($request->getContent(), 1));
+        $caseFinanceService->save(
+            $accident,
+            $type,
+            json_decode($request->getContent(), true));
         return $this->getResponse(CaseFinanceViewService::FINANCE_TYPES, $accident, $caseFinanceViewService);
     }
 
@@ -78,13 +87,13 @@ class CaseFinanceController extends ApiController
      * @param Accident $accident
      * @param CaseFinanceViewService $caseFinanceViewService
      * @return Response
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
-     * @throws \Throwable
+     * @throws InconsistentDataException
+     * @throws FormulaException
+     * @throws Throwable
      */
     private function getResponse($types, Accident $accident, CaseFinanceViewService $caseFinanceViewService): Response
     {
-        $obj = new \stdClass();
+        $obj = new stdClass();
         $obj->collection = $caseFinanceViewService->get($accident, $types);
         return $this->response->item($obj, new CaseFinanceTransformer());
     }

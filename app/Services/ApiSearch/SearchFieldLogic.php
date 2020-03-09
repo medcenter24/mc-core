@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,8 +16,9 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\ApiSearch;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services\ApiSearch;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -41,10 +43,7 @@ class SearchFieldLogic
      */
     public function transformFieldToInternalFormat(array $field): array
     {
-        Log::info('fff', [$field]);
         $field[Filter::FIELD_NAME] = $this->getInternalFieldName($field[Filter::FIELD_NAME]);
-        Log::info('fff', [$field]);
-
         return $field;
     }
 
@@ -58,7 +57,7 @@ class SearchFieldLogic
     }
 
     /**
-     * @return Collection of Relation
+     * @return Collection of \medcenter24\mcCore\App\Models\Database\Relation
      */
     public function getRelations(): Collection
     {

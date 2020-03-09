@@ -18,7 +18,7 @@
 
 namespace medcenter24\mcCore\App\Events;
 
-use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\Entity\DatePeriod;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;

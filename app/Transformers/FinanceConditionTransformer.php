@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,17 +17,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
+use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Entity\Assistant;
+use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Entity\DatePeriod;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\Service;
+use medcenter24\mcCore\App\Entity\FinanceCondition;
 
-use medcenter24\mcCore\App\Assistant;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\DatePeriod;
-use medcenter24\mcCore\App\Doctor;
-use medcenter24\mcCore\App\DoctorService;
-use medcenter24\mcCore\App\FinanceCondition;
-
-class FinanceConditionTransformer extends AbstractTransformer
+class FinanceConditionTransformer extends TransformerAbstract
 {
     public function transform(FinanceCondition $financeCondition): array
     {
@@ -55,9 +58,9 @@ class FinanceConditionTransformer extends AbstractTransformer
             return $doctorTransformer->transform($doctor);
         });
 
-        $serviceTransformer = new DoctorServiceTransformer();
-        $services = DoctorService::whereIn('id', $financeCondition->conditions()
-            ->where('model', DoctorService::class)->get(['model_id'])
+        $serviceTransformer = new ServiceTransformer();
+        $services = Service::whereIn('id', $financeCondition->conditions()
+            ->where('model', Service::class)->get(['model_id'])
             ->map(function($v) { return $v['model_id']; })
         )->get();
         $services = $services->map(function ($service) use ($serviceTransformer) {
@@ -74,7 +77,7 @@ class FinanceConditionTransformer extends AbstractTransformer
         });
 
         return [
-            'id' => $financeCondition->id,
+            'id' => (int) $financeCondition->id,
             'title' => $financeCondition->title,
             'value' => $financeCondition->value,
             'assistants' => $assistants,
@@ -84,7 +87,7 @@ class FinanceConditionTransformer extends AbstractTransformer
             'datePeriods' => $datePeriods,
             'type' => $financeCondition->type,
             'model' => $financeCondition->model,
-            'currencyId' => $financeCondition->currency_id,
+            'currencyId' => (int) $financeCondition->currency_id,
             'currencyMode' => $financeCondition->currency_mode,
         ];
     }

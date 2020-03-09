@@ -18,9 +18,9 @@
 
 namespace medcenter24\mcCore\App\Http\Requests;
 
-use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Entity\Role;
 use Illuminate\Foundation\Http\FormRequest;
-use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 class RoleRequest extends FormRequest
 {

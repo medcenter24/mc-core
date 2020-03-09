@@ -18,8 +18,8 @@
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use medcenter24\mcCore\App\Role;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\Role;
+use medcenter24\mcCore\App\Entity\User;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserUpdate extends UserStore

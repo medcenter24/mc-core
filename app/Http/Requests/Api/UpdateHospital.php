@@ -18,7 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use medcenter24\mcCore\App\Hospital;
+use medcenter24\mcCore\App\Entity\Hospital;
 
 class UpdateHospital extends JsonRequest
 {

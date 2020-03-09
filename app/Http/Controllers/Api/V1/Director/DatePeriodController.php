@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,17 +17,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use medcenter24\mcCore\App\DatePeriod;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Entity\DatePeriod;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DatePeriodRequest;
 use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 use medcenter24\mcCore\App\Transformers\DatePeriodTransformer;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
-class DatePeriodController extends ApiController
+class DatePeriodController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {

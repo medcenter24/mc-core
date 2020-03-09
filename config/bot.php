@@ -16,12 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use medcenter24\mcCore\App\Services\Bot\Drivers\TelegramBot;
+
 return [
     'connections' => [
         'default' => 'telegram',
         'telegram' => [
             'active' => true,
-            'class' =>medcenter24\mcCore\App\Services\Bot\Drivers\TelegramBot::class,
+            'class' => TelegramBot::class,
             'config' => config('telegram', []),
         ],
         'slack' => [

@@ -29,7 +29,7 @@ class CreateDoctorServicesTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('doctor_services', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('created_by')->default(0)->index();
             $table->string('title')->default('')->index();
@@ -49,6 +49,6 @@ class CreateDoctorServicesTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('doctor_services');
+        Schema::dropIfExists('services');
     }
 }

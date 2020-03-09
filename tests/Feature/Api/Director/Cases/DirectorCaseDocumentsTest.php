@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +17,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Document;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
 use medcenter24\mcCore\Tests\TestCase;
@@ -33,7 +36,7 @@ class DirectorCaseDocumentsTest extends TestCase
     use JwtHeaders;
     use LoggedUser;
 
-    public function testGetNoDocuments()
+    public function testGetNoDocuments(): void
     {
         $case = factory(Accident::class)->create();
         $response = $this->get('/api/director/cases/' . $case->id .'/documents', $this->headers($this->getUser()));
@@ -41,7 +44,7 @@ class DirectorCaseDocumentsTest extends TestCase
         $response->assertJson(['data' => []]);
     }
 
-    public function testGetDocuments()
+    public function testGetDocuments(): void
     {
         $case = factory(Accident::class)->create();
         $docs = factory(Document::class, 5)->create();
@@ -53,7 +56,7 @@ class DirectorCaseDocumentsTest extends TestCase
         $response->assertJson(['data' => [[], [], [], [], []]]);
     }
 
-    public function testGetWithoutUsersDocuments()
+    public function testGetWithoutUsersDocuments(): void
     {
         $case = factory(Accident::class)->create();
         $docs = factory(Document::class, 5)->create();
@@ -65,6 +68,7 @@ class DirectorCaseDocumentsTest extends TestCase
         self::assertEquals(2, $user->documents()->count());
 
         $response = $this->get('/api/director/cases/' . $case->id .'/documents', $this->headers($this->getUser()));
+
         $response->assertStatus(200);
         $response->assertJson(['data' => [[], [], [], [], []]]);
     }

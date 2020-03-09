@@ -19,7 +19,7 @@
 namespace medcenter24\mcCore\App\Models\Telegram\Commands;
 
 
-use medcenter24\mcCore\App\TelegramUser;
+use medcenter24\mcCore\App\Entity\TelegramUser;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
 

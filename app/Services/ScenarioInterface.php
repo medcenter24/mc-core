@@ -19,7 +19,7 @@
 
 namespace medcenter24\mcCore\App\Services;
 use Illuminate\Support\Collection;
-use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Entity\AccidentStatus;
 
 /**
  * Scenario is a set of the statuses which should be done for the case completion

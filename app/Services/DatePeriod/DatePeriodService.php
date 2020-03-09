@@ -19,7 +19,7 @@
 namespace medcenter24\mcCore\App\Services\DatePeriod;
 
 
-use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\Entity\DatePeriod;
 use medcenter24\mcCore\App\Events\DatePeriodChangedEvent;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use Illuminate\Support\Facades\Log;

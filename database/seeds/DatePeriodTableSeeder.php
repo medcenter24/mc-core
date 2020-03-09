@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\Entity\DatePeriod;
 use Illuminate\Database\Seeder;
 
 class DatePeriodTableSeeder extends Seeder

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,18 +17,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Illuminate\Support\Facades\Log;
 use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Hash;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\UserStore;
 use medcenter24\mcCore\App\Http\Requests\Api\UserUpdate;
-use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Entity\Role;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 use medcenter24\mcCore\App\Transformers\UserTransformer;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\User;
 use League\Fractal\TransformerAbstract;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded;
 
@@ -59,7 +63,7 @@ class UsersController extends ApiController
     {
         $user = User::findOrFail($id);
         if ($user->id != $this->user()->id && !\Roles::hasRole($user, RoleService::DOCTOR_ROLE)) {
-            \Log::info('Director has no access to the user', [$user]);
+            Log::info('Director has no access to the user', [$user]);
             $this->response->errorMethodNotAllowed();
         }
         return $this->response->item($user, new UserTransformer());
@@ -82,7 +86,7 @@ class UsersController extends ApiController
 
         $user->save();
 
-        \Log::info('User updated', [$user]);
+        Log::info('User updated', [$user]);
 
         return $this->response->item($user, new UserTransformer());
     }

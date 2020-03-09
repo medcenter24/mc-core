@@ -20,8 +20,8 @@ namespace medcenter24\mcCore\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
-use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 class UpdateDoctorAccident extends FormRequest
 {

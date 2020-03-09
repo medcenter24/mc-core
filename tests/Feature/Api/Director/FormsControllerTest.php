@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,14 +17,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
-
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Doctor;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\Form;
-use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\Form;
+use medcenter24\mcCore\App\Entity\Patient;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\App\Services\Form\FormVariableService;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;

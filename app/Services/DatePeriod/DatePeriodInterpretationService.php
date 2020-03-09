@@ -18,8 +18,8 @@
 
 namespace medcenter24\mcCore\App\Services\DatePeriod;
 
-use medcenter24\mcCore\App\DatePeriod;
-use medcenter24\mcCore\App\DatePeriodInterpretation;
+use medcenter24\mcCore\App\Entity\DatePeriod;
+use medcenter24\mcCore\App\Entity\DatePeriodInterpretation;
 use Carbon\Carbon;
 
 /**

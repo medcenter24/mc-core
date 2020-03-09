@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,6 +16,8 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+
+declare(strict_types = 1);
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -35,6 +38,7 @@ class CreateDatePeriodsTable extends Migration
             $table->string('from')->default('');
             $table->string('to')->default('');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,21 +17,22 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\Tests\Unit\Services\Finance;
 
-
-use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
-use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\HospitalAccident;
-use medcenter24\mcCore\App\Invoice;
+use medcenter24\mcCore\App\Entity\HospitalAccident;
+use medcenter24\mcCore\App\Entity\Invoice;
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
-use medcenter24\mcCore\App\Payment;
-use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Entity\Payment;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
-use medcenter24\mcCore\App\Services\CurrencyService;
-use medcenter24\mcCore\App\Services\FinanceConditionService;
+use medcenter24\mcCore\App\Services\Entity\CurrencyService;
+use medcenter24\mcCore\App\Services\Entity\FinanceConditionService;
 use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use Illuminate\Support\Collection;
 use Prophecy\Argument;
@@ -104,7 +106,16 @@ class CaseFinanceServiceTest extends TestCase
         /** @var CurrencyService $currencyService */
         $currencyService = $currencyServiceMock->reveal();
 
-        return new CaseFinanceService($formulaService, $accidentService, $financeConditionService, $currencyService);
+        $mockedServiceLocator = $this->mockServiceLocator([
+            FormulaService::class => $formulaService,
+            AccidentService::class => $accidentService,
+            FinanceConditionService::class => $financeConditionService,
+            CurrencyService::class => $currencyService,
+        ]);
+
+        $caseFinanceService =  new CaseFinanceService();
+        $caseFinanceService->setServiceLocator($mockedServiceLocator);
+        return $caseFinanceService;
     }
 
     private function getAccidentMock(): ObjectProphecy
@@ -117,13 +128,19 @@ class CaseFinanceServiceTest extends TestCase
      */
     private function getDoctorAccidentMock(): ObjectProphecy
     {
+        /** @var ObjectProphecy $accidentMock */
         $accidentMock = $this->getAccidentMock();
         $accidentMock->isDoctorCaseable()->willReturn(true);
         $accidentMock->isHospitalCaseable()->willReturn(false);
-        $accidentMock->getAttribute(Argument::type('string'))->will(function ($args) {
+        $doctorAccidentMock = $this->createMock(DoctorAccident::class);
+        $accidentMock->getAttribute(Argument::type('string'))->will(function ($args) use ($doctorAccidentMock) {
             $value = null;
             if ($args['0'] === 'caseable_type') {
                 $value = DoctorAccident::class;
+            }
+            if ($args['0'] === 'caseable') {
+                $doctorAccidentMock->method('getAttribute')->willReturn(collect());
+                $value = $doctorAccidentMock;
             }
             return $value;
         });
@@ -164,11 +181,13 @@ class CaseFinanceServiceTest extends TestCase
     {
         /** @var Accident $accident */
         $accident = $this->getDoctorAccidentMock()->reveal();
+
         // how much do we need to pay to the doctor?
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'financeConditionServiceMock->findConditions' => 1,
         ])->getToDoctorFormula($accident), 'Doctors payment is correct');
+
         // how much has assistant paid us?
         $this->financeService([
             'formulaServiceMock->createFormula' => 1,

@@ -19,10 +19,10 @@ namespace medcenter24\mcCore\Tests\Unit\Services\DoctorLayer;
 
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use medcenter24\mcCore\App\Diagnostic;
-use medcenter24\mcCore\App\Services\DiagnosticService;
-use medcenter24\mcCore\App\Services\RoleService;
-use medcenter24\mcCore\App\Services\UserService;
+use medcenter24\mcCore\App\Entity\Diagnostic;
+use medcenter24\mcCore\App\Services\Entity\DiagnosticService;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
+use medcenter24\mcCore\App\Services\Entity\UserService;
 use medcenter24\mcCore\Tests\TestCase;
 
 class DoctorFiltersTest extends TestCase

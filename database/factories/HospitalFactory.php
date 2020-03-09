@@ -18,8 +18,9 @@
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Entity\Hospital;
 
-$factory->define(medcenter24\mcCore\App\Hospital::class, function (Faker $faker) {
+$factory->define(Hospital::class, function (Faker $faker) {
     return [
         'title' => $faker->text(30),
         'description' => $faker->text(),

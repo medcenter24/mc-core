@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,14 +16,15 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Middleware;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Http\Middleware;
 
 use Closure;
 use Dingo\Api\Auth\Auth;
 use Illuminate\Http\Request;
-use medcenter24\mcCore\App\Services\RoleService;
-use Roles;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
+use medcenter24\mcCore\App\Support\Facades\Roles;
 
 class DoctorMiddleware
 {

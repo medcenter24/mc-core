@@ -18,20 +18,20 @@
 namespace medcenter24\mcCore\Tests\Unit\Services\Forms;
 
 use Carbon\Carbon;
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Diagnostic;
-use medcenter24\mcCore\App\Doctor;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Diagnostic;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\FinanceCurrency;
-use medcenter24\mcCore\App\Form;
-use medcenter24\mcCore\App\Hospital;
-use medcenter24\mcCore\App\HospitalAccident;
-use medcenter24\mcCore\App\Patient;
-use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Entity\FinanceCurrency;
+use medcenter24\mcCore\App\Entity\Form;
+use medcenter24\mcCore\App\Entity\Hospital;
+use medcenter24\mcCore\App\Entity\HospitalAccident;
+use medcenter24\mcCore\App\Entity\Patient;
+use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Services\Form\FormVariableService;
-use medcenter24\mcCore\App\Services\FormService;
+use medcenter24\mcCore\App\Services\Entity\FormService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\Tests\TestCase;
 
@@ -295,13 +295,13 @@ class FormServiceTest extends TestCase
         $accident = factory(Accident::class)->create();
         $accident->getAttribute('caseable')->services()->detach();
 
-        factory(DoctorService::class)->create([
+        factory(Service::class)->create([
             'title' => 'service 1',
         ]);
-        factory(DoctorService::class)->create([
+        factory(Service::class)->create([
             'title' => 'service 2',
         ]);
-        factory(DoctorService::class)->create([
+        factory(Service::class)->create([
             'title' => 'service 3',
         ]);
         $accident->getAttribute('caseable')->services()->attach([1, 2, 3]);

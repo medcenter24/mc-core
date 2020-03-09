@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,12 +17,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
 
 use Dingo\Api\Http\Response;
 use Exception;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Transformers\statistics\TrafficTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

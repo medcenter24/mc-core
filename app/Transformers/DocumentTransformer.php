@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,43 +17,73 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Document;
-use medcenter24\mcCore\App\Services\DocumentService;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Entity\Document;
+use medcenter24\mcCore\App\Services\Entity\DocumentService;
+use Spatie\MediaLibrary\Models\Media;
 
 class DocumentTransformer extends AbstractTransformer
 {
     /**
-     * @param Document $document
      * @return array
      */
-    public function transform (Document $document): array
+    public function transform (Model $model): array
     {
-        if ($document->doctorAccidents->count()) {
-            $owner = 'doctor';
-        } elseif ($document->accidents->count()) {
-            $owner = 'accident';
-        } elseif ($document->users->count()) {
-            $owner = 'user';
-        } else {
-            $owner = 'patient';
-        }
-
-        $medias = $document->getMedia(DocumentService::CASES_FOLDERS);
-        if (!$medias->count()) {
-            \Log::error('Media not found', ['document' => $document]);
+        $media = $this->getMedia($model);
+        if (!$media) {
+            // document it is a media
+            // without media we don't have any data
+            Log::error('Media not found', ['document' => $model]);
             return [];
         }
-        $media = $medias->first();
+
+        $fields = parent::transform($model);
+        $fields['owner'] = $this->getOwner($model);
+        $fields['fileName'] = $media->getAttribute('fileName');
+        $fields['b64thumb'] = base64_encode(file_get_contents($media->getPath('thumb')));
+        return $fields;
+    }
+
+    /**
+     * @param Model $model
+     * @return Media|null
+     */
+    private function getMedia(Model $model): ?Media
+    {
+        $media = null;
+        if ($model instanceof Document) {
+            $medias = $model->getMedia(DocumentService::CASES_FOLDERS);
+            if ($medias->count()) {
+                $media = $medias->first();
+            }
+        }
+        return $media;
+    }
+
+    private function getOwner(Model $model): string
+    {
+        $owner = 'patient';
+        if ($model->getAttribute('doctorAccidents') && $model->getAttribute('doctorAccidents')->count()) {
+            $owner = 'doctor';
+        } elseif ($model->getAttribute('accidents') && $model->getAttribute('accidents')->count()) {
+            $owner = 'accident';
+        } elseif ($model->getAttribute('users') && $model->getAttribute('users')->count()) {
+            $owner = 'user';
+        }
+        return $owner;
+    }
+
+    protected function getMap(): array
+    {
         return [
-            'id' => $document->id,
-            'title' => $document->title,
-            'owner' => $owner,
-            'fileName' => $media->file_name,
-            'b64thumb' => base64_encode(file_get_contents($media->getPath('thumb'))),
-            'type' => $document->type,
+            DocumentService::FIELD_ID,
+            DocumentService::FIELD_TITLE,
+            DocumentService::FIELD_TYPE,
         ];
     }
 }

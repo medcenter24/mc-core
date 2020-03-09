@@ -19,9 +19,9 @@
 namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\HospitalAccident;
 
 // TODO Delete this
 

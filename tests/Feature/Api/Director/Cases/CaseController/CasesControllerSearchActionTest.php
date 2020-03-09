@@ -18,9 +18,9 @@
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Services\AccidentService;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
 use medcenter24\mcCore\Tests\TestCase;

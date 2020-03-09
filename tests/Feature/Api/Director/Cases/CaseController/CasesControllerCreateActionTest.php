@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,19 +17,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\AccidentStatus;
-use medcenter24\mcCore\App\AccidentType;
-use medcenter24\mcCore\App\Assistant;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\FormReport;
-use medcenter24\mcCore\App\HospitalAccident;
-use medcenter24\mcCore\App\Patient;
-use medcenter24\mcCore\App\Payment;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\AccidentStatus;
+use medcenter24\mcCore\App\Entity\AccidentType;
+use medcenter24\mcCore\App\Entity\Assistant;
+use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\FormReport;
+use medcenter24\mcCore\App\Entity\Patient;
+use medcenter24\mcCore\App\Entity\Payment;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
 use medcenter24\mcCore\Tests\TestCase;
@@ -44,27 +47,22 @@ class CasesControllerCreateActionTest extends TestCase
     {
         $response = $this->post('/api/director/cases', [], $this->headers($this->getUser()));
         $response->assertStatus(201)->assertJson([
-            'accident' => [
-                'id' => 1,
-                'createdBy' => 1,
-                'parentId' => 0,
-                'patientId' => 0,
-                'accidentTypeId' => 0,
-                'accidentStatusId' => 1,
-                'assistantId' => 0,
-                'caseableId' => 1,
-                'cityId' => 0,
-                'formReportId' => 0,
-                'caseableType' => HospitalAccident::class,
-                'assistantRefNum' => '',
-                'title' => '',
-                'address' => '',
-                'contacts' => '',
-                'symptoms' => '',
-                'deletedAt' => null,
-                'closedAt' => null,
-            ]
+            'id' => 1,
+            'assistantId' => 0,
+            'repeated' => 0,
+            'assistantRefNum' => '',
+            'symptoms' => '',
+            'handlingTime' => '',
+            'patientName' => '',
+            'checkpoints' => '',
+            'statusTitle' => 'new',
+            'cityTitle' => '',
+            'price' => 0,
+            'doctorsFee' => 0,
+            'caseType' => 'doctor',
         ]);
+        $refNum = $response->json('refNum');
+        $this->assertStringStartsWith('NA0001-', $refNum);
     }
 
     /**
@@ -105,77 +103,65 @@ class CasesControllerCreateActionTest extends TestCase
         $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
 
         $response->assertStatus(201)->assertJson([
-            'accident' => [
-                'id' => 1,
-                'createdBy' => 1,
-                'parentId' => 0,
-                'patientId' => 0,
-                'accidentTypeId' => 0,
-                'accidentStatusId' => 1,
-                'assistantId' => '0',
-                'caseableId' => 1,
-                'cityId' => 0,
-                'formReportId' => 0,
-                'caseableType' => 'medcenter24\\mcCore\\App\\HospitalAccident',
-                'assistantPaymentId' => 0,
-                'incomePaymentId' => 0,
-                'caseablePaymentId' => 0,
-                'assistantRefNum' => '',
-                'title' => '',
-                'address' => '',
-                'contacts' => '',
-                'symptoms' => '',
-                'deletedAt' => null,
-                'closedAt' => null,
-            ]
+            'id' => 1,
+            'assistantId' => 0,
+            'repeated' => 0,
+            'assistantRefNum' => '',
+            'symptoms' => '',
+            'handlingTime' => '',
+            'patientName' => '',
+            'checkpoints' => '',
+            'statusTitle' => 'new',
+            'cityTitle' => '',
+            'price' => 0,
+            'doctorsFee' => 0,
+            'caseType' => 'doctor',
         ]);
     }
 
     /**
      * Creating a case but with the data for accident only (without dependencies and relations)
      */
-    public function testCreateWithAccidentDataOnlyAccidentRequestRules()
+    public function testCreateWithAccidentDataOnlyAccidentRequestRules(): void
     {
         $data = [
             'accident' => [
-                'accidentStatusId' => "1",
-                'accidentTypeId' => "1",
-                'address' => "",
+                'accidentStatusId' => '1',
+                'accidentTypeId' => '1',
+                'address' => '',
                 'assistantId' => 2,
-                'assistantRefNum' => "",
-                'caseableId' => "3",
-                'caseableType' => 'medcenter24\mcCore\App\DoctorAccidents',
+                'assistantRefNum' => '',
+                'caseableId' => '3',
+                'caseableType' => 'doctor',
                 'cityId' => 3,
                 'closedAt' => null,
-                'contacts' => "",
-                'createdBy' => "2",
+                'contacts' => '',
+                'createdBy' => '2',
                 'deletedAt' => null,
-                'formReportId' => "7",
-                'handlingTime' => "2018-11-16 02:46:00",
+                'formReportId' => '7',
+                'handlingTime' => '2018-11-16 02:46:00',
                 'id' => 4,
                 'income' => null,
                 'parentId' => 3,
                 'patientId' => 3,
-                'refNum' => "test",
-                'symptoms' => "",
-                'title' => "",
+                'refNum' => 'test',
+                'symptoms' => '',
+                'title' => '',
                 'assistantPaymentId' => 2,
                 'incomePaymentId' => 5,
                 'caseablePaymentId' => 8,
             ]
         ];
-        $this->doNotPrintErrResponse(true);
+
+        $this->doNotPrintErrResponse([422]);
         $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
-        $this->doNotPrintErrResponse(false);
+        $this->doNotPrintErrResponse();
         $content = $response->assertStatus(422)->getContent();
         $ans = json_decode($content);
         self::assertJson($ans->errors->accident[0]);
         self::assertSame([
             'parentId' => [
                 'Parent is incorrect',
-            ],
-            'caseableType' => [
-                'The selected caseable type is invalid.',
             ],
             'caseableId' => [
                 'Caseable does not exists',
@@ -207,7 +193,7 @@ class CasesControllerCreateActionTest extends TestCase
             'assistantPaymentId' => [
                 'Is not exists'
             ],
-        ], json_decode($ans->errors->accident[0], 1));
+        ], json_decode($ans->errors->accident[0], true));
     }
 
     /**
@@ -215,6 +201,11 @@ class CasesControllerCreateActionTest extends TestCase
      */
     public function testCreateWithAccidentDataOnly4(): void
     {
+        $patient = factory(Patient::class)->create();
+        $city = factory(City::class)->create();
+        $assistantPayment = factory(Payment::class)->create();
+        $caseablePayment = factory(Payment::class)->create();
+        $income = factory(Payment::class)->create();
         $data = [
             'accident' => [
                 'accidentStatusId' => AccidentStatus::firstOrCreate([
@@ -226,7 +217,56 @@ class CasesControllerCreateActionTest extends TestCase
                 'assistantId' => factory(Assistant::class)->create()->id,
                 'assistantRefNum' => 'ref---',
                 'caseableId' => factory(DoctorAccident::class)->create()->id,
-                'caseableType' => DoctorAccident::class,
+                'caseableType' => CaseAccidentTransformer::CASE_TYPE_DOCTOR,
+                'cityId' => $city->id,
+                'closedAt' => null,
+                'contacts' => 'anything',
+                'deletedAt' => null,
+                'formReportId' => factory(FormReport::class)->create()->id,
+                'handlingTime' => '2018-11-16 02:46:00',
+                'parentId' => factory(Accident::class)->create()->id,
+                'patientId' => $patient->id,
+                'refNum' => 'test',
+                'symptoms' => 'aaa',
+                'title' => 'ccc',
+                'assistantPaymentId' => $assistantPayment->id,
+                'incomePaymentId' => $income->id,
+                'caseablePaymentId' => $caseablePayment->id,
+            ]
+        ];
+
+        $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
+
+        $response->assertStatus(201)
+            ->assertJson([
+            'id' => 2,
+            'assistantId' => 1,
+            'repeated' => 1,
+            'assistantRefNum' => 'ref---',
+            'symptoms' => 'aaa',
+            'handlingTime' => '2018-11-16 02:46:00',
+            'patientName' => $patient->name,
+            'checkpoints' => '',
+            'statusTitle' => 'new',
+            'cityTitle' => $city->title,
+            'price' => $income->value,
+            'doctorsFee' => $caseablePayment->value,
+            'caseType' => 'doctor',
+        ]);
+    }
+
+    public function testCreateWithAccidentDataOnly5(): void
+    {
+        $patient = factory(Patient::class)->create();
+        $data = [
+            'accident' => [
+                'accidentStatusId' => (new AccidentStatusesService())->getNewStatus()->getAttribute('id'),
+                'accidentTypeId' => factory(AccidentType::class)->create()->id,
+                'address' => 'any',
+                'assistantId' => factory(Assistant::class)->create()->id,
+                'assistantRefNum' => 'ref---',
+                'caseableId' => factory(DoctorAccident::class)->create()->id,
+                'caseableType' => 'doctor',
                 'cityId' => factory(City::class)->create()->id,
                 'closedAt' => null,
                 'contacts' => 'anything',
@@ -234,7 +274,7 @@ class CasesControllerCreateActionTest extends TestCase
                 'formReportId' => factory(FormReport::class)->create()->id,
                 'handlingTime' => '2018-11-16 02:46:00',
                 'parentId' => factory(Accident::class)->create()->id,
-                'patientId' => factory(Patient::class)->create()->id,
+                'patientId' => $patient->id,
                 'refNum' => 'test',
                 'symptoms' => 'aaa',
                 'title' => 'ccc',
@@ -246,93 +286,17 @@ class CasesControllerCreateActionTest extends TestCase
         $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
 
         $response->assertStatus(201)->assertJson([
-            'accident' => [
-                'id' => 2,
-                'createdBy' => 2,
-                'parentId' => 1,
-                'patientId' => 2,
-                'accidentTypeId' => 1,
-                'accidentStatusId' => 1,
-                'assistantId' => '1',
-                'caseableId' => 3,
-                'cityId' => 1,
-                'formReportId' => 1,
-                'caseableType' => DoctorAccident::class,
-                'assistantRefNum' => 'ref---',
-                'title' => 'ccc',
-                'address' => 'any',
-                'contacts' => 'anything',
-                'symptoms' => 'aaa',
-                // will be updated on the creation and updating of the record and can't be manipulated
-                // 'createdAt' => '2018-11-20 14:39:50',
-                // 'updatedAt' => '2018-11-20 14:39:50',
-                'deletedAt' => '',
-                'closedAt' => '',
-                'handlingTime' => '2018-11-16 02:46:00',
-                'assistantPaymentId' => 1,
-                'incomePaymentId' => 2,
-                'caseablePaymentId' => 3,
-            ]
-        ]);
-    }
-
-    public function testCreateWithAccidentDataOnly5(): void
-    {
-        $data = [
-            'accident' => [
-                'accidentStatusId' => (new AccidentStatusesService())->getNewStatus()->getAttribute('id'),
-                'accidentTypeId' => factory(AccidentType::class)->create()->id,
-                'address' => "any",
-                'assistantId' => factory(Assistant::class)->create()->id,
-                'assistantRefNum' => "ref---",
-                'caseableId' => factory(DoctorAccident::class)->create()->id,
-                'caseableType' => 'medcenter24\mcCore\App\DoctorAccident',
-                'cityId' => factory(City::class)->create()->id,
-                'closedAt' => null,
-                'contacts' => "anything",
-                'deletedAt' => null,
-                'formReportId' => factory(FormReport::class)->create()->id,
-                'handlingTime' => "2018-11-16 02:46:00",
-                'parentId' => factory(Accident::class)->create()->id,
-                'patientId' => factory(Patient::class)->create()->id,
-                'refNum' => "test",
-                'symptoms' => "aaa",
-                'title' => "ccc",
-                'assistantPaymentId' => factory(Payment::class)->create()->id,
-                'incomePaymentId' => factory(Payment::class)->create()->id,
-                'caseablePaymentId' => factory(Payment::class)->create()->id,
-            ]
-        ];
-        $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
-
-        $response->assertStatus(201)->assertJson([
-            'accident' => [
-                'id' => 2,
-                'createdBy' => 2,
-                'parentId' => 1,
-                'patientId' => 2,
-                'accidentTypeId' => 1,
-                'accidentStatusId' => 1,
-                'assistantId' => '1',
-                'caseableId' => 3,
-                'cityId' => 1,
-                'formReportId' => 1,
-                'caseableType' => 'medcenter24\\mcCore\\App\\DoctorAccident',
-                'assistantRefNum' => 'ref---',
-                'title' => 'ccc',
-                'address' => 'any',
-                'contacts' => 'anything',
-                'symptoms' => 'aaa',
-                // will be updated on the creation and updating of the record and can't be manipulated
-                // 'createdAt' => '2018-11-20 14:39:50',
-                // 'updatedAt' => '2018-11-20 14:39:50',
-                'deletedAt' => null,
-                'closedAt' => null,
-                'handlingTime' => '2018-11-16 02:46:00',
-                'assistantPaymentId' => 1,
-                'incomePaymentId' => 2,
-                'caseablePaymentId' => 3,
-            ]
+            'id' => 2,
+            'assistantId' => 1,
+            'repeated' => 1,
+            'refNum' => 'test',
+            'assistantRefNum' => 'ref---',
+            'symptoms' => 'aaa',
+            'handlingTime' => '2018-11-16 02:46:00',
+            'patientName' => $patient->name,
+            'checkpoints' => '',
+            'statusTitle' => 'new',
+            'caseType' => 'doctor',
         ]);
     }
 }

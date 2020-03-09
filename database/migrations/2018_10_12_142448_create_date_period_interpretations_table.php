@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,7 +37,7 @@ class CreateDatePeriodInterpretationsTable extends Migration
             $table->time('from')->index(); // utc date (time())
             $table->time('to')->index(); // utc date (time())
             $table->timestamps();
-
+            $table->softDeletes();
         });
     }
 

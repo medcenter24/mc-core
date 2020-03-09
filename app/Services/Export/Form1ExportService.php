@@ -19,9 +19,9 @@
 namespace medcenter24\mcCore\App\Services\Export;
 
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use Maatwebsite\Excel\Facades\Excel;
 
 /**

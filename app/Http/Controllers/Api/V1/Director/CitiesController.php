@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,16 +17,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CityRequest;
 use medcenter24\mcCore\App\Transformers\CityTransformer;
 use League\Fractal\TransformerAbstract;
 
-class CitiesController extends ApiController
+class CitiesController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
@@ -60,14 +64,14 @@ class CitiesController extends ApiController
         $city->region_id = $request->json('regionId', 0);
         $city->save();
 
-        \Log::info('City updated', [$city, $this->user()]);
+        Log::info('City updated', [$city, $this->user()]);
         return $this->response->item($city, new CityTransformer());
     }
 
     public function destroy($id): Response
     {
         $city = City::findOrFail($id);
-        \Log::info('City deleted', [$city, $this->user()]);
+        Log::info('City deleted', [$city, $this->user()]);
         $city->delete();
         return $this->response->noContent();
     }

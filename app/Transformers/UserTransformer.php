@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,35 +17,50 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
+use medcenter24\mcCore\App\Services\Entity\UserService;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\User;
 
 class UserTransformer extends AbstractTransformer
 {
-
     /**
-     * @param User $user
+     * @param Model $model
      * @return array
      * @throws InconsistentDataException
      */
-    public function transform (User $user): array
+    public function transform (Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['thumb200'] = $this->hasMedia($model) ?
+            MediaHelper::b64($model, LogoService::FOLDER, UserService::THUMB_200)
+            : '';
+        $fields['thumb45'] = $this->hasMedia($model)
+            ? MediaHelper::b64($model, LogoService::FOLDER, UserService::THUMB_45)
+            : '';
+        return $fields;
+    }
+
+    private function hasMedia(Model $model): bool
+    {
+        return $model instanceof User && $model->hasMedia(LogoService::FOLDER);
+    }
+
+    protected function getMap(): array
     {
         return [
-            'id' => $user->id,
-            'name' => $user->name ?: $user->email,
-            'email' => $user->email,
-            'phone' => $user->phone,
-            'lang' => $user->lang,
-            'thumb200' => $user->hasMedia(LogoService::FOLDER)
-                ? MediaHelper::b64($user, LogoService::FOLDER, User::THUMB_200) : '',
-            'thumb45' => $user->hasMedia(LogoService::FOLDER)
-                ? MediaHelper::b64($user, LogoService::FOLDER, User::THUMB_45) : '',
-            'timezone' => $user->timezone,
+            UserService::FIELD_ID,
+            UserService::FIELD_NAME,
+            UserService::FIELD_EMAIL,
+            UserService::FIELD_PHONE,
+            UserService::FIELD_LANG,
+            UserService::FIELD_TIMEZONE,
         ];
     }
 }

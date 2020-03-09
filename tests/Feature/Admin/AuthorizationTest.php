@@ -19,7 +19,7 @@
 namespace medcenter24\mcCore\Tests\Feature\Admin;
 
 
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestResponse;
 use medcenter24\mcCore\Tests\TestCase;

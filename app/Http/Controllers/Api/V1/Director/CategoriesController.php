@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,16 +17,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\DiagnosticCategory;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Entity\DiagnosticCategory;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticCategoryUpdate;
 use medcenter24\mcCore\App\Transformers\CategoryTransformer;
 use League\Fractal\TransformerAbstract;
 
-class CategoriesController extends ApiController
+class CategoriesController extends ModelApiController
 {
 
     protected function getDataTransformer(): TransformerAbstract

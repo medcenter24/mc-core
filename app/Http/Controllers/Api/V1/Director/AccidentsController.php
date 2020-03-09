@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,20 +17,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\StoreAccident;
 use medcenter24\mcCore\App\Http\Requests\UpdateAccident;
-use medcenter24\mcCore\App\Services\AccidentService;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
 use medcenter24\mcCore\App\Transformers\AccidentTransformer;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
-class AccidentsController extends ApiController
+// @todo is that used by anyone?
+class AccidentsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {

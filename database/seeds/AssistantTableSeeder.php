@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\Entity\Assistant;
 use Illuminate\Database\Seeder;
 
 class AssistantTableSeeder extends Seeder

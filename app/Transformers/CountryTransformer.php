@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,18 +16,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Country;
+use medcenter24\mcCore\App\Services\Entity\CountryService;
 
 class CountryTransformer extends AbstractTransformer
 {
-    public function transform(Country $country): array
+    protected function getMap(): array
     {
         return [
-            'id' => (int)$country->id,
-            'title' => $country->title,
+            CountryService::FIELD_ID,
+            CountryService::FIELD_TITLE,
         ];
     }
 }

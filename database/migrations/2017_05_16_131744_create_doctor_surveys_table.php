@@ -29,12 +29,12 @@ class CreateDoctorSurveysTable extends Migration
      */
     public function up()
     {
-        Schema::create('doctor_surveys', function (Blueprint $table) {
+        Schema::create('surveys', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('created_by')->default(0)->index();
             $table->string('title')->default('')->index();
             $table->text('description');
-            $table->unsignedBigInteger('disease_id')->default(0)->index('idx_doc_surveys_disease_id');
+            $table->unsignedBigInteger('disease_id')->default(0)->index('idx_surveys_disease_id');
             $table->string('status')->default('active')->index();
             $table->timestamps();
             $table->softDeletes();
@@ -48,6 +48,6 @@ class CreateDoctorSurveysTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('doctor_surveys');
+        Schema::dropIfExists('surveys');
     }
 }

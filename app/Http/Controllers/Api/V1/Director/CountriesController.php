@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,16 +16,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Country;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Entity\Country;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CountryRequest;
 use medcenter24\mcCore\App\Transformers\CountryTransformer;
 use League\Fractal\TransformerAbstract;
 
-class CountriesController extends ApiController
+class CountriesController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
@@ -57,14 +61,14 @@ class CountriesController extends ApiController
         $country->title = $request->json('title', '');
         $country->save();
 
-        \Log::info('Country updated', [$country, $this->user()]);
+        Log::info('Country updated', [$country, $this->user()]);
         return $this->response->item($country, new CountryTransformer());
     }
 
     public function destroy($id): Response
     {
         $country = Country::findOrFail($id);
-        \Log::info('Country deleted', [$country, $this->user()]);
+        Log::info('Country deleted', [$country, $this->user()]);
         $country->delete();
         return $this->response->noContent();
     }

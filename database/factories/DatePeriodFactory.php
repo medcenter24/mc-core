@@ -17,18 +17,19 @@
  */
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 
-$factory->define(medcenter24\mcCore\App\DatePeriod::class, function (Faker $faker) {
+$factory->define(\medcenter24\mcCore\App\Entity\DatePeriod::class, function (Faker $faker) {
+        $periodService = new DatePeriodService();
+        $dows = $periodService->getDow();
+        $from = trim($faker->randomElement($dows) . ' ' . $faker->time('H:i'));
+        $to = trim($faker->randomElement($dows) . ' ' . $faker->time('H:i'));
 
-    $periodService = new \medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService();
-    $dows = $periodService->getDow();
-    $from = trim($faker->randomElement($dows) . ' ' . $faker->time('H:i'));
-    $to = trim($faker->randomElement($dows) . ' ' . $faker->time('H:i'));
-    // $dows[] = ''; // without
-    return [
-        'title' => $from . ' : ' . $to,
-        'from' => $from,
-        'to' => $to,
-    ];
-});
+        // $dows[] = ''; // without
+        return [
+            'title' => $from . ' : ' . $to,
+            'from' => $from,
+            'to' => $to,
+        ];
+    });
 

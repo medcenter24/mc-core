@@ -21,11 +21,11 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
-use medcenter24\mcCore\App\Assistant;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\DatePeriod;
-use medcenter24\mcCore\App\Doctor;
-use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Entity\Assistant;
+use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Entity\DatePeriod;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\Service;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
@@ -49,7 +49,7 @@ class FinancesTest extends TestCase
         $assistants = factory(Assistant::class, 2)->create();
         $cities = factory(City::class, 2)->create();
         $doctors = factory(Doctor::class, 2)->create();
-        $services = factory(DoctorService::class, 2)->create();
+        $services = factory(Service::class, 2)->create();
         $datePeriods = factory(DatePeriod::class, 2)->create();
 
         $this->financeData = [
@@ -67,7 +67,7 @@ class FinancesTest extends TestCase
         ];
     }
 
-    public function testStoreRule()
+    public function testStoreRule(): void
     {
         $response = $this->json('POST', '/api/director/finance', $this->financeData, $this->headers($this->getUser()));
         $response->assertJson([
@@ -77,7 +77,7 @@ class FinancesTest extends TestCase
         $response->assertStatus(201);
     }
 
-    public function testUpdateRule()
+    public function testUpdateRule(): void
     {
         $response = $this->json('POST', '/api/director/finance', $this->financeData, $this->headers($this->getUser()));
         $response->assertStatus(201);

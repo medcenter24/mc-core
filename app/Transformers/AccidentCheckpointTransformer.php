@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,19 +17,20 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\AccidentCheckpoint;
+use medcenter24\mcCore\App\Services\Entity\AccidentCheckpointService;
 
 class AccidentCheckpointTransformer extends AbstractTransformer
 {
-    public function transform(AccidentCheckpoint $accidentCheckpoint): array
+    public function getMap(): array
     {
         return [
-            'id' => $accidentCheckpoint->id,
-            'title' => $accidentCheckpoint->title,
-            'description' => $accidentCheckpoint->description
+            AccidentCheckpointService::FIELD_ID,
+            AccidentCheckpointService::FIELD_TITLE,
+            AccidentCheckpointService::FIELD_DESCRIPTION,
         ];
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,31 +17,34 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
 use Illuminate\Support\Collection;
+use League\Fractal\TransformerAbstract;
+use stdClass;
 
 /**
  * Used for the output into the data table
  * Class CasesTransformer
  * @package medcenter24\mcCore\App\Transformers
  */
-class CaseFinanceTransformer extends AbstractTransformer
+class CaseFinanceTransformer extends TransformerAbstract
 {
     /**
-     * @param \stdClass $obj
+     * @param stdClass $obj
      * @return array
      */
-    public function transform (\stdClass $obj) : array
+    public function transform (stdClass $obj) : array
     {
         $result = [];
-        $obj->collection->each(function (Collection $item) use (&$result) {
+        $obj->collection->each(static function (Collection $item) use (&$result) {
             $payment = $item->get('payment');
             $result[] = [
                 'type' => $item->get('type'),
                 'loading' => false,
-                'payment' => $payment ? (new PaymentTransformer())->transform($payment) : false,
+                'payment' => $payment ? (new PaymentTransformer())->transform($payment) : null,
                 'currency' => $item->get('currency') ? (new FinanceCurrencyTransformer())->transform($item->get('currency')) : null,
                 'formula' => $item->get('formulaView'),
                 'calculatedValue' => $item->get('calculatedValue'),

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,22 +17,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Hospital;
+use medcenter24\mcCore\App\Services\Entity\HospitalService;
 
 class HospitalTransformer extends AbstractTransformer
 {
-    public function transform(Hospital $hospital): array
+    protected function getMap(): array
     {
         return [
-            'id' => $hospital->id,
-            'title' => $hospital->title,
-            'description' => $hospital->description,
-            'refKey' => $hospital->ref_key,
-            'phones' => $hospital->phones,
-            'address' => $hospital->address,
+            HospitalService::FIELD_ID,
+            HospitalService::FIELD_TITLE,
+            HospitalService::FIELD_DESCRIPTION,
+            HospitalService::FIELD_REF_KEY,
+            HospitalService::FIELD_PHONES,
+            HospitalService::FIELD_ADDRESS,
         ];
     }
 }

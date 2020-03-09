@@ -29,9 +29,9 @@ class CreateDoctorServiceablesTable extends Migration
      */
     public function up()
     {
-        Schema::create('doctor_serviceables', function (Blueprint $table) {
-            $table->unsignedInteger('doctor_service_id')->index();
-            $table->morphs('doctor_serviceable', 'ids_serviceable');
+        Schema::create('serviceables', function (Blueprint $table) {
+            $table->unsignedInteger('service_id')->index();
+            $table->morphs('serviceable', 'ids_serviceable');
         });
     }
 
@@ -42,6 +42,6 @@ class CreateDoctorServiceablesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('doctor_serviceables');
+        Schema::dropIfExists('serviceables');
     }
 }

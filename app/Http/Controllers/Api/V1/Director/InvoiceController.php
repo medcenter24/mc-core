@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,24 +17,25 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-
-use medcenter24\mcCore\App\FinanceCurrency;
-use medcenter24\mcCore\App\Form;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Entity\FinanceCurrency;
+use medcenter24\mcCore\App\Entity\Form;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\InvoiceRequest;
-use medcenter24\mcCore\App\Invoice;
-use medcenter24\mcCore\App\Payment;
-use medcenter24\mcCore\App\Services\CurrencyService;
+use medcenter24\mcCore\App\Entity\Invoice;
+use medcenter24\mcCore\App\Entity\Payment;
+use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Transformers\FormTransformer;
 use medcenter24\mcCore\App\Transformers\InvoiceTransformer;
 use medcenter24\mcCore\App\Transformers\UploadedFileTransformer;
-use medcenter24\mcCore\App\Upload;
+use medcenter24\mcCore\App\Entity\Upload;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
-class InvoiceController extends ApiController
+class InvoiceController extends ModelApiController
 {
 
     /**
@@ -53,7 +55,7 @@ class InvoiceController extends ApiController
      * @param $id
      * @param InvoiceRequest $request
      * @param CurrencyService $currencyService
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function update($id, InvoiceRequest $request, CurrencyService $currencyService): Response
     {
@@ -126,7 +128,7 @@ class InvoiceController extends ApiController
     /**
      * Getting form of the invoice
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function form($id): Response
     {
@@ -142,7 +144,7 @@ class InvoiceController extends ApiController
     /**
      * Getting invoices file
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function file($id): Response
     {

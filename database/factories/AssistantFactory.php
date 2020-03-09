@@ -18,8 +18,9 @@
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Entity\Assistant;
 
-$factory->define(medcenter24\mcCore\App\Assistant::class, function (Faker $faker) {
+$factory->define(Assistant::class, function (Faker $faker) {
     $refKey = $faker->toUpper(Str::random(3));
     return [
         'title' => 'Assistant ' . $refKey,

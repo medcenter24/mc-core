@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,30 +17,50 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\Tests\Feature\Api;
 
-
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
+use medcenter24\mcCore\App\Services\Entity\UserService;
+use medcenter24\mcCore\App\Entity\User;
 
 trait LoggedUser
 {
+    use ServiceLocatorTrait;
+
     /**
      * @var User
      */
     private $user;
 
-    public function getUser()
+    public function getUser(array $roles = []): User
     {
-        if (!$this->user) {
-            // allow all roles for the test (maybe in the future I'll mock it for work with roles)
-            // but it could be another unit test for testing only role access
-            \Roles::shouldReceive('hasRole')
-                ->andReturnUsing(function () {
-                    return true;
-                });
-            /** @var User $user */
-            $this->user = factory(User::class)->create(['password' => bcrypt('foo')]);
+        $user = factory(User::class)->create([
+            'name' => 'PHPUnit',
+            'password' => bcrypt('foo'),
+        ]);
+
+        if (!count($roles)) {
+            $roles = [
+                RoleService::DIRECTOR_ROLE,
+                RoleService::DOCTOR_ROLE,
+                RoleService::LOGIN_ROLE,
+                RoleService::ADMIN_ROLE,
+            ];
         }
-        return $this->user;
+
+        $roleModels = [];
+        /** @var RoleService $roleService */
+        $roleService = $this->getServiceLocator()->get(RoleService::class);
+        foreach ($roles as $role) {
+            $roleModels[] = $roleService->firstOrCreate([
+                RoleService::FIELD_TITLE => $role,
+            ])->getAttribute(RoleService::FIELD_ID);
+        }
+        $user->roles()->attach($roleModels);
+
+        return $user;
     }
 }

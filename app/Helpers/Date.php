@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Helpers;
 use DateTime;
 use Illuminate\Support\Carbon;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-use medcenter24\mcCore\App\Services\UserService;
+use medcenter24\mcCore\App\Services\Entity\UserService;
 
 class Date
 {

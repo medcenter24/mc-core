@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,37 +17,43 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\Helpers\Date;
-use medcenter24\mcCore\App\Services\UserService;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 
 class DoctorCaseTransformer extends AbstractTransformer
 {
-
-    /**
-     * @param DoctorAccident $doctorAccident
-     * @return array
-     */
-    public function transform(DoctorAccident $doctorAccident): array
+    protected function getMap(): array
     {
         return [
-            'id' => $doctorAccident->id,
-            'doctorId' => $doctorAccident->doctor_id,
-            'city_id' => $doctorAccident->accident->city_id,
-            // api uses only system format if we need to convert it - do it at the frontend
-            'createdAt' => Date::sysDate(
-                    $doctorAccident->created_at,
-                    $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
-            'visitTime' => Date::sysDate(
-                $doctorAccident->getAttribute('visit_time'),
-                $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
-            'recommendation' => $doctorAccident->recommendation,
-            'investigation' => $doctorAccident->investigation,
+            DoctorAccidentService::FIELD_ID,
+            'doctorId' => DoctorAccidentService::FIELD_DOCTOR_ID,
+            'createdAt' => DoctorAccidentService::FIELD_CREATED_AT,
+            'visitTime' => DoctorAccidentService::FIELD_VISIT_TIME,
+            DoctorAccidentService::FIELD_RECOMMENDATION,
+            DoctorAccidentService::FIELD_INVESTIGATION,
         ];
+    }
+
+    protected function getMappedTypes(): array
+    {
+        return [
+            DoctorAccidentService::FIELD_ID => self::VAR_INT,
+            DoctorAccidentService::FIELD_DOCTOR_ID => self::VAR_INT,
+            DoctorAccidentService::FIELD_CREATED_AT => self::VAR_DATE,
+            DoctorAccidentService::FIELD_VISIT_TIME => self::VAR_DATE,
+        ];
+    }
+
+    public function transform(Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['cityId'] = (int) ($model->getAttribute('accident')
+            ? $model->getAttribute('accident')->getAttribute('city_id')
+            : 0);
+        return $fields;
     }
 }

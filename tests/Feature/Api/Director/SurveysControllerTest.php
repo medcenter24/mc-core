@@ -21,12 +21,12 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use medcenter24\mcCore\App\DoctorSurvey;
+use medcenter24\mcCore\App\Services\Entity\SurveyService;
+use medcenter24\mcCore\Tests\Feature\Api\AbstractApiModelTest;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
 
-class SurveysControllerTest extends TestCase
+class SurveysControllerTest extends AbstractApiModelTest
 {
     use DatabaseMigrations;
     use JwtHeaders;
@@ -34,46 +34,266 @@ class SurveysControllerTest extends TestCase
 
     private const URI = 'api/director/surveys';
 
-    public function testStore(): void
+    /**
+     * @inheritDoc
+     */
+    protected function getUri(): string
     {
-        $description = 'description';
-        $title = 'PHPUnit Survey';
-        $response = $this->json('POST', self::URI, [
-            'title' => $title,
-            'description' => $description,
-            'diseaseId' => 1,
-        ], $this->headers($this->getUser()));
-        $response->assertStatus(201);
-        $response->assertJson([
-            'id' => 1,
-            'title' => $title,
-            'description' => $description,
-            'diseaseId' => 1,
-            'type' => 'director',
-            'status' => 'active',
-            'diseaseTitle' => '',
-        ]);
+        return self::URI;
     }
 
-    public function testUpdate(): void
+    /**
+     * @inheritDoc
+     */
+    protected function getModelServiceClass(): string
     {
-        /** @var DoctorSurvey $survey */
-        $survey = DoctorSurvey::create([
-            'title' => 'PHPUnitTest Survey',
-            'description' => 'description',
-        ]);
-        $response = $this->put(self::URI . '/' . $survey->getAttribute('id'), [
-            'title' => 'PHPUnitTest Changed',
-        ], $this->headers($this->getUser()));
-        $response->assertStatus(202);
-        $response->assertJson([
-            'id' => 1,
-            'title' => 'PHPUnitTest Changed',
-            'description' => 'description',
-            'diseaseId' => 0,
-            'type' => 'system',
-            'status' => 'active',
-            'diseaseTitle' => '',
-        ]);
+        return SurveyService::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function failedDataProvider(): array
+    {
+        return [
+            [
+                'data' => [],
+                'expectedResponse' => [
+                    'message' => '422 Unprocessable Entity',
+                    'errors' => [
+                        'title' => ['The title field is required.']
+                    ],
+                ],
+            ],
+            [
+                'data' => [SurveyService::FIELD_TITLE => ''],
+                'expectedResponse' => [
+                    'message' => '422 Unprocessable Entity',
+                    'errors' =>
+                        [
+                            'title' =>
+                                [
+                                    0 => 'The title field is required.',
+                                ],
+                        ],
+                    'status_code' => 422,
+                ],
+            ],
+            [
+                'data' => [SurveyService::FIELD_TITLE => '1'],
+                'expectedResponse' => [
+                    'message' => '422 Unprocessable Entity',
+                    'errors' =>
+                        [
+                            'title' =>
+                                [
+                                    0 => 'The title must be at least 3 characters.',
+                                ],
+                        ],
+                    'status_code' => 422,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createDataProvider(): array
+    {
+        return [
+            [
+                'data' => ['title' => '123'],
+                'expectedResponse' => [
+                    'id' => 1,
+                    'title' => '123',
+                    'description' => '',
+                    'diseaseTitle' => 0,
+                    'type' => 'director',
+                    'status' => 'active',
+                ],
+            ],
+            [
+                'data' => [
+                    'title' => 'Php Unit test',
+                    'description' => 'Desc',
+                    'diseaseId' => 2,
+                    'status' => 'disabled'
+                ],
+                'expectedResponse' => [
+                    'id' => 1,
+                    'title' => 'Php Unit test',
+                    'description' => 'Desc',
+                    'diseaseId' => 2,
+                    'type' => 'director',
+                    'status' => 'disabled',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateDataProvider(): array
+    {
+        return [
+            [
+                'data' => ['title' => '123'],
+                'updateData' => [
+                    'id' => 1,
+                    'title' => 'Php Unit test',
+                    'description' => 'Desc',
+                    'diseaseId' => 2,
+                    'type' => 'doc',
+                    'status' => 'disabled'
+                ],
+                'expectedResponse' => [
+                    'id' => 1,
+                    'title' => 'Php Unit test',
+                    'description' => 'Desc',
+                    'diseaseId' => 2,
+                    'type' => 'system',
+                    'status' => 'disabled',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function searchDataProvider(): array
+    {
+        return [
+            [
+                'modelsData' => [
+                    ['title' => 'Text to be searched'],
+                    ['title' => 'Php Unit test'],
+                    ['title' => 'another text'],
+                ],
+                // filters
+                [
+                    'filters' => [],
+                ],
+                // response
+                'expectedResponse' => [
+                    'data' => [
+                        [
+                            'id' => 1,
+                            'title' => 'Text to be searched',
+                            'description' => '',
+                            'diseaseId' => 0,
+                            'status' => 'active',
+                            'type' => 'system',
+                        ],
+                        [
+                            'id' => 2,
+                            'title' => 'Php Unit test',
+                            'description' => '',
+                            'diseaseId' => 0,
+                            'status' => 'active',
+                            'type' => 'system',
+                        ],
+                        [
+                            'id' => 3,
+                            'title' => 'another text',
+                            'description' => '',
+                            'diseaseId' => 0,
+                            'status' => 'active',
+                            'type' => 'system',
+                        ],
+                    ],
+                    'meta' => [
+                        'pagination' => [
+                            'total' => 3,
+                            'count' => 3,
+                            'per_page' => 15,
+                            'current_page' => 1,
+                            'total_pages' => 1,
+                            'links' => [
+                            ],
+                        ],
+                    ],
+
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function showDataProvider(): array
+    {
+        return [
+            [
+                'data' => [SurveyService::FIELD_TITLE => '123'],
+                'expectedResponse' => [
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                        'description' => '',
+                        'diseaseId' => 0,
+                        'type' => 'system',
+                        'status' => 'active',
+                    ]
+                ],
+            ],
+            [
+                'data' => [
+                    SurveyService::FIELD_TITLE => 'Php Unit test',
+                    SurveyService::FIELD_DESCRIPTION => 'Desc',
+                    SurveyService::FIELD_DISEASE_ID => 2,
+                    SurveyService::FIELD_STATUS => 'disabled'
+                ],
+                'expectedResponse' => [
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'description' => 'Desc',
+                        'diseaseId' => 2,
+                        'type' => 'system',
+                        'status' => 'disabled',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteDataProvider(): array
+    {
+        return [
+            [
+                'data' => ['title' => '123'],
+                'expectedResponse' => [
+                    'id' => 1,
+                    'title' => '123',
+                    'description' => '',
+                    'diseaseId' => 0,
+                    'type' => 'system',
+                    'status' => 'active',
+                ],
+            ],
+            [
+                'data' => [
+                    'title' => 'Php Unit test',
+                    'description' => 'Desc',
+                    'diseaseId' => 2,
+                    'status' => 'disabled'
+                ],
+                'expectedResponse' => [
+                    'id' => 1,
+                    'title' => 'Php Unit test',
+                    'description' => 'Desc',
+                    'diseaseId' => 2,
+                    'type' => 'system',
+                    'status' => 'disabled',
+                ],
+            ],
+        ];
     }
 }

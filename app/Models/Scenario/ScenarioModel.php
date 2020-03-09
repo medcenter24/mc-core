@@ -19,9 +19,9 @@
 
 namespace medcenter24\mcCore\App\Models\Scenario;
 
-use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
 use medcenter24\mcCore\App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;
 

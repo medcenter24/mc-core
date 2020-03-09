@@ -17,33 +17,54 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-use medcenter24\mcCore\App\Diagnostic;
-use medcenter24\mcCore\App\Services\DoctorServiceService;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Entity\DiagnosticService;
+use medcenter24\mcCore\App\Services\Entity\DoctorService;
 
 class DiagnosticTransformer extends AbstractTransformer
 {
+
     /**
-     * @param Diagnostic $diagnostic
-     * @return array
+     * @inheritDoc
      */
-    public function transform(Diagnostic $diagnostic): array
+    protected function getMap(): array
     {
-        $createdBy = $diagnostic->getAttribute('created_by');
-        $type = $createdBy ? 'director' : 'system';
         return [
-            'id' => $diagnostic->id,
-            'title' => $diagnostic->title,
-            'description' => $diagnostic->description,
-            'diagnosticCategoryId' => $diagnostic->diagnostic_category_id,
-            'diseaseCode' => $diagnostic->disease_code,
-            'type' => $this->getDoctorService() ? 'doctor' : $type,
-            'status' => $diagnostic->getAttribute('status'),
+            DiagnosticService::FIELD_ID,
+            DiagnosticService::FIELD_TITLE,
+            DiagnosticService::FIELD_DESCRIPTION,
+            'diagnosticCategoryId' => DiagnosticService::FIELD_DIAGNOSTIC_CATEGORY_ID,
+            'diseaseId' => DiagnosticService::FIELD_DISEASE_ID,
+            DiagnosticService::FIELD_STATUS,
         ];
     }
 
-    private function getDoctorService(): DoctorServiceService {
-        return $this->getServiceLocator()->get(DoctorServiceService::class);
+    protected function getMappedTypes(): array
+    {
+        return [
+            DiagnosticService::FIELD_ID => AbstractTransformer::VAR_INT,
+            DiagnosticService::FIELD_DIAGNOSTIC_CATEGORY_ID => AccidentTransformer::VAR_INT,
+            DiagnosticService::FIELD_DISEASE_ID => AbstractTransformer::VAR_INT,
+        ];
+    }
+
+    public function transform(Model $model): array {
+        $fields = parent::transform($model);
+
+        $createdBy = (int) $model->getAttribute(DiagnosticService::FIELD_CREATED_BY);
+        $type = $createdBy ? 'director' : 'system';
+        $fields['type'] = $this->getDoctorService()->isDoctor($createdBy) ? 'doctor' : $type;
+        return $fields;
+    }
+
+    /**
+     * @return DoctorService
+     */
+    private function getDoctorService(): DoctorService {
+        return $this->getServiceLocator()->get(DoctorService::class);
     }
 }

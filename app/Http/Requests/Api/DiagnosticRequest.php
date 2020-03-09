@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,12 +17,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-
-use Auth;
-use medcenter24\mcCore\App\Services\RoleService;
-use Roles;
+use Illuminate\Support\Facades\Auth;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 class DiagnosticRequest extends JsonRequest
 {
@@ -34,8 +35,8 @@ class DiagnosticRequest extends JsonRequest
     public function authorize(): bool
     {
         return Auth::check()
-            && (Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)
-                || Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE));
+            && ($this->getServiceLocator()->get(RoleService::class)->hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)
+                || $this->getServiceLocator()->get(RoleService::class)->hasRole(auth()->user(), RoleService::DOCTOR_ROLE));
     }
 
     /**

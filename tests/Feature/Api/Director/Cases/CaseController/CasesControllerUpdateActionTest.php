@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,26 +17,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
-
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\AccidentStatus;
-use medcenter24\mcCore\App\AccidentType;
-use medcenter24\mcCore\App\Assistant;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\FormReport;
-use medcenter24\mcCore\App\HospitalAccident;
-use medcenter24\mcCore\App\Patient;
-use medcenter24\mcCore\App\Payment;
-use medcenter24\mcCore\App\Services\AccidentService;
-use medcenter24\mcCore\App\Services\AccidentTypeService;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-use medcenter24\mcCore\App\Services\UserService;
-use medcenter24\mcCore\App\Upload;
-use medcenter24\mcCore\App\User;
-use Carbon\Carbon;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\AccidentStatus;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
 use medcenter24\mcCore\Tests\TestCase;
@@ -46,71 +35,26 @@ class CasesControllerUpdateActionTest extends TestCase
     use DatabaseMigrations;
     use JwtHeaders;
     use LoggedUser;
-    use ServiceLocatorTrait;
 
-    public function testUpdateWithoutData()
+    public function testUpdateWithoutData(): void
     {
-        $accident = factory(Accident::class)->create([
-            'accident_status_id' => factory(AccidentStatus::class)->create([
-                'title' => 'anything'
-            ])->id,
-        ]);
+        $accident = $this->getServiceLocator()->get(CaseAccidentService::class)->create();
+
+        $this->doNotPrintErrResponse([422]);
         $response = $this->put('/api/director/cases/'.$accident->id, [], $this->headers($this->getUser()));
-        $response->assertStatus(400)->assertJson([
-            'message' => 'Accident data should be provided in the request data',
-        ]);
+        $this->doNotPrintErrResponse();
+        $response->assertStatus(422)
+            ->assertJson([
+                'errors' => [
+                    ['Accident data should be provided in the request data'],
+                ],
+            ]);
     }
 
     /**
      * Creating a case but with the data for accident only (without dependencies and relations)
      */
-    public function testUpdateWithAccidentDataEmptyAllData()
-    {
-        $accident = factory(Accident::class)->create([
-            'accident_status_id' => factory(AccidentStatus::class)->create([
-                'title' => 'anything'
-            ])->id,
-        ]);
-        $data = [
-            'accident' => [
-                'accidentStatusId' => '',
-                'accidentTypeId' => '',
-                'address' => '',
-                'assistantId' => '',
-                'assistantRefNum' => '',
-                'caseableId' => '',
-                'caseableType' => '',
-                'cityId' => '',
-                'closedAt' => '',
-                'contacts' => '',
-                'createdAt' => '',
-                'createdBy' => '',
-                'deletedAt' => '',
-                'formReportId' => '',
-                'handlingTime' => '',
-                'id' => '',
-                'parentId' => '',
-                'patientId' => '',
-                'refNum' => '',
-                'symptoms' => '',
-                'title' => '',
-                'updatedAt' => '',
-                'assistantPaymentId' => NULL,
-                'incomePaymentId' => NULL,
-                'caseablePaymentId' => NULL,
-            ]
-        ];
-        $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
-
-        $response->assertStatus(400)->assertJson([
-            'message' => 'Accident data should be provided in the request data',
-        ]);
-    }
-
-    /**
-     * Creating a case but with the data for accident only (without dependencies and relations)
-     */
-    public function testUpdateWithAnotherAccident()
+    public function testUpdateWithAnotherAccident(): void
     {
         $accident = factory(Accident::class)->create([
             'accident_status_id' => factory(AccidentStatus::class)->create([
@@ -127,173 +71,22 @@ class CasesControllerUpdateActionTest extends TestCase
                 'id' => $accident2->id,
             ]
         ];
+
+        $this->doNotPrintErrResponse([422]);
         $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
+        $this->doNotPrintErrResponse();
 
-        $response->assertStatus(400)->assertJson([
-            'message' => 'Requested accident did not match to updated one',
+        $response->assertStatus(422)->assertJson([
+            'errors' => [
+                ['There are 2 different accidents in the request'],
+            ],
         ]);
-    }
-
-    public function testUpdateWithCorrectAccidentButEmptyData()
-    {
-        $accident = factory(Accident::class)->create([
-            'accident_status_id' => factory(AccidentStatus::class)->create([
-                'title' => 'anything'
-            ])->id,
-        ]);
-        $data = [
-            'accident' => [
-                'accidentStatusId' => '',
-                'accidentTypeId' => '',
-                'address' => '',
-                'assistantId' => '',
-                'assistantRefNum' => '',
-                'caseableId' => '',
-                'caseableType' => '',
-                'cityId' => '',
-                'closedAt' => '',
-                'contacts' => '',
-                'createdAt' => '',
-                'createdBy' => '',
-                'deletedAt' => '',
-                'formReportId' => '',
-                'handlingTime' => '',
-                'id' => $accident->id,
-                'parentId' => '',
-                'patientId' => '',
-                'refNum' => '',
-                'symptoms' => '',
-                'title' => '',
-                'updatedAt' => '',
-                'assistantPaymentId' => NULL,
-                'incomePaymentId' => NULL,
-                'caseablePaymentId' => NULL,
-            ]
-        ];
-        $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
-
-        $response->assertStatus(200)->assertJson([
-            'data' => [
-                'accident' => [
-                    'accidentStatusId' => '',
-                    'accidentTypeId' => '',
-                    'address' => '',
-                    'assistantId' => '',
-                    'assistantRefNum' => '',
-                    'caseableId' => (string) $accident->caseable_id,
-                    'caseableType' => (string) $accident->caseable_type,
-                    'cityId' => '',
-                    'closedAt' => $accident->closed_at ?: null,
-                    'contacts' => '',
-                    'createdAt' => $accident->created_at->setTimezone($this->getServiceLocator()
-                        ->get(UserService::class)->getTimezone())
-                        ->format(config('date.systemFormat')),
-                    'createdBy' => (string) $accident->created_by,
-                    'deletedAt' => $accident->deleted_at ? $accident->deleted_at->setTimezone($this->getServiceLocator()
-                        ->get(UserService::class)->getTimezone())
-                        ->format(config('date.systemFormat')) : null,
-                    'formReportId' => '',
-                    'handlingTime' => null,
-                    'id' => $accident->id,
-                    'parentId' => '',
-                    'patientId' => '',
-                    'refNum' => '',
-                    'symptoms' => '',
-                    'title' => '',
-                    // 'updatedAt' => $accident->updated_at, // needs to be updated by updater
-                    'assistantPaymentId' => ($accident->assistant_payment_id ? : 0) . '',
-                    'incomePaymentId' => ($accident->income_payment_id ?: 0) . '',
-                    'caseablePaymentId' => ($accident->caseable_payment_id ?: 0) . '',
-                ]
-            ]
-        ]);
-    }
-
-    public function testUpdateWithCorrectAccident(): void
-    {
-        $caseable = factory(DoctorAccident::class)->create();
-        $accident = factory(Accident::class)->create([
-            'created_by' => $createdBy = '' . factory(User::class)->create()->id,
-            'accident_type_id' => $accidentType = factory(AccidentType::class)->create([
-                'title' => AccidentTypeService::ALLOWED_TYPES[1],
-            ])->id,
-            'caseable_id' => $caseable->id,
-            'caseable_type' => get_class($caseable),
-            'assistant_guarantee_id' => factory(Upload::class)->create()->id,
-        ]);
-
-        $caseable2 = factory(HospitalAccident::class)->create();
-
-        $data = [
-            'accident' => [
-                'accidentTypeId' => $accidentType = factory(AccidentType::class)->create([
-                    'title' => AccidentTypeService::ALLOWED_TYPES[0]
-                ])->id,
-                'address' => $address = 'address string',
-                'assistantId' => $assistant = factory(Assistant::class)->create()->id,
-                'assistantRefNum' => $assistantRefNum = 'assistant-ref-num',
-                'caseableId' => $caseable2->id,
-                'caseableType' => get_class($caseable2),
-                'cityId' => $city = factory(City::class)->create()->id,
-                'contacts' => $contacts = 'contacts',
-                // 'createdAt' => '2016-02-22 22:55:55',
-                'createdBy' => factory(User::class)->create()->id,
-                'deletedAt' => date('Y-m-d H:i:s'),
-                'formReportId' => $formReport = factory(FormReport::class)->create()->id,
-                'handlingTime' => '2016-02-22 22:55:55',
-                'id' => $accident->id,
-                'parentId' => $parent = factory(Accident::class)->create()->id,
-                'patientId' => $patient = factory(Patient::class)->create()->id,
-                'refNum' => $accidentRefNum = 'ref num',
-                'symptoms' => $accidentSymptoms = 'symptoms',
-                'title' => $title = 'title',
-                // 'updatedAt' => '2016-02-22 22:55:55',
-                'assistantPaymentId' => factory(Payment::class)->create()->id,
-                'incomePaymentId' => factory(Payment::class)->create()->id,
-                'caseablePaymentId' => factory(Payment::class)->create()->id,
-                'assistant_guarantee_id' => $assistantGuaranteeId = factory(Upload::class)->create()->id,
-            ]
-        ];
-        $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
-
-        $response->assertStatus(200)->assertJson([
-            'data' => [
-                'accident' => [
-                    'accidentTypeId' => $accidentType,
-                    'address' => $address,
-                    'assistantId' => $assistant,
-                    'assistantRefNum' => $assistantRefNum,
-                    'caseableId' => $caseable->id . '',
-                    'caseableType' => get_class($caseable),
-                    'cityId' => $city,
-                    'contacts' => $contacts,
-                    // 'createdAt' => $accident->created_at->format('Y-m-d H:i:s'),
-                    'createdBy' => $createdBy,
-                    'deletedAt' => '',
-                    'formReportId' => $formReport,
-                    'handlingTime' => '2016-02-22 22:55:55',
-                    'id' => $accident->id,
-                    'parentId' => $parent,
-                    'patientId' => $patient,
-                    'refNum' => $accidentRefNum,
-                    'symptoms' => $accidentSymptoms,
-                    'title' => $title,
-                    // 'updatedAt' => $accident->updated_at, // needs to be updated by updater
-                    'assistantPaymentId' => ($accident->assistant_payment_id ? : 0) . '',
-                    'incomePaymentId' => ($accident->income_payment_id ?: 0) . '',
-                    'caseablePaymentId' => ($accident->caseable_payment_id ?: 0) . '',
-                    'assistantGuaranteeId' => $assistantGuaranteeId,
-                ]
-            ]
-        ]);
-
-        self::assertNotEquals('2016-02-22 22:55:55', $response->json('data.accident.updatedAt'));
     }
 
     /**
      * Check that if I sent incorrect data to the relation it won't be saved
      */
-    public function testUpdateWithNonExistingRelations()
+    public function testUpdateWithNonExistingRelations(): void
     {
         $accident = factory(Accident::class)->create([
             'accident_status_id' => factory(AccidentStatus::class)->create([
@@ -317,9 +110,10 @@ class CasesControllerUpdateActionTest extends TestCase
                 'caseablePaymentId' => 100,
             ]
         ];
-        $this->doNotPrintErrResponse(true);
+
+        $this->doNotPrintErrResponse([422]);
         $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
-        $this->doNotPrintErrResponse(false);
+        $this->doNotPrintErrResponse();
 
         $content = $response->assertStatus(422)->getContent();
         $ans = json_decode($content);
@@ -358,7 +152,7 @@ class CasesControllerUpdateActionTest extends TestCase
             'assistantPaymentId' => [
                 'Is not exists'
             ],
-        ], json_decode($ans->errors->accident[0], 1));
+        ], json_decode($ans->errors->accident[0], true));
     }
 
     public function testClosedAccident(): void
@@ -374,14 +168,20 @@ class CasesControllerUpdateActionTest extends TestCase
         // closing an accident
         $accidentService->closeAccident($accident);
 
+        $this->doNotPrintErrResponse([422]);
         $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
+        $this->doNotPrintErrResponse();
 
-        $response->assertStatus(403)->assertJson([
-            'message' => 'Already closed',
+        $response->assertStatus(422)->assertJson([
+            'message' => '422 Unprocessable Entity',
+            'errors' => [
+                ['Already closed']
+            ],
         ]);
     }
 
-    public function testDeletedAccident(){
+    public function testDeletedAccident(): void
+    {
         /** @var Accident $accident */
         $accident = factory(Accident::class)->create([
             'accident_status_id' => factory(AccidentStatus::class)->create([
@@ -394,10 +194,16 @@ class CasesControllerUpdateActionTest extends TestCase
                 'id' => $accident->id,
             ]
         ];
-        $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
 
-        $response->assertStatus(403)->assertJson([
-            'message' => 'Accident not found',
+        $this->doNotPrintErrResponse([422]);
+        $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
+        $this->doNotPrintErrResponse();
+
+        $response->assertStatus(422)->assertJson([
+            'message' => '422 Unprocessable Entity',
+            'errors' => [
+                ['Accident not found']
+            ],
         ]);
     }
 }

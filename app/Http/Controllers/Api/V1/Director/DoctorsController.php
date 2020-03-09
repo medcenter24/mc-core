@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,12 +17,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\Doctor;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\StoreDoctor;
 use medcenter24\mcCore\App\Http\Requests\Api\UpdateDoctor;
 use medcenter24\mcCore\App\Transformers\CityTransformer;
@@ -30,7 +33,7 @@ use Dingo\Api\Http\Response;
 use Illuminate\Http\Request;
 use League\Fractal\TransformerAbstract;
 
-class DoctorsController extends ApiController
+class DoctorsController extends ModelApiController
 {
 
     protected function getDataTransformer(): TransformerAbstract
@@ -78,7 +81,7 @@ class DoctorsController extends ApiController
         $doctor->medical_board_num = $request->json('medicalBoardNumber', '');
         $doctor->save();
 
-        \Log::info('Doctor updated', [$doctor]);
+        Log::info('Doctor updated', [$doctor]);
 
         return $this->response->item($doctor, new DoctorTransformer());
     }
@@ -86,7 +89,7 @@ class DoctorsController extends ApiController
     public function destroy($id): Response
     {
         $doctor = Doctor::findOrFail($id);
-        \Log::info('Doctor deleted', [$doctor]);
+        Log::info('Doctor deleted', [$doctor]);
         $doctor->delete();
         return $this->response->noContent();
     }

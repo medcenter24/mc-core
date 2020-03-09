@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Entity\Service;
 use Illuminate\Database\Seeder;
 
 class DoctorServicesTableSeeder extends Seeder
@@ -28,11 +28,11 @@ class DoctorServicesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment('production') && DoctorService::all()->count()) {
+        if (App::environment('production') && Service::all()->count()) {
             return;
         } elseif (!App::environment('production')) {
-            DoctorService::truncate();
-            factory(DoctorService::class, 10)->create();
+            Service::truncate();
+            factory(Service::class, 10)->create();
         }
     }
 }

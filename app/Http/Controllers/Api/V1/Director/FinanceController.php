@@ -21,44 +21,21 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Log;
-use medcenter24\mcCore\App\FinanceCondition;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Http\Requests\Api\FinanceRequest;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\FinanceConditionRequest;
 use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
 use medcenter24\mcCore\App\Transformers\FinanceConditionTransformer;
 use Dingo\Api\Http\Response;
-use League\Fractal\TransformerAbstract;
 
 class FinanceController extends ApiController
 {
-    protected function getDataTransformer(): TransformerAbstract
-    {
-        return new FinanceConditionTransformer();
-    }
-
-    protected function getModelClass(): string
-    {
-        return FinanceCondition::class;
-    }
-
-    /**
-     * @param $id
-     * @return Response
-     */
-    public function show($id): Response
-    {
-        $finance = FinanceCondition::findOrFail($id);
-        return $this->response->item($finance, new FinanceConditionTransformer());
-    }
-
     /**
      * Add new rule
-     * @param FinanceRequest $request
+     * @param FinanceConditionRequest $request
      * @param CaseFinanceService $caseFinanceService
      * @return Response
      */
-    public function store(FinanceRequest $request, CaseFinanceService $caseFinanceService): Response
+    public function store(FinanceConditionRequest $request, CaseFinanceService $caseFinanceService): Response
     {
         $financeCondition = $caseFinanceService->updateFinanceConditionByRequest($request);
         $transformer = new FinanceConditionTransformer();
@@ -68,27 +45,13 @@ class FinanceController extends ApiController
     /**
      * Update existing rule
      * @param $id
-     * @param FinanceRequest $request
+     * @param FinanceConditionRequest $request
      * @param CaseFinanceService $caseFinanceService
      * @return Response
      */
-    public function update($id, FinanceRequest $request, CaseFinanceService $caseFinanceService): Response
+    public function update($id, FinanceConditionRequest $request, CaseFinanceService $caseFinanceService): Response
     {
         $financeCondition = $caseFinanceService->updateFinanceConditionByRequest($request, $id);
         return $this->response->item($financeCondition, new FinanceConditionTransformer());
-    }
-
-    /**
-     * Destroy rule
-     * Neither Real finance condition or finance rules from the finance_storage will be deleted
-     *   for the support and backward data compatibility
-     * @param $id
-     * @return Response
-     */
-    public function destroy($id) {
-        $condition = FinanceCondition::findOrFail($id);
-        Log::info('Finance condition deleted', [$condition, $this->user()]);
-        $condition->delete();
-        return $this->response->noContent();
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,11 +17,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
-
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -34,7 +36,7 @@ class UsersControllerTest extends TestCase
     use JwtHeaders;
     use LoggedUser;
 
-    public function testOptions()
+    public function testOptions(): void
     {
         $user = factory(User::class)->create(['password' => bcrypt('foo')]);
 
@@ -43,7 +45,7 @@ class UsersControllerTest extends TestCase
             ->assertHeader('Allow', 'POST,DELETE');
     }
 
-    public function testUpdatePhoto()
+    public function testUpdatePhoto(): void
     {
         Storage::fake(LogoService::DISC);
 

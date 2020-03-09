@@ -25,9 +25,16 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentCheckpointsC
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentScenarioController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentStatusesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AssistantsController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseAccidentController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseCaseableController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseCommentController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseDocumentController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseFinanceController;
-use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CasesController;
-use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CasesExporterController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseHistoryController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CasesExporterController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseSourceController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseStatusController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseStoryController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CategoriesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CitiesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CompaniesController;
@@ -35,6 +42,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\CountriesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DatePeriodController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DiseasesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DoctorsController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\FinanceConditionController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\FinanceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\FinanceCurrencyController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Forms\FormsVariablesController;
@@ -43,8 +51,8 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\HospitalsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\InvoiceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\MediaController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\PatientsController;
-use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\PaymentController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\RegionsController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\ServicesController as DirectorServicesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics\CalendarController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics\TrafficController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\SurveysController;
@@ -60,32 +68,31 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DocumentsController 
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\ProfileController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentsController as DirectorAccidentsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentTypesController as DirectorAccidentTypesController;
-use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DoctorServicesController as DirectorDoctorServicesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\DiagnosticsController as DirectorDiagnosticsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\System\ExtensionsController;
 
 /** @var Router $api */
 $api = app(Router::class);
 
-$api->version('v1', ['middleware' => 'api'], static function ($api) {
+$api->version('v1', ['middleware' => 'api'], static function (Router $api) {
     $api->post('authenticate', AuthenticateController::class . '@authenticate');
 });
 $api->group([
     'version' => 'v1',
     'middleware' => 'api',
     'prefix' => 'api',
-], static function ($api) {
-    $api->version('v1', ['middleware' => ['cors']], static function ($api) {
+], static function (Router $api) {
+    $api->version('v1', ['middleware' => ['cors']], static function (Router $api) {
         $api->group([
             'middleware' => 'api.auth'
-        ], static function ($api) {
+        ], static function (Router $api) {
             $api->post('logout', AuthenticateController::class . '@logout');
             $api->get('token', AuthenticateController::class . '@getToken');
             $api->get('user', AuthenticateController::class . '@authenticatedUser');
             $api->get('user/company', AuthenticateController::class . '@getCompany');
             $api->get('system/extensions/{extName}', ExtensionsController::class . '@index');
 
-            $api->group(['prefix' => 'doctor', 'middleware' => ['doctor']], static function ($api) {
+            $api->group(['prefix' => 'doctor', 'middleware' => ['doctor']], static function (Router $api) {
                 $api->post('accidents/send', DoctorAccidentsController::class . '@send');
                 $api->get('accidents/{id}/patient', DoctorAccidentsController::class . '@patient');
                 $api->patch('accidents/{id}/patient', DoctorAccidentsController::class . '@updatePatient');
@@ -111,7 +118,7 @@ $api->group([
                 $api->resource('documents', DoctorDocumentsController::class);
             });
 
-            $api->group(['prefix' => 'director', 'middleware' => ['role:director']], static function ($api) {
+            $api->group(['prefix' => 'director', 'middleware' => ['role:director']], static function (Router $api) {
 
                 $api->resource('uploads', UploadsController::class);
 
@@ -137,53 +144,78 @@ $api->group([
                 $api->delete('companies/{id}/sign', CompaniesController::class . '@deleteSign');
 
                 // Cases
-                $api->group(['prefix' => 'cases'], static function ($api) {
+                $api->group(['prefix' => 'cases'], static function (Router $api) {
 
+                    /** Case Exporter */
                     $api->post('export/{form}', CasesExporterController::class . '@export');
 
-                    // assigned to case
-                    $api->post('search', CasesController::class . '@search');
-                    $api->get('{id}/scenario', CasesController::class . '@story');
-                    $api->get('{id}/doctorcase', CasesController::class . '@getDoctorCase');
-                    $api->get('{id}/hospitalcase', CasesController::class . '@getHospitalCase');
-                    $api->get('{id}/diagnostics', CasesController::class . '@getDiagnostics');
-                    $api->get('{id}/services', CasesController::class . '@getServices');
-                    $api->get('{id}/surveys', CasesController::class . '@getSurveys');
-                    $api->post('{id}/documents', CasesController::class . '@createDocuments');
-                    $api->get('{id}/documents', CasesController::class . '@documents');
-                    $api->get('{id}/checkpoints', CasesController::class . '@getCheckpoints');
-                    $api->put('{id}/close', CasesController::class . '@close');
-                    $api->get('{id}/history', CasesController::class . '@history');
-                    $api->get('{id}/comments', CasesController::class . '@comments');
-                    $api->put('{id}/comments', CasesController::class . '@addComment');
+                    /** Case Accident model */
+                    $api->post('search', CaseAccidentController::class . '@search');
+                    $api->put('{id}', CaseAccidentController::class . '@update');
+                    $api->delete('{id}', CaseAccidentController::class . '@destroy');
+                    $api->post('', CaseAccidentController::class . '@store');
+                    $api->put('{id}', CaseAccidentController::class . '@update');
+                    $api->get('{id}', CaseAccidentController::class . '@show');
+
+                    /** Cases Finances */
                     $api->post('{id}/finance', CaseFinanceController::class . '@show');
                     $api->put('{id}/finance/{type}', CaseFinanceController::class . '@save');
-                    $api->put('{id}', CasesController::class . '@update');
-                    $api->delete('{id}', CasesController::class . '@destroy');
-                    $api->post('', CasesController::class . '@store');
-                    $api->put('{id}', CasesController::class . '@update');
+
+                    /** Case Story */
+                    $api->get('{id}/scenario', CaseStoryController::class . '@story');
+
+                    /** Caseables */
+                    $api->get('{id}/doctorcase', CaseCaseableController::class . '@getDoctorCase');
+                    $api->get('{id}/hospitalcase', CaseCaseableController::class . '@getHospitalCase');
+
+                    /** Sources */
+                    $api->get('{id}/diagnostics', CaseSourceController::class . '@getDiagnostics');
+                    $api->get('{id}/services', CaseSourceController::class . '@getServices');
+                    $api->get('{id}/surveys', CaseSourceController::class . '@getSurveys');
+                    $api->get('{id}/checkpoints', CaseSourceController::class . '@getCheckpoints');
+
+                    /** Docs */
+                    $api->post('{id}/documents', CaseDocumentController::class . '@createDocuments');
+                    $api->get('{id}/documents', CaseDocumentController::class . '@documents');
+
+                    /** Case statuses */
+                    $api->put('{id}/close', CaseStatusController::class . '@close');
+
+                    /** History */
+                    $api->get('{id}/history', CaseHistoryController::class . '@history');
+
+                    /** Commentaries */
+                    $api->get('{id}/comments', CaseCommentController::class . '@comments');
+                    $api->put('{id}/comments', CaseCommentController::class . '@addComment');
                 });
 
+                // todo do I need that?
                 $api->post('accidents/search', DirectorAccidentsController::class . '@search');
                 $api->get('accidents/{id}', DirectorAccidentsController::class . '@show');
                 $api->get('accidents', DirectorAccidentsController::class . '@index');
                 $api->resource('types', DirectorAccidentTypesController::class);
 
-                $api->post('services/search', DirectorDoctorServicesController::class . '@search');
-                // $api->post('services', DirectorDoctorServicesController::class . '@store');
-                $api->resource('services', DirectorDoctorServicesController::class);
-
-                $api->resource('surveys', SurveysController::class);
-                $api->group(['prefix' => 'surveys'], static function ($api) {
-                    $api->post('search', SurveysController::class . '@search');
-                    // $api->put('{id}', SurveysController::class . '@update');
-
+                $api->group(['prefix' => 'services'], static function (Router $api) {
+                    $api->post('search', DirectorServicesController::class . '@search');
+                    $api->delete('{id}', DirectorServicesController::class . '@destroy');
+                    $api->get('{id}', DirectorServicesController::class . '@show');
+                    $api->post('', DirectorServicesController::class . '@store');
+                    $api->put('{id}', DirectorServicesController::class . '@update');
                 });
+
+                $api->group(['prefix' => 'surveys'], static function(Router $api) {
+                    $api->post('search', SurveysController::class . '@search');
+                    $api->delete('{id}', SurveysController::class . '@destroy');
+                    $api->get('{id}', SurveysController::class . '@show');
+                    $api->post('', SurveysController::class . '@store');
+                    $api->put('{id}', SurveysController::class . '@update');
+                });
+
 
                 $api->post('assistants/search', AssistantsController::class . '@search');
                 $api->resource('assistants', AssistantsController::class);
 
-                $api->group(['prefix' => 'patients'], static function ($api) {
+                $api->group(['prefix' => 'patients'], static function (Router $api) {
                     $api->post('search', PatientsController::class . '@search');
                     $api->get('{id}', PatientsController::class . '@show');
                     $api->post('', PatientsController::class . '@store');
@@ -193,7 +225,7 @@ $api->group([
                 });
 
                 $api->resource('doctors', DoctorsController::class);
-                $api->group(['prefix' => 'doctors'], function ($api) {
+                $api->group(['prefix' => 'doctors'], function (Router $api) {
                     $api->get('{id}/cities', DoctorsController::class . '@cities');
                     $api->put('{id}/cities', DoctorsController::class . '@setCities');
                     $api->post('search', DoctorsController::class . '@search');
@@ -207,17 +239,22 @@ $api->group([
                 $api->resource('cities', CitiesController::class);
 
                 $api->resource('countries', CountriesController::class);
-                $api->group(['prefix' => 'countries'], static function($api) {
+                $api->group(['prefix' => 'countries'], static function(Router $api) {
                     $api->post('search', CountriesController::class . '@search');
                 });
 
                 $api->resource('regions', RegionsController::class);
-                $api->group(['prefix' => 'regions'], static function($api) {
+                $api->group(['prefix' => 'regions'], static function(Router $api) {
                     $api->post('search', RegionsController::class . '@search');
                 });
 
-                $api->post('diagnostics/search', DirectorDiagnosticsController::class . '@search');
-                $api->resource('diagnostics', DirectorDiagnosticsController::class);
+                $api->group(['prefix' => 'diagnostics'], static function(Router $api) {
+                    $api->post('search', DirectorDiagnosticsController::class . '@search');
+                    $api->delete('{id}', DirectorDiagnosticsController::class . '@destroy');
+                    $api->get('{id}', DirectorDiagnosticsController::class . '@show');
+                    $api->post('', DirectorDiagnosticsController::class . '@store');
+                    $api->put('{id}', DirectorDiagnosticsController::class . '@update');
+                });
 
                 $api->post('media', MediaController::class . '@upload');
                 $api->get('media', MediaController::class . '@uploads');
@@ -225,17 +262,20 @@ $api->group([
 
                 $api->resource('documents', DirectorDocumentsController::class);
 
-                $api->group(['prefix' => 'statistics'], function ($api) {
+                $api->group(['prefix' => 'statistics'], function (Router $api) {
                     $api->get('calendar', CalendarController::class . '@index');
                     $api->get('doctorsTraffic', TrafficController::class . '@doctors');
                     $api->get('assistantsTraffic', TrafficController::class . '@assistants');
                     $api->get('years', TrafficController::class . '@years');
                 });
 
-                $api->post('finance/search', FinanceController::class . '@search');
-                $api->resource('finance', FinanceController::class);
-
-                $api->resource('payment', PaymentController::class);
+                $api->group(['prefix' => 'finance'], static function (Router $api) {
+                    $api->post('search', FinanceConditionController::class . '@search');
+                    $api->get('{id}', FinanceConditionController::class . '@show');
+                    $api->delete('{id}', FinanceConditionController::class . '@destroy');
+                    $api->post('', FinanceController::class . '@store');
+                    $api->put('{id}', FinanceController::class . '@update');
+                });
 
                 $api->post('currency/search', FinanceCurrencyController::class . '@search');
                 $api->resource('currency', FinanceCurrencyController::class);
@@ -243,9 +283,9 @@ $api->group([
                 $api->post('periods/search', DatePeriodController::class . '@search');
                 $api->resource('periods', DatePeriodController::class);
 
-                $api->group(['prefix' => 'forms'], static function ($api) {
+                $api->group(['prefix' => 'forms'], static function (Router $api) {
                     $api->post('search', FormsController::class . '@search');
-                    $api->group(['prefix' => 'variables'], static function ($api) {
+                    $api->group(['prefix' => 'variables'], static function (Router $api) {
                         $api->post('search', FormsVariablesController::class . '@search');
                     });
                     $api->get('', FormsController::class . '@index');

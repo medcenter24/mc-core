@@ -18,7 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Auth;
 
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;

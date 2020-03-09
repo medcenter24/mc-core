@@ -16,10 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\Document;
+use medcenter24\mcCore\App\Entity\User;
 use Faker\Generator as Faker;
 
-$factory->define(medcenter24\mcCore\App\Document::class, function (Faker $faker) {
+$factory->define(Document::class, function (Faker $faker) {
     return [
         'created_by' => function () {
             return factory(User::class)->create()->id;

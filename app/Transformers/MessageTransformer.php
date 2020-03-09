@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,19 +17,22 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
+use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Services\UserService;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Services\Entity\UserService;
 use Cmgmyr\Messenger\Models\Message;
 
-class MessageTransformer extends AbstractTransformer
+class MessageTransformer extends TransformerAbstract
 {
+    use ServiceLocatorTrait;
 
     /**
      * @param Message $message
@@ -42,7 +46,7 @@ class MessageTransformer extends AbstractTransformer
             'user_id' => $message->user_id,
             'user_name' => $message->user_id ? $message->user->name : '',
             'user_thumb' => $message->user_id && $message->user->hasMedia(LogoService::FOLDER)
-                ? MediaHelper::b64($message->user, LogoService::FOLDER, User::THUMB_45) : '',
+                ? MediaHelper::b64($message->user, LogoService::FOLDER, UserService::THUMB_45) : '',
             'body' => $message->body,
             'created_at' => Date::sysDate(
                 $message->created_at,

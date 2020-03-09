@@ -89,11 +89,13 @@ class DatePeriodServiceTest extends TestCase
         $data['id'] = 1;
         self::assertSame($data, $datePeriod->toArray());
         self::assertSame([[
+            'id' => 1,
             'date_period_id' => '1',
             'day_of_week' => '0',
             'from' => '12:21',
             'to' => '23:59',
         ], [
+            'id' => 2,
             'date_period_id' => '1',
             'day_of_week' => '0',
             'from' => '00:00',

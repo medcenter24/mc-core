@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Entity\Role;
 use Illuminate\Database\Seeder;
-use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 use App;
 
 class RolesTableSeeder extends Seeder

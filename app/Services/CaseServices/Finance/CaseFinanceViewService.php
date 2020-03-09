@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,15 +17,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services\CaseServices\Finance;
 
-
-use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
-use medcenter24\mcCore\App\Payment;
-use medcenter24\mcCore\App\Services\CurrencyService;
+use medcenter24\mcCore\App\Entity\Payment;
+use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Services\Formula\FormulaResultService;
 use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
 use Illuminate\Support\Collection;
@@ -142,7 +144,7 @@ class CaseFinanceViewService
     /**
      * @param array $data
      * @return float
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     private function getValueFromData(array $data): float
     {
@@ -157,7 +159,7 @@ class CaseFinanceViewService
             $res = $this->formulaResultService->calculate($data['formula']);
         }
 
-        return $res;
+        return (float) $res;
     }
 
     /**

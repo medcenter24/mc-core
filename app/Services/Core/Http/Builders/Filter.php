@@ -16,11 +16,11 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services\Core\Http\Builders;
 
-
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Helpers\Date;
 
 class Filter extends RequestBuilder
@@ -71,11 +71,6 @@ class Filter extends RequestBuilder
      * @var Collection
      */
     private $filters;
-
-    public static function create(): Filter
-    {
-        return new self();
-    }
 
     public function inject(array $config): void
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,16 +17,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use medcenter24\mcCore\App\FinanceCurrency;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Entity\FinanceCurrency;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FinanceCurrencyRequest;
 use medcenter24\mcCore\App\Transformers\FinanceCurrencyTransformer;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
-class FinanceCurrencyController extends ApiController
+class FinanceCurrencyController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
@@ -39,7 +43,7 @@ class FinanceCurrencyController extends ApiController
 
     /**
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function show($id): Response
     {
@@ -50,7 +54,7 @@ class FinanceCurrencyController extends ApiController
     /**
      * Add new rule
      * @param FinanceCurrencyRequest $request
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function store(FinanceCurrencyRequest $request): Response
     {
@@ -67,7 +71,7 @@ class FinanceCurrencyController extends ApiController
      * Update existing rule
      * @param $id
      * @param FinanceCurrencyRequest $request
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function update($id, FinanceCurrencyRequest $request): Response
     {
@@ -82,12 +86,12 @@ class FinanceCurrencyController extends ApiController
     /**
      * Destroy rule
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function destroy($id): Response
     {
         $currency = FinanceCurrency::findOrFail($id);
-        \Log::info('Currency deleted', [$currency, $this->user()]);
+        Log::info('Currency deleted', [$currency, $this->user()]);
         $currency->delete();
         return $this->response->noContent();
     }

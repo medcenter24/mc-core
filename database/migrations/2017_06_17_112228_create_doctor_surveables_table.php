@@ -29,9 +29,9 @@ class CreateDoctorSurveablesTable extends Migration
      */
     public function up()
     {
-        Schema::create('doctor_surveables', function (Blueprint $table) {
-            $table->unsignedInteger('doctor_survey_id')->index();
-            $table->morphs('doctor_surveable', 'ids_doc_surveable');
+        Schema::create('surveables', function (Blueprint $table) {
+            $table->unsignedInteger('survey_id')->index();
+            $table->morphs('surveable', 'ids_surveable');
         });
     }
 
@@ -42,6 +42,6 @@ class CreateDoctorSurveablesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('doctor_surveables');
+        Schema::dropIfExists('surveables');
     }
 }

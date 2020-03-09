@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,16 +16,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Illuminate\Support\Facades\Log;
 use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\RegionRequest;
-use medcenter24\mcCore\App\Region;
+use medcenter24\mcCore\App\Entity\Region;
 use medcenter24\mcCore\App\Transformers\RegionTransformer;
 
-class RegionsController extends ApiController
+class RegionsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
@@ -59,14 +63,14 @@ class RegionsController extends ApiController
         $region->country_id = $request->json('countryId', '');
         $region->save();
 
-        \Log::info('Region updated', [$region, $this->user()]);
+        Log::info('Region updated', [$region, $this->user()]);
         return $this->response->item($region, new RegionTransformer());
     }
 
     public function destroy($id): Response
     {
         $region = Region::findOrFail($id);
-        \Log::info('Region deleted', [$region, $this->user()]);
+        Log::info('Region deleted', [$region, $this->user()]);
         $region->delete();
         return $this->response->noContent();
     }

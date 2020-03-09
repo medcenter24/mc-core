@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,21 +17,25 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Assistant;
+use medcenter24\mcCore\App\Services\Entity\AssistantService;
 
 class AssistantTransformer extends AbstractTransformer
 {
-    public function transform(Assistant $assistant): array
+    /**
+     * @inheritDoc
+     */
+    protected function getMap(): array
     {
         return [
-            'id' => $assistant->id,
-            'title' => $assistant->title,
-            'email' => $assistant->email,
-            'commentary' => $assistant->comment,
-            'refKey' => $assistant->ref_key,
+            AssistantService::FIELD_ID,
+            AssistantService::FIELD_TITLE,
+            AssistantService::FIELD_EMAIL,
+            AssistantService::FIELD_COMMENT,
+            AssistantService::FIELD_REF_KEY,
         ];
     }
 }

@@ -29,11 +29,6 @@ class Paginator extends RequestBuilder
     private $offset = self::DEFAULT_OFFSET;
     private $limit = self::DEFAULT_LIMIT;
 
-    public static function create(): Paginator
-    {
-        return new Paginator();
-    }
-
     /**
      * @param array $paginationConf
      * ['fields' => [{field: 'offset', 'value': 10}, {field: 'limit', value: 25}]]
@@ -57,7 +52,7 @@ class Paginator extends RequestBuilder
     }
 
     private function setOffset(): void {
-        $this->offset = (int)$this->getFieldValue(self::FIELD_OFFSET, self::DEFAULT_OFFSET);
+        $this->offset = (int) $this->getFieldValue(self::FIELD_OFFSET, (string) self::DEFAULT_OFFSET);
     }
 
     private function setLimit(): void {

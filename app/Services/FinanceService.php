@@ -21,8 +21,8 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services;
 
-use medcenter24\mcCore\App\FinanceCurrency;
-use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Entity\FinanceCurrency;
+use medcenter24\mcCore\App\Entity\Payment;
 
 class FinanceService
 {

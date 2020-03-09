@@ -18,9 +18,9 @@
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
 use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
 use medcenter24\mcCore\Tests\TestCase;
@@ -49,7 +49,7 @@ class DirectorCaseServicesTest extends TestCase
         $accident->caseable_type = DoctorAccident::class;
         $accident->save();
 
-        $services = factory(DoctorService::class, 5)->create();
+        $services = factory(Service::class, 5)->create();
         $accident->caseable->services()->attach($services);
         self::assertEquals(5, $accident->caseable->services->count());
 

@@ -19,8 +19,8 @@
 namespace medcenter24\mcCore\Tests\Unit\Services;
 
 
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\Services\AccidentService;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\ReferralNumberService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseMigrations;

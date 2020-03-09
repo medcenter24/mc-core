@@ -16,19 +16,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\AccidentCheckpoint;
-use medcenter24\mcCore\App\AccidentStatus;
-use medcenter24\mcCore\App\AccidentType;
-use medcenter24\mcCore\App\Assistant;
-use medcenter24\mcCore\App\Diagnostic;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\DoctorService;
-use medcenter24\mcCore\App\DoctorSurvey;
-use medcenter24\mcCore\App\Form;
-use medcenter24\mcCore\App\FormReport;
-use medcenter24\mcCore\App\Patient;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\Accident;
+medcenter24\mcCore\App\Services\Entity\AccidentCheckpoint;
+use medcenter24\mcCore\App\Entity\AccidentStatus;
+use medcenter24\mcCore\App\Entity\AccidentType;
+use medcenter24\mcCore\App\Entity\Assistant;
+use medcenter24\mcCore\App\Entity\Diagnostic;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\Service;
+use medcenter24\mcCore\App\Entity\Survey;
+use medcenter24\mcCore\App\Entity\Form;
+use medcenter24\mcCore\App\Entity\FormReport;
+use medcenter24\mcCore\App\Entity\Patient;
+use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Database\Seeder;
 
 class AccidentsTableSeeder extends Seeder
@@ -79,12 +79,12 @@ class AccidentsTableSeeder extends Seeder
             ])->each(function (Accident $accident) {
                 $accident->checkpoints()->save(factory(AccidentCheckpoint::class)->create());
 
-                $accident->caseable->services()->attach(factory(DoctorService::class)->create());
+                $accident->caseable->services()->attach(factory(Service::class)->create());
 
                 $accident->caseable->diagnostics()->attach(factory(Diagnostic::class)->create());
 
-                $accident->caseable->surveys()->attach(factory(DoctorSurvey::class)->create());
-                $accident->caseable->surveys()->attach(factory(DoctorSurvey::class)->create());
+                $accident->caseable->surveys()->attach(factory(Survey::class)->create());
+                $accident->caseable->surveys()->attach(factory(Survey::class)->create());
             });
         }
     }

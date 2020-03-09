@@ -18,7 +18,7 @@
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 class FinanceCurrencyRequest extends JsonRequest
 {

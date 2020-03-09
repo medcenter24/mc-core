@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Services\Formula;
 
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder as FormulaBuilderInterface;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
-use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\App\Models\Formula\FormulaBuilder;
 use Illuminate\Support\Collection;
 

@@ -17,8 +17,9 @@
  */
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\City;
 
-$factory->define(medcenter24\mcCore\App\City::class, function (Faker $faker) {
+$factory->define(City::class, function (Faker $faker) {
     return [
         'title' => $faker->city,
     ];

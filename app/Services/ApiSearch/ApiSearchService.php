@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,14 +16,14 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\ApiSearch;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services\ApiSearch;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Models\Database\Relation;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
@@ -91,21 +92,6 @@ class ApiSearchService
     }
 
     /**
-     * @param string $name
-     * @throws NotImplementedException
-     */
-    private function checkClass(string $name): void
-    {
-        if (!class_exists($name)) {
-            throw new NotImplementedException('Class "'.$name.'" does not exist');
-        }
-
-        if (!method_exists($name, 'query')) {
-            throw new NotImplementedException('Class "'.$name.'" does not have method `query`');
-        }
-    }
-
-    /**
      * @return RequestBuilderFilterTransformer
      */
     private function getFilterTransformer(): RequestBuilderFilterTransformer
@@ -125,6 +111,10 @@ class ApiSearchService
         return $this->searchFieldLogicService;
     }
 
+    /**
+     * To Replace default SearchFieldLogic with specified
+     * @param SearchFieldLogic|null $service
+     */
     public function setFieldLogic(SearchFieldLogic $service = null) : void
     {
         $this->searchFieldLogicService = $service;
@@ -230,14 +220,11 @@ class ApiSearchService
 
     /**
      * @param Request $request
-     * @param string $modelClass
+     * @param Model $model
      * @return LengthAwarePaginator
-     * @throws NotImplementedException
      */
-    public function search(Request $request, string $modelClass): LengthAwarePaginator
+    public function search(Request $request, Model $model): LengthAwarePaginator
     {
-        $this->checkClass($modelClass);
-
         /** @var DataLoaderRequestBuilder $requestBuilder */
         $requestBuilder = $this->getRequestBuilder();
 
@@ -245,8 +232,6 @@ class ApiSearchService
         $requestBuilder->setSorter($this->getSorter($request));
         $requestBuilder->setFilter($this->getFilter($request));
 
-        /** @var Model $model */
-        $model = new $modelClass();
         /** @var Builder $eloquent */
         $eloquent = $model->newQuery();
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +17,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use medcenter24\mcCore\App\Hospital;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Entity\Hospital;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\StoreHospital;
 use medcenter24\mcCore\App\Http\Requests\Api\UpdateHospital;
 use medcenter24\mcCore\App\Transformers\HospitalTransformer;
@@ -72,7 +76,7 @@ class HospitalsController extends ApiController
         $hospital->phones = $request->json('phones', '');
         $hospital->save();
 
-        \Log::info('Hospital updated', [$hospital, $this->user()]);
+        Log::info('Hospital updated', [$hospital, $this->user()]);
 
         return $this->response->item($hospital, new HospitalTransformer());
     }
@@ -80,7 +84,7 @@ class HospitalsController extends ApiController
     public function destroy($id)
     {
         $hospital = Hospital::findOrFail($id);
-        \Log::info('Hospital deleted', [$hospital, $this->user()]);
+        Log::info('Hospital deleted', [$hospital, $this->user()]);
         $hospital->delete();
         return $this->response->noContent();
     }

@@ -19,10 +19,10 @@
 namespace medcenter24\mcCore\App\Services\Verification;
 
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\Patient;
 
 /**
  * Generate data which should be sent based on the DoctorAccident model

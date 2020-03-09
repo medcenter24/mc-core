@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,17 +17,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
 
-
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Dingo\Api\Http\Response;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Transformers\statistics\CalendarEventTransformer;
 use Illuminate\Http\Request;
 
 class CalendarController extends ApiController
 {
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $start = $request->input('start');
         $end = $request->input('end');

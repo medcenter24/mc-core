@@ -17,8 +17,9 @@
  */
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\Scenario;
 
-$factory->define(medcenter24\mcCore\App\Scenario::class, function (Faker $faker) {
+$factory->define(Scenario::class, function (Faker $faker) {
     return [
         'tag' => $faker->word,
         'order' => 0,

@@ -17,7 +17,7 @@
  */
 
 use medcenter24\mcCore\App\AccidentDoctor;
-use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;

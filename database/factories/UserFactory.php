@@ -18,13 +18,14 @@
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Entity\User;
 
-$factory->define(medcenter24\mcCore\App\User::class, function (Faker $faker) {
+$factory->define(User::class, function (Faker $faker) {
     static $password;
 
     return [
         'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
+        'email' => $faker->unique()->email,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => Str::random(10),
     ];

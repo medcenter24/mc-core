@@ -18,8 +18,8 @@
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use medcenter24\mcCore\App\Doctor;
-use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UpdateDoctor extends JsonRequest

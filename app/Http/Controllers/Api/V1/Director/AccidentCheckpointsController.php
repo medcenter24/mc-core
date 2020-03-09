@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,17 +17,20 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use medcenter24\mcCore\App\AccidentCheckpoint;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Entity\AccidentCheckpoint;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AccidentCheckpointRequest;
 use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
-class AccidentCheckpointsController extends ApiController
+class AccidentCheckpointsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
@@ -70,14 +74,14 @@ class AccidentCheckpointsController extends ApiController
         $accidentCheckpoint->title = $request->json('title', '');
         $accidentCheckpoint->description = $request->json('description', '');
         $accidentCheckpoint->save();
-        \Log::info('Accident status updated', [$accidentCheckpoint, $this->user()]);
+        Log::info('Accident status updated', [$accidentCheckpoint, $this->user()]);
         return $this->response->item($accidentCheckpoint, new AccidentCheckpointTransformer());
     }
 
     public function destroy($id): Response
     {
         $accidentCheckpoint = AccidentCheckpoint::findOrFail($id);
-        \Log::info('Accident status deleted', [$accidentCheckpoint, $this->user()]);
+        Log::info('Accident status deleted', [$accidentCheckpoint, $this->user()]);
         $accidentCheckpoint->delete();
         return $this->response->noContent();
     }

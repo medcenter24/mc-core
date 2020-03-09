@@ -17,7 +17,7 @@
  */
 
 
-use medcenter24\mcCore\App\FinanceStorage;
+use medcenter24\mcCore\App\Entity\FinanceStorage;
 use Faker\Generator as Faker;
 
 $factory->define(FinanceStorage::class, function (Faker $faker) {

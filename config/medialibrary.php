@@ -17,7 +17,7 @@
  */
 
 
-use medcenter24\mcCore\App\Media;
+use medcenter24\mcCore\App\Entity\Media;
 use Spatie\MediaLibrary\ImageGenerators\FileTypes\Image;
 use Spatie\MediaLibrary\ImageGenerators\FileTypes\Pdf;
 use Spatie\MediaLibrary\ImageGenerators\FileTypes\Svg;

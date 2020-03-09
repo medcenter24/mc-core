@@ -19,12 +19,12 @@
 namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
-use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Entity\Service;
 
 class DoctorServiceFake implements Fake
 {
     public static function make(array $params = [], array $additionalParams = [])
     {
-        return factory(DoctorService::class)->create();
+        return factory(Service::class)->create();
     }
 }

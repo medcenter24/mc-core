@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,16 +17,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Illuminate\Support\Facades\Log;
 use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\PatientRequest;
-use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Entity\Patient;
 use medcenter24\mcCore\App\Transformers\PatientTransformer;
 use League\Fractal\TransformerAbstract;
 
-class PatientsController extends ApiController
+class PatientsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
@@ -66,7 +70,7 @@ class PatientsController extends ApiController
         $patient->birthday = $data['birthday'] ?? null;
         $patient->comment = $data['comment'];
         $patient->save();
-        \Log::info('Patient updated', [$patient, $this->user()]);
+        Log::info('Patient updated', [$patient, $this->user()]);
         return $this->response->item($patient, new PatientTransformer());
     }
 
@@ -89,7 +93,7 @@ class PatientsController extends ApiController
     public function destroy($id)
     {
         $patient = Patient::findOrFail($id);
-        \Log::info('Patient deleted', [$patient, $this->user()]);
+        Log::info('Patient deleted', [$patient, $this->user()]);
         $patient->delete();
         return $this->response->noContent();
     }

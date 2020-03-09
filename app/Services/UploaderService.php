@@ -22,7 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\Support\Core\Configurable;
-use medcenter24\mcCore\App\Upload;
+use medcenter24\mcCore\App\Entity\Upload;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 

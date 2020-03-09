@@ -20,10 +20,10 @@ namespace medcenter24\mcCore\App\Models\Telegram\Replies;
 
 
 use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
 use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\Update;
 

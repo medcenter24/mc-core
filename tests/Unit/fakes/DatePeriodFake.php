@@ -19,7 +19,7 @@
 namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
-use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\Entity\DatePeriod;
 
 class DatePeriodFake implements Fake
 {

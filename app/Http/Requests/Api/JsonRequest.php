@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,14 +17,25 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-
 use Dingo\Api\Http\FormRequest;
-use medcenter24\mcCore\App\Services\RoleService;
+use Illuminate\Support\Facades\Auth;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
+use medcenter24\mcCore\App\Support\Facades\Roles;
 
-abstract class JsonRequest extends FormRequest
+class JsonRequest extends FormRequest
 {
+    use ServiceLocatorTrait;
+
+    public function rules(): array
+    {
+        return [];
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -31,7 +43,7 @@ abstract class JsonRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return \Auth::check() && \Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
+        return Auth::check() && Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
     }
 
     /**

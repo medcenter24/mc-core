@@ -19,7 +19,7 @@
 namespace medcenter24\mcCore\Tests\Unit\Services\Formula;
 
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
-use medcenter24\mcCore\App\FinanceCondition;
+use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\App\Models\Formula\FormulaBuilder as FormulaBuilderModel;
 use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use Illuminate\Support\Collection;

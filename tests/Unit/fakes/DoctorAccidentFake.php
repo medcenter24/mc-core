@@ -19,7 +19,7 @@
 namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
-use medcenter24\mcCore\App\DoctorAccident;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
 
 class DoctorAccidentFake implements Fake
 {

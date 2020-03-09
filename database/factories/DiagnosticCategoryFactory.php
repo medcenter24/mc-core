@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\DiagnosticCategory;
+use medcenter24\mcCore\App\Entity\DiagnosticCategory;
 use Faker\Generator as Faker;
 
 $factory->define(DiagnosticCategory::class, function (Faker $faker) {

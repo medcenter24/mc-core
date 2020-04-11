@@ -21,9 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Entity\Form;
@@ -41,17 +39,17 @@ class FormsController extends ModelApiController
         return new FormTransformer();
     }
 
-    /**
-     * @return string
-     */
-    protected function getModelClass(): string
-    {
-        return Form::class;
-    }
-
     protected function getRequestClass(): string
     {
         return FormRequest::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getModelService(): ModelService
+    {
+        return $this->getServiceLocator()->get(FormService::class);
     }
 
     /**
@@ -86,13 +84,5 @@ class FormsController extends ModelApiController
         }
         $source = call_user_func([$form->formable_type, 'findOrFail'], $srcId);
         return response()->json(['data' => $formService->getHtml($form, $source)]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getModelService(): ModelService
-    {
-        return $this->getServiceLocator()->get(FormService::class);
     }
 }

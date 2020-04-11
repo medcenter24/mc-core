@@ -42,6 +42,6 @@ class CasesExporterController extends ApiController
             'Access-Control-Allow-Origin' => env('CORS_ALLOW_ORIGIN_DIRECTOR'),
         ]);*/
 
-        return (new CasesExport())->download('aaa.xlsx');
+        return (new CasesExport())->download(time() . '_case_export.xlsx');
     }
 }

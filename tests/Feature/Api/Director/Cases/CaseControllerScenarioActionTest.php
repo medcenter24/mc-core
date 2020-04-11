@@ -31,21 +31,14 @@ use medcenter24\mcCore\App\Entity\Invoice;
 use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Entity\Upload;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
-use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use ScenariosTableSeeder;
 
-class CaseControllerScenarioActionTest extends TestCase
+class CaseControllerScenarioActionTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
 
     private $caseAccidentService;
 
@@ -64,7 +57,7 @@ class CaseControllerScenarioActionTest extends TestCase
     {
         $accident = $this->caseAccidentService->create();
 
-        $response = $this->get('/api/director/cases/' . $accident->getKey() . '/scenario', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/' . $accident->getKey() . '/scenario');
         $response->assertJson([
             'data' =>
                 [
@@ -75,7 +68,7 @@ class CaseControllerScenarioActionTest extends TestCase
                         'mode' => 'step',
                         'accidentStatusId' => 1,
                         'status' => 'current',
-                        'title' => AccidentStatusesService::STATUS_NEW,
+                        'title' => AccidentStatusService::STATUS_NEW,
                     ],
                     [
                         'id' => 2,
@@ -84,7 +77,7 @@ class CaseControllerScenarioActionTest extends TestCase
                         'mode' => 'step',
                         'accidentStatusId' => 2,
                         'status' => '',
-                        'title' => AccidentStatusesService::STATUS_ASSIGNED,
+                        'title' => AccidentStatusService::STATUS_ASSIGNED,
                     ],
                     [
                         'id' => 3,
@@ -93,7 +86,7 @@ class CaseControllerScenarioActionTest extends TestCase
                         'mode' => 'step',
                         'accidentStatusId' => 3,
                         'status' => '',
-                        'title' => AccidentStatusesService::STATUS_IN_PROGRESS,
+                        'title' => AccidentStatusService::STATUS_IN_PROGRESS,
                     ],
                     [
                         'id' => 4,
@@ -102,7 +95,7 @@ class CaseControllerScenarioActionTest extends TestCase
                         'mode' => 'step',
                         'accidentStatusId' => 4,
                         'status' => '',
-                        'title' => AccidentStatusesService::STATUS_SENT,
+                        'title' => AccidentStatusService::STATUS_SENT,
                     ],
                     [
                         'id' => 5,
@@ -111,7 +104,7 @@ class CaseControllerScenarioActionTest extends TestCase
                         'mode' => 'step',
                         'accidentStatusId' => 5,
                         'status' => '',
-                        'title' => AccidentStatusesService::STATUS_PAID,
+                        'title' => AccidentStatusService::STATUS_PAID,
                     ],
                     [
                         'id' => 7,
@@ -120,7 +113,7 @@ class CaseControllerScenarioActionTest extends TestCase
                         'mode' => 'step',
                         'accidentStatusId' => 7,
                         'status' => '',
-                        'title' => AccidentStatusesService::STATUS_CLOSED,
+                        'title' => AccidentStatusService::STATUS_CLOSED,
                     ],
                 ],
             ]);
@@ -136,8 +129,7 @@ class CaseControllerScenarioActionTest extends TestCase
 
         $accidentId = $accident->getKey();
 
-        $response2 = $this->get('/api/director/cases/' . $accidentId . '/scenario',
-            $this->headers($this->getUser()));
+        $response2 = $this->sendGet('/api/director/cases/' . $accidentId . '/scenario');
         $response2->assertJson([
             'data' =>
                 [
@@ -239,7 +231,7 @@ class CaseControllerScenarioActionTest extends TestCase
 
         (new AccidentService())->closeAccident($accident);
 
-        $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
+        $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
         $response2->assertJson([
             'data' =>
                 [
@@ -331,7 +323,7 @@ class CaseControllerScenarioActionTest extends TestCase
 
         (new AccidentService())->closeAccident($accident);
 
-        $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
+        $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
         $response2->assertJson([
             'data' =>
                 [
@@ -423,7 +415,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'assistant_invoice_id' => 0,
             'assistant_payment_id' => factory(Payment::class)->create()->id,
             'assistant_guarantee_id' => 0,
-            'accident_status_id' => (new AccidentStatusesService())->getNewStatus(),
+            'accident_status_id' => (new AccidentStatusService())->getNewStatus(),
         ]);
 
         $accident->caseable->fill([
@@ -434,7 +426,7 @@ class CaseControllerScenarioActionTest extends TestCase
 
         (new AccidentService())->closeAccident($accident);
 
-        $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
+        $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
         $response2->assertJson([
             'data' =>
                 [
@@ -517,11 +509,11 @@ class CaseControllerScenarioActionTest extends TestCase
     public function testDoctorCaseScenarioNew(): void
     {
         $accidentId = (new AccidentService)->create([
-            'accident_status_id' => (new AccidentStatusesService())->getNewStatus()->getAttribute('id'),
+            'accident_status_id' => (new AccidentStatusService())->getNewStatus()->getAttribute('id'),
             'caseable_type' => DoctorAccident::class,
         ])->getAttribute('id');
 
-        $response2 = $this->get('/api/director/cases/' . $accidentId . '/scenario', $this->headers($this->getUser()));
+        $response2 = $this->sendGet('/api/director/cases/' . $accidentId . '/scenario');
         $response2->assertOk()->assertJson([
             'data' => [
                 [
@@ -605,7 +597,7 @@ class CaseControllerScenarioActionTest extends TestCase
         // closing an accident
         $accidentService->closeAccident($accident);
 
-        $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
+        $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
         $response2->assertOk()->assertJson([
             'data' => [
                 [
@@ -680,12 +672,12 @@ class CaseControllerScenarioActionTest extends TestCase
         $accidentService->rejectDoctorAccident($accident);
 
         $rejectStatus = AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusesService::STATUS_REJECT,
-            'type' => AccidentStatusesService::TYPE_DOCTOR,
+            'title' => AccidentStatusService::STATUS_REJECT,
+            'type' => AccidentStatusService::TYPE_DOCTOR,
         ]);
         self::assertEquals($accident->accident_status_id, $rejectStatus->id);
 
-        $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
+        $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
         $response2->assertOk()->assertJson([
             'data' => [
                 [
@@ -733,15 +725,15 @@ class CaseControllerScenarioActionTest extends TestCase
         $accidentService->rejectDoctorAccident($accident);
 
         $rejectStatus = AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusesService::STATUS_REJECT,
-            'type' => AccidentStatusesService::TYPE_DOCTOR,
+            'title' => AccidentStatusService::STATUS_REJECT,
+            'type' => AccidentStatusService::TYPE_DOCTOR,
         ]);
         self::assertEquals($accident->accident_status_id, $rejectStatus->id);
 
         // closing an accident
         $accidentService->closeAccident($accident);
 
-        $response2 = $this->get('/api/director/cases/' . $accident->id . '/scenario', $this->headers($this->getUser()));
+        $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
         $response2->assertOk()->assertJson([
             'data' => [
                 [

@@ -91,7 +91,7 @@ class DocumentService extends AbstractModelService
         /** @var Document $document */
         $document = $this->create([
             self::FIELD_CREATED_BY => $user->id,
-            self::FIELD_TITLE => $file->getClientOriginalName()
+            self::FIELD_TITLE => $file->getClientOriginalName(),
         ]);
         $document->addMedia($file)
             ->toMediaCollection(self::CASES_FOLDERS, self::DISC_IMPORTS);

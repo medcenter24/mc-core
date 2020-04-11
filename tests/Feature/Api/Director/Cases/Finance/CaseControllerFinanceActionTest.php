@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +17,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
 use Illuminate\Database\Eloquent\Model;
@@ -31,25 +34,18 @@ use medcenter24\mcCore\App\Entity\Hospital;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Entity\Invoice;
 use medcenter24\mcCore\App\Entity\Payment;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
-use medcenter24\mcCore\Tests\TestCase;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class CaseControllerFinanceActionTest extends TestCase
+class CaseControllerFinanceActionTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     /**
      * @var AccidentService
      */
     private $accidentService;
     /**
-     * @var AccidentStatusesService
+     * @var AccidentStatusService
      */
     private $accidentStatusService;
 
@@ -58,7 +54,7 @@ class CaseControllerFinanceActionTest extends TestCase
         parent::setUp();
 
         $this->accidentService = new AccidentService();
-        $this->accidentStatusService = new AccidentStatusesService();
+        $this->accidentStatusService = new AccidentStatusService();
     }
 
     /**
@@ -86,7 +82,7 @@ class CaseControllerFinanceActionTest extends TestCase
     }
 
     public function test404(): void {
-        $response = $this->json('POST', '/api/director/cases/1/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/1/finance');
         $response->assertStatus(404);
         $response->assertJson([]);
     }
@@ -94,7 +90,7 @@ class CaseControllerFinanceActionTest extends TestCase
     public function testWithoutCondition(): void {
         $accident = $this->createNewAccident();
         factory(FinanceCurrency::class)->create();
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -139,7 +135,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Assistant::class,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -232,7 +228,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model_id' => $city->id,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -276,7 +272,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Doctor::class,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -384,7 +380,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Doctor::class,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -436,7 +432,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Doctor::class,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -487,7 +483,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Hospital::class,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -548,7 +544,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Hospital::class,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
 
 
@@ -619,7 +615,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Hospital::class,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -700,7 +696,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Hospital::class,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -784,7 +780,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Assistant::class,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -861,7 +857,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Assistant::class,
         ]);
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [

@@ -19,8 +19,8 @@
 namespace medcenter24\mcCore\Tests\Unit\Services;
 
 
-use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use medcenter24\mcCore\App\Services\Entity\DatePeriodService;
 use medcenter24\mcCore\Tests\TestCase;
 
 class DatePeriodServiceTest extends TestCase

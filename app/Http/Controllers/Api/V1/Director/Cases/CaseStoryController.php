@@ -25,7 +25,7 @@ use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Models\Scenario\ScenarioModel;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Services\Entity\ScenarioService;
 use medcenter24\mcCore\App\Services\Scenario\StoryService;
 use medcenter24\mcCore\App\Transformers\ScenarioTransformer;
@@ -39,8 +39,8 @@ class CaseStoryController extends ApiController
      */
     public function story(int $id): Response
     {
-        /** @var AccidentStatusesService $accidentStatusesService */
-        $accidentStatusesService = $this->getServiceLocator()->get(AccidentStatusesService::class);
+        /** @var AccidentStatusService $accidentStatusesService */
+        $accidentStatusesService = $this->getServiceLocator()->get(AccidentStatusService::class);
         /** @var ScenarioService $scenariosService */
         $scenariosService = $this->getServiceLocator()->get(ScenarioService::class);
         /** @var StoryService $storyService */

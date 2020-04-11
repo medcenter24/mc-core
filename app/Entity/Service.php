@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,13 +44,27 @@ class Service extends Model
     protected $fillable = ServiceService::FILLABLE;
     protected $visible = ServiceService::VISIBLE;
 
+    /**
+     * @return BelongsTo
+     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * @return BelongsTo
+     */
     public function disease(): BelongsTo
     {
         return $this->belongsTo(Disease::class);
+    }
+
+    /**
+     * @return MorphTo
+     */
+    public function serviceable(): MorphTo
+    {
+        return $this->morphTo();
     }
 }

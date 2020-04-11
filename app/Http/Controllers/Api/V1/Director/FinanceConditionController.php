@@ -21,10 +21,13 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
-use medcenter24\mcCore\App\Entity\FinanceCondition;
+use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FinanceConditionRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
+use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
 use medcenter24\mcCore\App\Services\Entity\FinanceConditionService;
 use medcenter24\mcCore\App\Transformers\FinanceConditionTransformer;
 use League\Fractal\TransformerAbstract;
@@ -34,11 +37,6 @@ class FinanceConditionController extends ModelApiController
     protected function getDataTransformer(): TransformerAbstract
     {
         return new FinanceConditionTransformer();
-    }
-
-    protected function getModelClass(): string
-    {
-        return FinanceCondition::class;
     }
 
     /**
@@ -52,5 +50,40 @@ class FinanceConditionController extends ModelApiController
     protected function getRequestClass(): string
     {
         return FinanceConditionRequest::class;
+    }
+
+    /**
+     * Add new rule
+     * @param JsonRequest $request
+     * @return Response
+     * @throws NotImplementedException
+     */
+    public function store(JsonRequest $request): Response
+    {
+        /** @var JsonRequest $request */
+        $request = call_user_func([$this->getRequestClass(), 'createFromBase'], $request);
+        $request->validate();
+        $caseFinanceService = $this->getServiceLocator()->get(CaseFinanceService::class);
+        $financeCondition = $caseFinanceService->updateFinanceConditionByRequest($request);
+        return $this->response->created(
+            url("pages/settings/finance/{$financeCondition->id}"),
+            $this->getDataTransformer()->transform($financeCondition)
+        );
+    }
+
+    /**
+     * Update existing rule
+     * @param int $id
+     * @param JsonRequest $request
+     * @return Response
+     */
+    public function update(int $id, JsonRequest $request): Response
+    {
+        /** @var JsonRequest $request */
+        $request = call_user_func([$this->getRequestClass(), 'createFromBase'], $request);
+        $request->validate();
+        $caseFinanceService = $this->getServiceLocator()->get(CaseFinanceService::class);
+        $financeCondition = $caseFinanceService->updateFinanceConditionByRequest($request, $id);
+        return $this->response->item($financeCondition, new FinanceConditionTransformer());
     }
 }

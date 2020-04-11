@@ -21,13 +21,11 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Entity\AccidentCheckpoint;
-use medcenter24\mcCore\App\Exceptions\NotImplementedException;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AccidentCheckpointRequest;
+use medcenter24\mcCore\App\Services\Entity\AccidentCheckpointService;
 use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
-use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
 class AccidentCheckpointsController extends ModelApiController
@@ -37,52 +35,16 @@ class AccidentCheckpointsController extends ModelApiController
         return new AccidentCheckpointTransformer();
     }
 
-    protected function getModelClass(): string
-    {
-        return AccidentCheckpoint::class;
-    }
-
     /**
-     * @return Response
-     * @throws NotImplementedException
+     * @inheritDoc
      */
-    public function index(): Response
+    protected function getModelService(): ModelService
     {
-        $accidentCheckpoint = AccidentCheckpoint::orderBy('title')->get();
-        return $this->response->collection($accidentCheckpoint, $this->getDataTransformer());
+        return $this->getServiceLocator()->get(AccidentCheckpointService::class);
     }
 
-    public function show($id): Response
+    protected function getRequestClass(): string
     {
-        $accidentCheckpoint = AccidentCheckpoint::findOrFail($id);
-        return $this->response->item($accidentCheckpoint, new AccidentCheckpointTransformer());
-    }
-
-    public function store(AccidentCheckpointRequest $request): Response
-    {
-        $accidentCheckpoint = AccidentCheckpoint::create([
-            'title' => $request->json('title', ''),
-            'description' => $request->json('description', ''),
-        ]);
-        $transformer = new AccidentCheckpointTransformer();
-        return $this->response->created(null, $transformer->transform($accidentCheckpoint));
-    }
-
-    public function update($id, AccidentCheckpointRequest $request): Response
-    {
-        $accidentCheckpoint = AccidentCheckpoint::findOrFail($id);
-        $accidentCheckpoint->title = $request->json('title', '');
-        $accidentCheckpoint->description = $request->json('description', '');
-        $accidentCheckpoint->save();
-        Log::info('Accident status updated', [$accidentCheckpoint, $this->user()]);
-        return $this->response->item($accidentCheckpoint, new AccidentCheckpointTransformer());
-    }
-
-    public function destroy($id): Response
-    {
-        $accidentCheckpoint = AccidentCheckpoint::findOrFail($id);
-        Log::info('Accident status deleted', [$accidentCheckpoint, $this->user()]);
-        $accidentCheckpoint->delete();
-        return $this->response->noContent();
+        return AccidentCheckpointRequest::class;
     }
 }

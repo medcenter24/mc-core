@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +17,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use medcenter24\mcCore\App\Entity\Role;
+use Illuminate\Support\Facades\Auth;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
+use medcenter24\mcCore\App\Support\Facades\Roles;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserStore extends JsonRequest
@@ -32,18 +36,21 @@ class UserStore extends JsonRequest
      */
     public function authorize(): bool
     {
-        return \Auth::check()
-            && (\Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)
-                || \Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE));
+        return Auth::check()
+            && (Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)
+                || Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE));
     }
 
+    /**
+     * @return array
+     */
     public function validationData(): array
     {
         $data = parent::validationData();
 
+        $id = (int) $data['id'];
         // if doctor access - he can change only his data
-        if (\Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE)
-            && auth()->user()->id != $data['id']) {
+        if (auth()->user()->id !== $id && Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE)) {
             throw new HttpException(403);
         }
 

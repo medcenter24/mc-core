@@ -20,11 +20,10 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
-use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Entity\Country;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CountryRequest;
+use medcenter24\mcCore\App\Services\Entity\CountryService;
 use medcenter24\mcCore\App\Transformers\CountryTransformer;
 use League\Fractal\TransformerAbstract;
 
@@ -35,41 +34,16 @@ class CountriesController extends ModelApiController
         return new CountryTransformer();
     }
 
-    protected function getModelClass(): string
+    /**
+     * @inheritDoc
+     */
+    protected function getModelService(): ModelService
     {
-        return Country::class;
+        return $this->getServiceLocator()->get(CountryService::class);
     }
 
-    public function index(): Response
+    protected function getRequestClass(): string
     {
-        $countries = Country::orderBy('title')->get();
-        return $this->response->collection($countries, new CountryTransformer());
-    }
-
-    public function store(CountryRequest $request): Response
-    {
-        $country = Country::create([
-            'title' => $request->json('title', ''),
-        ]);
-        $transformer = new CountryTransformer();
-        return $this->response->created(null, $transformer->transform($country));
-    }
-
-    public function update($id, CountryRequest $request): Response
-    {
-        $country = Country::findOrFail($id);
-        $country->title = $request->json('title', '');
-        $country->save();
-
-        Log::info('Country updated', [$country, $this->user()]);
-        return $this->response->item($country, new CountryTransformer());
-    }
-
-    public function destroy($id): Response
-    {
-        $country = Country::findOrFail($id);
-        Log::info('Country deleted', [$country, $this->user()]);
-        $country->delete();
-        return $this->response->noContent();
+        return CountryRequest::class;
     }
 }

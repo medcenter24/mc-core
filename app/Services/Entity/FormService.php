@@ -462,7 +462,7 @@ class FormService extends AbstractModelService
             self::FIELD_DESCRIPTION => '',
             self::FIELD_TEMPLATE => '',
             self::FIELD_FORMABLE_TYPE => '',
-            self::FIELD_VARIABLES => [],
+            self::FIELD_VARIABLES => '{}',
         ];
     }
 }

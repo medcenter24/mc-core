@@ -57,8 +57,8 @@ class CalendarEventTransformer extends AbstractTransformer
     {
         return [
             AccidentService::FIELD_ID => self::VAR_INT,
-            AccidentService::FIELD_CREATED_AT => self::VAR_DATE,
-            AccidentService::FIELD_HANDLING_TIME => self::VAR_DATE,
+            AccidentService::FIELD_CREATED_AT => self::VAR_DATETIME,
+            AccidentService::FIELD_HANDLING_TIME => self::VAR_DATETIME,
             AccidentService::FIELD_ACCIDENT_STATUS_ID => self::VAR_INT,
         ];
     }

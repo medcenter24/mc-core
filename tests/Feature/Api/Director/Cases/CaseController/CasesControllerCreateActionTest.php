@@ -30,22 +30,15 @@ use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\FormReport;
 use medcenter24\mcCore\App\Entity\Patient;
 use medcenter24\mcCore\App\Entity\Payment;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class CasesControllerCreateActionTest extends TestCase
+class CasesControllerCreateActionTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     public function testCreateWithoutData(): void
     {
-        $response = $this->post('/api/director/cases', [], $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/cases', []);
         $response->assertStatus(201)->assertJson([
             'id' => 1,
             'assistantId' => 0,
@@ -100,7 +93,7 @@ class CasesControllerCreateActionTest extends TestCase
                 'caseablePaymentId' => NULL,
             ]
         ];
-        $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/cases', $data);
 
         $response->assertStatus(201)->assertJson([
             'id' => 1,
@@ -154,7 +147,7 @@ class CasesControllerCreateActionTest extends TestCase
         ];
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/cases', $data);
         $this->doNotPrintErrResponse();
         $content = $response->assertStatus(422)->getContent();
         $ans = json_decode($content);
@@ -209,8 +202,8 @@ class CasesControllerCreateActionTest extends TestCase
         $data = [
             'accident' => [
                 'accidentStatusId' => AccidentStatus::firstOrCreate([
-                    'title' => AccidentStatusesService::STATUS_NEW,
-                    'type' => AccidentStatusesService::TYPE_ACCIDENT,
+                    'title' => AccidentStatusService::STATUS_NEW,
+                    'type' => AccidentStatusService::TYPE_ACCIDENT,
                 ])->id,
                 'accidentTypeId' => factory(AccidentType::class)->create()->id,
                 'address' => 'any',
@@ -235,7 +228,7 @@ class CasesControllerCreateActionTest extends TestCase
             ]
         ];
 
-        $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/cases', $data);
 
         $response->assertStatus(201)
             ->assertJson([
@@ -260,7 +253,7 @@ class CasesControllerCreateActionTest extends TestCase
         $patient = factory(Patient::class)->create();
         $data = [
             'accident' => [
-                'accidentStatusId' => (new AccidentStatusesService())->getNewStatus()->getAttribute('id'),
+                'accidentStatusId' => (new AccidentStatusService())->getNewStatus()->getAttribute('id'),
                 'accidentTypeId' => factory(AccidentType::class)->create()->id,
                 'address' => 'any',
                 'assistantId' => factory(Assistant::class)->create()->id,
@@ -283,7 +276,7 @@ class CasesControllerCreateActionTest extends TestCase
                 'caseablePaymentId' => factory(Payment::class)->create()->id,
             ]
         ];
-        $response = $this->json('post', '/api/director/cases', $data, $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/cases', $data);
 
         $response->assertStatus(201)->assertJson([
             'id' => 2,

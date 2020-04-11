@@ -20,9 +20,8 @@ namespace medcenter24\mcCore\Tests\Unit\Services;
 
 
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodInterpretationService;
-use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use medcenter24\mcCore\App\Services\Entity\DatePeriodInterpretationService;
 use medcenter24\mcCore\Tests\TestCase;
 use medcenter24\mcCore\Tests\Unit\fakes\DatePeriodFake;
 
@@ -39,7 +38,7 @@ class DatePeriodInterpretationServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new DatePeriodInterpretationService(new DatePeriodService());
+        $this->service = new DatePeriodInterpretationService();
     }
 
     public function periodsDataProvider()

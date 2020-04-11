@@ -25,16 +25,9 @@ use medcenter24\mcCore\App\Entity\Company;
 class CompanyService extends AbstractModelService
 {
     public const FIELD_TITLE = 'title';
-    /**
-     * Default for the company if exists
-     */
-    public const FIELD_HOSPITAL_ACCIDENT_FORM_ID = 'hospital_accident_form_id';
-    public const FIELD_DOCTOR_ACCIDENT_FORM_ID = 'doctor_accident_form_id';
 
     public const FILLABLE = [
         self::FIELD_TITLE,
-        self::FIELD_HOSPITAL_ACCIDENT_FORM_ID,
-        self::FIELD_DOCTOR_ACCIDENT_FORM_ID,
     ];
 
     public const VISIBLE = [
@@ -44,8 +37,6 @@ class CompanyService extends AbstractModelService
 
     public const UPDATABLE = [
         self::FIELD_TITLE,
-        self::FIELD_HOSPITAL_ACCIDENT_FORM_ID,
-        self::FIELD_DOCTOR_ACCIDENT_FORM_ID,
     ];
 
     /**
@@ -63,8 +54,6 @@ class CompanyService extends AbstractModelService
     {
         return [
             self::FIELD_TITLE => '',
-            self::FIELD_HOSPITAL_ACCIDENT_FORM_ID => 0,
-            self::FIELD_DOCTOR_ACCIDENT_FORM_ID => 0,
         ];
     }
 }

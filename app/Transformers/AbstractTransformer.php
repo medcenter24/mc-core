@@ -34,6 +34,7 @@ abstract class AbstractTransformer extends TransformerAbstract
     protected const VAR_STRING = 'string';
     protected const VAR_FLOAT = 'float';
     protected const VAR_BOOL = 'bool';
+    protected const VAR_DATETIME = 'datetime';
     protected const VAR_DATE = 'date';
 
     /**
@@ -93,8 +94,14 @@ abstract class AbstractTransformer extends TransformerAbstract
             case self::VAR_INT:
                 $value = (int) $value;
                 break;
-            case self::VAR_DATE:
+            case self::VAR_DATETIME:
                 $value = Date::sysDate(
+                    $value,
+                    $this->getServiceLocator()->get(UserService::class)->getTimezone()
+                );
+                break;
+            case self::VAR_DATE:
+                $value = Date::getSysDate(
                     $value,
                     $this->getServiceLocator()->get(UserService::class)->getTimezone()
                 );

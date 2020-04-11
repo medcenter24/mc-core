@@ -54,8 +54,8 @@ class AccidentStatusHistoryTransformer extends AbstractTransformer
             AccidentStatusHistoryService::FIELD_USER_ID => self::VAR_INT,
             AccidentStatusHistoryService::FIELD_ACCIDENT_STATUS_ID => self::VAR_INT,
             AccidentStatusHistoryService::FIELD_HISTORYABLE_ID => self::VAR_INT,
-            AccidentStatusHistoryService::FIELD_CREATED_AT => self::VAR_DATE,
-            AccidentStatusHistoryService::FIELD_UPDATED_AT => self::VAR_DATE,
+            AccidentStatusHistoryService::FIELD_CREATED_AT => self::VAR_DATETIME,
+            AccidentStatusHistoryService::FIELD_UPDATED_AT => self::VAR_DATETIME,
         ];
     }
 

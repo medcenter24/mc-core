@@ -20,7 +20,9 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
+use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\User;
 
 class DoctorAccidentService extends AbstractModelService
 {

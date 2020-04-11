@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use medcenter24\mcCore\App\Services\Entity\DiagnosticService;
-use medcenter24\mcCore\Tests\Feature\Api\AbstractApiModelTest;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorApiModelTest;
 
-class DiagnosticsControllerTest extends AbstractApiModelTest
+class DiagnosticsControllerTest extends DirectorApiModelTest
 {
 
     private const URI = 'api/director/diagnostics';
@@ -265,15 +265,6 @@ class DiagnosticsControllerTest extends AbstractApiModelTest
         return [
             [
                 'data' => ['title' => '123'],
-                'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'description' => '',
-                    'diagnosticCategoryId' => 0,
-                    'diseaseId' => 0,
-                    'type' => 'system',
-                    'status' => 'active',
-                ],
             ],
             [
                 'data' => [
@@ -282,15 +273,6 @@ class DiagnosticsControllerTest extends AbstractApiModelTest
                     'diagnosticCategoryId' => 1,
                     'diseaseId' => 2,
                     'status' => 'disabled'
-                ],
-                'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test diagnostic',
-                    'description' => 'Desc',
-                    'diagnosticCategoryId' => 1,
-                    'diseaseId' => 2,
-                    'type' => 'system',
-                    'status' => 'disabled',
                 ],
             ],
         ];

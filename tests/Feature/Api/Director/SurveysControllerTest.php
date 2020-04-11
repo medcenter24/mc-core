@@ -20,18 +20,11 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\App\Services\Entity\SurveyService;
-use medcenter24\mcCore\Tests\Feature\Api\AbstractApiModelTest;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorApiModelTest;
 
-class SurveysControllerTest extends AbstractApiModelTest
+class SurveysControllerTest extends DirectorApiModelTest
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     private const URI = 'api/director/surveys';
 
     /**
@@ -269,14 +262,6 @@ class SurveysControllerTest extends AbstractApiModelTest
         return [
             [
                 'data' => ['title' => '123'],
-                'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'description' => '',
-                    'diseaseId' => 0,
-                    'type' => 'system',
-                    'status' => 'active',
-                ],
             ],
             [
                 'data' => [
@@ -284,14 +269,6 @@ class SurveysControllerTest extends AbstractApiModelTest
                     'description' => 'Desc',
                     'diseaseId' => 2,
                     'status' => 'disabled'
-                ],
-                'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'description' => 'Desc',
-                    'diseaseId' => 2,
-                    'type' => 'system',
-                    'status' => 'disabled',
                 ],
             ],
         ];

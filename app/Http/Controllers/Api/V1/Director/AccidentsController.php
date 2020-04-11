@@ -27,7 +27,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\StoreAccident;
 use medcenter24\mcCore\App\Http\Requests\UpdateAccident;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Transformers\AccidentTransformer;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
@@ -54,11 +54,11 @@ class AccidentsController extends ModelApiController
     /**
      * @param StoreAccident $request
      * @param AccidentService $accidentService
-     * @param AccidentStatusesService $accidentStatusesService
+     * @param AccidentStatusService $accidentStatusesService
      * @return Response
      * @throws InconsistentDataException
      */
-    public function store(StoreAccident $request, AccidentService $accidentService, AccidentStatusesService $accidentStatusesService): Response
+    public function store(StoreAccident $request, AccidentService $accidentService, AccidentStatusService $accidentStatusesService): Response
     {
         /** @var Accident $accident */
         $accident = $accidentService->create($request->all());

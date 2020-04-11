@@ -29,7 +29,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 
-
 /**
  * Uploader
  * It is more like a Uploader at all (not just a media)
@@ -45,14 +44,17 @@ class MediaController extends ApiController
      */
     private $service;
 
-    public function __construct(UploaderService $uploaderService)
+    private function getUploaderService(): UploaderService
     {
-        parent::__construct();
-        $this->service = $uploaderService;
-        $this->service->setOptions([
-            UploaderService::CONF_DISK => 'local',
-            UploaderService::CONF_FOLDER => 'files',
-        ]);
+        if (!$this->service) {
+            /** @var UploaderService service */
+            $this->service = $this->getServiceLocator()->get(UploaderService::class);
+            $this->service->setOptions([
+                UploaderService::CONF_DISK => 'local',
+                UploaderService::CONF_FOLDER => 'files',
+            ]);
+        }
+        return $this->service;
     }
 
     public function upload(Request $request): Response
@@ -65,10 +67,10 @@ class MediaController extends ApiController
         foreach ($request->allFiles() as $file) {
             $uploadedCase = null;
             if ($file instanceof UploadedFile) {
-                $uploadedCase = $this->service->upload($file);
+                $uploadedCase = $this->getUploaderService()->upload($file);
             } elseif (count($file)) {
                 foreach ($file as $item) {
-                    $uploadedCase = $this->service->upload($item);
+                    $uploadedCase = $this->getUploaderService()->upload($item);
                 }
             }
 
@@ -87,8 +89,11 @@ class MediaController extends ApiController
      */
     public function uploads(): Response
     {
-        $uploadedCases = $this->user()->uploads()->where('storage', $this->service->getOption(UploaderService::CONF_FOLDER))->get();
-        return $this->response->collection($uploadedCases, new UploadedFileTransformer);
+        $uploadedCases = $this->user()
+            ->uploads()
+            ->where('storage', $this->getUploaderService()->getOption(UploaderService::CONF_FOLDER))
+            ->get();
+        return $this->response->collection($uploadedCases, new UploadedFileTransformer());
     }
 
     /**
@@ -98,7 +103,7 @@ class MediaController extends ApiController
      */
     public function destroy ($id): Response
     {
-        $this->service->delete($id);
+        $this->getUploaderService()->delete($id);
         return $this->response->noContent();
     }
 }

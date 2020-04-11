@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\Diagnostic;
+use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
 
 class DiagnosticService extends AbstractModelService
@@ -63,7 +64,18 @@ class DiagnosticService extends AbstractModelService
         self::FIELD_STATUS,
     ];
 
+    /**
+     * Visible and selectable
+     */
     public const STATUS_ACTIVE = 'active';
+    /**
+     * Visible but not selectable
+     */
+    public const STATUS_HIDDEN = 'hidden';
+    /**
+     * Hidden and not accessible
+     */
+    public const STATUS_DISABLED = 'disabled';
 
     protected function getClassName(): string
     {
@@ -90,5 +102,28 @@ class DiagnosticService extends AbstractModelService
     {
         $data[self::FIELD_CREATED_BY] = auth()->user() ? auth()->user()->getAuthIdentifier() : 0;
         return parent::create($data);
+    }
+
+    /**
+     * @param User $user
+     * @param Diagnostic $diagnostic
+     * @return bool
+     */
+    public function hasAccess(User $user, Diagnostic $diagnostic): bool
+    {
+        $createdBy = (int) $diagnostic->getAttribute(self::FIELD_CREATED_BY);
+        $userId = (int) $user->getKey();
+        $owner = $createdBy && $userId && $createdBy === $userId;
+        $hasDirectorRole = $this->getRoleService()->hasRole($user, RoleService::DIRECTOR_ROLE);
+        $hasAdminRole = $this->getRoleService()->hasRole($user, RoleService::ADMIN_ROLE);
+        return $hasDirectorRole || $hasAdminRole || $owner;
+    }
+
+    /**
+     * @return RoleService
+     */
+    private function getRoleService(): RoleService
+    {
+        return $this->getServiceLocator()->get(RoleService::class);
     }
 }

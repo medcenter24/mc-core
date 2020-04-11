@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,34 +17,22 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Requests;
+declare(strict_types = 1);
 
-use Illuminate\Foundation\Http\FormRequest;
-use medcenter24\mcCore\App\Services\Entity\RoleService;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
 
-class UpdateDoctor extends FormRequest
+use Dingo\Api\Http\Response;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Entity\SurveyService;
+use medcenter24\mcCore\App\Transformers\SurveyTransformer;
+
+class SurveysController extends ApiController
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
+    public function index(): Response
     {
-        return \Auth::check() && \Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
-    {
-        return [
-            'name' => 'min:1|max:150',
-            'description' => 'min:1|max:255',
-            'ref_key' => 'min:1|max:5|unique:doctors',
-        ];
+        /** @var SurveyService $service */
+        $service = $this->getServiceLocator()->get(SurveyService::class);
+        $surveys = $service->getActiveByDoctor(auth()->id());
+        return $this->response->collection($surveys, new SurveyTransformer());
     }
 }

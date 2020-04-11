@@ -28,6 +28,9 @@ use medcenter24\mcCore\App\Transformers\AccidentTypeTransformer;
 
 class AccidentTypesController extends ApiController
 {
+    /**
+     * @return Response
+     */
     public function index(): Response
     {
         $types = AccidentType::orderBy('title')->get();

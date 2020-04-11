@@ -23,7 +23,6 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
-use medcenter24\mcCore\App\Entity\Diagnostic;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticRequest;
 use medcenter24\mcCore\App\Services\Entity\DiagnosticService;
@@ -34,11 +33,6 @@ class DiagnosticsController extends ModelApiController
     protected function getDataTransformer(): TransformerAbstract
     {
         return new DiagnosticTransformer();
-    }
-
-    protected function getModelClass(): string
-    {
-        return Diagnostic::class;
     }
 
     /**

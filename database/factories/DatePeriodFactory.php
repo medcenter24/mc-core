@@ -17,7 +17,7 @@
  */
 
 use Faker\Generator as Faker;
-use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
+use medcenter24\mcCore\App\Services\Entity\DatePeriodService;
 
 $factory->define(\medcenter24\mcCore\App\Entity\DatePeriod::class, function (Faker $faker) {
         $periodService = new DatePeriodService();

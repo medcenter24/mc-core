@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,12 +17,13 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
-use Roles;
+use medcenter24\mcCore\App\Support\Facades\Roles;
 
 class DiseaseRequest extends JsonRequest
 {

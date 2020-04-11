@@ -31,7 +31,7 @@ class DoctorAccidentTransformer extends TransformerAbstract
 {
     use ServiceLocatorTrait;
 
-    protected function transform(Model $model): array
+    public function transform(Model $model): array
     {
         $fields = (new AccidentTransformer())->transform($model);
         $fields['recommendation'] = $model->getAttribute('caseable')

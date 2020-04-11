@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 
 /**
  * Statuses of the Accident
@@ -36,8 +36,8 @@ class AccidentStatus extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = AccidentStatusesService::FILLABLE;
-    protected $visible  = AccidentStatusesService::VISIBLE;
+    protected $fillable = AccidentStatusService::FILLABLE;
+    protected $visible  = AccidentStatusService::VISIBLE;
 
     /**
      * @return MorphToMany

@@ -21,7 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Transformers;
 
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 
 class AccidentStatusTransformer extends AbstractTransformer
 {
@@ -31,9 +31,9 @@ class AccidentStatusTransformer extends AbstractTransformer
     protected function getMap(): array
     {
         return [
-            AccidentStatusesService::FIELD_ID,
-            AccidentStatusesService::FIELD_TITLE,
-            AccidentStatusesService::FIELD_TYPE,
+            AccidentStatusService::FIELD_ID,
+            AccidentStatusService::FIELD_TITLE,
+            AccidentStatusService::FIELD_TYPE,
         ];
     }
 }

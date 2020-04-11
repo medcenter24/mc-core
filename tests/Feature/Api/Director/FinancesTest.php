@@ -26,17 +26,10 @@ use medcenter24\mcCore\App\Entity\City;
 use medcenter24\mcCore\App\Entity\DatePeriod;
 use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\Service;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class FinancesTest extends TestCase
+class FinancesTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     /**
      * @var array
      */
@@ -69,7 +62,7 @@ class FinancesTest extends TestCase
 
     public function testStoreRule(): void
     {
-        $response = $this->json('POST', '/api/director/finance', $this->financeData, $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/finance', $this->financeData);
         $response->assertJson([
             'title' => 'Unit test rule',
             'value' => 11,
@@ -79,21 +72,21 @@ class FinancesTest extends TestCase
 
     public function testUpdateRule(): void
     {
-        $response = $this->json('POST', '/api/director/finance', $this->financeData, $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/finance', $this->financeData);
         $response->assertStatus(201);
         $data = $response->json();
         $data['title'] = 'newTitle';
         $data['value'] = '9';
-        $updateResponse = $this->json('PUT', "/api/director/finance/{$response->json('id')}", $data, $this->headers($this->getUser()));
+        $updateResponse = $this->sendPost("/api/director/finance/{$response->json('id')}", $data);
         $updateResponse->assertJson(['data' => ['title' => 'newTitle', 'value' => 9]]);
         $updateResponse->assertStatus(200);
     }
 
     public function testGetRule()
     {
-        $response = $this->json('POST', '/api/director/finance', $this->financeData, $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/finance', $this->financeData);
         $response->assertStatus(201);
-        $getResponse = $this->json('GET', "/api/director/finance/{$response->json('id')}", [], $this->headers($this->getUser()));
+        $getResponse = $this->sendGet("/api/director/finance/{$response->json('id')}");
         $getResponse->assertJson(['data' => []]);
         $getResponse->assertStatus(200);
     }

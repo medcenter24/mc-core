@@ -27,6 +27,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AccidentTypeRequest;
 use medcenter24\mcCore\App\Transformers\AccidentTypeTransformer;
 
+// todo director can't control types of  the case insurance/non-insurance
 class AccidentTypesController extends ApiController
 {
     public function index()

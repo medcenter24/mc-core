@@ -21,21 +21,14 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\Service;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class DirectorCaseServicesTest extends TestCase
+class DirectorCaseServicesTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     public function testGetNoServices(): void
     {
         $case = factory(Accident::class)->create();
-        $response = $this->get('/api/director/cases/' . $case->id .'/services', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/' . $case->id .'/services');
         $response->assertStatus(200);
         $response->assertJson(['data' => []]);
     }
@@ -53,9 +46,8 @@ class DirectorCaseServicesTest extends TestCase
         $accident->caseable->services()->attach($services);
         self::assertEquals(5, $accident->caseable->services->count());
 
-        $response = $this->get('/api/director/cases/' . $accident->id .'/services', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/' . $accident->id .'/services');
         $response->assertStatus(200);
         $response->assertJson(['data' => [[], [], [], [], []]]);
     }
-
 }

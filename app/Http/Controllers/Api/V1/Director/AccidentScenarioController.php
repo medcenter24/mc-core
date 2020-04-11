@@ -23,11 +23,11 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Services\Entity\ScenarioService;
-
+// todo do I still need that?
 class AccidentScenarioController extends ApiController
 {
-    public function doctorScenario(ScenarioService $doctorScenarioService)
+    public function doctorScenario(): void
     {
-        return $doctorScenarioService->scenario();
+        return $this->getServiceLocator()->get(ScenarioService::class)->getScenarioByTag('doctor');
     }
 }

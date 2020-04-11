@@ -26,7 +26,6 @@ use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Transformers\AbstractTransformer;
 use medcenter24\mcCore\App\Transformers\DoctorCaseTransformer;
 use medcenter24\mcCore\App\Transformers\HospitalCaseTransformer;
 
@@ -46,7 +45,6 @@ class CaseCaseableController extends ApiController
      */
     public function getDoctorCase(int $id): Response
     {
-
         /** @var Accident $accident */
         $accident = $this->getAccidentService()->first([AccidentService::FIELD_ID => $id]);
 

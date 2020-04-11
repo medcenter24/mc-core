@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Http\Response;
+use Exception;
 use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
@@ -37,30 +38,56 @@ class DocumentsController extends ApiController
     use ServiceLocatorTrait;
 
     /**
+     * @return DocumentService
+     */
+    private function getDocumentService(): DocumentService
+    {
+        return $this->getServiceLocator()->get(DocumentService::class);
+    }
+
+    private function getRequestedDocument(int $id): Document
+    {
+        /** @var Document $document */
+        $document = $this->getDocumentService()->first([DocumentService::FIELD_ID => $id]);
+        if (!$document) {
+            $this->response->errorNotFound();
+        }
+        return $document;
+    }
+
+    /**
      * Upload
-     * @param $id
+     * @param int $id
      * @return BinaryFileResponse
      */
-    public function show($id): BinaryFileResponse
+    public function show(int $id): BinaryFileResponse
     {
-        $document = Document::findOrFail($id);
+        $document = $this->getRequestedDocument($id);
+
         if (!$document->hasMedia(DocumentService::CASES_FOLDERS)) {
             $this->response->errorBadRequest('Image does not exist');
         }
         if (!$this->getServiceLocator()->get(DocumentService::class)->checkAccess($document, $this->user())) {
             $this->response->errorForbidden();
         }
+
         $media = $document->getFirstMedia(DocumentService::CASES_FOLDERS);
+        if (!$media) {
+            $this->response->errorNotFound();
+        }
+
         return response()->download($media->getPath());
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return Response
+     * @throws Exception
      */
-    public function destroy($id): Response
+    public function destroy(int $id): Response
     {
-        $document = Document::findOrFail($id);
+        $document = $this->getRequestedDocument($id);
+
         if (!$this->getServiceLocator()->get(DocumentService::class)->checkAccess($document, $this->user())) {
             $this->response->errorForbidden();
         }
@@ -75,9 +102,9 @@ class DocumentsController extends ApiController
      * @param DoctorDocumentRequest $request
      * @return Response
      */
-    public function update($id, DoctorDocumentRequest $request): Response
+    public function update(int $id, DoctorDocumentRequest $request): Response
     {
-        $document = Document::findOrFail($id);
+        $document = $this->getRequestedDocument($id);
         try {
             $this->getServiceLocator()->get(DocumentService::class)
                 ->changeDocType($document, $request->json('type', DocumentService::TYPE_PASSPORT));

@@ -21,22 +21,14 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
 use medcenter24\mcCore\App\Entity\Accident;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class CasesControllerCloseTest extends TestCase
+class CasesControllerCloseTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     public function testCloseCase(): void
     {
         factory(Accident::class)->create();
-        $response = $this->put('/api/director/cases/1/close', [], $this->headers($this->getUser()));
-
+        $response = $this->sendPut('/api/director/cases/1/close', []);
         $response->assertStatus(204);
     }
 }

@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
@@ -62,5 +63,15 @@ class UserTransformer extends AbstractTransformer
             UserService::FIELD_LANG,
             UserService::FIELD_TIMEZONE,
         ];
+    }
+
+    public function inverseTransform(array $data): array
+    {
+        $transformed = parent::inverseTransform($data);
+
+        if (array_key_exists(UserService::FIELD_PASSWORD, $data)) {
+            $data['password'] = Hash::make($data['password']);
+        }
+        return $transformed;
     }
 }

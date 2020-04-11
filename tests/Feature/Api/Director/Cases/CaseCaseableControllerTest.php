@@ -20,22 +20,15 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class CaseCaseableControllerTest extends TestCase
+class CaseCaseableControllerTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     /**
      * @var CaseAccidentService
      */
@@ -57,7 +50,7 @@ class CaseCaseableControllerTest extends TestCase
                 AccidentService::FIELD_CASEABLE_TYPE => HospitalAccident::class,
             ],
         ]);
-        $response = $this->get('/api/director/cases/' . $accident->getKey() . '/hospitalcase', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/' . $accident->getKey() . '/hospitalcase');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -82,7 +75,7 @@ class CaseCaseableControllerTest extends TestCase
                 AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
             ],
         ]);
-        $response = $this->get('/api/director/cases/' . $accident->getKey() . '/doctorcase', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/' . $accident->getKey() . '/doctorcase');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -106,7 +99,7 @@ class CaseCaseableControllerTest extends TestCase
                 AccidentService::FIELD_CASEABLE_TYPE => HospitalAccident::class,
             ],
         ]);
-        $response = $this->get('/api/director/cases/' . $accident->getKey() . '/doctorcase', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/' . $accident->getKey() . '/doctorcase');
         $response->assertStatus(400);
         $response->assertJson(['message' => 'Doctor case expected']);
     }
@@ -121,7 +114,7 @@ class CaseCaseableControllerTest extends TestCase
                 AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
             ],
         ]);
-        $response = $this->get('/api/director/cases/' . $accident->getKey() . '/hospitalcase', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/' . $accident->getKey() . '/hospitalcase');
         $response->assertStatus(400);
         $response->assertJson(['message' => 'Hospital case expected']);
     }

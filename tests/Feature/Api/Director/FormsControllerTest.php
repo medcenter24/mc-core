@@ -26,18 +26,12 @@ use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\Form;
 use medcenter24\mcCore\App\Entity\Patient;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use medcenter24\mcCore\App\Services\Entity\FormService;
 use medcenter24\mcCore\App\Services\Form\FormVariableService;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorApiModelTest;
 
-class FormsControllerTest extends TestCase
+class FormsControllerTest extends DirectorApiModelTest
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     public function testStoreError(): void
     {
         $form = factory(Form::class)->create([
@@ -61,11 +55,221 @@ class FormsControllerTest extends TestCase
             ])->id,
         ]);
 
-        $response = $this->get('/api/director/forms/'.$form->id.'/'.$doctorAccident->id.'/html', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/forms/'.$form->id.'/'.$doctorAccident->id.'/html');
         $response->assertStatus(200)->assertJson([
             'data' => '<p>Doctor: <b>Doctor Name</b></p>
     <p>Patient "Patient Name" Doctor one more time Doctor Name. Current company is Medical Company.</p>
     <p>Ref number №aaa-aaa-aaa</p>',
         ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getUri(): string
+    {
+        return '/api/director/forms';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getModelServiceClass(): string
+    {
+        return FormService::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function failedDataProvider(): array
+    {
+        return [
+            [
+                'data' => [],
+                'expectedResponse' => [
+                    'message' => '422 Unprocessable Entity',
+                    'errors' => [
+                        'title' => ['The title field is required.']
+                    ],
+                ],
+            ],
+            [
+                'data' => ['title' => ''],
+                'expectedResponse' => [
+                    'message' => '422 Unprocessable Entity',
+                    'errors' =>
+                        [
+                            'title' =>
+                                [
+                                    0 => 'The title field is required.',
+                                ],
+                        ],
+                    'status_code' => 422,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createDataProvider(): array
+    {
+        return [
+            [
+                'data' => [
+                    'title' => '123',
+                    'formableType' => 'aaa',
+                ],
+                'expectedResponse' => [
+                    'id' => 1,
+                    'title' => '123',
+                    'description' => '',
+                    'formableType' => 'aaa',
+                    'template' => '',
+                ],
+            ],
+            [
+                'data' => [
+                    'title' => 'Php Unit test',
+                    'description' => 'bbb',
+                    'formableType' => 'aaa',
+                    'template' => 'ccc',
+                ],
+                'expectedResponse' => [
+                    'id' => 1,
+                    'title' => 'Php Unit test',
+                    'formableType' => 'aaa',
+                    'template' => 'ccc',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateDataProvider(): array
+    {
+        return [
+            [
+                'data' => [
+                    'title' => 'Php Unit test',
+                    'description' => 'bbb',
+                    'formable_type' => 'aaa',
+                    'template' => 'ccc',
+                ],
+                'updateData' => [
+                    'id' => 1,
+                    'title' => '111',
+                    'description' => '222',
+                    'formableType' => '333',
+                    'template' => '4444',
+                ],
+                'expectedResponse' => [
+                    'id' => 1,
+                    'title' => '111',
+                    'description' => '222',
+                    'formableType' => '333',
+                    'template' => '4444',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function searchDataProvider(): array
+    {
+        return [
+            [
+                'modelsData' => [
+                    ['title' => 'Text to be searched'],
+                    ['title' => 'Php Unit test'],
+                    ['title' => 'another text'],
+                ],
+                // filters
+                [
+                    'filters' => [],
+                ],
+                // response
+                'expectedResponse' => [
+                    'data' => [
+                        [
+                            'id' => 1,
+                            'title' => 'Text to be searched',
+                        ],
+                        [
+                            'id' => 2,
+                            'title' => 'Php Unit test',
+                        ],
+                        [
+                            'id' => 3,
+                            'title' => 'another text',
+                        ],
+                    ],
+                    'meta' => [
+                        'pagination' => [
+                            'total' => 3,
+                            'count' => 3,
+                            'per_page' => 15,
+                            'current_page' => 1,
+                            'total_pages' => 1,
+                            'links' => [
+                            ],
+                        ],
+                    ],
+
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function showDataProvider(): array
+    {
+        return [
+            [
+                'data' => ['title' => '123'],
+                'expectedResponse' => [
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                    ]
+                ],
+            ],
+            [
+                'data' => [
+                    'title' => 'Php Unit test',
+                ],
+                'expectedResponse' => [
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteDataProvider(): array
+    {
+        return [
+            [
+                'data' => ['title' => '123'],
+            ],
+            [
+                'data' => [
+                    'title' => 'Php Unit test',
+                ],
+            ],
+        ];
     }
 }

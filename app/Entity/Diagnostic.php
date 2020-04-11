@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Entity;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -45,27 +46,42 @@ class Diagnostic extends Model
     protected $fillable = DiagnosticService::FILLABLE;
     protected $visible = DiagnosticService::VISIBLE;
 
+    /**
+     * @return BelongsTo
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(DiagnosticCategory::class);
     }
 
+    /**
+     * @return MorphToMany
+     */
     public function diagnosticDoctorAccidents(): MorphToMany
     {
         return $this->morphedByMany(DoctorAccident::class, 'diagnosticable');
     }
 
+    /**
+     * @return BelongsTo
+     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * @return bool
+     */
     public function isDoctor(): bool
     {
         return $this->getServiceLocator()->get(DoctorService::class)
             ->isDoctor($this->getAttribute('created_by'));
     }
 
+    /**
+     * @return BelongsTo
+     */
     public function disease(): BelongsTo
     {
         return $this->belongsTo(Disease::class);

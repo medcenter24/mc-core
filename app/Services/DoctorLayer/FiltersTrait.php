@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,8 +16,9 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\DoctorLayer;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services\DoctorLayer;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
@@ -30,11 +32,11 @@ trait FiltersTrait
      */
     public function getActiveByDoctor(int $doctorId): Collection
     {
-        /** @var Collection $diagnostics */
-        $diagnostics = $this->getQuery()->orderBy('title')->get();
+        /** @var Collection $collection */
+        $collection = $this->getQuery()->orderBy('title')->get();
         /** @var RoleService $roleService */
         $roleService = $this->getServiceLocator()->get(RoleService::class);
-        return $diagnostics->filter(static function(Model $model) use ($doctorId, $roleService) {
+        return $collection->filter(static function(Model $model) use ($doctorId, $roleService) {
             return ($model->getAttribute('status') === self::STATUS_ACTIVE
                     && $roleService->hasRole($model->creator, RoleService::DIRECTOR_ROLE))
                 || (int)$model->getAttribute('created_by') === $doctorId;

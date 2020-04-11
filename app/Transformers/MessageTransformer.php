@@ -43,12 +43,12 @@ class MessageTransformer extends TransformerAbstract
     {
         return [
             'id' => $message->id,
-            'user_id' => $message->user_id,
-            'user_name' => $message->user_id ? $message->user->name : '',
-            'user_thumb' => $message->user_id && $message->user->hasMedia(LogoService::FOLDER)
+            'userId' => $message->user_id,
+            'userName' => $message->user_id ? $message->user->name : '',
+            'userThumb' => $message->user_id && $message->user->hasMedia(LogoService::FOLDER)
                 ? MediaHelper::b64($message->user, LogoService::FOLDER, UserService::THUMB_45) : '',
             'body' => $message->body,
-            'created_at' => Date::sysDate(
+            'createdAt' => Date::sysDate(
                 $message->created_at,
                 $this->getServiceLocator()->get(UserService::class)->getTimezone()
             ),

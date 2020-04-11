@@ -23,6 +23,8 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api;
 use Dingo\Api\Exception\ValidationHttpException;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
+use Doctrine\DBAL\Query\QueryException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
@@ -69,7 +71,15 @@ abstract class ModelApiController extends ApiController
         return JsonRequest::class;
     }
 
-    private function urlToTheSource(int $id): string
+    /**
+     * @return string
+     */
+    protected function getUpdateRequestClass(): string
+    {
+        return $this->getRequestClass();
+    }
+
+    protected function urlToTheSource(int $id): string
     {
         return URL::action('\\' . static::class . '@show', ['id' => $id]);
     }
@@ -128,6 +138,10 @@ abstract class ModelApiController extends ApiController
         } catch(InconsistentDataException $e) {
             throw new ValidationHttpException([$e->getMessage()]);
         } catch (NotImplementedException $e) {
+            Log::error($e->getMessage(), [$e]);
+            $this->response->errorInternal();
+        } catch (QueryException $e) {
+            Log::error($e->getMessage(), [$e]);
             $this->response->errorInternal();
         }
         return null;
@@ -142,7 +156,7 @@ abstract class ModelApiController extends ApiController
     public function update(int $id, JsonRequest $request): Response
     {
         /** @var JsonRequest $request */
-        $request = call_user_func([$this->getRequestClass(), 'createFromBase'], $request);
+        $request = call_user_func([$this->getUpdateRequestClass(), 'createFromBase'], $request);
         $request->validate();
 
         try {
@@ -153,10 +167,15 @@ abstract class ModelApiController extends ApiController
                 $this->urlToTheSource($id),
                 $this->getDataTransformer()->transform($model));
         } catch (NotImplementedException $e) {
+            Log::error($e->getMessage(), [$e]);
             throw new ValidationHttpException([$e->getMessage()]);
         } catch (InconsistentDataException $e) {
             // it can be here
+            Log::error($e->getMessage(), [$e]);
             throw new ValidationHttpException([$e->getMessage()]);
+        } catch (QueryException $e) {
+            Log::error($e->getMessage(), [$e]);
+            $this->response->errorInternal();
         }
     }
 
@@ -171,6 +190,9 @@ abstract class ModelApiController extends ApiController
             $this->getModelService()->delete($id);
         } catch (InconsistentDataException $e) {
             $this->response->errorNotFound();
+        } catch (QueryException $e) {
+            Log::error($e->getMessage(), [$e]);
+            $this->response->errorInternal();
         }
         return $this->response->noContent();
     }

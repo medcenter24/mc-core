@@ -20,7 +20,7 @@ namespace medcenter24\mcCore\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 class UpdateDoctorAccident extends FormRequest
@@ -44,9 +44,9 @@ class UpdateDoctorAccident extends FormRequest
     {
         return [
             'status' => Rule::in([
-                AccidentStatusesService::STATUS_IN_PROGRESS,
-                AccidentStatusesService::STATUS_ASSIGNED,
-                AccidentStatusesService::STATUS_SENT,
+                AccidentStatusService::STATUS_IN_PROGRESS,
+                AccidentStatusService::STATUS_ASSIGNED,
+                AccidentStatusService::STATUS_SENT,
             ]),
             'diagnose' => 'min:3',
         ];

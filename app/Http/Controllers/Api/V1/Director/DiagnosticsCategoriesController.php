@@ -21,14 +21,14 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Entity\DiagnosticCategory;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticCategoryUpdate;
+use medcenter24\mcCore\App\Services\Entity\DiagnosticCategoryService;
 use medcenter24\mcCore\App\Transformers\CategoryTransformer;
 use League\Fractal\TransformerAbstract;
 
-class CategoriesController extends ModelApiController
+class DiagnosticsCategoriesController extends ModelApiController
 {
 
     protected function getDataTransformer(): TransformerAbstract
@@ -36,32 +36,16 @@ class CategoriesController extends ModelApiController
         return new CategoryTransformer();
     }
 
-    protected function getModelClass(): string
+    /**
+     * @inheritDoc
+     */
+    protected function getModelService(): ModelService
     {
-        return DiagnosticCategory::class;
+        return $this->getServiceLocator()->get(DiagnosticCategoryService::class);
     }
 
-    public function show($id): Response
+    protected function getRequestClass(): string
     {
-        $category = DiagnosticCategory::findOrFail($id);
-        return $this->response->item($category, new CategoryTransformer());
-    }
-
-    public function update($id, DiagnosticCategoryUpdate $request): Response
-    {
-        $category = DiagnosticCategory::findOrFail($id);
-        $category->title = $request->json('title', 'Category ' . $category->id);
-        $category->save();
-
-        return $this->response->item($category, new CategoryTransformer());
-    }
-
-    public function store(DiagnosticCategoryUpdate $request): Response
-    {
-        $category = DiagnosticCategory::create([
-            'title' => $request->json('title', 'NewCategory')
-        ]);
-        $transformer = new CategoryTransformer();
-        return $this->response->created(null, $transformer->transform($category));
+        return DiagnosticCategoryUpdate::class;
     }
 }

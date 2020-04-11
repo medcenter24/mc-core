@@ -27,6 +27,11 @@ use medcenter24\mcCore\App\Services\CaseServices\CaseHistoryService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Transformers\AccidentStatusHistoryTransformer;
 
+/**
+ * Log of the actions for the case
+ * Class CaseHistoryController
+ * @package medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases
+ */
 class CaseHistoryController extends ApiController
 {
 

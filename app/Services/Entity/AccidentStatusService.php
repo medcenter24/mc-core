@@ -24,7 +24,7 @@ use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use Illuminate\Database\Eloquent\Model;
 
-class AccidentStatusesService extends AbstractModelService
+class AccidentStatusService extends AbstractModelService
 {
     public const FIELD_ID = 'id';
     public const FIELD_TITLE = 'title';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,32 +17,26 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\Tests\Feature\Api\Director;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\FinanceCondition;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\Unit\fakes\DoctorServiceFake;
 use medcenter24\mcCore\Tests\Unit\fakes\AssistantFake;
 use medcenter24\mcCore\Tests\Unit\fakes\CityFake;
 use medcenter24\mcCore\Tests\Unit\fakes\DatePeriodFake;
 use medcenter24\mcCore\Tests\Unit\fakes\DoctorFake;
 
-class FinanceControllerTest extends TestCase
+class FinanceConditionControllerTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     public function testStoreError(): void
     {
         $newFinanceCondition = [];
         $this->doNotPrintErrResponse([422]);
-        $response = $this->json('POST', '/api/director/finance', $newFinanceCondition, $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/finance', $newFinanceCondition);
         $this->doNotPrintErrResponse();
         $response->assertStatus(422);
         self::assertArrayHasKey('title', $response->json('errors'), 'Error with `title` message exists');
@@ -56,7 +51,7 @@ class FinanceControllerTest extends TestCase
             'value' => 50,
             'currencyMode' => 'percent'
         ];
-        $response = $this->json('POST', '/api/director/finance', $newFinanceCondition, $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/finance', $newFinanceCondition);
         $response->assertJson([
             'title' => 'feature_test',
             'value' => 50,
@@ -75,14 +70,14 @@ class FinanceControllerTest extends TestCase
             'currency_id' => 0,
             'model' => Accident::class,
         ]);
-        $response = $this->json('PUT', '/api/director/finance/' . $condition->id, [
+        $response = $this->sendPut('/api/director/finance/' . $condition->id, [
             'value' => 51,
             'title' => 'feature_test',
             'currencyMode' => 'percent',
             'type' => 'add',
             'currencyId' => 0,
             'model' => Accident::class,
-        ], $this->headers($this->getUser()));
+        ]);
         $response->assertJson(['data' => [
             'title' => 'feature_test',
             'value' => 51,
@@ -116,8 +111,62 @@ class FinanceControllerTest extends TestCase
                 DoctorServiceFake::make()->toArray(),
             ],
         ];
-        $response = $this->json('POST', '/api/director/finance', $newFinanceCondition, $this->headers($this->getUser()));
+        $response = $this->sendPost('/api/director/finance', $newFinanceCondition);
         $response->assertJson(['title' => 'precisionRuleUnitTest', 'value' => 30]);
         $response->assertStatus(201);
+    }
+
+    public function testShow(): void {
+        $financeCondition = $this->getServiceLocator()->get(FinanceCondition::class);
+        $condition = $financeCondition->create([
+            'title' => 'feature_test',
+            'value' => 50,
+            'currency_mode' => 'percent',
+            'type' => 'add',
+            'currency_id' => 0,
+            'model' => Accident::class,
+        ]);
+        $response = $this->sendGet('/api/director/finance/' . $condition->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                'id' => 1,
+                'title' => 'feature_test',
+                'value' => '50',
+                'assistants' =>
+                    array (
+                    ),
+                'cities' =>
+                    array (
+                    ),
+                'doctors' =>
+                    array (
+                    ),
+                'services' =>
+                    array (
+                    ),
+                'datePeriods' =>
+                    array (
+                    ),
+                'type' => 'add',
+                'model' => 'medcenter24\\mcCore\\App\\Entity\\Accident',
+                'currencyId' => 0,
+                'currencyMode' => 'percent',
+            ],
+        ]);
+    }
+
+    public function testDelete(): void {
+        $financeCondition = $this->getServiceLocator()->get(FinanceCondition::class);
+        $condition = $financeCondition->create([
+            'title' => 'feature_test',
+            'value' => 50,
+            'currency_mode' => 'percent',
+            'type' => 'add',
+            'currency_id' => 0,
+            'model' => Accident::class,
+        ]);
+        $response = $this->sendDelete('/api/director/finance/' . $condition->id);
+        $response->assertStatus(204);
     }
 }

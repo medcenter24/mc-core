@@ -22,70 +22,37 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Entity\Hospital;
-use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\StoreHospital;
 use medcenter24\mcCore\App\Http\Requests\Api\UpdateHospital;
+use medcenter24\mcCore\App\Services\Entity\HospitalService;
 use medcenter24\mcCore\App\Transformers\HospitalTransformer;
 use League\Fractal\TransformerAbstract;
 
-class HospitalsController extends ApiController
+class HospitalsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
         return new HospitalTransformer();
     }
 
-    protected function getModelClass(): string
+    /**
+     * @inheritDoc
+     */
+    protected function getModelService(): ModelService
     {
-        return Hospital::class;
+        return $this->getServiceLocator()->get(HospitalService::class);
     }
 
-    public function index()
+    protected function getRequestClass(): string
     {
-        $hospitals = Hospital::orderBy('title')->get();
-        return $this->response->collection($hospitals, new HospitalTransformer());
+        return StoreHospital::class;
     }
 
-    public function show($id)
+    protected function getUpdateRequestClass(): string
     {
-        $hospital = Hospital::findOrFail($id);
-        return $this->response->item($hospital, new HospitalTransformer());
-    }
-
-    public function store(StoreHospital $request)
-    {
-        $hospital = Hospital::create([
-            'title' => $request->json('title', ''),
-            'description' => $request->json('description', ''),
-            'address' => $request->json('address', ''),
-            'phones' => $request->json('phones', ''),
-            'ref_key' => $request->json('refKey', ''),
-        ]);
-        $transformer = new HospitalTransformer();
-        return $this->response->created(null, $transformer->transform($hospital));
-    }
-
-    public function update($id, UpdateHospital $request)
-    {
-        $hospital = Hospital::findOrFail($id);
-        $hospital->title = $request->json('title', '');
-        $hospital->ref_key = $request->json('refKey', '');
-        $hospital->address = $request->json('address', '');
-        $hospital->description = $request->json('description', '');
-        $hospital->phones = $request->json('phones', '');
-        $hospital->save();
-
-        Log::info('Hospital updated', [$hospital, $this->user()]);
-
-        return $this->response->item($hospital, new HospitalTransformer());
-    }
-
-    public function destroy($id)
-    {
-        $hospital = Hospital::findOrFail($id);
-        Log::info('Hospital deleted', [$hospital, $this->user()]);
-        $hospital->delete();
-        return $this->response->noContent();
+        return UpdateHospital::class;
     }
 }

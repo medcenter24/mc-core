@@ -5,7 +5,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -14,28 +13,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
 declare(strict_types = 1);
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor;
+namespace medcenter24\mcCore\Tests\Feature\Api\Doctor;
 
-use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
-use medcenter24\mcCore\App\Services\Entity\ServiceService;
-use medcenter24\mcCore\App\Transformers\ServiceTransformer;
+use medcenter24\mcCore\Tests\TestCase;
 
-class DoctorServicesController extends ApiController
+class AccidentTypesControllerTest extends TestCase
 {
-    /**
-     * @return Response
-     */
-    public function index(): Response
+    use TestTraitDoctorApi;
+
+    public function testIndex(): void
     {
-        /** @var ServiceService $service */
-        $service = $this->getServiceLocator()->get(ServiceService::class);
-        $services = $service->getActiveByDoctor(auth()->id());
-        return $this->response->collection($services, new ServiceTransformer());
+        $response = $this->sendGet('/api/doctor/caseTypes');
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [],
+        ]);
     }
 }

@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Services\ApiSearch;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 
@@ -47,6 +46,10 @@ class SearchFieldLogic
         return $field;
     }
 
+    /**
+     * @param array $filters
+     * @return array
+     */
     public function transformFieldsToExternalFormat(array $filters): array
     {
         foreach ($filters as $key => $filter) {

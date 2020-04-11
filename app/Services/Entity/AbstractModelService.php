@@ -133,10 +133,12 @@ abstract class AbstractModelService implements ModelService
             }
             $filter[$val] = $data[$val];
         }
+
         $obj = $this->first($filter);
         if (!$obj) {
             throw new InconsistentDataException('Object not found');
         }
+
         if (!$this->updateModel($obj, $data)) {
             throw new InconsistentDataException('Model can not be updated');
         }

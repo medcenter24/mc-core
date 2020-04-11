@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Models\Scenario;
 
 use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;
 
@@ -38,11 +38,11 @@ class ScenarioModel implements ScenarioInterface
     private $scenario;
 
     /**
-     * @var AccidentStatusesService
+     * @var AccidentStatusService
      */
     private $accidentStatusesService;
 
-    public function __construct(AccidentStatusesService $accidentStatusesService, Collection $scenario)
+    public function __construct(AccidentStatusService $accidentStatusesService, Collection $scenario)
     {
         $this->accidentStatusesService = $accidentStatusesService;
         $this->scenario = $scenario;

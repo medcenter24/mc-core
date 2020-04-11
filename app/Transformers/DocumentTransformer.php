@@ -24,12 +24,14 @@ namespace medcenter24\mcCore\App\Transformers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Document;
+use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use Spatie\MediaLibrary\Models\Media;
 
 class DocumentTransformer extends AbstractTransformer
 {
     /**
+     * @param Model|Media $model
      * @return array
      */
     public function transform (Model $model): array
@@ -45,7 +47,10 @@ class DocumentTransformer extends AbstractTransformer
         $fields = parent::transform($model);
         $fields['owner'] = $this->getOwner($model);
         $fields['fileName'] = $media->getAttribute('fileName');
-        $fields['b64thumb'] = base64_encode(file_get_contents($media->getPath('thumb')));
+        $thumbPath = $media->getPath('thumb');
+        $fields['b64thumb'] = $thumbPath && FileHelper::isReadable($thumbPath)
+            ? base64_encode(file_get_contents($thumbPath))
+            : ''; // in case of wrong settings or phpunit test
         return $fields;
     }
 

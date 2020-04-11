@@ -22,21 +22,13 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController\Finance;
 
 use medcenter24\mcCore\App\Entity\Accident;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Services\Entity\PaymentService;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class CaseFinanceControllerSaveTest extends TestCase
+class CaseFinanceControllerSaveTest extends DirectorTestTraitApi
 {
-
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     public function dataProvider(): array
     {
         return [
@@ -152,7 +144,7 @@ class CaseFinanceControllerSaveTest extends TestCase
 
         // write data
         foreach ($toSavePaymentData as $key => $val) {
-            $response = $this->json('PUT', '/api/director/cases/'.$accident->id.'/finance/'.$key, $val, $this->headers($this->getUser()));
+            $response = $this->sendPost('/api/director/cases/'.$accident->id.'/finance/'.$key, $val);
         }
         if (isset($response)) {
             $response->assertStatus(200);

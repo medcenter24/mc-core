@@ -20,7 +20,7 @@ use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Entity\Scenario;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use Illuminate\Database\Seeder;
 
 class ScenariosTableSeeder extends Seeder
@@ -29,41 +29,41 @@ class ScenariosTableSeeder extends Seeder
     protected const DOCTOR_SCENARIO = [
         1 => [
             'order' => 1,
-            'title' => AccidentStatusesService::STATUS_NEW,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT,
+            'title' => AccidentStatusService::STATUS_NEW,
+            'type' => AccidentStatusService::TYPE_ACCIDENT,
         ],
         2 => [
             'order' => 2,
-            'title' => AccidentStatusesService::STATUS_ASSIGNED,
-            'type' => AccidentStatusesService::TYPE_DOCTOR,
+            'title' => AccidentStatusService::STATUS_ASSIGNED,
+            'type' => AccidentStatusService::TYPE_DOCTOR,
         ],
         3 => [
             'order' => 3,
-            'title' => AccidentStatusesService::STATUS_IN_PROGRESS,
-            'type' => AccidentStatusesService::TYPE_DOCTOR,
+            'title' => AccidentStatusService::STATUS_IN_PROGRESS,
+            'type' => AccidentStatusService::TYPE_DOCTOR,
         ],
         4 => [
             'order' => 4,
-            'title' => AccidentStatusesService::STATUS_SENT,
-            'type' => AccidentStatusesService::TYPE_DOCTOR,
+            'title' => AccidentStatusService::STATUS_SENT,
+            'type' => AccidentStatusService::TYPE_DOCTOR,
         ],
         5 => [
             'order' => 5,
-            'title' => AccidentStatusesService::STATUS_PAID,
-            'type' => AccidentStatusesService::TYPE_DOCTOR,
+            'title' => AccidentStatusService::STATUS_PAID,
+            'type' => AccidentStatusService::TYPE_DOCTOR,
         ],
         6 => [
             'order' => 6,
-            'title' => AccidentStatusesService::STATUS_REJECT,
-            'type' => AccidentStatusesService::TYPE_DOCTOR,
-            'mode' => 'skip:' . AccidentStatusesService::TYPE_DOCTOR,
+            'title' => AccidentStatusService::STATUS_REJECT,
+            'type' => AccidentStatusService::TYPE_DOCTOR,
+            'mode' => 'skip:' . AccidentStatusService::TYPE_DOCTOR,
             // doesn't used by the scenario but a doctor needs to have opportunity to set this step in any time that he wants
             // skip doctor means that all type doctor will be skipped after that step
         ],
         7 => [
             'order' => 7,
-            'title' => AccidentStatusesService::STATUS_CLOSED,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT,
+            'title' => AccidentStatusService::STATUS_CLOSED,
+            'type' => AccidentStatusService::TYPE_ACCIDENT,
         ],
     ];
 
@@ -71,48 +71,48 @@ class ScenariosTableSeeder extends Seeder
         /** hospital case created */
         1 => [
             'order' => 1,
-            'title' => AccidentStatusesService::STATUS_NEW,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT,
+            'title' => AccidentStatusService::STATUS_NEW,
+            'type' => AccidentStatusService::TYPE_ACCIDENT,
         ],
         /** guarantee received from the assistant */
         2 => [
             'order' => 2,
-            'title' => AccidentStatusesService::STATUS_ASSISTANT_GUARANTEE,
-            'type' => AccidentStatusesService::TYPE_ASSISTANT,
+            'title' => AccidentStatusService::STATUS_ASSISTANT_GUARANTEE,
+            'type' => AccidentStatusService::TYPE_ASSISTANT,
         ],
         /** Hospital assigned */
         3 => [
             'order' => 3,
-            'title' => AccidentStatusesService::STATUS_ASSIGNED,
-            'type' => AccidentStatusesService::TYPE_HOSPITAL,
+            'title' => AccidentStatusService::STATUS_ASSIGNED,
+            'type' => AccidentStatusService::TYPE_HOSPITAL,
         ],
         /** guarantee created and sent to hospital */
         4 => [
             'order' => 4,
-            'title' => AccidentStatusesService::STATUS_HOSPITAL_GUARANTEE,
-            'type' => AccidentStatusesService::TYPE_HOSPITAL,
+            'title' => AccidentStatusService::STATUS_HOSPITAL_GUARANTEE,
+            'type' => AccidentStatusService::TYPE_HOSPITAL,
         ],
         /** invoice received from the hospital */
         5 => [
             'order' => 5,
-            'title' => AccidentStatusesService::STATUS_HOSPITAL_INVOICE,
-            'type' => AccidentStatusesService::TYPE_HOSPITAL,
+            'title' => AccidentStatusService::STATUS_HOSPITAL_INVOICE,
+            'type' => AccidentStatusService::TYPE_HOSPITAL,
         ],
         /** Invoice sent to the assistant */
         6 => [
             'order' => 6,
-            'title' => AccidentStatusesService::STATUS_ASSISTANT_INVOICE,
-            'type' => AccidentStatusesService::TYPE_ASSISTANT,
+            'title' => AccidentStatusService::STATUS_ASSISTANT_INVOICE,
+            'type' => AccidentStatusService::TYPE_ASSISTANT,
         ],
         7 => [
             'order' => 7,
-            'title' => AccidentStatusesService::STATUS_PAID,
-            'type' => AccidentStatusesService::TYPE_ASSISTANT,
+            'title' => AccidentStatusService::STATUS_PAID,
+            'type' => AccidentStatusService::TYPE_ASSISTANT,
         ],
         8 => [
             'order' => 8,
-            'title' => AccidentStatusesService::STATUS_CLOSED,
-            'type' => AccidentStatusesService::TYPE_ACCIDENT,
+            'title' => AccidentStatusService::STATUS_CLOSED,
+            'type' => AccidentStatusService::TYPE_ACCIDENT,
         ],
     ];
 

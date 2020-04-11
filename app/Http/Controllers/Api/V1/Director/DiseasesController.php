@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Entity\Disease;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DiseaseRequest;
+use medcenter24\mcCore\App\Services\Entity\DiseaseService;
 use medcenter24\mcCore\App\Transformers\DiseaseTransformer;
 
 class DiseasesController extends ModelApiController
@@ -34,46 +34,13 @@ class DiseasesController extends ModelApiController
         return new DiseaseTransformer();
     }
 
-    protected function getModelClass(): string
+    protected function getModelService(): ModelService
     {
-        return Disease::class;
+        return $this->getServiceLocator()->get(DiseaseService::class);
     }
 
-    public function update($id, DiseaseRequest $request): Response
+    protected function getRequestClass(): string
     {
-        /** @var Disease $disease */
-        $disease = Disease::find($id);
-        if (!$disease) {
-            $this->response->errorNotFound();
-        }
-
-        $disease->setAttribute('title', $request->json('title', ''));
-        $disease->setAttribute('code', $request->json('code', ''));
-        $disease->setAttribute('description', $request->json('description', ''));
-        $disease->save();
-
-        $transformer = new DiseaseTransformer();
-        return $this->response->accepted(null, $transformer->transform($disease));
-    }
-
-    public function store(DiseaseRequest $request): Response
-    {
-        $disease = Disease::create([
-            'title' => $request->json('title', ''),
-            'code' => $request->json('code', ''),
-            'description' => $request->json('description', ''),
-        ]);
-        $transformer = new DiseaseTransformer();
-        return $this->response->created(null, $transformer->transform($disease));
-    }
-
-    public function destroy($id): Response
-    {
-        $disease = Disease::find($id);
-        if (!$disease) {
-            $this->response->errorNotFound();
-        }
-        $disease->delete();
-        return $this->response->noContent();
+        return DiseaseRequest::class;
     }
 }

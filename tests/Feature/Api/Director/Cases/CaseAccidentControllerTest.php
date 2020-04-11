@@ -20,17 +20,15 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
-use medcenter24\mcCore\App\Entity\Accident;
-use medcenter24\mcCore\App\Entity\Assistant;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\App\Services\Entity\PatientService;
 use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
-use medcenter24\mcCore\Tests\Feature\Api\AbstractApiModelTest;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class CaseAccidentControllerTest extends AbstractApiModelTest
+class CaseAccidentControllerTest extends DirectorTestTraitApi
 {
     private const URI = '/api/director/cases';
 
@@ -361,21 +359,6 @@ class CaseAccidentControllerTest extends AbstractApiModelTest
                 'data' => [
                     CaseAccidentService::PROPERTY_ACCIDENT => [],
                 ],
-                'expectedResponse' => [
-                    'id' => 1,
-                    'assistantId' => 0,
-                    'repeated' => 0,
-                    'assistantRefNum' => '',
-                    'caseType' => CaseAccidentTransformer::CASE_TYPE_DOCTOR,
-                    'symptoms' => '',
-                    'handlingTime' => '',
-                    'patientName' => '',
-                    'checkpoints' => '',
-                    'statusTitle' => 'new',
-                    'cityTitle' => '',
-                    'price' => 0,
-                    'doctorsFee' => 0,
-                ],
             ],
             [
                 'data' => [
@@ -389,21 +372,6 @@ class CaseAccidentControllerTest extends AbstractApiModelTest
                     CaseAccidentService::PROPERTY_PATIENT => [
                         PatientService::FIELD_NAME => 'Php unit patient name',
                     ],
-                ],
-                'expectedResponse' => [
-                    'id' => 1,
-                    'assistantId' => 3,
-                    'repeated' => 2,
-                    'assistantRefNum' => '',
-                    'caseType' => CaseAccidentTransformer::CASE_TYPE_HOSPITAL,
-                    'symptoms' => 'phpunit symptoms',
-                    'handlingTime' => '2031-08-20 02:11:11',
-                    'patientName' => 'Php unit patient name',
-                    'checkpoints' => '',
-                    'statusTitle' => 'new',
-                    'cityTitle' => '',
-                    'price' => 0,
-                    'doctorsFee' => 0,
                 ],
             ]
         ];

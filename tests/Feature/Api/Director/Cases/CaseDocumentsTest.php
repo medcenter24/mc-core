@@ -23,23 +23,14 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\Document;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class DirectorCaseDocumentsTest extends TestCase
+class CaseDocumentsTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     public function testGetNoDocuments(): void
     {
         $case = factory(Accident::class)->create();
-        $response = $this->get('/api/director/cases/' . $case->id .'/documents', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/' . $case->id .'/documents');
         $response->assertStatus(200);
         $response->assertJson(['data' => []]);
     }
@@ -51,7 +42,7 @@ class DirectorCaseDocumentsTest extends TestCase
         $case->documents()->attach($docs);
         self::assertEquals(5, $case->documents()->count());
 
-        $response = $this->get('/api/director/cases/' . $case->id .'/documents', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/' . $case->id .'/documents');
         $response->assertStatus(200);
         $response->assertJson(['data' => [[], [], [], [], []]]);
     }
@@ -67,11 +58,9 @@ class DirectorCaseDocumentsTest extends TestCase
         $user->documents()->attach($docs);
         self::assertEquals(2, $user->documents()->count());
 
-        $response = $this->get('/api/director/cases/' . $case->id .'/documents', $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/' . $case->id .'/documents');
 
         $response->assertStatus(200);
         $response->assertJson(['data' => [[], [], [], [], []]]);
     }
-
-
 }

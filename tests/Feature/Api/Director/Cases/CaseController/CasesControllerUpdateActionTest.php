@@ -25,23 +25,16 @@ use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class CasesControllerUpdateActionTest extends TestCase
+class CasesControllerUpdateActionTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     public function testUpdateWithoutData(): void
     {
         $accident = $this->getServiceLocator()->get(CaseAccidentService::class)->create();
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->put('/api/director/cases/'.$accident->id, [], $this->headers($this->getUser()));
+        $response = $this->sendPut('/api/director/cases/'.$accident->id, []);
         $this->doNotPrintErrResponse();
         $response->assertStatus(422)
             ->assertJson([
@@ -73,7 +66,7 @@ class CasesControllerUpdateActionTest extends TestCase
         ];
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
+        $response = $this->sendPut('/api/director/cases/'.$accident->id, $data);
         $this->doNotPrintErrResponse();
 
         $response->assertStatus(422)->assertJson([
@@ -112,7 +105,7 @@ class CasesControllerUpdateActionTest extends TestCase
         ];
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
+        $response = $this->sendPut('/api/director/cases/'.$accident->id, $data);
         $this->doNotPrintErrResponse();
 
         $content = $response->assertStatus(422)->getContent();
@@ -169,7 +162,7 @@ class CasesControllerUpdateActionTest extends TestCase
         $accidentService->closeAccident($accident);
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
+        $response = $this->sendPut('/api/director/cases/'.$accident->id, $data);
         $this->doNotPrintErrResponse();
 
         $response->assertStatus(422)->assertJson([
@@ -196,7 +189,7 @@ class CasesControllerUpdateActionTest extends TestCase
         ];
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->json('put', '/api/director/cases/'.$accident->id, $data, $this->headers($this->getUser()));
+        $response = $this->sendPut('/api/director/cases/'.$accident->id, $data);
         $this->doNotPrintErrResponse();
 
         $response->assertStatus(422)->assertJson([

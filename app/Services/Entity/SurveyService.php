@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\Entity\Survey;
+use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Helpers\StrHelper;
 use medcenter24\mcCore\App\Services\Core\Cache\ArrayCacheTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -172,5 +173,28 @@ class SurveyService extends AbstractModelService
             $survey = $this->create($params);
         }
         return $survey;
+    }
+
+    /**
+     * @param User $user
+     * @param Survey $survey
+     * @return bool
+     */
+    public function hasAccess(User $user, Survey $survey): bool
+    {
+        $createdBy = (int) $survey->getAttribute(self::FIELD_CREATED_BY);
+        $userId = (int) $user->getKey();
+        $owner = $createdBy && $userId && $createdBy === $userId;
+        $hasDirectorRole = $this->getRoleService()->hasRole($user, RoleService::DIRECTOR_ROLE);
+        $hasAdminRole = $this->getRoleService()->hasRole($user, RoleService::ADMIN_ROLE);
+        return $hasDirectorRole || $hasAdminRole || $owner;
+    }
+
+    /**
+     * @return RoleService
+     */
+    private function getRoleService(): RoleService
+    {
+        return $this->getServiceLocator()->get(RoleService::class);
     }
 }

@@ -19,7 +19,6 @@
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
-use medcenter24\mcCore\App\Entity\Region;
 use medcenter24\mcCore\App\Services\Entity\RegionService;
 
 class RegionTransformer extends AbstractTransformer

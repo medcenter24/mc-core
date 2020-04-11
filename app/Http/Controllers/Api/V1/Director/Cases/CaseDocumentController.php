@@ -21,16 +21,18 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases;
 
 use Dingo\Api\Http\Response;
-use Illuminate\Support\Facades\Request;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use medcenter24\mcCore\App\Transformers\DocumentTransformer;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
 
 class CaseDocumentController extends ApiController
 {
-
     /**
      * @return AccidentService
      */
@@ -55,11 +57,15 @@ class CaseDocumentController extends ApiController
 
     /**
      * @param $id
-     * @param Request $request
+     * @param JsonRequest $request
      * @return Response
+     * @throws DiskDoesNotExist
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
      */
-    public function createDocuments($id, Request $request): Response
+    public function createDocuments($id, JsonRequest $request): Response
     {
+        /** @var DocumentService $documentService */
         $documentService = $this->getServiceLocator()->get(DocumentService::class);
         /** @var Accident $accident */
         $accident = $this->getAccidentService()->first([AccidentService::FIELD_ID => $id]);
@@ -68,8 +74,8 @@ class CaseDocumentController extends ApiController
         }
 
         $created = collect([]);
-        foreach ($request->allFiles() as $files) {
-            $document = $documentService->createDocumentsFromFiles($files, $this->user());
+        foreach ($request->allFiles() as $file) {
+            $document = $documentService->createDocumentsFromFiles([$file], $this->user());
             foreach ($document as $doc) {
                 $accident->documents()->attach($doc);
                 if ($accident->patient) {

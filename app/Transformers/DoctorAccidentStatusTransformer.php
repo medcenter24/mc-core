@@ -29,9 +29,8 @@ class DoctorAccidentStatusTransformer extends AbstractTransformer
     public function transform(Model $model): array
     {
         $fields = parent::transform($model);
-        $fields['status'] = $model->getAttribute('accident')
-                && $model->getAttribute('accident')->getAttribute('parent_id')
-            ? 'old' : 'new';
+        $fields['hasParent'] = $model->getAttribute('accident')
+            && $model->getAttribute('accident')->getAttribute('parent_id');
 
         return $fields;
     }

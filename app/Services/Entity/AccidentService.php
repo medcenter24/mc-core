@@ -248,7 +248,7 @@ class AccidentService extends AbstractModelService
     public function isClosed(Accident $accident): bool
     {
         return $accident->getAttribute('accidentStatus')->getAttribute('id')
-            === $this->getServiceLocator()->get(AccidentStatusesService::class)->getClosedStatus()->getAttribute('id');
+            === $this->getServiceLocator()->get(AccidentStatusService::class)->getClosedStatus()->getAttribute('id');
     }
 
     /**
@@ -293,8 +293,8 @@ class AccidentService extends AbstractModelService
                 if (array_key_exists($key, $events) && $model->$key) {
                     /** @var AccidentStatus $status */
                     $status = $this->getAccidentStatusesService()->firstOrCreate([
-                        AccidentStatusesService::FIELD_TITLE => $events[$key]['status'],
-                        AccidentStatusesService::FIELD_TYPE => $events[$key]['type'],
+                        AccidentStatusService::FIELD_TITLE => $events[$key]['status'],
+                        AccidentStatusService::FIELD_TYPE => $events[$key]['type'],
                     ]);
                     $this->setStatus($accident, $status);
                 }
@@ -303,11 +303,11 @@ class AccidentService extends AbstractModelService
     }
 
     /**
-     * @return AccidentStatusesService
+     * @return AccidentStatusService
      */
-    protected function getAccidentStatusesService(): AccidentStatusesService
+    protected function getAccidentStatusesService(): AccidentStatusService
     {
-        return $this->getServiceLocator()->get(AccidentStatusesService::class);
+        return $this->getServiceLocator()->get(AccidentStatusService::class);
     }
 
     /**
@@ -352,16 +352,16 @@ class AccidentService extends AbstractModelService
         // changing of the fields in `keys` will provide status from the `value`
         $events = [
             'hospital_id' => [
-                'status' => AccidentStatusesService::STATUS_ASSIGNED,
-                'type' => AccidentStatusesService::TYPE_HOSPITAL,
+                'status' => AccidentStatusService::STATUS_ASSIGNED,
+                'type' => AccidentStatusService::TYPE_HOSPITAL,
             ],
             'hospital_guarantee_id' => [
-                'status' => AccidentStatusesService::STATUS_HOSPITAL_GUARANTEE,
-                'type' => AccidentStatusesService::TYPE_HOSPITAL,
+                'status' => AccidentStatusService::STATUS_HOSPITAL_GUARANTEE,
+                'type' => AccidentStatusService::TYPE_HOSPITAL,
             ],
             'hospital_invoice_id' => [
-                'status' => AccidentStatusesService::STATUS_HOSPITAL_INVOICE,
-                'type' => AccidentStatusesService::TYPE_HOSPITAL,
+                'status' => AccidentStatusService::STATUS_HOSPITAL_INVOICE,
+                'type' => AccidentStatusService::TYPE_HOSPITAL,
             ],
         ];
 
@@ -382,8 +382,8 @@ class AccidentService extends AbstractModelService
         // changing of the fields in `keys` will provide status from the `value`
         $events = [
             'doctor_id' => [
-                'status' => AccidentStatusesService::STATUS_ASSIGNED,
-                'type' => AccidentStatusesService::TYPE_DOCTOR,
+                'status' => AccidentStatusService::STATUS_ASSIGNED,
+                'type' => AccidentStatusService::TYPE_DOCTOR,
             ],
         ];
 
@@ -403,20 +403,20 @@ class AccidentService extends AbstractModelService
         }
         $events = [
             self::FIELD_ID => [
-                'status' => AccidentStatusesService::STATUS_NEW,
-                'type' => AccidentStatusesService::TYPE_ACCIDENT,
+                'status' => AccidentStatusService::STATUS_NEW,
+                'type' => AccidentStatusService::TYPE_ACCIDENT,
             ],
             self::FIELD_ASSISTANT_INVOICE_ID => [
-                'status' => AccidentStatusesService::STATUS_ASSISTANT_INVOICE,
-                'type' => AccidentStatusesService::TYPE_ASSISTANT,
+                'status' => AccidentStatusService::STATUS_ASSISTANT_INVOICE,
+                'type' => AccidentStatusService::TYPE_ASSISTANT,
             ],
             self::FIELD_ASSISTANT_GUARANTEE_ID => [
-                'status' => AccidentStatusesService::STATUS_ASSISTANT_GUARANTEE,
-                'type' => AccidentStatusesService::TYPE_ASSISTANT,
+                'status' => AccidentStatusService::STATUS_ASSISTANT_GUARANTEE,
+                'type' => AccidentStatusService::TYPE_ASSISTANT,
             ],
             self::FIELD_ASSISTANT_PAYMENT_ID => [
-                'status' => AccidentStatusesService::STATUS_PAID,
-                'type' => AccidentStatusesService::TYPE_ASSISTANT,
+                'status' => AccidentStatusService::STATUS_PAID,
+                'type' => AccidentStatusService::TYPE_ASSISTANT,
             ],
         ];
 

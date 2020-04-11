@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +17,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController\Finance;
 
 use medcenter24\mcCore\App\Entity\Accident;
@@ -26,19 +29,10 @@ use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\App\Entity\FinanceCurrency;
 use medcenter24\mcCore\App\Entity\FinanceStorage;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use medcenter24\mcCore\Tests\Feature\Api\JwtHeaders;
-use medcenter24\mcCore\Tests\Feature\Api\LoggedUser;
-use medcenter24\mcCore\Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
-class DoctorCaseTest extends TestCase
+class DoctorCaseTest extends DirectorTestTraitApi
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
-
     /**
      * @return array
      */
@@ -198,7 +192,7 @@ class DoctorCaseTest extends TestCase
             }
         }
 
-        $response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
+        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [

@@ -21,11 +21,10 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
-use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CityRequest;
+use medcenter24\mcCore\App\Services\Entity\CityService;
 use medcenter24\mcCore\App\Transformers\CityTransformer;
 use League\Fractal\TransformerAbstract;
 
@@ -36,43 +35,13 @@ class CitiesController extends ModelApiController
         return new CityTransformer();
     }
 
-    protected function getModelClass(): string
+    protected function getModelService(): ModelService
     {
-        return City::class;
+        return $this->getServiceLocator()->get(CityService::class);
     }
 
-    public function index(): Response
+    protected function getRequestClass(): string
     {
-        $cities = City::orderBy('title')->get();
-        return $this->response->collection($cities, new CityTransformer());
-    }
-
-    public function store(CityRequest $request): Response
-    {
-        $city = City::create([
-            'title' => $request->json('title', ''),
-            'region_id' => $request->json('regionId', 0),
-        ]);
-        $transformer = new CityTransformer();
-        return $this->response->created(null, $transformer->transform($city));
-    }
-
-    public function update($id, CityRequest $request): Response
-    {
-        $city = City::findOrFail($id);
-        $city->title = $request->json('title', '');
-        $city->region_id = $request->json('regionId', 0);
-        $city->save();
-
-        Log::info('City updated', [$city, $this->user()]);
-        return $this->response->item($city, new CityTransformer());
-    }
-
-    public function destroy($id): Response
-    {
-        $city = City::findOrFail($id);
-        Log::info('City deleted', [$city, $this->user()]);
-        $city->delete();
-        return $this->response->noContent();
+        return CityRequest::class;
     }
 }

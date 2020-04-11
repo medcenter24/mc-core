@@ -28,10 +28,15 @@ use Illuminate\Support\Carbon;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Transformers\MessageTransformer;
-use Illuminate\Http\Request;
 
+/**
+ * @todo create CommentService + change to ModelApiController
+ * Class CaseCommentController
+ * @package medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases
+ */
 class CaseCommentController extends ApiController
 {
     /**
@@ -54,6 +59,7 @@ class CaseCommentController extends ApiController
             $this->response->errorNotFound();
         }
 
+        /** @var Thread $thread */
         $thread = Thread::firstOrCreate(['subject' => 'Accident_'.$accident->getAttribute(AccidentService::FIELD_ID)]);
         $userId = $this->user()->getKey();
         // $users = User::whereNotIn('id', $thread->participantsUserIds($userId))->get();
@@ -66,12 +72,12 @@ class CaseCommentController extends ApiController
     }
 
     /**
-     * @param Request $request
+     * @param JsonRequest $request
      * @param int $id
      * @return Response
      * @throws InconsistentDataException
      */
-    public function addComment(Request $request, int $id): Response
+    public function addComment(JsonRequest $request, int $id): Response
     {
         $accident = Accident::findOrFail($id);
         $thread = Thread::firstOrCreate(['subject' => 'Accident_'.$accident->id]);

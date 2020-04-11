@@ -79,7 +79,7 @@ class DoctorService extends AbstractModelService
             self::FIELD_NAME => '',
             self::FIELD_DESCRIPTION => '',
             self::FIELD_REF_KEY => '',
-            self::FIELD_GENDER => '',
+            self::FIELD_GENDER => 'none',
             self::FIELD_MEDICAL_BOARD_NUM => '',
             self::FIELD_USER_ID => 0,
             self::FIELD_CITY_ID => 0,
@@ -87,19 +87,11 @@ class DoctorService extends AbstractModelService
     }
 
     /**
-     * @param Doctor $doctor
-     * @param Accident $accident
-     *
+     * @param int $userId
      * @return bool
      */
-    public function hasAccess(Doctor $doctor, Accident $accident): bool
-    {
-        return $accident->getAttribute('caseable') instanceof DoctorAccident
-            && (int)$accident->getAttribute('caseable')->getAttribute('doctor_id') === (int)$doctor->getAttribute('id');
-    }
-
     public function isDoctor(int $userId): bool
     {
-        return $userId > 0 && Doctor::where(self::FIELD_USER_ID, $userId)->count() > 0;
+        return $userId > 0 && $this->count([self::FIELD_USER_ID => $userId]) > 0;
     }
 }

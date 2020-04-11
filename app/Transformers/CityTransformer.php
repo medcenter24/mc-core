@@ -44,15 +44,15 @@ class CityTransformer extends AbstractTransformer
         return [
             CityService::FIELD_ID,
             CityService::FIELD_TITLE,
-            CityService::FIELD_REGION_ID,
+            'regionId' => CityService::FIELD_REGION_ID,
         ];
     }
     
     protected function getMappedTypes(): array
     {
         return [
-            CityService::FIELD_ID => 0,
-            CityService::FIELD_REGION_ID => 0,
+            CityService::FIELD_ID => self::VAR_INT,
+            CityService::FIELD_REGION_ID => self::VAR_INT,
         ];
     }
 }

@@ -31,7 +31,7 @@ class HospitalTransformer extends AbstractTransformer
             HospitalService::FIELD_ID,
             HospitalService::FIELD_TITLE,
             HospitalService::FIELD_DESCRIPTION,
-            HospitalService::FIELD_REF_KEY,
+            'refKey' => HospitalService::FIELD_REF_KEY,
             HospitalService::FIELD_PHONES,
             HospitalService::FIELD_ADDRESS,
         ];

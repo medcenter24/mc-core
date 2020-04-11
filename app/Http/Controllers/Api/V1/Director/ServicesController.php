@@ -22,7 +22,6 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
-use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\ServiceRequest;
 use medcenter24\mcCore\App\Services\Entity\ServiceService;
@@ -34,11 +33,6 @@ class ServicesController extends ModelApiController
     protected function getDataTransformer(): TransformerAbstract
     {
         return new ServiceTransformer();
-    }
-
-    protected function getModelClass(): string
-    {
-        return Service::class;
     }
 
     /**

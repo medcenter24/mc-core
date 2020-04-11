@@ -55,6 +55,10 @@ class InvoiceService extends AbstractModelService
         self::FIELD_STATUS,
     ];
 
+    public const STATUS_NEW = 'new';
+    public const STATUS_SENT = 'sent';
+    public const STATUS_PAID = 'paid';
+
     /**
      * Types of the source
      * can be uploaded or has some form
@@ -78,8 +82,9 @@ class InvoiceService extends AbstractModelService
         return [
             self::FIELD_TITLE => '',
             self::FIELD_PAYMENT_ID => 0,
-            self::FIELD_TYPE => '',
-            self::FIELD_STATUS => '',
+            self::FIELD_TYPE => self::TYPE_UPLOAD,
+            self::FIELD_STATUS => self::STATUS_NEW,
+            self::FIELD_CREATED_BY => 0,
         ];
     }
 }

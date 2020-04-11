@@ -21,12 +21,11 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Entity\FinanceCurrency;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FinanceCurrencyRequest;
+use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Transformers\FinanceCurrencyTransformer;
-use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
 class FinanceCurrencyController extends ModelApiController
@@ -36,63 +35,13 @@ class FinanceCurrencyController extends ModelApiController
         return new FinanceCurrencyTransformer();
     }
 
-    protected function getModelClass(): string
+    protected function getModelService(): ModelService
     {
-        return FinanceCurrency::class;
+        return $this->getServiceLocator()->get(CurrencyService::class);
     }
 
-    /**
-     * @param $id
-     * @return Response
-     */
-    public function show($id): Response
+    protected function getRequestClass(): string
     {
-        $currency = FinanceCurrency::findOrFail($id);
-        return $this->response->item($currency, new FinanceCurrencyTransformer());
-    }
-
-    /**
-     * Add new rule
-     * @param FinanceCurrencyRequest $request
-     * @return Response
-     */
-    public function store(FinanceCurrencyRequest $request): Response
-    {
-        $currency = FinanceCurrency::create([
-            'title' => $request->json('title', ''),
-            'code' => $request->json('code', ''),
-            'ico' => $request->json('ico', ''),
-        ]);
-        $transformer = new FinanceCurrencyTransformer();
-        return $this->response->created(url("pages/finance/currencies/{$currency->id}"), $transformer->transform($currency));
-    }
-
-    /**
-     * Update existing rule
-     * @param $id
-     * @param FinanceCurrencyRequest $request
-     * @return Response
-     */
-    public function update($id, FinanceCurrencyRequest $request): Response
-    {
-        $currency = FinanceCurrency::findOrFail($id);
-        $currency->title = $request->json('title', '');
-        $currency->code = $request->json('code', '');
-        $currency->ico = $request->json('ico', '');
-        $currency->save();
-        return $this->response->item($currency, new FinanceCurrencyTransformer());
-    }
-
-    /**
-     * Destroy rule
-     * @param $id
-     * @return Response
-     */
-    public function destroy($id): Response
-    {
-        $currency = FinanceCurrency::findOrFail($id);
-        Log::info('Currency deleted', [$currency, $this->user()]);
-        $currency->delete();
-        return $this->response->noContent();
+        return FinanceCurrencyRequest::class;
     }
 }

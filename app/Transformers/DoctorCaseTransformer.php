@@ -43,8 +43,8 @@ class DoctorCaseTransformer extends AbstractTransformer
         return [
             DoctorAccidentService::FIELD_ID => self::VAR_INT,
             DoctorAccidentService::FIELD_DOCTOR_ID => self::VAR_INT,
-            DoctorAccidentService::FIELD_CREATED_AT => self::VAR_DATE,
-            DoctorAccidentService::FIELD_VISIT_TIME => self::VAR_DATE,
+            DoctorAccidentService::FIELD_CREATED_AT => self::VAR_DATETIME,
+            DoctorAccidentService::FIELD_VISIT_TIME => self::VAR_DATETIME,
         ];
     }
 

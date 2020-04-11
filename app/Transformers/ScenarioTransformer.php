@@ -22,7 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Services\Entity\ScenarioService;
 
 class ScenarioTransformer extends AbstractTransformer
@@ -32,7 +32,7 @@ class ScenarioTransformer extends AbstractTransformer
         $fields = parent::transform($model);
         $fields['status'] = $model->getAttribute('status') ?: '';
         $fields['title'] = $model->getAttribute('accidentStatus')
-            ? $model->getAttribute('accidentStatus')->getAttribute(AccidentStatusesService::FIELD_TITLE)
+            ? $model->getAttribute('accidentStatus')->getAttribute(AccidentStatusService::FIELD_TITLE)
             : '';
         return $fields;
     }

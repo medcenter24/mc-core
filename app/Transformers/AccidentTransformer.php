@@ -76,11 +76,11 @@ class AccidentTransformer extends AbstractTransformer
             AccidentService::FIELD_ASSISTANT_INVOICE_ID => self::VAR_INT,
             AccidentService::FIELD_ASSISTANT_GUARANTEE_ID => self::VAR_INT,
             AccidentService::FIELD_CASEABLE_PAYMENT_ID => self::VAR_INT,
-            AccidentService::FIELD_CREATED_AT => self::VAR_DATE,
-            AccidentService::FIELD_HANDLING_TIME => self::VAR_DATE,
-            AccidentService::FIELD_CLOSED_AT => self::VAR_DATE,
-            AccidentService::FIELD_UPDATED_AT => self::VAR_DATE,
-            AccidentService::FIELD_DELETED_AT => self::VAR_DATE,
+            AccidentService::FIELD_CREATED_AT => self::VAR_DATETIME,
+            AccidentService::FIELD_HANDLING_TIME => self::VAR_DATETIME,
+            AccidentService::FIELD_CLOSED_AT => self::VAR_DATETIME,
+            AccidentService::FIELD_UPDATED_AT => self::VAR_DATETIME,
+            AccidentService::FIELD_DELETED_AT => self::VAR_DATETIME,
         ];
     }
 }

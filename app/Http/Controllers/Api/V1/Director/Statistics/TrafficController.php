@@ -23,6 +23,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
 
 use Dingo\Api\Http\Response;
 use Exception;
+use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Transformers\statistics\TrafficTransformer;
 use Carbon\Carbon;
@@ -84,7 +85,7 @@ class TrafficController extends ApiController
     
     public function years(): Response
     {
-        if (env('DB_CONNECTION') === 'sqlite') {
+        if (Str::startsWith(env('DB_CONNECTION'), 'sqlite')) {
             $years = DB::table('accidents')
                 ->distinct()
                 ->select(DB::raw('strftime(\'%Y\', accidents.created_at) as year'))

@@ -35,7 +35,7 @@ class AssistantTransformer extends AbstractTransformer
             AssistantService::FIELD_TITLE,
             AssistantService::FIELD_EMAIL,
             AssistantService::FIELD_COMMENT,
-            AssistantService::FIELD_REF_KEY,
+            'refKey' => AssistantService::FIELD_REF_KEY,
         ];
     }
 }

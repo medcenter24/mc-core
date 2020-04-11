@@ -21,15 +21,12 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\Tests\TestCase;
 
-abstract class AbstractApiModelTest extends TestCase
+abstract class AbstractModelTest extends TestCase
 {
-    use DatabaseMigrations;
-    use JwtHeaders;
-    use LoggedUser;
+    use TestTraitApi;
 
     private const STATUS_CREATED = 201;
     private const STATUS_DELETED = 204;
@@ -97,7 +94,7 @@ abstract class AbstractApiModelTest extends TestCase
      * @param array $data
      * @return Model
      */
-    private function createModel(array $data = []): Model
+    protected function createModel(array $data = []): Model
     {
         return $this->getModelService()->create($data);
     }

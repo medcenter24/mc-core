@@ -23,20 +23,15 @@ namespace medcenter24\mcCore\Tests\Feature\Api;
 
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
-use medcenter24\mcCore\App\Services\Entity\UserService;
 use medcenter24\mcCore\App\Entity\User;
 
 trait LoggedUser
 {
     use ServiceLocatorTrait;
 
-    /**
-     * @var User
-     */
-    private $user;
-
     public function getUser(array $roles = []): User
     {
+        /** @var User $user */
         $user = factory(User::class)->create([
             'name' => 'PHPUnit',
             'password' => bcrypt('foo'),

@@ -22,9 +22,12 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CasesControllerCloseTest extends DirectorTestTraitApi
+class CasesControllerCloseTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testCloseCase(): void
     {
         factory(Accident::class)->create();

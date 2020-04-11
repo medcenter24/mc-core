@@ -23,7 +23,7 @@ namespace medcenter24\mcCore\Tests\Feature\Api;
 use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
 
-abstract class DirectorTestTraitApi
+trait DirectorTestTraitApi
 {
     use TestTraitApi;
 

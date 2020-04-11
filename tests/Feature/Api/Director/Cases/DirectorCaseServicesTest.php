@@ -22,9 +22,12 @@ use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class DirectorCaseServicesTest extends DirectorTestTraitApi
+class DirectorCaseServicesTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testGetNoServices(): void
     {
         $case = factory(Accident::class)->create();

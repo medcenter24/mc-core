@@ -37,9 +37,12 @@ use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CaseControllerFinanceActionTest extends DirectorTestTraitApi
+class CaseControllerFinanceActionTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     /**
      * @var AccidentService
      */

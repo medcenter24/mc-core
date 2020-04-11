@@ -24,9 +24,12 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CaseDocumentsTest extends DirectorTestTraitApi
+class CaseDocumentsTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testGetNoDocuments(): void
     {
         $case = factory(Accident::class)->create();

@@ -25,9 +25,12 @@ use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CasesControllerSearchActionTest extends DirectorTestTraitApi
+class CasesControllerSearchActionTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testSearch(): void
     {
         factory(Accident::class, 7)->create();

@@ -21,9 +21,12 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Statistics;
 
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class TrafficControllerTest extends DirectorTestTraitApi
+class TrafficControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testDoctorsTraffic(): void
     {
         $response = $this->sendGet('/api/director/statistics/doctorsTraffic');

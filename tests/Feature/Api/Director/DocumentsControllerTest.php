@@ -25,12 +25,15 @@ use Illuminate\Support\Facades\Storage;
 use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
 
-class DocumentsControllerTest extends DirectorTestTraitApi
+class DocumentsControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function getDocumentService(): DocumentService
     {
         return $this->getServiceLocator()->get(DocumentService::class);

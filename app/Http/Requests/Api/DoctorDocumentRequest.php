@@ -35,7 +35,7 @@ class DoctorDocumentRequest extends JsonRequest
      */
     public function authorize(): bool
     {
-        return Auth::check() && Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE);
+        return Auth::check();
     }
 
     /**

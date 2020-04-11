@@ -24,14 +24,17 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 use medcenter24\mcCore\Tests\Unit\fakes\DoctorServiceFake;
 use medcenter24\mcCore\Tests\Unit\fakes\AssistantFake;
 use medcenter24\mcCore\Tests\Unit\fakes\CityFake;
 use medcenter24\mcCore\Tests\Unit\fakes\DatePeriodFake;
 use medcenter24\mcCore\Tests\Unit\fakes\DoctorFake;
 
-class FinanceConditionControllerTest extends DirectorTestTraitApi
+class FinanceConditionControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testStoreError(): void
     {
         $newFinanceCondition = [];

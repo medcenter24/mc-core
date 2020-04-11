@@ -21,9 +21,12 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Forms;
 
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class FormsVariablesControllerTest extends DirectorTestTraitApi
+class FormsVariablesControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testSearch(): void
     {
         $response = $this->sendPost('/api/director/forms/variables/search', []);

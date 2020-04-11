@@ -22,10 +22,13 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 use ScenariosTableSeeder;
 
-class CaseStoryControllerTest extends DirectorTestTraitApi
+class CaseStoryControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     /**
      * @var CaseAccidentService
      */

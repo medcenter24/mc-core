@@ -22,9 +22,12 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use medcenter24\mcCore\App\Services\Entity\CompanyService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CompaniesControllerTest extends DirectorTestTraitApi
+class CompaniesControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     private const URI = 'api/director/companies';
 
     public function testUpdate(): void

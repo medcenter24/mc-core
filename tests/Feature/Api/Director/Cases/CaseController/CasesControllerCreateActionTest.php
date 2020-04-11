@@ -33,9 +33,13 @@ use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CasesControllerCreateActionTest extends DirectorTestTraitApi
+class CasesControllerCreateActionTest extends TestCase
 {
+
+    use DirectorTestTraitApi;
+
     public function testCreateWithoutData(): void
     {
         $response = $this->sendPost('/api/director/cases', []);

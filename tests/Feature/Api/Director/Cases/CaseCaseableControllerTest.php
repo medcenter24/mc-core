@@ -26,9 +26,12 @@ use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CaseCaseableControllerTest extends DirectorTestTraitApi
+class CaseCaseableControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     /**
      * @var CaseAccidentService
      */

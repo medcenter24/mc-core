@@ -21,9 +21,12 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class AccidentScenarioControllerTest extends DirectorTestTraitApi
+class AccidentScenarioControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testDoctorScenario(): void
     {
         // todo not sure that I need that, probably am using stories instead

@@ -23,8 +23,9 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Doctor;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
 use medcenter24\mcCore\Tests\Feature\Api\TestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class NotAssignedDoctorTest
+class NotAssignedDoctorTest extends TestCase
 {
 
     use TestTraitApi;

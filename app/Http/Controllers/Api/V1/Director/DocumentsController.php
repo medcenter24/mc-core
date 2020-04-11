@@ -23,6 +23,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Http\Response;
 use Exception;
+use Log;
 use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
@@ -93,7 +94,7 @@ class DocumentsController extends ApiController
         }
 
         $document->delete();
-        \Log::info('Document deleted', [$document, $this->user()]);
+        Log::info('Document deleted', [$document, $this->user()]);
         return $this->response->noContent();
     }
 

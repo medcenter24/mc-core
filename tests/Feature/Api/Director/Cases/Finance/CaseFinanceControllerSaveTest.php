@@ -26,9 +26,12 @@ use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Services\Entity\PaymentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CaseFinanceControllerSaveTest extends DirectorTestTraitApi
+class CaseFinanceControllerSaveTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function dataProvider(): array
     {
         return [

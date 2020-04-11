@@ -22,9 +22,12 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use Illuminate\Http\UploadedFile;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class MediaControllerTest extends DirectorTestTraitApi
+class MediaControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     private const URI = '/api/director/media';
 
     public function testUpload(): void

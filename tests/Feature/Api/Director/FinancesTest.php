@@ -27,9 +27,12 @@ use medcenter24\mcCore\App\Entity\DatePeriod;
 use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class FinancesTest extends DirectorTestTraitApi
+class FinancesTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     /**
      * @var array
      */
@@ -77,12 +80,12 @@ class FinancesTest extends DirectorTestTraitApi
         $data = $response->json();
         $data['title'] = 'newTitle';
         $data['value'] = '9';
-        $updateResponse = $this->sendPost("/api/director/finance/{$response->json('id')}", $data);
+        $updateResponse = $this->sendPut("/api/director/finance/{$response->json('id')}", $data);
         $updateResponse->assertJson(['data' => ['title' => 'newTitle', 'value' => 9]]);
         $updateResponse->assertStatus(200);
     }
 
-    public function testGetRule()
+    public function testGetRule(): void
     {
         $response = $this->sendPost('/api/director/finance', $this->financeData);
         $response->assertStatus(201);

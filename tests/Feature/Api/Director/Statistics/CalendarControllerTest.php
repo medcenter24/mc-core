@@ -21,9 +21,12 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Statistics;
 
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CalendarControllerTest extends DirectorTestTraitApi
+class CalendarControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testIndex(): void
     {
         $response = $this->sendGet('/api/director/statistics/calendar');

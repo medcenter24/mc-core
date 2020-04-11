@@ -24,9 +24,12 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CaseDocumentControllerTest extends DirectorTestTraitApi
+class CaseDocumentControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     /**
      * @var CaseAccidentService
      */

@@ -19,10 +19,13 @@
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class CasesExporterControllerTest extends DirectorTestTraitApi
+class CasesExporterControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testExport(): void
     {
         $response = $this->sendGet('/api/director/cases/export/default');

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController\Finance;
 
+use Facade\Ignition\Tabs\Tab;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\Assistant;
 use medcenter24\mcCore\App\Entity\Doctor;
@@ -30,9 +31,12 @@ use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\App\Entity\FinanceCurrency;
 use medcenter24\mcCore\App\Entity\FinanceStorage;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class DoctorCaseTest extends DirectorTestTraitApi
+class DoctorCaseTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     /**
      * @return array
      */

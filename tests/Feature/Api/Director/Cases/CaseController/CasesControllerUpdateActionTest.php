@@ -26,9 +26,12 @@ use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\TestCase;
 
-class CasesControllerUpdateActionTest extends DirectorTestTraitApi
+class CasesControllerUpdateActionTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
     public function testUpdateWithoutData(): void
     {
         $accident = $this->getServiceLocator()->get(CaseAccidentService::class)->create();

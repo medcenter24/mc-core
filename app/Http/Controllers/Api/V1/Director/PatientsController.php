@@ -21,11 +21,9 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\PatientRequest;
-use medcenter24\mcCore\App\Entity\Patient;
 use medcenter24\mcCore\App\Services\Entity\PatientService;
 use medcenter24\mcCore\App\Transformers\PatientTransformer;
 use League\Fractal\TransformerAbstract;

@@ -114,7 +114,7 @@ class CreateUserCommand extends Command
     private function showUser(): void
     {
         $headers = ['E-Mail', 'Name', 'Roles'];
-        $rows = [$this->email, $this->username, implode($this->roles, ',')];
+        $rows = [$this->email, $this->username, implode(',', $this->roles)];
         $this->table($headers, [$rows]);
     }
 

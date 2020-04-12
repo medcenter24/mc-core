@@ -22,6 +22,7 @@ declare(strict_types = 1);
 use Dingo\Api\Routing\Router;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\AuthenticateController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentsController as DirectorAccidentsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentStatusesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AssistantsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseAccidentController;
@@ -235,7 +236,13 @@ $api->group([
                     $api->post('{id}/comments', CaseCommentController::class . '@addComment');
                 });
 
-                // todo do I need that?
+                // Director can assign accident to another parent accident
+                $api->group(['prefix' => 'accidents'], static function (Router $api) {
+                    // list of accidents
+                   $api->post('search', DirectorAccidentsController::class . '@search');
+                   // selected case
+                   $api->get('{id}', DirectorAccidentsController::class . '@show');
+                });
                 /*$api->post('accidents/search', DirectorAccidentsController::class . '@search');
                 $api->get('accidents/{id}', DirectorAccidentsController::class . '@show');
                 $api->get('accidents', DirectorAccidentsController::class . '@index');

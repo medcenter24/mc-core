@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDoctorServiceablesTable extends Migration
+class CreateSurveablesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -29,9 +29,9 @@ class CreateDoctorServiceablesTable extends Migration
      */
     public function up()
     {
-        Schema::create('serviceables', function (Blueprint $table) {
-            $table->unsignedInteger('service_id')->index();
-            $table->morphs('serviceable', 'ids_serviceable');
+        Schema::create('surveables', function (Blueprint $table) {
+            $table->unsignedInteger('survey_id')->index();
+            $table->morphs('surveable', 'ids_surveable');
         });
     }
 
@@ -42,6 +42,6 @@ class CreateDoctorServiceablesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('serviceables');
+        Schema::dropIfExists('surveables');
     }
 }

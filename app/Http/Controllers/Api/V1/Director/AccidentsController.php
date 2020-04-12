@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
@@ -32,7 +33,12 @@ use medcenter24\mcCore\App\Transformers\AccidentTransformer;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
-// @todo is that used by anyone?
+/**
+ * List of accidents to assign as a parent to the case
+ *
+ * Class AccidentsController
+ * @package medcenter24\mcCore\App\Http\Controllers\Api\V1\Director
+ */
 class AccidentsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
@@ -45,30 +51,31 @@ class AccidentsController extends ModelApiController
         return Accident::class;
     }
 
-    public function index(): Response
-    {
-        $accidents = Accident::orderBy('created_at', 'desc')->get();
-        return $this->response->collection($accidents, new AccidentTransformer());
-    }
-
     /**
      * @param StoreAccident $request
      * @param AccidentService $accidentService
      * @param AccidentStatusService $accidentStatusesService
      * @return Response
      * @throws InconsistentDataException
+     * todo why do I need this?
      */
-    public function store(StoreAccident $request, AccidentService $accidentService, AccidentStatusService $accidentStatusesService): Response
+/*    public function store(StoreAccident $request, AccidentService $accidentService, AccidentStatusService $accidentStatusesService): Response
     {
-        /** @var Accident $accident */
+
         $accident = $accidentService->create($request->all());
         $accidentService->setStatus($accident, $accidentStatusesService->getNewStatus());
         return $this->response->created('', ['id' => $accident->getAttribute('id')]);
-    }
+    }*/
 
-    public function show($id): Response
+    /**
+     * @param int $id
+     * @return Response
+     */
+    public function show(int $id): Response
     {
-        $accident = Accident::find($id);
+        /** @var AccidentService $accident */
+        $accidentService = $this->getServiceLocator()->get(AccidentService::class);
+        $accident = $accidentService->find($id);
         if (!$accident) {
             $this->response->errorNotFound();
         }
@@ -76,9 +83,10 @@ class AccidentsController extends ModelApiController
         return $this->response->item($accident, new AccidentTransformer());
     }
 
-    public function update(UpdateAccident $request, $id): array
+    /*
+     * @todo do I need it?
+     * public function update(UpdateAccident $request, $id): array
     {
-        /** @var \Eloquent $accident */
         $accident = Accident::findOrFail($id);
         foreach ($accident->getVisible() as $item) {
             if ($request->has($item)) {
@@ -88,11 +96,19 @@ class AccidentsController extends ModelApiController
         $accident->save();
 
         return ['success' => true];
-    }
+    }*/
 
-    public function destroy($id): array
+    /*public function destroy($id): array
     {
         Accident::destroy($id);
         return ['success' => true];
+    }*/
+
+    /**
+     * @inheritDoc
+     */
+    protected function getModelService(): ModelService
+    {
+        return $this->getServiceLocator()->get(AccidentService::class);
     }
 }

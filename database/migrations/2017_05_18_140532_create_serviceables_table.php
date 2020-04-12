@@ -16,23 +16,32 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\Entity\Service;
-use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class DoctorServicesTableSeeder extends Seeder
+class CreateServiceablesTable extends Migration
 {
     /**
-     * Run the database seeds.
+     * Run the migrations.
      *
      * @return void
      */
-    public function run()
+    public function up()
     {
-        if (App::environment('production') && Service::all()->count()) {
-            return;
-        } elseif (!App::environment('production')) {
-            Service::truncate();
-            factory(Service::class, 10)->create();
-        }
+        Schema::create('serviceables', function (Blueprint $table) {
+            $table->unsignedInteger('service_id')->index();
+            $table->morphs('serviceable', 'ids_serviceable');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('serviceables');
     }
 }

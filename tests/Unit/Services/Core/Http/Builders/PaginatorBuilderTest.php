@@ -17,7 +17,6 @@
 
 namespace medcenter24\mcCore\Tests\Unit\Services\Core\Http;
 
-
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
 use medcenter24\mcCore\Tests\TestCase;
 

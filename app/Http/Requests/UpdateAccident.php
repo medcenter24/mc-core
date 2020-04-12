@@ -21,6 +21,11 @@ namespace medcenter24\mcCore\App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
 
+/**
+ * @todo not needed
+ * Class UpdateAccident
+ * @package medcenter24\mcCore\App\Http\Requests
+ */
 class UpdateAccident extends FormRequest
 {
     /**

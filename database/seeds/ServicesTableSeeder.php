@@ -16,32 +16,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
+use medcenter24\mcCore\App\Entity\Service;
+use Illuminate\Database\Seeder;
 
-class CreateDoctorSurveablesTable extends Migration
+class ServicesTableSeeder extends Seeder
 {
     /**
-     * Run the migrations.
+     * Run the database seeds.
      *
      * @return void
      */
-    public function up()
+    public function run()
     {
-        Schema::create('surveables', function (Blueprint $table) {
-            $table->unsignedInteger('survey_id')->index();
-            $table->morphs('surveable', 'ids_surveable');
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('surveables');
+        if (App::environment('production') && Service::all()->count()) {
+            return;
+        } elseif (!App::environment('production')) {
+            Service::truncate();
+            factory(Service::class, 10)->create();
+        }
     }
 }

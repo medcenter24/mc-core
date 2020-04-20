@@ -93,6 +93,7 @@ class CaseAccidentService implements ModelService
             }
             // throw exception if data not correct
             $this->validAccidentAccess($accident);
+
             // create/update caseable data
             $caseable = $this->flushCaseable($accident, $data);
 
@@ -136,7 +137,7 @@ class CaseAccidentService implements ModelService
     {
         $accidentData = $this->getAccidentData($data);
         if (!array_key_exists(AccidentService::FIELD_ID, $accidentData)) {
-            throw new InconsistentDataException('Accident data should be provided in the request data');
+            throw new InconsistentDataException('Accident identifier should be provided in the request data');
         }
         if ($accidentData[AccidentService::FIELD_ID] !== $accident->getKey()) {
             throw new InconsistentDataException('There are 2 different accidents in the request');
@@ -399,20 +400,20 @@ class CaseAccidentService implements ModelService
     /**
      * @param AbstractModelService $service
      * @param int $id
-     * @param array $data
+     * @param array $caseableData
      * @return Model
      * @throws InconsistentDataException
      */
-    private function getCaseable(AbstractModelService $service, int $id, array $data): ?Model
+    private function getCaseable(AbstractModelService $service, int $id, array $caseableData): ?Model
     {
-        if (count ($data)) {
+        if (count ($caseableData)) {
             if (
-                array_key_exists(AbstractModelService::FIELD_ID, $data)
-                && $data[AbstractModelService::FIELD_ID] === $id
+                array_key_exists(AbstractModelService::FIELD_ID, $caseableData)
+                && $caseableData[AbstractModelService::FIELD_ID] === $id
             ) {
                 return $service->findAndUpdate(
                     [AbstractModelService::FIELD_ID],
-                    $this->getDoctorAccidentData($data)
+                    $caseableData
                 );
             }
             throw new InconsistentDataException('Incorrect input parameters for the caseable');

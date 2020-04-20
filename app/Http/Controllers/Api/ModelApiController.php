@@ -157,10 +157,11 @@ abstract class ModelApiController extends ApiController
     {
         /** @var JsonRequest $request */
         $request = call_user_func([$this->getUpdateRequestClass(), 'createFromBase'], $request);
-        $request->validate();
+        $request->setContainer(app());
+        $request->validateResolved();
 
         try {
-            $data = $this->getDataTransformer()->inverseTransform($request->all());
+            $data = $this->getDataTransformer()->inverseTransform($request->json()->all());
             $data['id'] = $id;
             $model = $this->getModelService()->findAndUpdate(['id'], $data);
             return $this->response->accepted(

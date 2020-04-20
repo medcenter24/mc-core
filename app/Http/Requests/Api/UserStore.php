@@ -50,7 +50,10 @@ class UserStore extends JsonRequest
 
         $id = (int) $data['id'];
         // if doctor access - he can change only his data
-        if (auth()->user()->id !== $id && Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE)) {
+        if (auth()->user()->id !== $id
+            && !Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)
+            && Roles::hasRole(auth()->user(), RoleService::DOCTOR_ROLE)
+        ) {
             throw new HttpException(403);
         }
 

@@ -44,7 +44,7 @@ use League\Fractal\TransformerAbstract;
 class InvoiceController extends ModelApiController
 {
     /**
-     * @return InvoiceTransformer|\League\Fractal\TransformerAbstract
+     * @return InvoiceTransformer|TransformerAbstract
      */
     protected function getDataTransformer(): TransformerAbstract
     {
@@ -95,7 +95,7 @@ class InvoiceController extends ModelApiController
      * @return Response
      * @throws InconsistentDataException
      */
-    public function update(int $id, JsonRequest $request): Response
+    public function update2(int $id, JsonRequest $request): Response
     {
         /** @var InvoiceRequest $request */
         $request = call_user_func([$this->getUpdateRequestClass(), 'createFromBase'], $request);
@@ -124,6 +124,34 @@ class InvoiceController extends ModelApiController
             Log::error($e->getMessage(), [$e]);
             $this->response->errorInternal();
         }
+
+        $transformer = $this->getDataTransformer();
+        return $this->response->accepted(null, $transformer->transform($invoice));
+    }
+
+    public function update(int $id, JsonRequest $request): Response
+    {
+        /** @var Invoice $invoice */
+        $invoice = $this->getInvoiceService()->first([InvoiceService::FIELD_ID => $id]);
+        if (!$invoice) {
+            $this->response->errorNotFound();
+        }
+
+        // default model update
+        parent::update($id, $request);
+
+        $invoice->refresh();
+
+        // Add payment (for the price)
+        $price = (int) $request->get('price', 0);
+        $this->assignPayment($invoice, $price, $this->getCurrencyService()->getDefaultCurrency());
+        // assign Form or Uploaded file (depends on the invoice type)
+
+        /** @var InvoiceRequest $request */
+        $request = call_user_func([$this->getUpdateRequestClass(), 'createFromBase'], $request);
+        $request->setContainer(app());
+        $request->validateResolved();
+        $this->assignInvoiceTypeResource($invoice, $request);
 
         $transformer = $this->getDataTransformer();
         return $this->response->accepted(null, $transformer->transform($invoice));

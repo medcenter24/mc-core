@@ -24,9 +24,11 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
 use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceViewService;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Transformers\CaseFinanceTransformer;
 use Illuminate\Http\Request;
 use Dingo\Api\Http\Response;
@@ -39,19 +41,26 @@ class CaseFinanceController extends ApiController
      * @param Request $request
      * @param int $id
      * @param CaseFinanceViewService $caseFinanceViewService
+     * @param AccidentService $accidentService
      * @return Response
-     * @throws InconsistentDataException
      * @throws FormulaException
+     * @throws InconsistentDataException
      * @throws Throwable
      */
-    public function show(Request $request, int $id, CaseFinanceViewService $caseFinanceViewService): Response
+    public function show(
+        Request $request,
+        int $id,
+        CaseFinanceViewService $caseFinanceViewService,
+        AccidentService $accidentService
+    ): Response
     {
         /** @var Accident $accident */
-        $accident = Accident::findOrFail($id);
-        $types = $request->json('types', CaseFinanceViewService::FINANCE_TYPES);
-        if (!count($types)) {
-            $types = CaseFinanceViewService::FINANCE_TYPES;
+        $accident = $accidentService->first([AccidentService::FIELD_ID => $id]);
+        if (!$accident) {
+            $this->response->errorNotFound();
         }
+        $sTypes = $request->get('types', '');
+        $types = $sTypes ? explode(',', $sTypes) : CaseFinanceViewService::FINANCE_TYPES;
         return $this->getResponse($types, $accident, $caseFinanceViewService);
     }
 
@@ -61,25 +70,35 @@ class CaseFinanceController extends ApiController
      * @param CaseFinanceService $caseFinanceService
      * @param Request $request
      * @param CaseFinanceViewService $caseFinanceViewService
+     * @param AccidentService $accidentService
      * @return Response
-     * @throws InconsistentDataException
      * @throws FormulaException
+     * @throws InconsistentDataException
      * @throws Throwable
      */
     public function save(
         int $id,
         string $type,
         CaseFinanceService $caseFinanceService,
-        Request $request,
-        CaseFinanceViewService $caseFinanceViewService): Response
+        JsonRequest $request,
+        CaseFinanceViewService $caseFinanceViewService,
+        AccidentService $accidentService
+    ): Response
     {
         /** @var Accident $accident */
-        $accident = Accident::findOrFail($id);
+        $accident = $accidentService->first([AccidentService::FIELD_ID => $id]);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
         $caseFinanceService->save(
             $accident,
             $type,
-            json_decode($request->getContent(), true));
-        return $this->getResponse(CaseFinanceViewService::FINANCE_TYPES, $accident, $caseFinanceViewService);
+            $request->json()->all());
+        return $this->getResponse(
+            CaseFinanceViewService::FINANCE_TYPES,
+            $accident,
+            $caseFinanceViewService
+        );
     }
 
     /**
@@ -91,7 +110,11 @@ class CaseFinanceController extends ApiController
      * @throws FormulaException
      * @throws Throwable
      */
-    private function getResponse($types, Accident $accident, CaseFinanceViewService $caseFinanceViewService): Response
+    private function getResponse(
+        $types,
+        Accident $accident,
+        CaseFinanceViewService $caseFinanceViewService
+    ): Response
     {
         $obj = new stdClass();
         $obj->collection = $caseFinanceViewService->get($accident, $types);

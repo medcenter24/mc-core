@@ -147,7 +147,7 @@ class CaseFinanceControllerSaveTest extends TestCase
 
         // write data
         foreach ($toSavePaymentData as $key => $val) {
-            $response = $this->sendPost('/api/director/cases/'.$accident->id.'/finance/'.$key, $val);
+            $response = $this->sendPut('/api/director/cases/'.$accident->id.'/finance/'.$key, $val);
         }
         if (isset($response)) {
             $response->assertStatus(200);
@@ -159,15 +159,5 @@ class CaseFinanceControllerSaveTest extends TestCase
                 ],
             ]);
         }
-        // check rewritten data
-        /*$response = $this->json('POST', '/api/director/cases/'.$accident->id.'/finance', [], $this->headers($this->getUser()));
-        $response->assertStatus(200);
-        $response->assertJson([
-            'data' => [
-                $results['income'],
-                $results['assistant'],
-                $results['caseable'],
-            ],
-        ]);*/
     }
 }

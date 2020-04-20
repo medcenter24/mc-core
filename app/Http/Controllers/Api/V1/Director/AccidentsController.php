@@ -26,7 +26,6 @@ use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\StoreAccident;
-use medcenter24\mcCore\App\Http\Requests\UpdateAccident;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Transformers\AccidentTransformer;
@@ -73,9 +72,9 @@ class AccidentsController extends ModelApiController
      */
     public function show(int $id): Response
     {
-        /** @var AccidentService $accident */
+        /** @var AccidentService $accidentService */
         $accidentService = $this->getServiceLocator()->get(AccidentService::class);
-        $accident = $accidentService->find($id);
+        $accident = $accidentService->first([AccidentService::FIELD_ID => $id]);
         if (!$accident) {
             $this->response->errorNotFound();
         }

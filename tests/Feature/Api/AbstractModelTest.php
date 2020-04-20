@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Testing\TestResponse;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\Tests\TestCase;
 
@@ -141,6 +142,23 @@ abstract class AbstractModelTest extends TestCase
         $response = $this->put($this->getUri().'/'.$model->getAttribute('id'), $update, $this->headers($this->getUser()));
         $response->assertStatus(self::STATUS_UPDATED);
         $response->assertJson($expectedResponse);
+    }
+
+    /**
+     * JSON data sent as a content
+     * @param string $uri
+     * @param array $data
+     * @param array $headers
+     * @return TestResponse|void|null
+     */
+    public function put($uri, array $data = [], array $headers = [])
+    {
+        $server = $this->transformHeadersToServerVars($headers);
+        $cookies = $this->prepareCookiesForRequest();
+
+        $content = json_encode($data);
+
+        return $this->call('PUT', $uri, [], $cookies, [], $server, $content);
     }
 
     /**

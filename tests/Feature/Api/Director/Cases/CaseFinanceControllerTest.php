@@ -42,7 +42,7 @@ class CaseFinanceControllerTest extends TestCase
     public function testCaseFinances(): void
     {
         $accident = $this->caseAccidentService->create();
-        $r1 = $this->sendPost('/api/director/cases/' . $accident->id . '/finance/income',
+        $r1 = $this->sendPut('/api/director/cases/' . $accident->id . '/finance/income',
                 [
                     'fixed' => true,
                     'price' => 101.99,
@@ -111,7 +111,7 @@ class CaseFinanceControllerTest extends TestCase
             )
         );
 
-        $r2 = $this->sendPost('/api/director/cases/' . $accident->id . '/finance/assistant',
+        $r2 = $this->sendPut('/api/director/cases/' . $accident->id . '/finance/assistant',
             [
                 'fixed' => false,
                 'price' => 1.87,
@@ -186,7 +186,7 @@ class CaseFinanceControllerTest extends TestCase
                 ),
         ));
 
-        $r3 = $this->sendPost(
+        $r3 = $this->sendPut(
             '/api/director/cases/' . $accident->id . '/finance/caseable',
             [
                 'fixed' => true,

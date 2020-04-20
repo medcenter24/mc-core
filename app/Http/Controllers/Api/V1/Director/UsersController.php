@@ -32,7 +32,6 @@ use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
 use medcenter24\mcCore\App\Http\Requests\Api\UserStore;
 use medcenter24\mcCore\App\Http\Requests\Api\UserUpdate;
-use medcenter24\mcCore\App\Services\ApiSearch\ApiSearchService;
 use medcenter24\mcCore\App\Services\ApiSearch\SearchFieldLogic;
 use medcenter24\mcCore\App\Services\Entity\UserService;
 use medcenter24\mcCore\App\Services\LogoService;

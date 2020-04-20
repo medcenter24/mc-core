@@ -22,10 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
-use medcenter24\mcCore\App\Entity\DoctorAccident;
-use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\SurveysController;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 
@@ -36,14 +33,7 @@ use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
  */
 class CaseAccidentTransformer extends AbstractTransformer
 {
-    public const CASE_TYPE_DOCTOR = 'doctor';
-    public const CASE_TYPE_HOSPITAL = 'hospital';
-    private const CASE_TYPE_UNDEFINED = 'undefined';
-
-    public const CASE_TYPE_MAP = [
-        DoctorAccident::class => self::CASE_TYPE_DOCTOR,
-        HospitalAccident::class => self::CASE_TYPE_HOSPITAL
-    ];
+    use CaseTypeTransformer;
 
     /**
      * @inheritDoc
@@ -142,27 +132,6 @@ class CaseAccidentTransformer extends AbstractTransformer
         $data = $this->inverseTransformCaseType($data);
         return $data;
     }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws InconsistentDataException
-     */
-    private function inverseTransformCaseType(array $data): array
-    {
-        if (
-            array_key_exists(CaseAccidentService::PROPERTY_ACCIDENT, $data)
-            && array_key_exists(AccidentService::FIELD_CASEABLE_TYPE, $data[CaseAccidentService::PROPERTY_ACCIDENT])
-        ) {
-            $incType = $data[CaseAccidentService::PROPERTY_ACCIDENT][AccidentService::FIELD_CASEABLE_TYPE] ?: self::CASE_TYPE_DOCTOR;
-            $invMap = array_flip(self::CASE_TYPE_MAP);
-            if (!array_key_exists($incType, $invMap)) {
-                throw new InconsistentDataException('Case type is not correct');
-            }
-            $data[CaseAccidentService::PROPERTY_ACCIDENT][AccidentService::FIELD_CASEABLE_TYPE] = $invMap[$incType];
-        }
-        return $data;
-    }
     
     /**
      * @inheritDoc
@@ -176,11 +145,5 @@ class CaseAccidentTransformer extends AbstractTransformer
             AccidentService::FIELD_CREATED_AT => self::VAR_DATETIME,
             AccidentService::FIELD_HANDLING_TIME => self::VAR_DATETIME,
         ];
-    }
-
-    private function getTransformedCaseType(Model $model): string
-    {
-        $caseType = $model->getAttribute(AccidentService::FIELD_CASEABLE_TYPE);
-        return array_key_exists($caseType, self::CASE_TYPE_MAP) ? self::CASE_TYPE_MAP[$caseType] : self::CASE_TYPE_UNDEFINED;
     }
 }

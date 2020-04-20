@@ -52,7 +52,6 @@ class JsonRequest extends FormRequest
      */
     protected function validationData(): array
     {
-
         $data = $this->json()->all();
         if (!$data || !count($data)) {
             $data = parent::validationData();

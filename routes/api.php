@@ -24,6 +24,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\AuthenticateController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentsController as DirectorAccidentsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentStatusesController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentTypesController as DirectorAccidentTypesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AssistantsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseAccidentController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseCaseableController;
@@ -206,7 +207,7 @@ $api->group([
 
                     /** Cases Finances */
                     $api->get('{id}/finance', CaseFinanceController::class . '@show');
-                    $api->post('{id}/finance/{type}', CaseFinanceController::class . '@save');
+                    $api->put('{id}/finance/{type}', CaseFinanceController::class . '@save');
 
                     /** Case Story */
                     $api->get('{id}/scenario', CaseStoryController::class . '@story');
@@ -246,8 +247,9 @@ $api->group([
                 /*$api->post('accidents/search', DirectorAccidentsController::class . '@search');
                 $api->get('accidents/{id}', DirectorAccidentsController::class . '@show');
                 $api->get('accidents', DirectorAccidentsController::class . '@index');
-                $api->resource('types', DirectorAccidentTypesController::class);*/
+                */
 
+                $api->resource('types', DirectorAccidentTypesController::class);
 
                 $api->group(['prefix' => 'services'], static function (Router $api) {
                     $api->post('search', DirectorServicesController::class . '@search');

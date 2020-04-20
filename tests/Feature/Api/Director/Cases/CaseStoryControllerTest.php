@@ -53,7 +53,7 @@ class CaseStoryControllerTest extends TestCase
                     0 =>
                         array (
                             'id' => 1,
-                            'tag' => 'medcenter24\\mcCore\\App\\Entity\\DoctorAccident',
+                            'tag' => 'doctor',
                             'order' => 1,
                             'mode' => 'step',
                             'accidentStatusId' => 1,
@@ -63,7 +63,7 @@ class CaseStoryControllerTest extends TestCase
                     1 =>
                         array (
                             'id' => 2,
-                            'tag' => 'medcenter24\\mcCore\\App\\Entity\\DoctorAccident',
+                            'tag' => 'doctor',
                             'order' => 2,
                             'mode' => 'step',
                             'accidentStatusId' => 2,
@@ -73,7 +73,7 @@ class CaseStoryControllerTest extends TestCase
                     2 =>
                         array (
                             'id' => 3,
-                            'tag' => 'medcenter24\\mcCore\\App\\Entity\\DoctorAccident',
+                            'tag' => 'doctor',
                             'order' => 3,
                             'mode' => 'step',
                             'accidentStatusId' => 3,
@@ -83,7 +83,7 @@ class CaseStoryControllerTest extends TestCase
                     3 =>
                         array (
                             'id' => 4,
-                            'tag' => 'medcenter24\\mcCore\\App\\Entity\\DoctorAccident',
+                            'tag' => 'doctor',
                             'order' => 4,
                             'mode' => 'step',
                             'accidentStatusId' => 4,
@@ -93,7 +93,7 @@ class CaseStoryControllerTest extends TestCase
                     4 =>
                         array (
                             'id' => 5,
-                            'tag' => 'medcenter24\\mcCore\\App\\Entity\\DoctorAccident',
+                            'tag' => 'doctor',
                             'order' => 5,
                             'mode' => 'step',
                             'accidentStatusId' => 5,
@@ -103,7 +103,7 @@ class CaseStoryControllerTest extends TestCase
                     5 =>
                         array (
                             'id' => 7,
-                            'tag' => 'medcenter24\\mcCore\\App\\Entity\\DoctorAccident',
+                            'tag' => 'doctor',
                             'order' => 7,
                             'mode' => 'step',
                             'accidentStatusId' => 7,

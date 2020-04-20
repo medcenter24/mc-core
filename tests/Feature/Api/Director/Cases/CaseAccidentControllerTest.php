@@ -27,7 +27,6 @@ use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\App\Services\Entity\PatientService;
 use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorApiModelTest;
-use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 
 class CaseAccidentControllerTest extends DirectorApiModelTest
 {
@@ -87,7 +86,7 @@ class CaseAccidentControllerTest extends DirectorApiModelTest
                     'assistantId' => 0,
                     'repeated' => 0,
                     'assistantRefNum' => '',
-                    'caseType' => CaseAccidentTransformer::CASE_TYPE_DOCTOR,
+                    'caseType' => 'doctor',
                     'symptoms' => '',
                     'handlingTime' => '',
                     'patientName' => '',
@@ -107,7 +106,7 @@ class CaseAccidentControllerTest extends DirectorApiModelTest
                     'assistantId' => 0,
                     'repeated' => 0,
                     'assistantRefNum' => '',
-                    'caseType' => CaseAccidentTransformer::CASE_TYPE_DOCTOR,
+                    'caseType' => 'doctor',
                     'symptoms' => '',
                     'handlingTime' => '',
                     'patientName' => '',
@@ -175,7 +174,7 @@ class CaseAccidentControllerTest extends DirectorApiModelTest
                     'assistantId' => 0,
                     'repeated' => 0,
                     'assistantRefNum' => '',
-                    'caseType' => CaseAccidentTransformer::CASE_TYPE_DOCTOR,
+                    'caseType' => 'doctor',
                     'symptoms' => 'phpunit symptoms',
                     'handlingTime' => '2031-08-20 02:11:11',
                     'patientName' => 'Php unit patient name',
@@ -272,7 +271,7 @@ class CaseAccidentControllerTest extends DirectorApiModelTest
                         'assistantId' => 0,
                         'repeated' => 0,
                         'assistantRefNum' => '',
-                        'caseType' => CaseAccidentTransformer::CASE_TYPE_DOCTOR,
+                        'caseType' => 'doctor',
                         'symptoms' => '',
                         'handlingTime' => '',
                         'patientName' => '',
@@ -302,7 +301,7 @@ class CaseAccidentControllerTest extends DirectorApiModelTest
                         'assistantId' => 3,
                         'repeated' => 0,
                         'assistantRefNum' => '',
-                        'caseType' => CaseAccidentTransformer::CASE_TYPE_HOSPITAL,
+                        'caseType' => 'hospital',
                         'symptoms' => 'phpunit symptoms2',
                         'handlingTime' => '2031-08-20 02:11:11',
                         'patientName' => 'Php unit patient name3',
@@ -335,7 +334,7 @@ class CaseAccidentControllerTest extends DirectorApiModelTest
                         'repeated' => 2,
                         'assistantRefNum' => '',
                         'refNum' => 'PHPUNIT REF NUM',
-                        'caseType' => CaseAccidentTransformer::CASE_TYPE_DOCTOR,
+                        'caseType' => 'doctor',
                         'symptoms' => 'phpunit symptoms3',
                         'handlingTime' => '2031-08-20 02:11:11',
                         'patientName' => 'Php unit patient name1',

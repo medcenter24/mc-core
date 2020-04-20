@@ -177,7 +177,7 @@ class DoctorCaseControllerTest extends TestCase
                 'caseableId' => 1,
                 'cityId' => 2,
                 'formReportId' => 1,
-                'caseableType' => 'medcenter24\\mcCore\\App\\Entity\\DoctorAccident',
+                'caseableType' => 'doctor',
                 'assistantPaymentId' => 0,
                 'incomePaymentId' => 0,
                 'assistantInvoiceId' => 0,

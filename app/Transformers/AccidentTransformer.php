@@ -21,10 +21,23 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Transformers;
 
+use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 
 class AccidentTransformer extends AbstractTransformer
 {
+    use CaseTypeTransformer;
+
+    /**
+     * @inheritDoc
+     */
+    public function transform (Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['caseableType'] = $this->getTransformedCaseType($model);
+        return $fields;
+    }
+
     protected function getMap(): array
     {
         return [
@@ -38,6 +51,7 @@ class AccidentTransformer extends AbstractTransformer
             'caseableId' => AccidentService::FIELD_CASEABLE_ID,
             'cityId' => AccidentService::FIELD_CITY_ID,
             'formReportId' => AccidentService::FIELD_FORM_REPORT_ID,
+            // will be transformed later
             'caseableType' => AccidentService::FIELD_CASEABLE_TYPE,
             'assistantPaymentId' => AccidentService::FIELD_ASSISTANT_PAYMENT_ID,
             'incomePaymentId' => AccidentService::FIELD_INCOME_PAYMENT_ID,

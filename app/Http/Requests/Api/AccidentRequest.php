@@ -25,12 +25,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use medcenter24\mcCore\App\Entity\Accident;
 use Illuminate\Validation\Rule;
-use medcenter24\mcCore\App\Entity\DoctorAccident;
-use medcenter24\mcCore\App\Entity\HospitalAccident;
-use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
+use medcenter24\mcCore\App\Transformers\CaseTypeTransformer;
 
 class AccidentRequest extends JsonRequest
 {
+    use CaseTypeTransformer;
+
     private function getFields($attribute, $value, array $parameters, $validator): array
     {
         array_shift( $parameters );
@@ -75,7 +75,7 @@ class AccidentRequest extends JsonRequest
 
             $res = true;
             if ($fields['caseableType'] && $fields['caseableId']) {
-                $caseTypeMap = CaseAccidentTransformer::CASE_TYPE_MAP;
+                $caseTypeMap = $this->getCaseTypeMap();
                 $cl = array_search($fields['caseableType'], $caseTypeMap, true);
                 $res = $cl && class_exists($cl) ? $cl::where('id', $fields['caseableId'])->exists() : false;
             }
@@ -101,7 +101,7 @@ class AccidentRequest extends JsonRequest
         return [
             'parentId' => 'parent_rule:accidents,id',
             // it is not caseable_type field that is GUI expectations only
-            'caseableType' => Rule::in(['', CaseAccidentTransformer::CASE_TYPE_DOCTOR, CaseAccidentTransformer::CASE_TYPE_HOSPITAL]),
+            'caseableType' => Rule::in(['', 'doctor', 'hospital']),
             'caseableId' => 'caseable_rule:accidents,caseableType',
             'patientId' => 'exists_if_set:patients,id',
             'accidentTypeId' => 'exists_if_set:accident_types,id',

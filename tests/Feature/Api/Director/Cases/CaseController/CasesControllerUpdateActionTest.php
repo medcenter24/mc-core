@@ -42,7 +42,7 @@ class CasesControllerUpdateActionTest extends TestCase
         $response->assertStatus(422)
             ->assertJson([
                 'errors' => [
-                    ['Accident data should be provided in the request data'],
+                    ['Accident identifier should be provided in the request data'],
                 ],
             ]);
     }

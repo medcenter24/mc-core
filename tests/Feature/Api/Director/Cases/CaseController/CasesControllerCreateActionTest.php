@@ -214,7 +214,7 @@ class CasesControllerCreateActionTest extends TestCase
                 'assistantId' => factory(Assistant::class)->create()->id,
                 'assistantRefNum' => 'ref---',
                 'caseableId' => factory(DoctorAccident::class)->create()->id,
-                'caseableType' => CaseAccidentTransformer::CASE_TYPE_DOCTOR,
+                'caseableType' => 'doctor',
                 'cityId' => $city->id,
                 'closedAt' => null,
                 'contacts' => 'anything',

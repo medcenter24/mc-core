@@ -74,6 +74,7 @@ class AccidentsController extends ModelApiController
     {
         /** @var AccidentService $accidentService */
         $accidentService = $this->getServiceLocator()->get(AccidentService::class);
+        /** @var Accident $accident */
         $accident = $accidentService->first([AccidentService::FIELD_ID => $id]);
         if (!$accident) {
             $this->response->errorNotFound();

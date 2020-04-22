@@ -62,12 +62,7 @@ trait CaseTypeTransformer
         ) {
             $incType = $data[CaseAccidentService::PROPERTY_ACCIDENT][AccidentService::FIELD_CASEABLE_TYPE]
                 ?: $this->getTransformedDoctorCase();
-            $invMap = array_flip($this->getCaseTypeMap());
-            if (!array_key_exists($incType, $invMap)) {
-                throw new InconsistentDataException('Case type is not correct');
-            }
-            $data[CaseAccidentService::PROPERTY_ACCIDENT][AccidentService::FIELD_CASEABLE_TYPE]
-                = $invMap[$incType];
+            $data[CaseAccidentService::PROPERTY_ACCIDENT][AccidentService::FIELD_CASEABLE_TYPE] = $this->getInverseTransformedType($incType);
         }
         return $data;
     }
@@ -75,6 +70,25 @@ trait CaseTypeTransformer
     private function getTransformedCaseType(Model $model): string
     {
         $caseType = $model->getAttribute(AccidentService::FIELD_CASEABLE_TYPE);
+        return $this->getTransformedType($caseType);
+    }
+
+    /**
+     * @param string $guiType
+     * @return string
+     * @throws InconsistentDataException
+     */
+    public function getInverseTransformedType(string $guiType): string
+    {
+        $invMap = array_flip($this->getCaseTypeMap());
+        if (!array_key_exists($guiType, $invMap)) {
+            throw new InconsistentDataException('Case type is not correct');
+        }
+        return $invMap[$guiType];
+    }
+
+    public function getTransformedType(string $caseType): string
+    {
         return array_key_exists($caseType, $this->getCaseTypeMap())
             ? $this->getCaseTypeMap()[$caseType]
             : 'undefined';

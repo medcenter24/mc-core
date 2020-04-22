@@ -95,16 +95,20 @@ abstract class AbstractTransformer extends TransformerAbstract
                 $value = (int) $value;
                 break;
             case self::VAR_DATETIME:
-                $value = Date::sysDate(
-                    $value,
-                    $this->getServiceLocator()->get(UserService::class)->getTimezone()
-                );
+                if ($value) {
+                    $value = Date::sysDate(
+                        $value,
+                        $this->getServiceLocator()->get(UserService::class)->getTimezone()
+                    );
+                }
                 break;
             case self::VAR_DATE:
-                $value = Date::getSysDate(
-                    $value,
-                    $this->getServiceLocator()->get(UserService::class)->getTimezone()
-                );
+                if ($value) {
+                    $value = Date::getSysDate(
+                        $value,
+                        $this->getServiceLocator()->get(UserService::class)->getTimezone()
+                    );
+                }
                 break;
         }
         return $value;

@@ -22,19 +22,35 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Services\Entity\ScenarioService;
 
 class ScenarioTransformer extends AbstractTransformer
 {
+    use CaseTypeTransformer;
+
     public function transform (Model $model): array
     {
         $fields = parent::transform($model);
+        $fields['tag'] = $this->getTransformedType($fields['tag']);
         $fields['status'] = $model->getAttribute('status') ?: '';
         $fields['title'] = $model->getAttribute('accidentStatus')
             ? $model->getAttribute('accidentStatus')->getAttribute(AccidentStatusService::FIELD_TITLE)
             : '';
         return $fields;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws InconsistentDataException
+     */
+    public function inverseTransform(array $data): array
+    {
+        $data = parent::inverseTransform($data);
+        $data['tag'] = $this->getInverseTransformedType($data['tag']);
+        return $data;
     }
 
     protected function getMap(): array

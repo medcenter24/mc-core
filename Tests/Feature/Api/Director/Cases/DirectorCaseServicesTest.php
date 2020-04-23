@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\Tests\Feature\Api\Director;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\DoctorAccident;

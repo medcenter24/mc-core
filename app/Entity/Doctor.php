@@ -26,13 +26,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use medcenter24\mcCore\App\Services\Entity\DoctorService;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 
 class Doctor extends Model implements HasMedia
 {
     use SoftDeletes;
-    use HasMediaTrait;
+    use InteractsWithMedia;
 
     protected $fillable = DoctorService::FILLABLE;
     protected $visible  = DoctorService::VISIBLE;

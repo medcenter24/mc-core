@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\Finance;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\Accident;

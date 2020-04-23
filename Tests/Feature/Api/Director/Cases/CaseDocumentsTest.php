@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace medcenter24\mcCore\Tests\Feature\Api\Director;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\Document;

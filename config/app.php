@@ -182,13 +182,13 @@ $app = [
         //--- Added
         Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
         \medcenter24\mcCore\App\Providers\RoleServiceProvider::class,
-        Barryvdh\Cors\ServiceProvider::class,
+        Fruitcake\Cors\CorsServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         \Maatwebsite\Excel\ExcelServiceProvider::class,
         // I need this to have possibility to use vendor path in the other direction than default
         LocMessengerServiceProvider::class,
-        BackupManager\Laravel\Laravel55ServiceProvider::class,
+        // BackupManager\Laravel\Laravel55ServiceProvider::class,
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
         // \medcenter24\mcCore\App\Providers\CaseFinanceProvider::class,
         \medcenter24\mcCore\App\Providers\FormulaServiceProvider::class,

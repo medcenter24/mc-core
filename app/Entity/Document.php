@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\Image\Manipulations;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\Models\Media;
 
@@ -41,7 +41,7 @@ use Spatie\MediaLibrary\Models\Media;
 class Document extends Model implements HasMedia
 {
     use SoftDeletes;
-    use HasMediaTrait;
+    use InteractsWithMedia;
 
     protected $fillable = DocumentService::FILLABLE;
     protected $visible = DocumentService::UPDATABLE;

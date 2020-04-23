@@ -15,7 +15,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\Tests\Unit\Services\Core\Http;
+namespace medcenter24\mcCore\Tests\Unit\Services\Core\Http\Builders;
 
 
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Sorter;

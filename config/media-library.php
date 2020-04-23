@@ -23,6 +23,7 @@ use Spatie\MediaLibrary\ImageGenerators\FileTypes\Pdf;
 use Spatie\MediaLibrary\ImageGenerators\FileTypes\Svg;
 use \medcenter24\mcCore\App\Core\MediaLibrary\CustomPathGenerator;
 use Spatie\MediaLibrary\ImageGenerators\FileTypes\Video;
+use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator;
 
 return [
 
@@ -59,7 +60,7 @@ return [
      * When urls to files get generated this class will be called. Leave empty
      * if your files are stored locally above the site root or on s3.
      */
-    'url_generator' => null,
+    'url_generator' => DefaultUrlGenerator::class,
 
     /*
      * The class that contains the strategy for determining a media file's path.
@@ -67,13 +68,6 @@ return [
      * generator turned off because for now I don't need any optimizations
      */
     'path_generator' => CustomPathGenerator::class,
-
-    's3' => [
-        /*
-         * The domain that should be prepended when generating urls.
-         */
-        'domain' => 'https://xxxxxxx.s3.amazonaws.com',
-    ],
 
     'remote' => [
         /*

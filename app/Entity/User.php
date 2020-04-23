@@ -34,16 +34,16 @@ use Illuminate\Foundation\Auth\User as Authenticable;
 use medcenter24\mcCore\App\Services\Entity\UserService;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\Image\Manipulations;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\Models\Media;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticable implements JWTSubject, HasMedia
 {
     use Notifiable;
     use SoftDeletes;
-    use HasMediaTrait;
+    use InteractsWithMedia;
     use Messagable;
 
     /**

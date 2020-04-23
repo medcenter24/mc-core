@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
+namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -26,9 +26,9 @@ use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\DiskDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class DocumentsControllerTest extends TestCase
 {

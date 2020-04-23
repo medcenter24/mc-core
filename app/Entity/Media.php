@@ -21,8 +21,8 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
-use \Spatie\MediaLibrary\Models\Media as CoreMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media as MediaAlias;
 
-class Media extends CoreMedia
+class Media extends MediaAlias
 {
 }

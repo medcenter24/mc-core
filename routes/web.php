@@ -27,6 +27,9 @@
 |
 */
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', static function () {
     return redirect('admin');
 });
@@ -38,11 +41,11 @@ Route::get('/home', static function () {
 });
 
 // if it needed I could check that server is telegram
-Route::group(['prefix' => 'telegram'], function () {
+Route::group(['prefix' => 'telegram'], static function () {
     Route::post(env('TELEGRAM_WEBHOOK_PREFIX'), 'Telegram\TelegramApiController@index');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], static function () {
     Route::get('/', 'Admin\MainController@index');
     Route::resource('users', 'Admin\UsersController');
     Route::resource('roles', 'Admin\RolesController');
@@ -56,15 +59,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
         Route::get('slack', 'Admin\PreviewController@slack');
     });
 
-    Route::group(['prefix' => 'cases'], function () {
+    Route::group(['prefix' => 'cases'], static function () {
         Route::get('/', 'Admin\CasesController@search');
         Route::get('report', 'Admin\CasesController@report');
         Route::get('pdf', 'Admin\CasesController@downloadPdf');
         Route::get('history', 'Admin\CasesController@history');
     });
 
-    Route::group(['prefix' => 'messenger'], function () {
-        Route::group(['prefix' => 'thread'], function () {
+    Route::group(['prefix' => 'messenger'], static function () {
+        Route::group(['prefix' => 'thread'], static function () {
             Route::get('/', 'Admin\Messenger\ThreadController@index');
             Route::get('/counts', 'Admin\Messenger\ThreadController@counts');
             Route::get('/{id}', 'Admin\Messenger\ThreadController@show');
@@ -91,7 +94,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], func
     });
 
     Route::group(['prefix' => 'system'], static function () {
-        Route::group(['prefix' => 'models'], function () {
+        Route::group(['prefix' => 'models'], static function () {
             Route::get('search', 'Admin\System\ModelsController@search');
             Route::post('relations', 'Admin\System\ModelsController@relations');
             Route::get('', 'Admin\System\ModelsController@index');

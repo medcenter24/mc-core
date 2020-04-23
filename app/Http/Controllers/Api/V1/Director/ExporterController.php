@@ -17,31 +17,36 @@
 
 declare(strict_types = 1);
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Exports\CasesExport;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
-// use medcenter24\mcCore\App\Services\Export\Form1ExportService;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class CasesExporterController extends ApiController
+class ExporterController extends ApiController
 {
+    /**
+     * @param string $form
+     * @param Request $request
+     * @return Response|BinaryFileResponse|void
+     */
     public function export(string $form, Request $request)
     {
         /*$service = null;
-        switch ($form) {
-            case 'form1':
-                $service = new Form1ExportService();
-                break;
-            default:
-                $this->response->errorBadRequest('Undefined form name for the export: '. $form);
-        }
-
         return $service->excel($request->all())->export('xlsx', [
             'Access-Control-Allow-Credentials' => true,
             'Access-Control-Allow-Origin' => env('CORS_ALLOW_ORIGIN_DIRECTOR'),
         ]);*/
 
-        return (new CasesExport())->download(time() . '_case_export.xlsx');
+        Log::error('here');
+        switch ($form) {
+            case 'cases':
+                return (new CasesExport())->download(time() . '_case_export.xlsx');
+        }
+
+        $this->response->errorNotFound();
     }
 }

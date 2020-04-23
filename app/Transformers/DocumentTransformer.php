@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
-use Spatie\MediaLibrary\Models\Media;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class DocumentTransformer extends AbstractTransformer
 {

@@ -59,8 +59,6 @@ class UsersControllerTest extends DirectorApiModelTest
                 'phone' => '',
                 'lang' => '',
                 'timezone' => 'UTC',
-                'thumb200' => 'noContent',
-                'thumb45' => 'noContent',
             ]
         ]);
     }

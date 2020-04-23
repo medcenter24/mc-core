@@ -21,21 +21,21 @@ return [
      * You can enable CORS for 1 or multiple paths.
      * Example: ['api/*']
      */
-    'paths' => [],
+    'paths' => ['*'],
 
     /*
     * Matches the request method. `[*]` allows all methods.
     */
-    'allowed_methods' => [
-        env('APP_URL'),
-        env('CORS_ALLOW_ORIGIN_DIRECTOR'),
-        env('CORS_ALLOW_ORIGIN_DOCTOR'),
-    ],
+    'allowed_methods' => ['*'],
 
     /*
      * Matches the request origin. `[*]` allows all origins.
      */
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+        env('APP_URL'),
+        env('CORS_ALLOW_ORIGIN_DIRECTOR'),
+        env('CORS_ALLOW_ORIGIN_DOCTOR'),
+    ],
 
     /*
      * Matches the request origin with, similar to `Request::is()`

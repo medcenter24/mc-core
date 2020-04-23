@@ -35,19 +35,20 @@ class CaseStoryController extends ApiController
     /**
      * Load scenario for the current accident
      * @param int $id
+     * @param AccidentStatusService $accidentStatusesService
+     * @param ScenarioService $scenariosService
+     * @param StoryService $storyService
+     * @param AccidentService $accidentService
      * @return Response
      */
-    public function story(int $id): Response
+    public function story(
+        int $id,
+        AccidentStatusService $accidentStatusesService,
+        ScenarioService $scenariosService,
+        StoryService $storyService,
+        AccidentService $accidentService
+    ): Response
     {
-        /** @var AccidentStatusService $accidentStatusesService */
-        $accidentStatusesService = $this->getServiceLocator()->get(AccidentStatusService::class);
-        /** @var ScenarioService $scenariosService */
-        $scenariosService = $this->getServiceLocator()->get(ScenarioService::class);
-        /** @var StoryService $storyService */
-        $storyService = $this->getServiceLocator()->get(StoryService::class);
-        /** @var AccidentService $accidentService */
-        $accidentService = $this->getServiceLocator()->get(AccidentService::class);
-
         /** @var Accident $accident */
         $accident = $accidentService->first([AccidentService::FIELD_ID => $id]);
 

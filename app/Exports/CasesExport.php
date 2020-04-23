@@ -33,7 +33,8 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 class CasesExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
     use Exportable;
-    private $filters;
+
+    private array $filters;
 
     public function __construct(array $filters = [])
     {

@@ -22,7 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Testing\TestResponse;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 use Prophecy\Prophecy\ObjectProphecy;
 

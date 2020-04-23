@@ -39,11 +39,6 @@ class DocumentsControllerTest extends TestCase
         return $this->getServiceLocator()->get(DocumentService::class);
     }
 
-    /**
-     * @throws DiskDoesNotExist
-     * @throws FileDoesNotExist
-     * @throws FileIsTooBig
-     */
     public function testShow(): void
     {
         Storage::fake('documents');
@@ -52,21 +47,10 @@ class DocumentsControllerTest extends TestCase
         $doc = $this->getDocumentService()
             ->createDocumentFromFile(UploadedFile::fake()->image('fake.jpg'), $this->getUser());
 
-        $this->doNotPrintErrResponse([500]);
         $response = $this->sendGet('/api/director/documents/' . $doc->id);
-        $this->doNotPrintErrResponse();
-        $response->assertStatus(500);
-        $response->assertJson([
-            'status_code' => 500,
-        ]);
-        $this->assertStringEndsWith('does not exist', $response->json('message'));
+        $response->assertOk();
     }
 
-    /**
-     * @throws DiskDoesNotExist
-     * @throws FileDoesNotExist
-     * @throws FileIsTooBig
-     */
     public function testDelete(): void
     {
         Storage::fake('documents');
@@ -103,7 +87,6 @@ class DocumentsControllerTest extends TestCase
                 'type' => 'insurance',
                 'owner' => 'user',
                 'fileName' => NULL,
-                'b64thumb' => '',
             ],
         ]);
     }

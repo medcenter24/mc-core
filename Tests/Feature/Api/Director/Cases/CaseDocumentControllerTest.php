@@ -30,10 +30,7 @@ class CaseDocumentControllerTest extends TestCase
 {
     use DirectorTestTraitApi;
 
-    /**
-     * @var CaseAccidentService
-     */
-    private $caseAccidentService;
+    private CaseAccidentService $caseAccidentService;
 
     protected function setUp(): void
     {
@@ -59,10 +56,10 @@ class CaseDocumentControllerTest extends TestCase
             ]);
 
         $addResponse->assertStatus(200);
-        $addResponse->assertExactJson([
+        $addResponse->assertJson([
             'data' => [
                 [
-                    'b64thumb' => '',
+                    // 'b64thumb' => '',
                     'id' => 1,
                     'fileName' => null,
                     'owner' => 'accident',
@@ -70,7 +67,7 @@ class CaseDocumentControllerTest extends TestCase
                     'type' => '',
                 ],
                 [
-                    'b64thumb' => '',
+                    // 'b64thumb' => '',
                     'id' => 2,
                     'fileName' => null,
                     'owner' => 'accident',
@@ -91,7 +88,7 @@ class CaseDocumentControllerTest extends TestCase
                         'type' => 'passport',
                         'owner' => 'accident',
                         'fileName' => NULL,
-                        'b64thumb' => '',
+                        // 'b64thumb' => '',
                     ],
                     [
                         'id' => 2,
@@ -99,7 +96,7 @@ class CaseDocumentControllerTest extends TestCase
                         'type' => 'passport',
                         'owner' => 'accident',
                         'fileName' => NULL,
-                        'b64thumb' => '',
+                        // 'b64thumb' => '',
                     ],
                 ],
         ]);

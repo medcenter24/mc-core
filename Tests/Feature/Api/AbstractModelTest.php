@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Testing\TestResponse;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\Tests\TestCase;
 

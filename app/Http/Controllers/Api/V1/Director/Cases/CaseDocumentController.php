@@ -27,9 +27,6 @@ use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use medcenter24\mcCore\App\Transformers\DocumentTransformer;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
 
 class CaseDocumentController extends ApiController
 {
@@ -59,9 +56,6 @@ class CaseDocumentController extends ApiController
      * @param $id
      * @param JsonRequest $request
      * @return Response
-     * @throws DiskDoesNotExist
-     * @throws FileDoesNotExist
-     * @throws FileIsTooBig
      */
     public function createDocuments($id, JsonRequest $request): Response
     {

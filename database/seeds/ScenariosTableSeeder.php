@@ -16,6 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\HospitalAccident;

@@ -21,7 +21,7 @@ namespace medcenter24\mcCore\App\Helpers;
 
 
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia;
 
 class MediaHelper
 {

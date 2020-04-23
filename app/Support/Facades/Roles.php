@@ -18,7 +18,6 @@
 
 namespace medcenter24\mcCore\App\Support\Facades;
 
-
 use medcenter24\mcCore\App\Services\Entity\RoleService;
 use Illuminate\Support\Facades\Facade;
 

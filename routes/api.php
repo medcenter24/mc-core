@@ -32,7 +32,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseCommentCon
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseDocumentController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseFinanceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseHistoryController;
-use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CasesExporterController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\ExporterController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseSourceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseStatusController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseStoryController;
@@ -151,13 +151,6 @@ $api->group([
                     $api->get('{id}', UploadsController::class . '@show');
                 });*/
 
-                /** line with scenario to show the progress */
-                // todo check with gui if am using it
-                /*$api->group(['prefix' => 'scenario'], static function (Router $api) {
-                    $api->get('doctor', AccidentScenarioController::class . '@doctorScenario');
-                    // $api->get('hospital', AccidentScenarioController::class . '@hospitalScenario');
-                });*/
-
                 $api->group(['prefix' => 'checkpoints'], static function (Router $api) {
                     $api->post('search', AccidentCheckpointsController::class . '@search');
                     $api->get('{id}', AccidentCheckpointsController::class . '@show');
@@ -192,11 +185,11 @@ $api->group([
                     $api->delete('{id}/logo', CompaniesController::class . '@deleteLogo');
                 });
 
+                /** Exporter (same mechanism for exporters: binary response) */
+                $api->post('export/{form}', ExporterController::class . '@export');
+
                 // Cases
                 $api->group(['prefix' => 'cases'], static function (Router $api) {
-
-                    /** Case Exporter */
-                    $api->get('export/{form}', CasesExporterController::class . '@export');
 
                     /** Case Accident model */
                     $api->post('search', CaseAccidentController::class . '@search');
@@ -244,7 +237,9 @@ $api->group([
                    // selected case
                    $api->get('{id}', DirectorAccidentsController::class . '@show');
                 });
-                /*$api->post('accidents/search', DirectorAccidentsController::class . '@search');
+                /*
+                 * parent cases?
+                 * $api->post('accidents/search', DirectorAccidentsController::class . '@search');
                 $api->get('accidents/{id}', DirectorAccidentsController::class . '@show');
                 $api->get('accidents', DirectorAccidentsController::class . '@index');
                 */

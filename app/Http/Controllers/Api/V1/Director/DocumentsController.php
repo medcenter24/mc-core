@@ -23,7 +23,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Http\Response;
 use Exception;
-use Log;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;

@@ -28,7 +28,7 @@ class CasesExporterControllerTest extends TestCase
 
     public function testExport(): void
     {
-        $response = $this->sendGet('/api/director/cases/export/default');
+        $response = $this->sendPost('/api/director/export/cases', []);
         $response->assertStatus(200);
         $this->assertInstanceOf(BinaryFileResponse::class, $response->baseResponse);
     }

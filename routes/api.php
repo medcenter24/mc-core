@@ -56,6 +56,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\ServicesController a
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics\CalendarController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics\TrafficController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\SurveysController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\UploadsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\UsersController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\AccidentTypesController as DoctorAccidentTypesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\Accident\DiagnosticsAccidentController;
@@ -144,12 +145,12 @@ $api->group([
 
             $api->group(['prefix' => 'director', 'middleware' => ['role:director']], static function (Router $api) {
 
-                /*
-                 * not sure that I need this
-                 * $api->group(['prefix' => 'uploads'], static function (Router $api) {
+                // Secure file uploader
+                # uses for invoices, forms, etc.
+                $api->group(['prefix' => 'uploads'], static function (Router $api) {
                     $api->post('', UploadsController::class . '@store');
                     $api->get('{id}', UploadsController::class . '@show');
-                });*/
+                });
 
                 $api->group(['prefix' => 'checkpoints'], static function (Router $api) {
                     $api->post('search', AccidentCheckpointsController::class . '@search');

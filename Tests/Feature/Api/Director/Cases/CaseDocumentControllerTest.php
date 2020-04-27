@@ -51,8 +51,10 @@ class CaseDocumentControllerTest extends TestCase
 
         $addResponse = $this->sendPost('/api/director/cases/' . $accident->id . '/documents',
             [
-                'image' => UploadedFile::fake()->image('fake.jpg'),
-                'image2' => UploadedFile::fake()->image('fake2.jpg')
+                'files' => [
+                    'image' => UploadedFile::fake()->image('fake.jpg'),
+                    'image2' => UploadedFile::fake()->image('fake2.jpg'),
+                ]
             ]);
 
         $addResponse->assertStatus(200);

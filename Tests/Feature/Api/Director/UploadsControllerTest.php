@@ -20,19 +20,42 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
-
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use medcenter24\mcCore\App\Entity\Upload;
+use medcenter24\mcCore\App\Entity\User;
+use medcenter24\mcCore\App\Services\UploaderService;
+use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
 
-// todo probably not used
 class UploadsControllerTest extends TestCase
 {
+    use DirectorTestTraitApi;
+
+    private const URI = '/api/director/uploads';
+
     public function testStore(): void
     {
+        Storage::fake('uploads');
 
+        $response = $this->sendPost(self::URI, [
+            UploadedFile::fake()->create('f1.txt'),
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJson([
+            'id' => 1,
+            'name' => 'f1.txt',
+        ]);
     }
 
-    public function testDelete(): void
+    public function testShow(): void
     {
+        $this->sendPost(self::URI, [
+            UploadedFile::fake()->create('f1.txt'),
+        ]);
 
+        $response = $this->sendGet(self::URI . '/1');
+        $response->assertStatus(200);
     }
 }

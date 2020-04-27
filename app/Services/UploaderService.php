@@ -57,7 +57,8 @@ class UploaderService extends Configurable
     public function upload(UploadedFile $file): Upload
     {
         return new Upload([
-            'path' => Storage::disk($this->getOption(self::CONF_DISK))->putFile($this->randDir($this->getOption(self::CONF_FOLDER)), $file),
+            'path' => Storage::disk($this->getOption(self::CONF_DISK))
+                ->putFile($this->randDir($this->getOption(self::CONF_FOLDER)), $file),
             'file_name' => $file->getClientOriginalName(),
             'storage' => $this->getOption(self::CONF_FOLDER),
         ]);

@@ -375,7 +375,6 @@ $api->group([
                     $api->post('search', FinanceCurrencyController::class . '@search');
                     $api->get('{id}', FinanceCurrencyController::class . '@show');
                     $api->post('', FinanceCurrencyController::class . '@store');
-                    $api->get('', FinanceCurrencyController::class . '@index');
                     $api->put('{id}', FinanceCurrencyController::class . '@update');
                     $api->delete('{id}', FinanceCurrencyController::class . '@destroy');
                 });

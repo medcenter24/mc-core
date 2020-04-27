@@ -48,7 +48,7 @@ class UserStore extends JsonRequest
     {
         $data = parent::validationData();
 
-        $id = (int) $data['id'];
+        $id = (int) (array_key_exists('id', $data) ? $data['id'] : 0);
         // if doctor access - he can change only his data
         if (auth()->user()->id !== $id
             && !Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)

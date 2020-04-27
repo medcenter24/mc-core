@@ -21,8 +21,24 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-class FinanceCurrencyRequest extends JsonRequest
+use Illuminate\Support\Facades\Auth;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
+
+class DiagnosticUpdateRequest extends JsonRequest
 {
+
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize(): bool
+    {
+        return Auth::check()
+            && ($this->getServiceLocator()->get(RoleService::class)->hasRole(auth()->user(), RoleService::DIRECTOR_ROLE)
+                || $this->getServiceLocator()->get(RoleService::class)->hasRole(auth()->user(), RoleService::DOCTOR_ROLE));
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -31,8 +47,8 @@ class FinanceCurrencyRequest extends JsonRequest
     public function rules(): array
     {
         return [
-            'title' => 'max:200',
-            'code' => 'required',
+            'title' => 'min:3',
+            'commentary' => 'max:250',
         ];
     }
 }

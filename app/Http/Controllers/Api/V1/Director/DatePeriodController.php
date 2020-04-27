@@ -24,6 +24,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DatePeriodRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\DatePeriodUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\DatePeriodService;
 use medcenter24\mcCore\App\Transformers\DatePeriodTransformer;
 use League\Fractal\TransformerAbstract;
@@ -46,5 +47,10 @@ class DatePeriodController extends ModelApiController
     protected function getRequestClass(): string
     {
         return DatePeriodRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return DatePeriodUpdateRequest::class;
     }
 }

@@ -49,14 +49,21 @@ class CurrencyService extends AbstractModelService
         self::FIELD_ICO,
     ];
 
-    /**
-     * @var FinanceCurrency
-     */
-    private $defaultCurrency;
+    private FinanceCurrency $defaultCurrency;
 
-    private $defaultCurrencies = [
-        [self::FIELD_TITLE => 'Euro', self::FIELD_CODE => 'eu', self::FIELD_ICO => 'fa fa-euro', self::FIELD_MARKERS => ['€']],
-        [self::FIELD_TITLE => 'Dollar', self::FIELD_CODE => 'us', self::FIELD_ICO => 'fa fa-dollar', self::FIELD_MARKERS => ['$']],
+    private array $defaultCurrencies = [
+        [
+            self::FIELD_TITLE => 'Euro',
+            self::FIELD_CODE => 'eu',
+            self::FIELD_ICO => 'fa fa-euro',
+            self::FIELD_MARKERS => ['€']
+        ],
+        [
+            self::FIELD_TITLE => 'Dollar',
+            self::FIELD_CODE => 'us',
+            self::FIELD_ICO => 'fa fa-dollar',
+            self::FIELD_MARKERS => ['$']
+        ],
     ];
 
     /**
@@ -67,7 +74,7 @@ class CurrencyService extends AbstractModelService
      * @return int
      * @throws InconsistentDataException
      */
-    public function convertCurrency($val, FinanceCurrency $currency, FinanceCurrency $toCurrency = null)
+    public function convertCurrency($val, FinanceCurrency $currency, FinanceCurrency $toCurrency = null): int
     {
         if (isset($toCurrency) && $toCurrency->getAttribute(self::FIELD_CODE) !== $currency->getAttribute(self::FIELD_CODE)) {
             throw new InconsistentDataException('Currency Convert has not been implemented yet');
@@ -78,7 +85,7 @@ class CurrencyService extends AbstractModelService
 
     public function getDefaultCurrency(): FinanceCurrency
     {
-        if (!$this->defaultCurrency) {
+        if (!isset($this->defaultCurrency) || !$this->defaultCurrency) {
             $data = current($this->defaultCurrencies);
             unset($data[self::FIELD_MARKERS]);
             $this->defaultCurrency = $this->firstOrCreate($data);

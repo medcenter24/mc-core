@@ -364,6 +364,7 @@ class CaseAccidentService implements ModelService
                 $this->getHospitalAccidentData($data)
             );
         } else {
+            Log::error('Caseable type should hospital or doctor', [$data]);
             throw new InconsistentDataException('Accidents caseable type is not correct');
         }
 
@@ -438,6 +439,7 @@ class CaseAccidentService implements ModelService
     /**
      * @param array $data
      * @return bool
+     * @throws InconsistentDataException
      */
     private function isDoctorCase(array $data): bool
     {
@@ -447,6 +449,7 @@ class CaseAccidentService implements ModelService
     /**
      * @param array $data
      * @return bool
+     * @throws InconsistentDataException
      */
     private function isHospitalCase(array $data): bool
     {

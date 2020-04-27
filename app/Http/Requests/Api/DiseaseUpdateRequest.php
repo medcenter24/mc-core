@@ -14,15 +14,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
 declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-class FinanceCurrencyRequest extends JsonRequest
+use Illuminate\Support\Facades\Auth;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
+use medcenter24\mcCore\App\Support\Facades\Roles;
+
+class DiseaseUpdateRequest extends JsonRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -31,8 +36,9 @@ class FinanceCurrencyRequest extends JsonRequest
     public function rules(): array
     {
         return [
-            'title' => 'max:200',
-            'code' => 'required',
+            'title' => 'min:3',
+            'description' => 'max:250',
+            'code' => 'min:1',
         ];
     }
 }

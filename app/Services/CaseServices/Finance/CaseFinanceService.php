@@ -45,6 +45,7 @@ use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Services\Entity\FinanceConditionService;
 use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder as FormulaBuilderContract;
+use medcenter24\mcCore\App\Transformers\FinanceConditionTransformer;
 
 class CaseFinanceService
 {
@@ -252,7 +253,10 @@ class CaseFinanceService
         $caseFinanceCondition->setCurrencyMode((string)$request->json('currencyMode',
             FinanceConditionService::PARAM_CURRENCY_MODE_PERCENT));
         $caseFinanceCondition->setCurrency($request->json('currencyId', 0));
-        $caseFinanceCondition->setModel((string)$request->json('model', Accident::class));
+
+        $financeConditionTransformer = new FinanceConditionTransformer();
+        $modelName = $financeConditionTransformer->inverseTransformConditionModel($request->json('model', ''));
+        $caseFinanceCondition->setModel($modelName);
 
         return $this->saveCondition($caseFinanceCondition, $id);
     }

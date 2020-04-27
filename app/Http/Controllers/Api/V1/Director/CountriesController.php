@@ -23,6 +23,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CountryRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\CountryUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\CountryService;
 use medcenter24\mcCore\App\Transformers\CountryTransformer;
 use League\Fractal\TransformerAbstract;
@@ -45,5 +46,10 @@ class CountriesController extends ModelApiController
     protected function getRequestClass(): string
     {
         return CountryRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return CountryUpdateRequest::class;
     }
 }

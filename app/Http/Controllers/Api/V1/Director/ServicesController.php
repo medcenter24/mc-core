@@ -24,6 +24,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\ServiceRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\ServiceUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\ServiceService;
 use medcenter24\mcCore\App\Transformers\ServiceTransformer;
 use League\Fractal\TransformerAbstract;
@@ -46,5 +47,10 @@ class ServicesController extends ModelApiController
     protected function getRequestClass(): string
     {
         return ServiceRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return ServiceUpdateRequest::class;
     }
 }

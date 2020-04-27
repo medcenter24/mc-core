@@ -25,6 +25,7 @@ use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\SurveyRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\SurveyUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\SurveyService;
 use medcenter24\mcCore\App\Transformers\SurveyTransformer;
 
@@ -46,5 +47,10 @@ class SurveysController extends ModelApiController
     protected function getRequestClass(): string
     {
         return SurveyRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return SurveyUpdateRequest::class;
     }
 }

@@ -24,6 +24,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CityRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\CityUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\CityService;
 use medcenter24\mcCore\App\Transformers\CityTransformer;
 use League\Fractal\TransformerAbstract;
@@ -43,5 +44,10 @@ class CitiesController extends ModelApiController
     protected function getRequestClass(): string
     {
         return CityRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return CityUpdateRequest::class;
     }
 }

@@ -27,6 +27,8 @@ use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use medcenter24\mcCore\App\Transformers\DocumentTransformer;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class CaseDocumentController extends ApiController
 {
@@ -56,6 +58,8 @@ class CaseDocumentController extends ApiController
      * @param $id
      * @param JsonRequest $request
      * @return Response
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
      */
     public function createDocuments($id, JsonRequest $request): Response
     {
@@ -69,7 +73,7 @@ class CaseDocumentController extends ApiController
 
         $created = collect([]);
         foreach ($request->allFiles() as $file) {
-            $document = $documentService->createDocumentsFromFiles([$file], $this->user());
+            $document = $documentService->createDocumentsFromFiles($file, $this->user());
             foreach ($document as $doc) {
                 $accident->documents()->attach($doc);
                 if ($accident->patient) {

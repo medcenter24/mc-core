@@ -5,7 +5,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,7 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-class FinanceCurrencyRequest extends JsonRequest
+class CountryUpdateRequest extends JsonRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -31,8 +30,7 @@ class FinanceCurrencyRequest extends JsonRequest
     public function rules(): array
     {
         return [
-            'title' => 'max:200',
-            'code' => 'required',
+            'title' => 'min:1|max:150',
         ];
     }
 }

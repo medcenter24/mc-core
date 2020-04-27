@@ -25,6 +25,7 @@ use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\DiagnosticService;
 use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
 
@@ -46,5 +47,10 @@ class DiagnosticsController extends ModelApiController
     protected function getRequestClass(): string
     {
         return DiagnosticRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return DiagnosticUpdateRequest::class;
     }
 }

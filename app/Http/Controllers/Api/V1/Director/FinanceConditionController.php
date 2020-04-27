@@ -54,15 +54,17 @@ class FinanceConditionController extends ModelApiController
 
     /**
      * Add new rule
-     * @param JsonRequest $request
+     * @param JsonRequest|FinanceConditionRequest $request
      * @return Response
      * @throws NotImplementedException
      */
     public function store(JsonRequest $request): Response
     {
-        /** @var JsonRequest $request */
+        /** @var FinanceConditionRequest $request */
         $request = call_user_func([$this->getRequestClass(), 'createFromBase'], $request);
         $request->validate();
+
+        /** @var CaseFinanceService $caseFinanceService */
         $caseFinanceService = $this->getServiceLocator()->get(CaseFinanceService::class);
         $financeCondition = $caseFinanceService->updateFinanceConditionByRequest($request);
         return $this->response->created(

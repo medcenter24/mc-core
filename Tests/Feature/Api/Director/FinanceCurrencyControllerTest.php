@@ -98,6 +98,7 @@ class FinanceCurrencyControllerTest extends DirectorApiModelTest
                     'title' => 'Php Unit test',
                     'code' => 'a',
                     'ico' => 'i',
+                    'id' => 0,
                 ],
                 'expectedResponse' => [
                     'id' => 1,

@@ -119,7 +119,8 @@ abstract class ModelApiController extends ApiController
 
     /**
      * Create
-     * @return Response|null
+     * @param JsonRequest $request
+     * @return Response|void
      */
     public function store(JsonRequest $request): Response
     {
@@ -144,14 +145,13 @@ abstract class ModelApiController extends ApiController
             Log::error($e->getMessage(), [$e]);
             $this->response->errorInternal();
         }
-        return null;
     }
 
     /**
      * Update model
      * @param int $id
      * @param JsonRequest $request
-     * @return Response|null
+     * @return Response|void
      */
     public function update(int $id, JsonRequest $request): Response
     {

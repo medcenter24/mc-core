@@ -25,6 +25,7 @@ use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Entity\Region;
 use medcenter24\mcCore\App\Http\Requests\Api\RegionRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\RegionUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\RegionService;
 use medcenter24\mcCore\App\Transformers\RegionTransformer;
 
@@ -43,5 +44,10 @@ class RegionsController extends ModelApiController
     protected function getRequestClass(): string
     {
         return RegionRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return RegionUpdateRequest::class;
     }
 }

@@ -23,7 +23,8 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
-use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticCategoryUpdate;
+use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticCategoryRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticCategoryUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\DiagnosticCategoryService;
 use medcenter24\mcCore\App\Transformers\CategoryTransformer;
 use League\Fractal\TransformerAbstract;
@@ -46,6 +47,11 @@ class DiagnosticsCategoriesController extends ModelApiController
 
     protected function getRequestClass(): string
     {
-        return DiagnosticCategoryUpdate::class;
+        return DiagnosticCategoryRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return DiagnosticCategoryUpdateRequest::class;
     }
 }

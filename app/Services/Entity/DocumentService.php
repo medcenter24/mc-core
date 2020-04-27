@@ -27,9 +27,8 @@ use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Support\Collection;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class DocumentService extends AbstractModelService
 {
@@ -79,10 +78,9 @@ class DocumentService extends AbstractModelService
     }
 
     /**
-     * @param $file
+     * @param UploadedFile $file
      * @param User $user
      * @return Document
-     * @throws DiskDoesNotExist
      * @throws FileDoesNotExist
      * @throws FileIsTooBig
      */
@@ -104,7 +102,6 @@ class DocumentService extends AbstractModelService
      * @param array $files instance of UploadedFile
      * @param User $user
      * @return Collection
-     * @throws DiskDoesNotExist
      * @throws FileDoesNotExist
      * @throws FileIsTooBig
      */

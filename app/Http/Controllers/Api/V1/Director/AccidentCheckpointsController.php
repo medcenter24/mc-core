@@ -24,6 +24,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AccidentCheckpointRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\AccidentCheckpointUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\AccidentCheckpointService;
 use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
 use League\Fractal\TransformerAbstract;
@@ -46,5 +47,10 @@ class AccidentCheckpointsController extends ModelApiController
     protected function getRequestClass(): string
     {
         return AccidentCheckpointRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return AccidentCheckpointUpdateRequest::class;
     }
 }

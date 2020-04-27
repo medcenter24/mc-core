@@ -41,7 +41,6 @@ class ExporterController extends ApiController
             'Access-Control-Allow-Origin' => env('CORS_ALLOW_ORIGIN_DIRECTOR'),
         ]);*/
 
-        Log::error('here');
         switch ($form) {
             case 'cases':
                 return (new CasesExport())->download(time() . '_case_export.xlsx');

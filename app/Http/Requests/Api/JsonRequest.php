@@ -45,17 +45,4 @@ class JsonRequest extends FormRequest
     {
         return Auth::check() && Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
     }
-
-    /**
-     * The data to be validated should be processed as JSON.
-     * @return mixed
-     */
-    protected function validationData(): array
-    {
-        $data = $this->json()->all();
-        if (!$data || !count($data)) {
-            $data = parent::validationData();
-        }
-        return $data;
-    }
 }

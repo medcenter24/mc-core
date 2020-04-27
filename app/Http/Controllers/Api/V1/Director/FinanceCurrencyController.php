@@ -24,6 +24,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FinanceCurrencyRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\FinanceCurrencyUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Transformers\FinanceCurrencyTransformer;
 use League\Fractal\TransformerAbstract;
@@ -43,5 +44,10 @@ class FinanceCurrencyController extends ModelApiController
     protected function getRequestClass(): string
     {
         return FinanceCurrencyRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return FinanceCurrencyUpdateRequest::class;
     }
 }

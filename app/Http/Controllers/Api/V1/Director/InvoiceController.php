@@ -29,6 +29,7 @@ use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\InvoiceRequest;
 use medcenter24\mcCore\App\Entity\Invoice;
+use medcenter24\mcCore\App\Http\Requests\Api\InvoiceUpdateRequest;
 use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
 use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Services\Entity\FormService;
@@ -87,6 +88,11 @@ class InvoiceController extends ModelApiController
     protected function getRequestClass(): string
     {
         return InvoiceRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return InvoiceUpdateRequest::class;
     }
 
     /**
@@ -157,7 +163,7 @@ class InvoiceController extends ModelApiController
         return $this->response->accepted(null, $transformer->transform($invoice));
     }
 
-    private function assignInvoiceTypeResource(Invoice $invoice, InvoiceRequest $request): void
+    private function assignInvoiceTypeResource(Invoice $invoice, JsonRequest $request): void
     {
         if ($invoice->type === 'form' && $request->json('formId', false)) {
 

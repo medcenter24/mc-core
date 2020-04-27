@@ -24,6 +24,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AssistantRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\AssistantUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\AssistantService;
 use medcenter24\mcCore\App\Transformers\AssistantTransformer;
 use League\Fractal\TransformerAbstract;
@@ -46,5 +47,10 @@ class AssistantsController extends ModelApiController
     protected function getRequestClass(): string
     {
         return AssistantRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return AssistantUpdateRequest::class;
     }
 }

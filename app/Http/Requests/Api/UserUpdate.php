@@ -25,7 +25,7 @@ use medcenter24\mcCore\App\Entity\User;
 
 class UserUpdate extends UserStore
 {
-    private $requireEmailRule = 'required|';
+    private $requireEmailRule = 'min:1|';
 
     public function validationData(): array
     {

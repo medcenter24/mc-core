@@ -21,7 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-class DiagnosticCategoryUpdate extends JsonRequest
+class DatePeriodUpdateRequest extends JsonRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -31,7 +31,9 @@ class DiagnosticCategoryUpdate extends JsonRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|min:1|max:120',
+            'title' => 'min:1',
+            'from' => 'min:3|period',
+            'to' => 'min:3|period',
         ];
     }
 }

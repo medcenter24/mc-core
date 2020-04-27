@@ -25,6 +25,7 @@ use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DoctorRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\DoctorUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\CityService;
 use medcenter24\mcCore\App\Services\Entity\DoctorService;
 use medcenter24\mcCore\App\Transformers\CityTransformer;
@@ -49,6 +50,11 @@ class DoctorsController extends ModelApiController
     protected function getRequestClass(): string
     {
         return DoctorRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return DoctorUpdateRequest::class;
     }
 
     /**

@@ -27,6 +27,7 @@ use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Entity\Form;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FormRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\FormUpdateRequest;
 use medcenter24\mcCore\App\Services\Entity\FormService;
 use medcenter24\mcCore\App\Transformers\FormTransformer;
 use League\Fractal\TransformerAbstract;
@@ -42,6 +43,11 @@ class FormsController extends ModelApiController
     protected function getRequestClass(): string
     {
         return FormRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return FormUpdateRequest::class;
     }
 
     /**

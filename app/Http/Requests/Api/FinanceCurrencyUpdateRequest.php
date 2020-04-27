@@ -21,7 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-class FinanceCurrencyRequest extends JsonRequest
+class FinanceCurrencyUpdateRequest extends JsonRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -32,7 +32,7 @@ class FinanceCurrencyRequest extends JsonRequest
     {
         return [
             'title' => 'max:200',
-            'code' => 'required',
+            'code' => 'min:1',
         ];
     }
 }

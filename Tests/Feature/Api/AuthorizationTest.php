@@ -64,7 +64,7 @@ class AuthorizationTest extends TestCase
             'password' => $passwd,
         ], $this->headers());
 
-        $response->assertStatus(200);
+        $response->assertStatus(202);
     }
 
     public function testLogout(): void
@@ -76,7 +76,7 @@ class AuthorizationTest extends TestCase
     public function testToken(): void
     {
         $response = $this->get('/api/token', $this->headers($this->getUser()));
-        $response->assertStatus(200);
+        $response->assertStatus(202);
         $response->assertJson([
             'token_type' => 'bearer',
             'expires_in' => 3600,

@@ -29,17 +29,6 @@ class DiseaseRequest extends JsonRequest
 {
 
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return Auth::check()
-            && Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array

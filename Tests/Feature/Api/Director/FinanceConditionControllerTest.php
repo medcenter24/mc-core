@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Assistant;
 use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
@@ -79,7 +80,7 @@ class FinanceConditionControllerTest extends TestCase
             'currencyMode' => 'percent',
             'type' => 'add',
             'currencyId' => 0,
-            'model' => Accident::class,
+            'model' => 'assistant',
         ]);
         $response->assertJson(['data' => [
             'title' => 'feature_test',
@@ -88,7 +89,7 @@ class FinanceConditionControllerTest extends TestCase
             'currencyMode' => 'percent',
             'type' => 'add',
             'currencyId' => 0,
-            'model' => Accident::class,
+            'model' => 'assistant',
             'cities' => [],
             'doctors' => [],
             'services' => [],
@@ -127,7 +128,7 @@ class FinanceConditionControllerTest extends TestCase
             'currency_mode' => 'percent',
             'type' => 'add',
             'currency_id' => 0,
-            'model' => Accident::class,
+            'model' => Assistant::class,
         ]);
         $response = $this->sendGet('/api/director/finance/' . $condition->id);
         $response->assertStatus(200);
@@ -152,7 +153,7 @@ class FinanceConditionControllerTest extends TestCase
                     array (
                     ),
                 'type' => 'add',
-                'model' => 'medcenter24\\mcCore\\App\\Entity\\Accident',
+                'model' => 'assistant',
                 'currencyId' => 0,
                 'currencyMode' => 'percent',
             ],

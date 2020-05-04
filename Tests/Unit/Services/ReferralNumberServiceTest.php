@@ -19,13 +19,17 @@
 namespace medcenter24\mcCore\Tests\Unit\Services;
 
 
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Assistant;
+use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\Hospital;
+use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\ReferralNumberService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\Tests\TestCase;
-use medcenter24\mcCore\Tests\Unit\fakes\AccidentFake;
 
 class ReferralNumberServiceTest extends TestCase
 {
@@ -64,7 +68,6 @@ class ReferralNumberServiceTest extends TestCase
             'accident_status_id' => 1,
             'assistant_id' => 1,
             'caseable_id' => 1,
-            'caseable_type' => DoctorAccident::class,
             'form_report_id' => 1,
             'city_id' => 1,
         ];
@@ -76,11 +79,20 @@ class ReferralNumberServiceTest extends TestCase
                 'city_id' => 1,
             ],
         ];
+        $accident = factory(Accident::class)->create($params + [
+            'assistant_id' => factory(Assistant::class)->create($additionalParams['assistant']),
+            'caseable_type' => DoctorAccident::class,
+            'caseable_id' => factory(DoctorAccident::class)->create([
+                'doctor_id' => factory(Doctor::class)->create($additionalParams['doctor']),
+            ])
+        ]);
         self::assertEquals('T0003-'
-            . Carbon::now()->format('dmy')
-            . '-'
-            . 'DOC'
-            . $this->service->getTimesOfDayCode(Carbon::now()), $this->service->generate(AccidentFake::make($params, $additionalParams)));
+                . Carbon::now()->format('dmy')
+                . '-'
+                . 'DOC'
+                . $this->service->getTimesOfDayCode(Carbon::now())
+            , $this->service->generate($accident)
+        );
     }
 
     /**
@@ -107,10 +119,21 @@ class ReferralNumberServiceTest extends TestCase
                 'ref_key' => 'HOSPITAL',
             ],
         ];
+
+        $accident = factory(Accident::class)->create($params + [
+            'assistant_id' => factory(Assistant::class)->create($additionalParams['assistant']),
+            'caseable_type' => HospitalAccident::class,
+            'caseable_id' => factory(HospitalAccident::class)->create([
+                'hospital_id' => factory(Hospital::class)->create($additionalParams['hospital']),
+            ])
+        ]);
+
         self::assertEquals('T0003-'
-            . Carbon::now()->format('dmy')
-            . '-'
-            . 'HOSPITAL'
-            . $this->service->getTimesOfDayCode(Carbon::now()), $this->service->generate(AccidentFake::make($params, $additionalParams)));
+                . Carbon::now()->format('dmy')
+                . '-'
+                . 'HOSPITAL'
+                . $this->service->getTimesOfDayCode(Carbon::now())
+            , $this->service->generate($accident)
+        );
     }
 }

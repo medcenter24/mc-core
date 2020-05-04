@@ -71,4 +71,5 @@ interface Environment
     public const PROP_DEBUGBAR_ENABLED = 'DEBUGBAR_ENABLED';
     public const PROP_LOG_CHANNEL = 'LOG_CHANNEL';
     public const PROP_LOG_SLACK_WEBHOOK_URL = 'LOG_SLACK_WEBHOOK_URL';
+    public const PROP_JWT_BLACKLIST_GRACE_PERIOD = 'JWT_BLACKLIST_GRACE_PERIOD';
 }

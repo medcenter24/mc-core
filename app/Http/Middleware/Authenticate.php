@@ -20,24 +20,25 @@ namespace medcenter24\mcCore\App\Http\Middleware;
 
 use Closure;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Contracts\Auth\Factory;
+use Illuminate\Http\Request;
 
 class Authenticate
 {
     /**
      * The authentication factory instance.
      *
-     * @var \Illuminate\Contracts\Auth\Factory
+     * @var Factory
      */
-    protected $auth;
+    protected Factory $auth;
 
     /**
      * Create a new middleware instance.
      *
-     * @param  \Illuminate\Contracts\Auth\Factory  $auth
+     * @param Factory $auth
      * @return void
      */
-    public function __construct(Auth $auth)
+    public function __construct(Factory $auth)
     {
         $this->auth = $auth;
     }
@@ -45,12 +46,12 @@ class Authenticate
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  Request  $request
+     * @param Closure $next
      * @param  string[]  ...$guards
      * @return mixed
      *
-     * @throws \Illuminate\Auth\AuthenticationException
+     * @throws AuthenticationException
      */
     public function handle($request, Closure $next, ...$guards)
     {
@@ -65,17 +66,19 @@ class Authenticate
      * @param  array  $guards
      * @return void
      *
-     * @throws \Illuminate\Auth\AuthenticationException
+     * @throws AuthenticationException
      */
-    protected function authenticate(array $guards)
+    protected function authenticate(array $guards): void
     {
         if (empty($guards)) {
-            return $this->auth->authenticate();
+            $this->auth->authenticate();
+            return;
         }
 
         foreach ($guards as $guard) {
             if ($this->auth->guard($guard)->check()) {
-                return $this->auth->shouldUse($guard);
+                $this->auth->shouldUse($guard);
+                return;
             }
         }
 

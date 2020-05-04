@@ -38,6 +38,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class AuthenticateController extends ApiController
 {
@@ -140,9 +141,13 @@ class AuthenticateController extends ApiController
          try {
              return $this->respondWithToken($this->guard()->refresh());
         } catch (TokenBlacklistedException $e) {
-             Log::debug('Token can not be updated for user', [$this->guard()->user()]);
+             Log::info('Token blacklisted', [$this->guard()->user()]);
              $this->response->error('Invalid token', 401);
-        }
+        } catch (TokenExpiredException $e) {
+             Log::info('Token expired', [$this->guard()->user()]);
+             $this->response->error('Invalid token', 401);
+         }
+         return null;
     }
 
     /**

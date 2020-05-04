@@ -45,27 +45,6 @@ class AccidentsController extends ModelApiController
         return new AccidentTransformer();
     }
 
-    protected function getModelClass(): string
-    {
-        return Accident::class;
-    }
-
-    /**
-     * @param StoreAccident $request
-     * @param AccidentService $accidentService
-     * @param AccidentStatusService $accidentStatusesService
-     * @return Response
-     * @throws InconsistentDataException
-     * todo why do I need this?
-     */
-/*    public function store(StoreAccident $request, AccidentService $accidentService, AccidentStatusService $accidentStatusesService): Response
-    {
-
-        $accident = $accidentService->create($request->all());
-        $accidentService->setStatus($accident, $accidentStatusesService->getNewStatus());
-        return $this->response->created('', ['id' => $accident->getAttribute('id')]);
-    }*/
-
     /**
      * @param int $id
      * @return Response
@@ -82,27 +61,6 @@ class AccidentsController extends ModelApiController
 
         return $this->response->item($accident, new AccidentTransformer());
     }
-
-    /*
-     * @todo do I need it?
-     * public function update(UpdateAccident $request, $id): array
-    {
-        $accident = Accident::findOrFail($id);
-        foreach ($accident->getVisible() as $item) {
-            if ($request->has($item)) {
-                $accident->$item = $request->get($item);
-            }
-        }
-        $accident->save();
-
-        return ['success' => true];
-    }*/
-
-    /*public function destroy($id): array
-    {
-        Accident::destroy($id);
-        return ['success' => true];
-    }*/
 
     /**
      * @inheritDoc

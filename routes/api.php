@@ -234,12 +234,6 @@ $api->group([
                // selected case
                $api->get('{id}', DirectorAccidentsController::class . '@show');
             });
-            /*
-             * parent cases?
-             * $api->post('accidents/search', DirectorAccidentsController::class . '@search');
-            $api->get('accidents/{id}', DirectorAccidentsController::class . '@show');
-            $api->get('accidents', DirectorAccidentsController::class . '@index');
-            */
 
             $api->resource('types', DirectorAccidentTypesController::class);
 

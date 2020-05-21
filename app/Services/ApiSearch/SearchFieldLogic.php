@@ -66,4 +66,14 @@ class SearchFieldLogic
     {
         return collect();
     }
+
+    /**
+     * predefined filters (to see only the data that expected to be seen)
+     * @example : if I want doctors only then doctor role is predefined condition
+     * @return Collection of \medcenter24\mcCore\App\Models\Database\Filter
+     */
+    public function getFilters(): Collection
+    {
+        return collect();
+    }
 }

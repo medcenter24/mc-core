@@ -70,7 +70,7 @@ class Filter extends RequestBuilder
     /**
      * @var Collection
      */
-    private $filters;
+    private Collection $filters;
 
     public function inject(array $config): void
     {

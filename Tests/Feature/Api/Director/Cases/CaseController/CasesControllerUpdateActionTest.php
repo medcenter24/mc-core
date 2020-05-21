@@ -23,6 +23,8 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
@@ -201,5 +203,37 @@ class CasesControllerUpdateActionTest extends TestCase
                 ['Accident not found']
             ],
         ]);
+    }
+
+    public function testChangeDoctorAccident(): void
+    {
+        /** @var Accident $accident */
+        $accident = factory(Accident::class)->create([
+            'accident_status_id' => factory(AccidentStatus::class)->create([
+                'title' => 'anything'
+            ])->id,
+            'caseable_id' => $caseableId = factory(DoctorAccident::class)->create([
+                'doctor_id' => $doc1 = factory(Doctor::class)->create()->id
+            ])->id,
+        ]);
+        
+        $data = [
+            'accident' => [
+                'id' => $accident->id,
+            ],
+            'doctorAccident' => [
+                'id' => $caseableId,
+                'doctorId' => $doc2 = factory(Doctor::class)->create()->id // new doc
+            ],
+        ];
+
+        $this->assertNotSame($doc1, $doc2);
+        
+        $response = $this->sendPut('/api/director/cases/'.$accident->id, $data);
+
+        $response->assertStatus(202);
+
+        $accident->refresh();
+        $this->assertSame($doc2, (int) $accident->caseable->doctor_id);
     }
 }

@@ -21,15 +21,25 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Services\User;
 
 use Illuminate\Support\Collection;
+use medcenter24\mcCore\App\Models\Database\Filter;
 use medcenter24\mcCore\App\Models\Database\Relation;
 use medcenter24\mcCore\App\Services\ApiSearch\SearchFieldLogic;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 class UserDoctorSearchFieldLogic extends SearchFieldLogic
 {
     public function getRelations(): Collection
     {
         return collect([
-            new Relation('doctors', 'users.id', '=', 'doctors.user_id', ''),
+            new Relation('role_user', 'users.id', '=', 'role_user.user_id', ''),
+            new Relation('roles', 'role_user.role_id', '=', 'roles.id'),
+        ]);
+    }
+
+    public function getFilters(): Collection
+    {
+        return collect([
+            new Filter('roles.title', '=', RoleService::DOCTOR_ROLE),
         ]);
     }
 }

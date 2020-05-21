@@ -24,7 +24,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Services\ApiSearch\ApiSearchService;
 use medcenter24\mcCore\App\Services\ApiSearch\SearchFieldLogic;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
@@ -37,9 +36,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 class ApiSearchServiceTest extends TestCase
 {
-    /**
-     * @throws NotImplementedException
-     */
     public function testSearch(): void
     {
         /** @var Paginator|MockObject $paginatorServiceMock */
@@ -68,7 +64,6 @@ class ApiSearchServiceTest extends TestCase
         /** @var SearchFieldLogic|MockObject $mockedSearchFieldLogic */
         $mockedSearchFieldLogic = $this->createMock(SearchFieldLogic::class);
 
-        /** @var ApiSearchService $service */
         $service = new ApiSearchService();
         $service->setFieldLogic($mockedSearchFieldLogic);
         $service->setServiceLocator($serviceLocatorMock);

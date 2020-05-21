@@ -23,9 +23,10 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Helpers\Date;
+use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 use medcenter24\mcCore\App\Services\Entity\UserService;
 
-class DoctorAccidentTransformer extends AccidentTransformer
+class DoctorAccidentTransformer extends AbstractTransformer
 {
     public function transform(Model $model): array
     {
@@ -53,5 +54,16 @@ class DoctorAccidentTransformer extends AccidentTransformer
         );
 
         return $fields;
+    }
+
+    protected function getMap(): array
+    {
+        return [
+            DoctorAccidentService::FIELD_ID,
+            'doctorId' => DoctorAccidentService::FIELD_DOCTOR_ID,
+            DoctorAccidentService::FIELD_RECOMMENDATION,
+            DoctorAccidentService::FIELD_INVESTIGATION,
+            'visitTime' => DoctorAccidentService::FIELD_VISIT_TIME,
+        ];
     }
 }

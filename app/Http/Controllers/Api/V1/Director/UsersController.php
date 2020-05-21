@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Exception\ValidationHttpException;
+use Dingo\Api\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use Dingo\Api\Http\Response;
@@ -41,7 +42,7 @@ use medcenter24\mcCore\App\Support\Facades\Roles;
 use medcenter24\mcCore\App\Transformers\UserTransformer;
 use medcenter24\mcCore\App\Entity\User;
 use League\Fractal\TransformerAbstract;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 
 class UsersController extends ModelApiController
 {

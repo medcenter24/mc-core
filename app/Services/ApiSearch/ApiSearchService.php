@@ -24,6 +24,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use medcenter24\mcCore\App\Models\Database\Filter as PredefinedFilter;
 use medcenter24\mcCore\App\Models\Database\Relation;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
@@ -146,7 +147,6 @@ class ApiSearchService
     private function joinRelations(Builder $eloquent): void
     {
         $self = $this;
-        /** @var Collection $relations */
         $relations = $this->getFieldLogic()->getRelations();
         $relations->each(static function (Relation $relation) use ($self, $eloquent) {
             if (!in_array($relation->getTable(), $self->joined, true)) {
@@ -166,7 +166,7 @@ class ApiSearchService
     /**
      * adding where to the eloquent
      * @param Builder $eloquent
-     * @param array $filters
+     * @param array $filter
      */
     private function whereClause(Builder $eloquent, array $filter): void
     {
@@ -194,7 +194,7 @@ class ApiSearchService
     /**
      * Attach filter to the query
      * @param Builder $eloquent
-     * @param array $filter
+     * @param Collection $filters
      */
     private function attachFilter(Builder $eloquent, Collection $filters): void
     {
@@ -202,6 +202,13 @@ class ApiSearchService
         $filters->each(static function (array $filter) use ($eloquent, $self) {
             $filter = $self->getInternalFilter($filter);
             $self->whereClause($eloquent, $filter);
+        });
+
+        // and predefined filters for all queries:
+        $this->getFieldLogic()
+            ->getFilters()
+            ->each(static function (PredefinedFilter $filter) use ($eloquent, $self) {
+                $self->whereClause($eloquent, $filter->asArray());
         });
     }
 
@@ -225,14 +232,12 @@ class ApiSearchService
      */
     public function search(Request $request, Model $model): LengthAwarePaginator
     {
-        /** @var DataLoaderRequestBuilder $requestBuilder */
         $requestBuilder = $this->getRequestBuilder();
 
         $requestBuilder->setPaginator($this->getPaginator($request));
         $requestBuilder->setSorter($this->getSorter($request));
         $requestBuilder->setFilter($this->getFilter($request));
 
-        /** @var Builder $eloquent */
         $eloquent = $model->newQuery();
 
         $this->joinRelations($eloquent);

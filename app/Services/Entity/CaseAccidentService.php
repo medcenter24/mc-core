@@ -417,7 +417,7 @@ class CaseAccidentService implements ModelService
                     $caseableData
                 );
             }
-            throw new InconsistentDataException('Incorrect input parameters for the caseable');
+            throw new InconsistentDataException('Incorrect input parameters for the caseable. ID not found or not expected.');
         }
 
         return $service->first([AbstractModelService::FIELD_ID => $id]);

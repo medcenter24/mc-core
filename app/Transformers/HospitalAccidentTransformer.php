@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Services\Entity\UserService;
 
-class HospitalAccidentTransformer extends AccidentTransformer
+class HospitalAccidentTransformer extends AbstractTransformer
 {
     public function transform (Model $model): array
     {
@@ -46,5 +46,10 @@ class HospitalAccidentTransformer extends AccidentTransformer
             $this->getServiceLocator()->get(UserService::class)->getTimezone()
         );
         return $fields;
+    }
+
+    protected function getMap(): array
+    {
+        return [];
     }
 }

@@ -15,34 +15,29 @@
  *
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Models\Database;
 
-class Relation
-{
+use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter as FilterBuilder;
 
-    private string $table;
+class Filter
+{
     private string $first;
     private string $operator;
     private string $second;
     private string $type;
-    private bool $where;
 
     public function __construct(
-        $table,
         $first,
         $operator = '=',
         $second = '',
-        $type = '',
-        $where = false
-    )
-    {
-        $this->table = $table;
+        $type = ''
+    ) {
         $this->first = $first;
         $this->operator = $operator;
         $this->second = $second;
         $this->type = $type;
-        $this->where = $where;
     }
 
     public function getTable(): string
@@ -70,12 +65,13 @@ class Relation
         return $this->type;
     }
 
-    /**
-     * 'where' or 'on'
-     * @return bool
-     */
-    public function getWhere(): bool
+    public function asArray(): array
     {
-        return $this->where;
+        return [
+            FilterBuilder::FIELD_MATCH => $this->getOperator(),
+            FilterBuilder::FIELD_EL_TYPE => $this->getType(),
+            FilterBuilder::FIELD_NAME => $this->getFirst(),
+            FilterBuilder::FIELD_VALUE => $this->getSecond(),
+        ];
     }
 }

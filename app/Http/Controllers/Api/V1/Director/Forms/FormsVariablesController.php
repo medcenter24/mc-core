@@ -45,7 +45,7 @@ class FormsVariablesController extends ApiController
             $variables->push(new FormVariable([
                 'title' => $variable,
                 'key' => $variable,
-                'type' => Accident::class
+                'type' => FormVariableService::TYPE_ACCIDENT,
             ]));
         }
         return $this->response->collection($variables, new FormVariableTransformer());

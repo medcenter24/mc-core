@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,21 +17,26 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers\Form;
 
-
 use Illuminate\Support\Str;
-use medcenter24\mcCore\App\FormVariable;
-use medcenter24\mcCore\App\Transformers\AbstractTransformer;
+use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Models\Form\FormVariable;
 
-class FormVariableTransformer extends AbstractTransformer
+class FormVariableTransformer extends TransformerAbstract
 {
+    /**
+     * @param FormVariable $variable
+     * @return array
+     */
     public function transform(FormVariable $variable): array
     {
         return [
-            'title' => $this->prepareTitle($variable->title),
-            'key' => $variable->key,
-            'type' => $variable->type,
+            'title' => $this->prepareTitle($variable->getTitle()),
+            'key' => $variable->getKey(),
+            'type' => $variable->getType(),
         ];
     }
 

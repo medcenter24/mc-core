@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,20 +17,21 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\DatePeriod;
+use medcenter24\mcCore\App\Services\Entity\DatePeriodService;
 
 class DatePeriodTransformer extends AbstractTransformer
 {
-    public function transform(DatePeriod $datePeriod): array
+    protected function getMap(): array
     {
         return [
-            'id' => $datePeriod->id,
-            'title' => $datePeriod->title,
-            'from' => $datePeriod->from,
-            'to' => $datePeriod->to,
+            DatePeriodService::FIELD_ID,
+            DatePeriodService::FIELD_TITLE,
+            DatePeriodService::FIELD_FROM,
+            DatePeriodService::FIELD_TO,
         ];
     }
 }

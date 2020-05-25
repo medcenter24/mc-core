@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,15 +17,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use medcenter24\mcCore\App\Role;
-use medcenter24\mcCore\App\User;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use medcenter24\mcCore\App\Entity\User;
 
 class UserUpdate extends UserStore
 {
-    private $requireEmailRule = 'required|';
+    private $requireEmailRule = 'min:1|';
 
     public function validationData(): array
     {
@@ -32,10 +33,11 @@ class UserUpdate extends UserStore
 
         if(isset($data['id'])) {
             $user = User::find($data['id']);
-            if (isset($data['email']) && $user->email == $data['email']) {
+            if ($user && isset($data['email']) && $user->email === $data['email']) {
                 unset($data['email']);
                 $this->requireEmailRule = '';
             }
+            $this->requireEmailRule .= '|unique:users,' . $data['id'] . '|';
         }
 
         return $data;
@@ -49,7 +51,7 @@ class UserUpdate extends UserStore
     public function rules(): array
     {
         return [
-            'email' => $this->requireEmailRule . 'email|unique:users',
+            'email' => $this->requireEmailRule . 'email',
             'name' => 'max:120',
             'phone' => 'max:30',
         ];

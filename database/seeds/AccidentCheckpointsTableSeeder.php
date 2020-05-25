@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\AccidentCheckpoint;
+medcenter24\mcCore\App\Services\Entity\AccidentCheckpoint;
 use Illuminate\Database\Seeder;
 
 class AccidentCheckpointsTableSeeder extends Seeder

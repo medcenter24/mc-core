@@ -21,68 +21,36 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\DoctorSurvey;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Http\Requests\Api\DoctorSurveyRequest;
-use medcenter24\mcCore\App\Services\DoctorSurveyService;
-use medcenter24\mcCore\App\Transformers\DoctorSurveyTransformer;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\SurveyRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\SurveyUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\SurveyService;
+use medcenter24\mcCore\App\Transformers\SurveyTransformer;
 
-class SurveysController extends ApiController
+class SurveysController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
-        return new DoctorSurveyTransformer();
+        return new SurveyTransformer();
     }
 
-    protected function getModelClass(): string
+    /**
+     * @return ModelService|SurveyService
+     */
+    protected function getModelService(): ModelService
     {
-        return DoctorSurvey::class;
+        return $this->getServiceLocator()->get(SurveyService::class);
     }
 
-    public function update($id, DoctorSurveyRequest $request): Response
+    protected function getRequestClass(): string
     {
-        /** @var DoctorSurvey $doctorSurvey */
-        $doctorSurvey = DoctorSurvey::find($id);
-        if (!$doctorSurvey) {
-            $this->response->errorNotFound();
-        }
-
-        $fields = collect(DoctorSurveyService::FILLABLE);
-        $fields->filter(static function ($field) use ($doctorSurvey, $request) {
-            if ($field !== DoctorSurveyService::FIELD_CREATED_BY && $request->has($field)) {
-                $doctorSurvey->setAttribute($field, $request->get($field));
-            }
-        });
-        $doctorSurvey->save();
-
-        $transformer = new DoctorSurveyTransformer();
-        return $this->response->accepted(null, $transformer->transform($doctorSurvey));
+        return SurveyRequest::class;
     }
 
-    public function store(DoctorSurveyRequest $request, DoctorSurveyService $doctorSurveyService): Response
+    protected function getUpdateRequestClass(): string
     {
-        $data = $request->json()->all();
-        $doctorSurvey = $doctorSurveyService->create([
-            DoctorSurveyService::FIELD_TITLE => $data['title'],
-            DoctorSurveyService::FIELD_DESCRIPTION => $data['description'],
-            DoctorSurveyService::FIELD_DISEASE_ID => $data['diseaseId'],
-            DoctorSurveyService::FIELD_CREATED_BY => $this->user()->id,
-            DoctorSurveyService::FIELD_STATUS => DoctorSurveyService::STATUS_ACTIVE,
-        ]);
-        $doctorSurvey->save();
-        $transformer = new DoctorSurveyTransformer();
-        return $this->response->created(null, $transformer->transform($doctorSurvey));
-    }
-    
-    public function destroy($id): Response
-    {
-        $service = DoctorSurvey::find($id);
-        if (!$service) {
-            $this->response->errorNotFound();
-        }
-        $service->delete();
-        return $this->response->noContent();
+        return SurveyUpdateRequest::class;
     }
 }

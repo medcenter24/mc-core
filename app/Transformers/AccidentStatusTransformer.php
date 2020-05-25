@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,19 +17,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 
 class AccidentStatusTransformer extends AbstractTransformer
 {
-    public function transform(AccidentStatus $accidentStatus): array
+    /**
+     * @inheritDoc
+     */
+    protected function getMap(): array
     {
         return [
-            'id' => $accidentStatus->id,
-            'title' => $accidentStatus->title,
-            'type' => $accidentStatus->type
+            AccidentStatusService::FIELD_ID,
+            AccidentStatusService::FIELD_TITLE,
+            AccidentStatusService::FIELD_TYPE,
         ];
     }
 }

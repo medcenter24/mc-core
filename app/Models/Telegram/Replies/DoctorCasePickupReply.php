@@ -20,10 +20,10 @@ namespace medcenter24\mcCore\App\Models\Telegram\Replies;
 
 
 use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\Update;
 
@@ -49,7 +49,7 @@ class DoctorCasePickupReply
     /**
      * DoctorCasePickupReply constructor.
      * @param Update $update
-     * @param AccidentStatusesService $accidentStatusesService
+     * @param AccidentStatusService $accidentStatusesService
      * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
      */
     public function __construct(Update $update)
@@ -69,8 +69,8 @@ class DoctorCasePickupReply
         $accident = $this->lookingForAccident();
         if ($accident instanceof Accident && $accident->id) {
 
-            $status = AccidentStatus::where('title', AccidentStatusesService::STATUS_IN_PROGRESS)
-                ->where('type', AccidentStatusesService::TYPE_DOCTOR)->first();
+            $status = AccidentStatus::where('title', AccidentStatusService::STATUS_IN_PROGRESS)
+                ->where('type', AccidentStatusService::TYPE_DOCTOR)->first();
 
             if (!$status || !$status->id) {
                 Log::info('Cant find status in progress for the doctor');

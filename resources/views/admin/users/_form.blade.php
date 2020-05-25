@@ -22,7 +22,7 @@
         <div class="col-sm-5">
             <label for="roles">@lang('content.roles')</label>
             <select name="roles[]" id="roles" size="4" class="form-control" multiple title="@lang('admin.roles')">
-                @foreach(medcenter24\mcCore\App\Role::all() as $role)
+                @foreach(medcenter24\mcCore\App\Entity\Role::all() as $role)
                     <option value="{{ $role->id }}"
                         @if (old('roles') && count(old('roles')))
                             @if (in_array($role->id, old('roles'), false))

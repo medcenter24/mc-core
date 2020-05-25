@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\Doctor;
-use medcenter24\mcCore\App\Role;
-use medcenter24\mcCore\App\Services\RoleService;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\Role;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
+use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Database\Seeder;
 
 class DoctorsTableSeeder extends Seeder

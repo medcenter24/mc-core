@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,22 +17,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Doctor;
+use medcenter24\mcCore\App\Services\Entity\DoctorService;
 
 class DoctorTransformer extends AbstractTransformer
 {
-    public function transform(Doctor $doctor): array
+    protected function getMap(): array
     {
         return [
-            'id' => $doctor->id,
-            'name' => $doctor->name,
-            'description' => $doctor->description,
-            'refKey' => $doctor->ref_key,
-            'userId' => $doctor->user_id,
-            'medicalBoardNumber' => $doctor->medical_board_num,
+            DoctorService::FIELD_ID,
+            DoctorService::FIELD_NAME,
+            DoctorService::FIELD_DESCRIPTION,
+            'refKey' => DoctorService::FIELD_REF_KEY,
+            'userId' => DoctorService::FIELD_USER_ID,
+            'medicalBoardNumber' => DoctorService::FIELD_MEDICAL_BOARD_NUM,
         ];
     }
 }

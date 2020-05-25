@@ -22,7 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\Support\Core\Configurable;
-use medcenter24\mcCore\App\Upload;
+use medcenter24\mcCore\App\Entity\Upload;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -57,7 +57,8 @@ class UploaderService extends Configurable
     public function upload(UploadedFile $file): Upload
     {
         return new Upload([
-            'path' => Storage::disk($this->getOption(self::CONF_DISK))->putFile($this->randDir($this->getOption(self::CONF_FOLDER)), $file),
+            'path' => Storage::disk($this->getOption(self::CONF_DISK))
+                ->putFile($this->randDir($this->getOption(self::CONF_FOLDER)), $file),
             'file_name' => $file->getClientOriginalName(),
             'storage' => $this->getOption(self::CONF_FOLDER),
         ]);

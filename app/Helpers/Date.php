@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,13 +16,13 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Helpers;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Helpers;
 
 use DateTime;
 use Illuminate\Support\Carbon;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-use medcenter24\mcCore\App\Services\UserService;
 
 class Date
 {
@@ -35,6 +36,18 @@ class Date
                 $date->setTimezone($tz);
             }
             $str = $date->format(config('date.systemFormat'));
+        }
+        return $str;
+    }
+
+    public static function getSysDate(Carbon $date = null, string $tz = null): string
+    {
+        $str = '';
+        if ($date) {
+            if ($tz) {
+                $date->setTimezone($tz);
+            }
+            $str = $date->format(config('date.sysDateFormat'));
         }
         return $str;
     }

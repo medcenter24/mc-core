@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,29 +17,38 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Company;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Entity\Company;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
+use medcenter24\mcCore\App\Services\Entity\CompanyService;
 use medcenter24\mcCore\App\Services\LogoService;
 
 class CompanyTransformer extends AbstractTransformer
 {
     /**
-     * @param Company $company
+     * @param Model $model
      * @return array
      * @throws InconsistentDataException
      */
-    public function transform(Company $company): array
+    public function transform(Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['logo250'] = $model instanceof Company && $model->hasMedia(LogoService::FOLDER)
+            ? MediaHelper::b64($model, LogoService::FOLDER, Company::THUMB_250)
+        : '';
+        return $fields;
+    }
+
+    protected function getMap(): array
     {
         return [
-            'id' => $company->id,
-            'title' => $company->title,
-            'logo250' => $company->hasMedia(LogoService::FOLDER)
-                ? MediaHelper::b64($company, LogoService::FOLDER, Company::THUMB_250)
-                : '',
+            CompanyService::FIELD_ID,
+            CompanyService::FIELD_TITLE,
         ];
     }
 }

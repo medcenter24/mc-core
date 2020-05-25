@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,27 +17,31 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Helpers\Date;
-use medcenter24\mcCore\App\Patient;
-use medcenter24\mcCore\App\Services\UserService;
+use medcenter24\mcCore\App\Services\Entity\PatientService;
 
 class PatientTransformer extends AbstractTransformer
 {
-    public function transform(Patient $patient): array
+    protected function getMap(): array
     {
         return [
-            'id' => $patient->id,
-            'name' => $patient->name,
-            'address' => $patient->address,
-            'phones' => $patient->phones,
-            'birthday' => Date::sysDate(
-                $patient->birthday,
-                $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
-            'comment' => $patient->comment
+            PatientService::FIELD_ID,
+            PatientService::FIELD_NAME,
+            PatientService::FIELD_ADDRESS,
+            PatientService::FIELD_PHONES,
+            PatientService::FIELD_BIRTHDAY,
+            PatientService::FIELD_COMMENT,
+        ];
+    }
+
+    protected function getMappedTypes(): array
+    {
+        return [
+            PatientService::FIELD_ID => self::VAR_INT,
+            PatientService::FIELD_BIRTHDAY => self::VAR_DATE,
         ];
     }
 }

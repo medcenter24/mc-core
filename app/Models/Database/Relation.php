@@ -21,12 +21,12 @@ namespace medcenter24\mcCore\App\Models\Database;
 class Relation
 {
 
-    private $table;
-    private $first;
-    private $operator;
-    private $second;
-    private $type;
-    private $where;
+    private string $table;
+    private string $first;
+    private string $operator;
+    private string $second;
+    private string $type;
+    private bool $where;
 
     public function __construct(
         $table,

@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\Services\FinanceConditionService;
+use medcenter24\mcCore\App\Services\Entity\FinanceConditionService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;

@@ -16,8 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Form;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Form;
 use Faker\Generator as Faker;
 
 $factory->define(Form::class, function (Faker $faker) {

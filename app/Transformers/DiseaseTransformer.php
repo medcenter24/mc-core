@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,21 +17,21 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-
-use medcenter24\mcCore\App\Disease;
+use medcenter24\mcCore\App\Services\Entity\DiseaseService;
 
 class DiseaseTransformer extends AbstractTransformer
 {
-    public function transform(Disease $disease): array
+    protected function getMap(): array
     {
         return [
-            'id' => $disease->getAttribute('id'),
-            'title' => $disease->getAttribute('title'),
-            'description' => $disease->getAttribute('description'),
-            'code' => $disease->getAttribute('code'),
+            DiseaseService::FIELD_ID,
+            DiseaseService::FIELD_TITLE,
+            DiseaseService::FIELD_DESCRIPTION,
+            DiseaseService::FIELD_CODE,
         ];
     }
 }

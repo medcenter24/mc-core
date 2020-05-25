@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +17,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Listeners;
 
-use App;
-use Log;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Events\DoctorAccidentUpdatedEvent;
 use Telegram;
 use Telegram\Bot\Keyboard\Button;
@@ -48,11 +51,11 @@ class SendTelegramMessageOnDocAssignment
         $doctorAccident = $event->getDoctorAccident();
 
         Log::info('Run Telegram message sender on event', [
-            'doc' => $doctorAccident->doctor_id,
-            'previousDoctorAccidentDoctor' => $prev ? $prev->doctor_id : '',
-            'accident_ref_num' => $doctorAccident->accident->ref_num,
-            'accident' => $doctorAccident->accident->id,
-            'doctorAccidentId' => $doctorAccident->id,
+            'doc' => $doctorAccident->getAttribute('doctor_id'),
+            'previousDoctorAccidentDoctor' => $prev ? $prev->getAttribute('doctor_id') : '',
+            'accident_ref_num' => $doctorAccident->getAttribute('accident')->getAttribute('ref_num'),
+            'accident' => $doctorAccident->getAttribute('accident')->getAttribute('id'),
+            'doctorAccidentId' => $doctorAccident->getAttribute('id'),
         ]);
 
         if (
@@ -83,16 +86,16 @@ class SendTelegramMessageOnDocAssignment
                 'reply_markup' => $keyboard,
             ]);
         } elseif (!$doctorAccident->doctor) {
-            Log::warning('Doctor will not receive any messages to the telegram, because we do not have doctor', [
+            Log::warning('Doctor will not receive any messages to the telegram, because we do not have a doctor', [
                 'doctorAccidentId' => $doctorAccident->id,
             ]);
         } elseif(!$doctorAccident->doctor->user_id) {
-            Log::warning('Doctor will not receive any messages to the telegram, because he does not have assignment to user', [
+            Log::warning('Doctor will not receive any messages to the telegram, because he does not have an assignment to a system user', [
                 'doctorAccidentId' => $doctorAccident->id,
                 'userId' => $doctorAccident->doctor->user_id,
             ]);
         } elseif(!$doctorAccident->doctor->user->telegram) {
-            Log::warning('Doctor will not receive any messages to the telegram, because he does not have assignment to telegram', [
+            Log::warning('Doctor will not receive any messages to the telegram, because he does not have an assignment to telegram', [
                 'doctorAccidentId' => $doctorAccident->id,
                 'userId' => $doctorAccident->doctor->user_id,
                 'telegram' => $doctorAccident->doctor->user->telegram,

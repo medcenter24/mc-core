@@ -19,9 +19,8 @@
 namespace medcenter24\mcCore\App\Listeners;
 
 use medcenter24\mcCore\App\Events\DatePeriodChangedEvent;
-use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodInterpretationService;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Services\Entity\DatePeriodInterpretationService;
 
 class DatePeriodInterpretationListener
 {
@@ -46,7 +45,7 @@ class DatePeriodInterpretationListener
      *
      * @param DatePeriodChangedEvent $event
      * @param DatePeriodInterpretationService $service
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws InconsistentDataException
      */
     public function handle(DatePeriodChangedEvent $event)
     {

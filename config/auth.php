@@ -16,6 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use medcenter24\mcCore\App\Entity\User;
+
 return [
 
     /*
@@ -85,7 +87,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => medcenter24\mcCore\App\User::class,
+            'model' => User::class,
         ],
 
         // 'users' => [

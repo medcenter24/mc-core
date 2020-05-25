@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,59 +16,38 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
+use medcenter24\mcCore\App\Entity\Region;
 use medcenter24\mcCore\App\Http\Requests\Api\RegionRequest;
-use medcenter24\mcCore\App\Region;
+use medcenter24\mcCore\App\Http\Requests\Api\RegionUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\RegionService;
 use medcenter24\mcCore\App\Transformers\RegionTransformer;
 
-class RegionsController extends ApiController
+class RegionsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
         return new RegionTransformer();
     }
 
-    protected function getModelClass(): string
+    protected function getModelService(): ModelService
     {
-        return Region::class;
+        return $this->getServiceLocator()->get(RegionService::class);
     }
 
-    public function index(): Response
+    protected function getRequestClass(): string
     {
-        $regions = Region::orderBy('title')->get();
-        return $this->response->collection($regions, new RegionTransformer());
+        return RegionRequest::class;
     }
 
-    public function store(RegionRequest $request): Response
+    protected function getUpdateRequestClass(): string
     {
-        $country = Region::create([
-            'title' => $request->json('title', ''),
-            'country_id' => $request->json('countryId', ''),
-        ]);
-        $transformer = new RegionTransformer();
-        return $this->response->created(null, $transformer->transform($country));
-    }
-
-    public function update($id, RegionRequest $request): Response
-    {
-        $region = Region::findOrFail($id);
-        $region->title = $request->json('title', '');
-        $region->country_id = $request->json('countryId', '');
-        $region->save();
-
-        \Log::info('Region updated', [$region, $this->user()]);
-        return $this->response->item($region, new RegionTransformer());
-    }
-
-    public function destroy($id): Response
-    {
-        $region = Region::findOrFail($id);
-        \Log::info('Region deleted', [$region, $this->user()]);
-        $region->delete();
-        return $this->response->noContent();
+        return RegionUpdateRequest::class;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,8 +16,9 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\Core\Http\Builders;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services\Core\Http\Builders;
 
 use Illuminate\Support\Collection;
 
@@ -37,12 +39,21 @@ abstract class RequestBuilder
      */
     private $fields;
 
+    /**
+     * Creates new object of the class by the service
+     * @return $this
+     */
+    public function create(): self
+    {
+        return new static();
+    }
+
     public function inject(array $config): void
     {
         $this->config = $config;
     }
 
-    protected function getFieldValue(string $fieldName, $default = ''): string
+    protected function getFieldValue(string $fieldName, string $default = '')
     {
         $field = $this->getFields()->firstWhere(self::FIELD_NAME, '=', $fieldName);
         return $field ? $field[self::FIELD_VALUE] : $default;

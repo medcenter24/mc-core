@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,13 +17,17 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use medcenter24\mcCore\App\AccidentType;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Entity\AccidentType;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AccidentTypeRequest;
 use medcenter24\mcCore\App\Transformers\AccidentTypeTransformer;
 
+// todo director can't control types of  the case insurance/non-insurance
 class AccidentTypesController extends ApiController
 {
     public function index()
@@ -53,14 +58,14 @@ class AccidentTypesController extends ApiController
         $accidentType->title = $request->json('title', '');
         $accidentType->description = $request->json('description', '');
         $accidentType->save();
-        \Log::info('Accident type updated', [$accidentType, $this->user()]);
+        Log::info('Accident type updated', [$accidentType, $this->user()]);
         $this->response->item($accidentType, new AccidentTypeTransformer());
     }
 
     public function destroy($id)
     {
         $accidentType = AccidentType::findOrFail($id);
-        \Log::info('Accident type deleted', [$accidentType, $this->user()]);
+        Log::info('Accident type deleted', [$accidentType, $this->user()]);
         $accidentType->delete();
         return $this->response->noContent();
     }

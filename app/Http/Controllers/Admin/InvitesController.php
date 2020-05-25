@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,12 +17,20 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
+use ErrorException;
+use Exception;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
-use medcenter24\mcCore\App\Invite;
-use medcenter24\mcCore\App\Services\InviteService;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\Invite;
+use medcenter24\mcCore\App\Services\Entity\InviteService;
+use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Http\Request;
 
 class InvitesController extends AdminController
@@ -30,8 +39,8 @@ class InvitesController extends AdminController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @return Response
+     * @throws InconsistentDataException
      */
     public function index()
     {
@@ -45,8 +54,8 @@ class InvitesController extends AdminController
      * Store a newly created resource in storage.
      * @param Request $request
      * @param InviteService $service
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     * @throws \ErrorException
+     * @return RedirectResponse|Redirector
+     * @throws ErrorException
      */
     public function store(Request $request, InviteService $service)
     {
@@ -58,8 +67,8 @@ class InvitesController extends AdminController
     /**
      * Remove the specified resource from storage.
      * @param Invite $invite
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Exception
+     * @return RedirectResponse
+     * @throws Exception
      */
     public function destroy(Invite $invite)
     {

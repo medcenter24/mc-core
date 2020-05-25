@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\Patient;
+use medcenter24\mcCore\App\Entity\Patient;
 use Illuminate\Database\Seeder;
 
 class PatientsTableSeeder extends Seeder

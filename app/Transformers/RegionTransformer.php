@@ -18,19 +18,34 @@
 
 namespace medcenter24\mcCore\App\Transformers;
 
-use medcenter24\mcCore\App\Region;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Entity\RegionService;
 
 class RegionTransformer extends AbstractTransformer
 {
-    public function transform(Region $region): array
+    public function transform(Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['countryTitle'] = $model->getAttribute('country')
+            ? $model->getAttribute('country')->getAttribute('title')
+            : '';
+        return $fields;
+    }
+
+    protected function getMap(): array
     {
         return [
-            'id' => (int) $region->getAttribute('id'),
-            'title' => $region->getAttribute('title'),
-            'countryId' => (int) $region->getAttribute('country_id'),
-            'countryTitle' => $region->getAttribute('country')
-                ? $region->getAttribute('country')->getAttribute('title')
-                : '',
+            RegionService::FIELD_ID,
+            RegionService::FIELD_TITLE,
+            'countryId' => RegionService::FIELD_COUNTRY_ID,
+        ];
+    }
+
+    protected function getMappedTypes(): array
+    {
+        return [
+            RegionService::FIELD_ID => self::VAR_INT,
+            RegionService::FIELD_COUNTRY_ID => self::VAR_INT,
         ];
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,21 +19,22 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Dingo\Api\Http\Response;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Services\UploaderService;
 use medcenter24\mcCore\App\Transformers\UploadedFileTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class UploadsController extends ApiController
 {
     /**
      * @param Request $request
      * @param UploaderService $service
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function store(Request $request, UploaderService $service)
+    public function store(Request $request, UploaderService $service): Response
     {
         if (!count($request->allFiles())) {
             $this->response->errorBadRequest('You need to provide files for upload');
@@ -58,9 +60,9 @@ class UploadsController extends ApiController
      * Upload
      * @param $id
      * @param UploaderService $service
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return BinaryFileResponse
      */
-    public function show($id, UploaderService $service)
+    public function show($id, UploaderService $service): BinaryFileResponse
     {
         return response()->download($service->getPathById($id));
     }

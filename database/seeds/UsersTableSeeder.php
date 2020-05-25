@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\Role;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Entity\Role;
+use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -49,8 +49,8 @@ class UsersTableSeeder extends Seeder
             $director->roles()->attach([$loginRoleId, $directorRoleId]);
 
             $admin = User::firstOrCreate([
-                'email' => 'zagovorichev@gmail.com',
-                'name' => 'Alexander Zagovorichev',
+                'email' => 'test@example.com',
+                'name' => 'User Name',
                 'password' => bcrypt('secret')
             ]);
 

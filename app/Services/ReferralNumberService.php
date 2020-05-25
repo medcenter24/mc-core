@@ -21,10 +21,14 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services;
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\HospitalAccident;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\HospitalAccident;
 use Carbon\Carbon;
+use medcenter24\mcCore\App\Helpers\Date;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\UserService;
 
 /**
  * Generator of the referral numbers for the accidents
@@ -33,7 +37,9 @@ use Carbon\Carbon;
  */
 class ReferralNumberService
 {
-    const SEPARATOR = '-';
+    use ServiceLocatorTrait;
+
+    private const SEPARATOR = '-';
 
     /**
      * @var AccidentService
@@ -54,7 +60,7 @@ class ReferralNumberService
      * @param string $ref
      * @return bool
      */
-    public function exists($ref = '')
+    public function exists($ref = ''): bool
     {
         return $this->accidentService->getCountByReferralNum($ref) > 0;
     }
@@ -72,17 +78,18 @@ class ReferralNumberService
      * @param Accident $accident
      * @return string
      */
-    public function generate(Accident $accident)
+    public function generate(Accident $accident): string
     {
-        $refNum = $accident->ref_num;
+        $refNum = $accident->getAttribute('ref_num');
         if (!$refNum) {
+            $nowDate = Carbon::now($this->getUserTimezone());
             $ref = $this->getAssistantKey($accident);
             $ref .= $this->getNumberKey($accident);
             $ref .= self::SEPARATOR;
-            $ref .= Carbon::now()->format('dmy');
+            $ref .= $nowDate->format('dmy');
             $ref .= self::SEPARATOR;
             $ref .= $this->getCaseableRefKey($accident->caseable);
-            $ref .= $this->getTimesOfDayCode(Carbon::now());
+            $ref .= $this->getTimesOfDayCode($nowDate);
 
             // skip duplicates
             $additionalPrefix = 0;
@@ -95,7 +102,19 @@ class ReferralNumberService
         return $refNum;
     }
 
-    private function getCaseableRefKey($caseable = null)
+    /**
+     * @return string
+     */
+    private function getUserTimezone(): string
+    {
+        return $this->getServiceLocator()->get(UserService::class)->getTimezone();
+    }
+
+    /**
+     * @param null $caseable
+     * @return string
+     */
+    private function getCaseableRefKey($caseable = null): string
     {
         $ref = 'NA';
         if ($caseable) {
@@ -116,17 +135,17 @@ class ReferralNumberService
             : 'NA';
     }
 
-    private function getNumberKey(Accident $accident)
+    private function getNumberKey(Accident $accident): string
     {
         $startDate = Carbon::now()->format('Y') . '-01-01 00:00:00';
         $count = $this->accidentService->getCountByAssistance($accident->assistant_id, $startDate);
         return sprintf('%04d', $count);
     }
 
-    public function getTimesOfDayCode(Carbon $date)
+    public function getTimesOfDayCode(Carbon $date): string
     {
         $mark = 'N'; // night
-        if (in_array($date->dayOfWeek, [0,6])) {
+        if (in_array($date->dayOfWeek, [0, 6], true)) {
             $mark = 'F'; // weekend
         } elseif($date->hour >= 8 && $date->hour <= 21) {
             $mark = 'D'; // day

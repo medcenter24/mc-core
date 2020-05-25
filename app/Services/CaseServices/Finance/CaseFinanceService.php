@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,73 +17,58 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services\CaseServices\Finance;
 
-
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Assistant;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\DatePeriod;
-use medcenter24\mcCore\App\Doctor;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\DoctorService;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Assistant;
+use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Entity\DatePeriod;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\App\Events\AccidentPaymentChangedEvent;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\FinanceCondition;
-use medcenter24\mcCore\App\FinanceStorage;
-use medcenter24\mcCore\App\Hospital;
-use medcenter24\mcCore\App\HospitalAccident;
-use medcenter24\mcCore\App\Http\Requests\Api\FinanceRequest;
+use medcenter24\mcCore\App\Entity\FinanceCondition;
+use medcenter24\mcCore\App\Entity\FinanceStorage;
+use medcenter24\mcCore\App\Entity\Hospital;
+use medcenter24\mcCore\App\Entity\HospitalAccident;
+use medcenter24\mcCore\App\Http\Requests\Api\FinanceConditionRequest;
 use medcenter24\mcCore\App\Models\Cases\Finance\CaseFinanceCondition;
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Models\Formula\FormulaBuilder;
-use medcenter24\mcCore\App\Payment;
-use medcenter24\mcCore\App\Services\AccidentService;
-use medcenter24\mcCore\App\Services\CurrencyService;
-use medcenter24\mcCore\App\Services\FinanceConditionService;
+use medcenter24\mcCore\App\Entity\Payment;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\CurrencyService;
+use medcenter24\mcCore\App\Services\Entity\FinanceConditionService;
 use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder as FormulaBuilderContract;
+use medcenter24\mcCore\App\Transformers\FinanceConditionTransformer;
 
 class CaseFinanceService
 {
-    /**
-     * @var FormulaService
-     */
-    private $formulaService;
+    use ServiceLocatorTrait;
 
-    /**
-     * @var AccidentService
-     */
-    private $accidentService;
+    private function getFormulaService(): FormulaService
+    {
+        return $this->getServiceLocator()->get(FormulaService::class);
+    }
 
-    /**
-     * @var FinanceConditionService
-     */
-    private $financeConditionService;
+    private function getAccidentService(): AccidentService
+    {
+        return $this->getServiceLocator()->get(AccidentService::class);
+    }
 
-    /**
-     * @var CurrencyService
-     */
-    private $currencyService;
+    private function getFinanceConditionService(): FinanceConditionService
+    {
+        return $this->getServiceLocator()->get(FinanceConditionService::class);
+    }
 
-    /**
-     * CaseFinanceService constructor.
-     * @param FormulaService $formulaService
-     * @param AccidentService $accidentService
-     * @param FinanceConditionService $financeConditionService
-     * @param CurrencyService $currencyService
-     * @todo needs to be implemented with service locator
-     */
-    public function __construct(
-        FormulaService $formulaService,
-        AccidentService $accidentService,
-        FinanceConditionService $financeConditionService,
-        CurrencyService $currencyService
-    ) {
-        $this->formulaService = $formulaService;
-        $this->accidentService = $accidentService;
-        $this->financeConditionService = $financeConditionService;
-        $this->currencyService = $currencyService;
+    private function getCurrencyService(): CurrencyService
+    {
+        return $this->getServiceLocator()->get(CurrencyService::class);
     }
 
     /**
@@ -90,7 +76,7 @@ class CaseFinanceService
      */
     public function newFormula(): FormulaBuilderContract
     {
-        return $this->formulaService->createFormula();
+        return $this->getFormulaService()->createFormula();
     }
 
     /**
@@ -159,11 +145,11 @@ class CaseFinanceService
         $formula = $this->newFormula();
         // delete empty values
         $conditionProps = array_filter($conditionProps);
-        $conditions = $this->financeConditionService->findConditions($model, $conditionProps);
+        $conditions = $this->getFinanceConditionService()->findConditions($model, $conditionProps);
 
         // calculate formula by conditions
         if ($conditions && $conditions->count()) {
-            $formula = $this->formulaService->createFormulaFromConditions($conditions);
+            $formula = $this->getFormulaService()->createFormulaFromConditions($conditions);
         } else {
             $formula->addFloat(); // to have 0 instead of ''
         }
@@ -184,7 +170,7 @@ class CaseFinanceService
             throw new InconsistentDataException('DoctorAccident only');
         }
 
-        $doctorServices = $this->accidentService->getAccidentServices($accident);
+        $doctorServices = $this->getAccidentService()->getAccidentServices($accident);
         $conditionProps = [
             DatePeriod::class => $accident->handling_time,
             DoctorAccident::class => $accident->caseable_id,
@@ -197,7 +183,7 @@ class CaseFinanceService
         }
 
         if ($doctorServices->count()) {
-            $conditionProps[DoctorService::class] = $doctorServices->pluck('id')->all();
+            $conditionProps[Service::class] = $doctorServices->pluck('id')->all();
         }
         return $this->generateFormula(Doctor::class, $conditionProps);
     }
@@ -247,26 +233,30 @@ class CaseFinanceService
 
     /**
      * Update or create condition
-     * @param FinanceRequest $request
+     * @param FinanceConditionRequest $request
      * @param int $id
      * @return mixed
      */
-    public function updateFinanceConditionByRequest(FinanceRequest $request, $id = 0)
+    public function updateFinanceConditionByRequest(FinanceConditionRequest $request, $id = 0)
     {
         $caseFinanceCondition = $this->createCondition();
 
         $this->addCondition($caseFinanceCondition, $request, Doctor::class, 'doctors');
         $this->addCondition($caseFinanceCondition, $request, Assistant::class, 'assistants');
         $this->addCondition($caseFinanceCondition, $request, City::class, 'cities');
-        $this->addCondition($caseFinanceCondition, $request, DoctorService::class, 'services');
+        $this->addCondition($caseFinanceCondition, $request, Service::class, 'services');
         $this->addCondition($caseFinanceCondition, $request, DatePeriod::class, 'datePeriods');
 
         $caseFinanceCondition->thenValue($request->json('value', 0));
         $caseFinanceCondition->setTitle($request->json('title', ''));
         $caseFinanceCondition->setConditionType($request->json('type', FinanceConditionService::PARAM_TYPE_ADD));
-        $caseFinanceCondition->setCurrencyMode($request->json('currencyMode', FinanceConditionService::PARAM_CURRENCY_MODE_PERCENT));
+        $caseFinanceCondition->setCurrencyMode((string)$request->json('currencyMode',
+            FinanceConditionService::PARAM_CURRENCY_MODE_PERCENT));
         $caseFinanceCondition->setCurrency($request->json('currencyId', 0));
-        $caseFinanceCondition->setModel($request->json('model', Accident::class));
+
+        $financeConditionTransformer = new FinanceConditionTransformer();
+        $modelName = $financeConditionTransformer->inverseTransformConditionModel($request->json('model', ''));
+        $caseFinanceCondition->setModel($modelName);
 
         return $this->saveCondition($caseFinanceCondition, $id);
     }
@@ -274,16 +264,17 @@ class CaseFinanceService
     /**
      * Adding clause to the condition
      * @param $toCondition
-     * @param FinanceRequest $request
+     * @param FinanceConditionRequest $request
      * @param $className
      * @param $jsonKey
      */
-    private function addCondition(CaseFinanceCondition $toCondition, FinanceRequest $request, $className, $jsonKey): void
+    private function addCondition(CaseFinanceCondition $toCondition, FinanceConditionRequest $request, $className, $jsonKey): void
     {
         $data = $request->json($jsonKey, []);
         if ($data && count($data)) {
             foreach ($data as $model) {
-                $toCondition->if($className, is_array($model) ? $model['id'] : $model);
+                $id = (int) (is_array($model) ? $model['id'] : $model);
+                $toCondition->if($className, $id);
             }
         }
     }
@@ -330,7 +321,7 @@ class CaseFinanceService
             $payment = Payment::create([
                 'created_by' => auth()->user()->id,
                 'value' => $data['price'],
-                'currency_id' => $this->currencyService->getDefaultCurrency()->getAttribute('id'),
+                'currency_id' => $this->getCurrencyService()->getDefaultCurrency()->getAttribute('id'),
                 'fixed' => (int)$data['fixed'] ? true : false,
                 'description' => 'Created from CaseFinanceService',
             ]);

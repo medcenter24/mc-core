@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,8 +16,9 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\Core\Http\Builders;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services\Core\Http\Builders;
 
 use Illuminate\Support\Collection;
 
@@ -28,11 +30,6 @@ class Sorter extends RequestBuilder
      * @var Collection
      */
     private $sortBy;
-
-    public static function create(): Sorter
-    {
-        return new Sorter();
-    }
 
     public function inject(array $config): void
     {

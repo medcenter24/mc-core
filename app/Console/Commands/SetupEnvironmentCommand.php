@@ -160,8 +160,8 @@ class SetupEnvironmentCommand extends Command
         $realPath = realpath($newEnvFilePath);
         $envDir = dirname($realPath);
         $envFile = str_replace($envDir, '', $realPath);
-        $dot = Dotenv::create($envDir, $envFile);
-        with($dot)->overload();
+        $dot = Dotenv::createImmutable($envDir, $envFile);
+        with($dot)->load();
         with(new LoadConfiguration())->bootstrap(app());
     }
 

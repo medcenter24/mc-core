@@ -36,11 +36,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | Specify the length of time (in minutes) that the token will be valid for.
-    | Defaults to 1 hour
+    | Defaults to 1 day
     |
     */
 
-    'ttl' => 60,
+    'ttl' => env('JWT_TTL', 1440),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'refresh_ttl' => 20160,
+    'refresh_ttl' => 360,
 
     /*
     |--------------------------------------------------------------------------
@@ -117,7 +117,7 @@ return [
     |
     */
 
-    'blacklist_enabled' => env('JWT_BLACKLIST_ENABLED', true),
+    'blacklist_enabled' => env('JWT_BLACKLIST_ENABLED', false),
 
     /*
     |--------------------------------------------------------------------------

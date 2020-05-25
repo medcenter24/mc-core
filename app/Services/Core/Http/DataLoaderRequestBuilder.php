@@ -15,8 +15,9 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\Core\Http;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Services\Core\Http;
 
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
@@ -31,17 +32,17 @@ class DataLoaderRequestBuilder
     /**
      * @var Paginator
      */
-    private $paginator;
+    private Paginator $paginator;
 
     /**
      * @var Sorter
      */
-    private $sorter;
+    private Sorter $sorter;
 
     /**
      * @var Filter
      */
-    private $filter;
+    private Filter $filter;
 
     /**
      * @param Paginator $paginator
@@ -81,6 +82,6 @@ class DataLoaderRequestBuilder
 
     public function getPage(): int
     {
-        return floor($this->getPaginator()->getOffset() / $this->getPaginator()->getLimit()) + 1;
+        return (int) floor($this->getPaginator()->getOffset() / $this->getPaginator()->getLimit()) + 1;
     }
 }

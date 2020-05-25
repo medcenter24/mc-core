@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,14 +16,15 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\ApiSearch;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Services\ApiSearch;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use medcenter24\mcCore\App\Exceptions\NotImplementedException;
+use medcenter24\mcCore\App\Models\Database\Filter as PredefinedFilter;
 use medcenter24\mcCore\App\Models\Database\Relation;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
@@ -91,21 +93,6 @@ class ApiSearchService
     }
 
     /**
-     * @param string $name
-     * @throws NotImplementedException
-     */
-    private function checkClass(string $name): void
-    {
-        if (!class_exists($name)) {
-            throw new NotImplementedException('Class "'.$name.'" does not exist');
-        }
-
-        if (!method_exists($name, 'query')) {
-            throw new NotImplementedException('Class "'.$name.'" does not have method `query`');
-        }
-    }
-
-    /**
      * @return RequestBuilderFilterTransformer
      */
     private function getFilterTransformer(): RequestBuilderFilterTransformer
@@ -125,6 +112,10 @@ class ApiSearchService
         return $this->searchFieldLogicService;
     }
 
+    /**
+     * To Replace default SearchFieldLogic with specified
+     * @param SearchFieldLogic|null $service
+     */
     public function setFieldLogic(SearchFieldLogic $service = null) : void
     {
         $this->searchFieldLogicService = $service;
@@ -156,7 +147,6 @@ class ApiSearchService
     private function joinRelations(Builder $eloquent): void
     {
         $self = $this;
-        /** @var Collection $relations */
         $relations = $this->getFieldLogic()->getRelations();
         $relations->each(static function (Relation $relation) use ($self, $eloquent) {
             if (!in_array($relation->getTable(), $self->joined, true)) {
@@ -176,7 +166,7 @@ class ApiSearchService
     /**
      * adding where to the eloquent
      * @param Builder $eloquent
-     * @param array $filters
+     * @param array $filter
      */
     private function whereClause(Builder $eloquent, array $filter): void
     {
@@ -204,7 +194,7 @@ class ApiSearchService
     /**
      * Attach filter to the query
      * @param Builder $eloquent
-     * @param array $filter
+     * @param Collection $filters
      */
     private function attachFilter(Builder $eloquent, Collection $filters): void
     {
@@ -212,6 +202,13 @@ class ApiSearchService
         $filters->each(static function (array $filter) use ($eloquent, $self) {
             $filter = $self->getInternalFilter($filter);
             $self->whereClause($eloquent, $filter);
+        });
+
+        // and predefined filters for all queries:
+        $this->getFieldLogic()
+            ->getFilters()
+            ->each(static function (PredefinedFilter $filter) use ($eloquent, $self) {
+                $self->whereClause($eloquent, $filter->asArray());
         });
     }
 
@@ -230,24 +227,17 @@ class ApiSearchService
 
     /**
      * @param Request $request
-     * @param string $modelClass
+     * @param Model $model
      * @return LengthAwarePaginator
-     * @throws NotImplementedException
      */
-    public function search(Request $request, string $modelClass): LengthAwarePaginator
+    public function search(Request $request, Model $model): LengthAwarePaginator
     {
-        $this->checkClass($modelClass);
-
-        /** @var DataLoaderRequestBuilder $requestBuilder */
         $requestBuilder = $this->getRequestBuilder();
 
         $requestBuilder->setPaginator($this->getPaginator($request));
         $requestBuilder->setSorter($this->getSorter($request));
         $requestBuilder->setFilter($this->getFilter($request));
 
-        /** @var Model $model */
-        $model = new $modelClass();
-        /** @var Builder $eloquent */
         $eloquent = $model->newQuery();
 
         $this->joinRelations($eloquent);

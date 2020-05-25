@@ -18,8 +18,8 @@
 
 namespace medcenter24\mcCore\App\Providers;
 
-use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodService;
 use Illuminate\Support\ServiceProvider;
+use medcenter24\mcCore\App\Services\Entity\DatePeriodService;
 
 class ValidatorServiceProvider extends ServiceProvider
 {

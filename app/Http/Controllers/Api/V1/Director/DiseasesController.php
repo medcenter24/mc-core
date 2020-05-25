@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,63 +16,37 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-
-use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Disease;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\DiseaseRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\DiseaseUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\DiseaseService;
 use medcenter24\mcCore\App\Transformers\DiseaseTransformer;
 
-class DiseasesController extends ApiController
+class DiseasesController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
         return new DiseaseTransformer();
     }
 
-    protected function getModelClass(): string
+    protected function getModelService(): ModelService
     {
-        return Disease::class;
+        return $this->getServiceLocator()->get(DiseaseService::class);
     }
 
-    public function update($id, DiseaseRequest $request): Response
+    protected function getRequestClass(): string
     {
-        /** @var Disease $disease */
-        $disease = Disease::find($id);
-        if (!$disease) {
-            $this->response->errorNotFound();
-        }
-
-        $disease->setAttribute('title', $request->json('title', ''));
-        $disease->setAttribute('code', $request->json('code', ''));
-        $disease->setAttribute('description', $request->json('description', ''));
-        $disease->save();
-
-        $transformer = new DiseaseTransformer();
-        return $this->response->accepted(null, $transformer->transform($disease));
+        return DiseaseRequest::class;
     }
 
-    public function store(DiseaseRequest $request): Response
+    protected function getUpdateRequestClass(): string
     {
-        $disease = Disease::create([
-            'title' => $request->json('title', ''),
-            'code' => $request->json('code', ''),
-            'description' => $request->json('description', ''),
-        ]);
-        $transformer = new DiseaseTransformer();
-        return $this->response->created(null, $transformer->transform($disease));
-    }
-
-    public function destroy($id): Response
-    {
-        $disease = Disease::find($id);
-        if (!$disease) {
-            $this->response->errorNotFound();
-        }
-        $disease->delete();
-        return $this->response->noContent();
+        return DiseaseUpdateRequest::class;
     }
 }

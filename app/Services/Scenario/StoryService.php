@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +17,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services\Scenario;
 
-
-use medcenter24\mcCore\App\Scenario;
+use medcenter24\mcCore\App\Entity\Scenario;
 use medcenter24\mcCore\App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;
 
@@ -30,10 +32,10 @@ use Illuminate\Support\Collection;
  */
 class StoryService implements ScenarioInterface
 {
-    const OPTION_STATUS = 'status';
+    public const OPTION_STATUS = 'status';
 
-    const STATUS_VISITED = 'visited';
-    const STATUS_CURRENT = 'current';
+    public const STATUS_VISITED = 'visited';
+    public const STATUS_CURRENT = 'current';
 
     /**
      * @var Collection of the AccidentStatusHistory
@@ -46,7 +48,7 @@ class StoryService implements ScenarioInterface
 
     /**
      * Aggregated story
-     * @var array
+     * @var Collection
      */
     private $story;
 
@@ -56,7 +58,7 @@ class StoryService implements ScenarioInterface
      * @param ScenarioInterface $scenario
      * @return $this
      */
-    public function init(Collection $history, ScenarioInterface $scenario)
+    public function init(Collection $history, ScenarioInterface $scenario): self
     {
         $this->history = $history;
         $this->scenario = $scenario;
@@ -67,12 +69,12 @@ class StoryService implements ScenarioInterface
     /**
      * Story by the current history
      */
-    public function scenario()
+    public function scenario(): ScenarioInterface
     {
         return $this->scenario;
     }
 
-    public function getStory()
+    public function getStory(): Collection
     {
         if (!$this->story) {
             $this->story = $this->generateStory();
@@ -83,8 +85,9 @@ class StoryService implements ScenarioInterface
 
     /**
      * Fill passed scenarios steps
+     * @return Collection
      */
-    private function generateStory()
+    private function generateStory(): Collection
     {
         $story = $this->history;
         $scenario = $this->scenario()->scenario()->sortByDesc('order');
@@ -113,7 +116,7 @@ class StoryService implements ScenarioInterface
      * @param Collection $scenario
      * @return Collection
      */
-    private function skip(Collection $scenario)
+    private function skip(Collection $scenario): Collection
     {
         // searching for the skipping steps in the scenario
         $skipSteps = $scenario->filter(function ($step) {
@@ -157,7 +160,7 @@ class StoryService implements ScenarioInterface
         return $scenario;
     }
 
-    public function findStepId($step)
+    public function findStepId($step): int
     {
         return $this->scenario->findStepId($step);
     }

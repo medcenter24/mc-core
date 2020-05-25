@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,34 +17,26 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Forms;
 
-
-use Illuminate\Http\Request;
-use League\Fractal\TransformerAbstract;
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\FormVariable;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Dingo\Api\Http\Response;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Models\Form\FormVariable;
 use medcenter24\mcCore\App\Services\Form\FormVariableService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Transformers\Form\FormVariableTransformer;
-use Symfony\Component\HttpFoundation\Response;
 
 class FormsVariablesController extends ApiController
 {
     use ServiceLocatorTrait;
 
-    protected function getDataTransformer(): TransformerAbstract
-    {
-        return new FormVariableTransformer();
-    }
-
-    protected function getModelClass(): string
-    {
-        return FormVariable::class;
-    }
-
-    public function search(Request $request): Response
+    /**
+     * @return Response
+     */
+    public function search(): Response
     {
         /** @var FormVariableService $variableService */
         $variableService = $this->getServiceLocator()->get(FormVariableService::class);
@@ -52,9 +45,9 @@ class FormsVariablesController extends ApiController
             $variables->push(new FormVariable([
                 'title' => $variable,
                 'key' => $variable,
-                'type' => Accident::class
+                'type' => FormVariableService::TYPE_ACCIDENT,
             ]));
         }
-        return $this->response->collection($variables, $this->getDataTransformer());
+        return $this->response->collection($variables, new FormVariableTransformer());
     }
 }

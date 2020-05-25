@@ -16,10 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Entity\Role;
 use Illuminate\Database\Seeder;
-use medcenter24\mcCore\App\Services\RoleService;
-use App;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 class RolesTableSeeder extends Seeder
 {
@@ -30,10 +29,10 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment('production') &&medcenter24\mcCore\App\Role::all()->count()) {
+        if (app()->environment('production') && Role::all()->count()) {
             return;
         }
-        if (!App::environment('production')) {
+        if (!app()->environment('production')) {
             Role::truncate();
         }
 

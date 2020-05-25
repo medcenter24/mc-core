@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,14 +17,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
+use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\HospitalAccident;
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\HospitalAccident;
-
-class CaseExportTransformer extends AbstractTransformer
+class CaseExportTransformer extends TransformerAbstract
 {
     /**
      * @param Accident $accident

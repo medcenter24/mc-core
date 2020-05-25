@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,11 +16,11 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services\ApiSearch;
 
-
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 
@@ -41,13 +42,14 @@ class SearchFieldLogic
      */
     public function transformFieldToInternalFormat(array $field): array
     {
-        Log::info('fff', [$field]);
         $field[Filter::FIELD_NAME] = $this->getInternalFieldName($field[Filter::FIELD_NAME]);
-        Log::info('fff', [$field]);
-
         return $field;
     }
 
+    /**
+     * @param array $filters
+     * @return array
+     */
     public function transformFieldsToExternalFormat(array $filters): array
     {
         foreach ($filters as $key => $filter) {
@@ -58,9 +60,19 @@ class SearchFieldLogic
     }
 
     /**
-     * @return Collection of Relation
+     * @return Collection of \medcenter24\mcCore\App\Models\Database\Relation
      */
     public function getRelations(): Collection
+    {
+        return collect();
+    }
+
+    /**
+     * predefined filters (to see only the data that expected to be seen)
+     * @example : if I want doctors only then doctor role is predefined condition
+     * @return Collection of \medcenter24\mcCore\App\Models\Database\Filter
+     */
+    public function getFilters(): Collection
     {
         return collect();
     }

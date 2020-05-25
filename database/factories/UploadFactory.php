@@ -17,8 +17,9 @@
  */
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\Upload;
 
-$factory->define(medcenter24\mcCore\App\Upload::class, function (Faker $faker) {
+$factory->define(Upload::class, function (Faker $faker) {
     return [
         'uploadable_type' => 'medcenter24\mcCore\App\User',
         'uploadable_id' => 1,

@@ -21,7 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services;
 
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\User;
 
 class LogoService
 {

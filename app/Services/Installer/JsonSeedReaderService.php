@@ -54,6 +54,7 @@ use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDropboxBackupRootParam
 use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDropboxBackupSecretParam;
 use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvDropboxBackupTokenParam;
 use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvImageDriverParam;
+use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvJwtBlacklistGracePeriodParam;
 use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvLogChannelParam;
 use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvLogSlackWebhookUrlParam;
 use medcenter24\mcCore\App\Models\Installer\Params\Env\EnvMailDriverParam;
@@ -268,6 +269,7 @@ class JsonSeedReaderService
                     'session_driver' => new EnvSessionDriverParam(),
                     'log_channel' => new EnvLogChannelParam(),
                     'slack_webhook_url' => new EnvLogSlackWebhookUrlParam(),
+                    'jwt_blacklist_grace_period' => new EnvJwtBlacklistGracePeriodParam()
                 ],
                 'director-gui' => [
                     // static paths ../settings/guiDirector/environments/[environment.prod.ts|environment.ts]

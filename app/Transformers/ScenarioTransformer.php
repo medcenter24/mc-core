@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,23 +17,59 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Scenario;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
+use medcenter24\mcCore\App\Services\Entity\ScenarioService;
 
 class ScenarioTransformer extends AbstractTransformer
 {
-    public function transform (Scenario $scenario): array
+    use CaseTypeTransformer;
+
+    public function transform (Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['tag'] = $this->getTransformedType($fields['tag']);
+        $fields['status'] = $model->getAttribute('status') ?: '';
+        $fields['title'] = $model->getAttribute('accidentStatus')
+            ? $model->getAttribute('accidentStatus')->getAttribute(AccidentStatusService::FIELD_TITLE)
+            : '';
+        return $fields;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws InconsistentDataException
+     */
+    public function inverseTransform(array $data): array
+    {
+        $data = parent::inverseTransform($data);
+        $data['tag'] = $this->getInverseTransformedType($data['tag']);
+        return $data;
+    }
+
+    protected function getMap(): array
     {
         return [
-            'id' => $scenario->id,
-            'tag' => $scenario->tag,
-            'order' => $scenario->order,
-            'mode' => $scenario->mode,
-            'accident_status_id' => $scenario->accident_status_id,
-            'status' => $scenario->status ?: '',
-            'title' => $scenario->accidentStatus->title,
+            ScenarioService::FIELD_ID,
+            ScenarioService::FIELD_TAG,
+            ScenarioService::FIELD_ORDER,
+            ScenarioService::FIELD_MODE,
+            'accidentStatusId' => ScenarioService::FIELD_ACCIDENT_STATUS_ID,
+        ];
+    }
+
+    protected function getMappedTypes(): array
+    {
+        return [
+            ScenarioService::FIELD_ID => self::VAR_INT,
+            ScenarioService::FIELD_ORDER => self::VAR_INT,
+            ScenarioService::FIELD_ACCIDENT_STATUS_ID => self::VAR_INT,
         ];
     }
 }

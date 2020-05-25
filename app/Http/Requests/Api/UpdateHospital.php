@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,9 +17,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use medcenter24\mcCore\App\Hospital;
+use medcenter24\mcCore\App\Entity\Hospital;
 
 class UpdateHospital extends JsonRequest
 {
@@ -29,7 +32,7 @@ class UpdateHospital extends JsonRequest
         // do not allow to change ref key
         if(isset($data['id'])) {
             $hospital = Hospital::find($data['id']);
-            if (isset($data['refKey']) && $hospital->ref_key == $data['refKey']) {
+            if (isset($data['refKey']) && $hospital->ref_key === $data['refKey']) {
                 unset($data['refKey']);
             }
         }

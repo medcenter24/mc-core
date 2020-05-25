@@ -19,8 +19,8 @@
 namespace medcenter24\mcCore\App\Events;
 
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Payment;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Payment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;

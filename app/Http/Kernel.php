@@ -16,8 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http;
 
+use Fideloper\Proxy\TrustProxies;
 use medcenter24\mcCore\App\Http\Middleware\Authenticate;
 use medcenter24\mcCore\App\Http\Middleware\DoctorMiddleware;
 use medcenter24\mcCore\App\Http\Middleware\EncryptCookies;
@@ -25,7 +28,7 @@ use medcenter24\mcCore\App\Http\Middleware\RedirectIfAuthenticated;
 use medcenter24\mcCore\App\Http\Middleware\RoleMiddleware;
 use medcenter24\mcCore\App\Http\Middleware\TrimStrings;
 use medcenter24\mcCore\App\Http\Middleware\VerifyCsrfToken;
-use Barryvdh\Cors\HandleCors;
+use Fruitcake\Cors\HandleCors;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -48,12 +51,13 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $middleware = [
+    protected array $middleware = [
+        TrustProxies::class,
+        HandleCors::class,
         CheckForMaintenanceMode::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
-        HandleCors::class,
     ];
 
     /**
@@ -61,7 +65,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $middlewareGroups = [
+    protected array $middlewareGroups = [
         'web' => [
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,

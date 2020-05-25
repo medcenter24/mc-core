@@ -17,8 +17,9 @@
  */
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\AccidentStatus;
 
-$factory->define(medcenter24\mcCore\App\AccidentStatus::class, function (Faker $faker) {
+$factory->define(AccidentStatus::class, function (Faker $faker) {
     $status = $faker->randomElement(AccidentStatusesTableSeeder::ACCIDENT_STATUSES);
 
     return [

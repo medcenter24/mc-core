@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,12 +17,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Models\Telegram\Replies;
 
-
-use medcenter24\mcCore\App\Services\InviteService;
+use medcenter24\mcCore\App\Services\Entity\InviteService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-use medcenter24\mcCore\App\TelegramUser;
+use medcenter24\mcCore\App\Entity\TelegramUser;
 use Telegram\Bot\Objects\Message;
 use Telegram\Bot\Objects\Update;
 

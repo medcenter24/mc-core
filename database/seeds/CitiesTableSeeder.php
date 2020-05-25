@@ -17,7 +17,7 @@
  */
 
 use Illuminate\Database\Seeder;
-use medcenter24\mcCore\App\City;
+use medcenter24\mcCore\App\Entity\City;
 
 class CitiesTableSeeder extends Seeder
 {

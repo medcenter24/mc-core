@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,33 +17,39 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Accident;
+use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Helpers\Date;
-use medcenter24\mcCore\App\Services\UserService;
+use medcenter24\mcCore\App\Services\Entity\UserService;
 
-class HospitalAccidentTransformer extends AccidentTransformer
+class HospitalAccidentTransformer extends AbstractTransformer
 {
-    /**
-     * @param Accident $accident
-     * @return array
-     */
-    public function transform (Accident $accident): array
+    public function transform (Model $model): array
     {
-        $transformedAccident = parent::transform($accident);
+        $fields = (new AccidentTransformer())->transform($model);
+        $fields['status'] = $model->getAttribute('caseable')
+            ? $model->getAttribute('caseable')->getAttribute('status')
+            : '';
+        $fields['accidentStatusId'] = $model->getAttribute('caseable')
+            ? $model->getAttribute('caseable')->getAttribute('accident_status_id')
+            : '';
+        $fields['hospitalId'] = $model->getAttribute('caseable')
+            ? $model->getAttribute('caseable')->getAttribute('hospital_id')
+            : '';
+        $fields['createdAt'] = Date::sysDate(
+            $model->getAttribute('caseable')
+                ? $model->getAttribute('caseable')->getAttribute('created_at')
+                : null,
+            $this->getServiceLocator()->get(UserService::class)->getTimezone()
+        );
+        return $fields;
+    }
 
-        $hospitalAccident = [
-            'status' => $accident->caseable->status,
-            'accidentStatusId' => $accident->caseable->accident_status_id,
-            'createdAt' => Date::sysDate(
-                $accident->caseable->created_at,
-                $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
-            'hospitalId' => $accident->caseable->hospital_id,
-        ];
-
-        return array_merge($transformedAccident, $hospitalAccident);
+    protected function getMap(): array
+    {
+        return [];
     }
 }

@@ -18,8 +18,9 @@
  */
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\Service;
 
-$factory->define(medcenter24\mcCore\App\DoctorService::class, function (Faker $faker) {
+$factory->define(Service::class, function (Faker $faker) {
     return [
         'title' => 'DoctorService',
         'description' => $faker->text(),

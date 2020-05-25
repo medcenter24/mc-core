@@ -18,8 +18,8 @@
 
 namespace medcenter24\mcCore\App\Http\Requests\Telegram;
 
-use medcenter24\mcCore\App\Role;
-use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Entity\Role;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 use medcenter24\mcCore\App\Support\Facades\Roles;
 use Illuminate\Foundation\Http\FormRequest;
 

@@ -50,7 +50,6 @@ class ServiceTransformer extends AbstractTransformer
             ServiceService::FIELD_ID,
             ServiceService::FIELD_TITLE,
             ServiceService::FIELD_DESCRIPTION,
-            'diseaseId' => ServiceService::FIELD_DISEASE_ID,
             ServiceService::FIELD_STATUS,
         ];
     }

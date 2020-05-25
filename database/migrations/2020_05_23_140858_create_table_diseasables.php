@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,14 +12,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CreateSurveysTable extends Migration
+class CreateTableDiseasables extends Migration
 {
     /**
      * Run the migrations.
@@ -29,14 +28,9 @@ class CreateSurveysTable extends Migration
      */
     public function up()
     {
-        Schema::create('surveys', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('created_by')->default(0)->index();
-            $table->string('title')->default('')->index();
-            $table->text('description');
-            $table->string('status')->default('active')->index();
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::create('diseasables', static function (Blueprint $table) {
+            $table->unsignedInteger('disease_id')->index();
+            $table->morphs('diseasables', 'idx_diseasables');
         });
     }
 
@@ -47,6 +41,6 @@ class CreateSurveysTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('surveys');
+        Schema::dropIfExists('diseasables');
     }
 }

@@ -80,10 +80,10 @@ class Diagnostic extends Model
     }
 
     /**
-     * @return BelongsTo
+     * @return MorphToMany
      */
-    public function disease(): BelongsTo
+    public function diseases(): MorphToMany
     {
-        return $this->belongsTo(Disease::class);
+        return $this->morphToMany(Disease::class, 'diseasables');
     }
 }

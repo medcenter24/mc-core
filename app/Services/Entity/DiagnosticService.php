@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\Diagnostic;
+use medcenter24\mcCore\App\Entity\Disease;
 use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
 
@@ -30,15 +31,16 @@ class DiagnosticService extends AbstractModelService
     use FiltersTrait;
 
     public const FIELD_TITLE = 'title';
-    public const FIELD_DISEASE_ID = 'disease_id';
     public const FIELD_DESCRIPTION = 'description';
     public const FIELD_DIAGNOSTIC_CATEGORY_ID = 'diagnostic_category_id';
     public const FIELD_CREATED_BY = 'created_by';
     public const FIELD_STATUS = 'status';
 
+    // relation
+    public const PROP_DISEASES = 'diseases';
+
     public const FILLABLE = [
         self::FIELD_TITLE,
-        self::FIELD_DISEASE_ID,
         self::FIELD_DESCRIPTION,
         self::FIELD_DIAGNOSTIC_CATEGORY_ID,
         self::FIELD_CREATED_BY,
@@ -48,7 +50,6 @@ class DiagnosticService extends AbstractModelService
     public const VISIBLE = [
         self::FIELD_ID,
         self::FIELD_TITLE,
-        self::FIELD_DISEASE_ID,
         self::FIELD_DESCRIPTION,
         self::FIELD_DIAGNOSTIC_CATEGORY_ID,
         self::FIELD_CREATED_BY,
@@ -57,7 +58,6 @@ class DiagnosticService extends AbstractModelService
 
     public const UPDATABLE = [
         self::FIELD_TITLE,
-        self::FIELD_DISEASE_ID,
         self::FIELD_DESCRIPTION,
         self::FIELD_DIAGNOSTIC_CATEGORY_ID,
         self::FIELD_CREATED_BY,
@@ -86,7 +86,6 @@ class DiagnosticService extends AbstractModelService
     {
         return [
             self::FIELD_TITLE => '',
-            self::FIELD_DISEASE_ID => 0,
             self::FIELD_DESCRIPTION => '',
             self::FIELD_DIAGNOSTIC_CATEGORY_ID => 0,
             self::FIELD_CREATED_BY => 0,
@@ -101,7 +100,34 @@ class DiagnosticService extends AbstractModelService
     public function create(array $data = []): Model
     {
         $data[self::FIELD_CREATED_BY] = auth()->user() ? auth()->user()->getAuthIdentifier() : 0;
-        return parent::create($data);
+        $diagnostic = parent::create($data);
+        $this->assignDiseases($diagnostic, $data);
+        return $diagnostic;
+    }
+
+    public function findAndUpdate(array $filterByFields, array $data): Model
+    {
+        $diagnostic = parent::findAndUpdate($filterByFields, $data);
+        $this->assignDiseases($diagnostic, $data);
+        return $diagnostic;
+    }
+
+    /**
+     * @param Model $diagnostic
+     * @param array $data
+     */
+    private function assignDiseases(Model $diagnostic, array $data): void
+    {
+        $diagnostic->diseases()->detach();
+        if (array_key_exists(self::PROP_DISEASES, $data)) {
+            $diseases = $data[self::PROP_DISEASES];
+            $ids = [];
+            /** @var Disease $disease */
+            foreach ($diseases as $disease) {
+                $ids[] = $disease->getAttribute('id');
+            }
+            $diagnostic->diseases()->attach($ids);
+        }
     }
 
     /**

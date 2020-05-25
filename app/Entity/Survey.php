@@ -23,6 +23,7 @@ namespace medcenter24\mcCore\App\Entity;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use medcenter24\mcCore\App\Helpers\DoctorTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -55,10 +56,10 @@ class Survey extends Model
     }
 
     /**
-     * @return BelongsTo
+     * @return MorphToMany
      */
-    public function disease(): BelongsTo
+    public function diseases(): MorphToMany
     {
-        return $this->belongsTo(Disease::class);
+        return $this->morphToMany(Disease::class, 'diseasables');
     }
 }

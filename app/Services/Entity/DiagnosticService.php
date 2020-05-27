@@ -22,22 +22,22 @@ namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\Diagnostic;
-use medcenter24\mcCore\App\Entity\Disease;
-use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
+use medcenter24\mcCore\App\Services\Entity\Contracts\CreatedByField;
+use medcenter24\mcCore\App\Services\Entity\Contracts\StatusableService;
+use medcenter24\mcCore\App\Services\Entity\Traits\Access;
+use medcenter24\mcCore\App\Services\Entity\Traits\Diseasable;
 
-class DiagnosticService extends AbstractModelService
+class DiagnosticService extends AbstractModelService implements StatusableService, CreatedByField
 {
     use FiltersTrait;
+    use Diseasable;
+    use Access;
 
     public const FIELD_TITLE = 'title';
     public const FIELD_DESCRIPTION = 'description';
     public const FIELD_DIAGNOSTIC_CATEGORY_ID = 'diagnostic_category_id';
-    public const FIELD_CREATED_BY = 'created_by';
     public const FIELD_STATUS = 'status';
-
-    // relation
-    public const PROP_DISEASES = 'diseases';
 
     public const FILLABLE = [
         self::FIELD_TITLE,
@@ -63,19 +63,6 @@ class DiagnosticService extends AbstractModelService
         self::FIELD_CREATED_BY,
         self::FIELD_STATUS,
     ];
-
-    /**
-     * Visible and selectable
-     */
-    public const STATUS_ACTIVE = 'active';
-    /**
-     * Visible but not selectable
-     */
-    public const STATUS_HIDDEN = 'hidden';
-    /**
-     * Hidden and not accessible
-     */
-    public const STATUS_DISABLED = 'disabled';
 
     protected function getClassName(): string
     {
@@ -110,46 +97,5 @@ class DiagnosticService extends AbstractModelService
         $diagnostic = parent::findAndUpdate($filterByFields, $data);
         $this->assignDiseases($diagnostic, $data);
         return $diagnostic;
-    }
-
-    /**
-     * @param Model $diagnostic
-     * @param array $data
-     */
-    private function assignDiseases(Model $diagnostic, array $data): void
-    {
-        $diagnostic->diseases()->detach();
-        if (array_key_exists(self::PROP_DISEASES, $data)) {
-            $diseases = $data[self::PROP_DISEASES];
-            $ids = [];
-            /** @var Disease $disease */
-            foreach ($diseases as $disease) {
-                $ids[] = $disease->getAttribute('id');
-            }
-            $diagnostic->diseases()->attach($ids);
-        }
-    }
-
-    /**
-     * @param User $user
-     * @param Diagnostic $diagnostic
-     * @return bool
-     */
-    public function hasAccess(User $user, Diagnostic $diagnostic): bool
-    {
-        $createdBy = (int) $diagnostic->getAttribute(self::FIELD_CREATED_BY);
-        $userId = (int) $user->getKey();
-        $owner = $createdBy && $userId && $createdBy === $userId;
-        $hasDirectorRole = $this->getRoleService()->hasRole($user, RoleService::DIRECTOR_ROLE);
-        $hasAdminRole = $this->getRoleService()->hasRole($user, RoleService::ADMIN_ROLE);
-        return $hasDirectorRole || $hasAdminRole || $owner;
-    }
-
-    /**
-     * @return RoleService
-     */
-    private function getRoleService(): RoleService
-    {
-        return $this->getServiceLocator()->get(RoleService::class);
     }
 }

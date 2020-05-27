@@ -21,34 +21,25 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Service;
-use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
+use medcenter24\mcCore\App\Services\Entity\Contracts\CreatedByField;
+use medcenter24\mcCore\App\Services\Entity\Traits\Access;
+use medcenter24\mcCore\App\Services\Entity\Traits\Diseasable;
+use medcenter24\mcCore\App\Services\Entity\Contracts\StatusableService;
 
-class ServiceService extends AbstractModelService
+class ServiceService extends AbstractModelService implements StatusableService, CreatedByField
 {
     use FiltersTrait;
+    use Diseasable;
+    use Access;
 
     public const FIELD_ID = 'id';
     public const FIELD_TITLE = 'title';
     public const FIELD_DESCRIPTION = 'description';
-    public const FIELD_DISEASE_ID = 'disease_id';
     public const FIELD_STATUS = 'status';
     public const FIELD_CREATED_AT = 'created_at';
-    public const FIELD_CREATED_BY = 'created_by';
-
-    /**
-     * Visible and selectable
-     */
-    public const STATUS_ACTIVE = 'active';
-    /**
-     * Visible but not selectable
-     */
-    public const STATUS_HIDDEN = 'hidden';
-    /**
-     * Hidden and not accessible
-     */
-    public const STATUS_DISABLED = 'disabled';
 
     /**
      * That can be modified
@@ -57,14 +48,12 @@ class ServiceService extends AbstractModelService
         self::FIELD_TITLE,
         self::FIELD_DESCRIPTION,
         self::FIELD_CREATED_BY,
-        self::FIELD_DISEASE_ID,
         self::FIELD_STATUS,
     ];
 
     public const UPDATABLE = [
         self::FIELD_TITLE,
         self::FIELD_DESCRIPTION,
-        self::FIELD_DISEASE_ID,
         self::FIELD_STATUS,
     ];
 
@@ -75,7 +64,6 @@ class ServiceService extends AbstractModelService
         self::FIELD_ID,
         self::FIELD_TITLE,
         self::FIELD_DESCRIPTION,
-        self::FIELD_DISEASE_ID,
         self::FIELD_STATUS,
     ];
 
@@ -89,38 +77,27 @@ class ServiceService extends AbstractModelService
         return [
             self::FIELD_TITLE => '',
             self::FIELD_DESCRIPTION => '',
-            self::FIELD_DISEASE_ID => 0,
             self::FIELD_CREATED_BY => 0,
             self::FIELD_STATUS => self::STATUS_ACTIVE,
         ];
     }
 
+    /**
+     * @param array $data
+     * @return Model
+     */
     public function create(array $data = []): Model
     {
         $data[self::FIELD_CREATED_BY] = auth()->user() ? auth()->user()->getAuthIdentifier() : 0;
-        return parent::create($data);
+        $diagnostic = parent::create($data);
+        $this->assignDiseases($diagnostic, $data);
+        return $diagnostic;
     }
 
-    /**
-     * @param User $user
-     * @param Service $service
-     * @return bool
-     */
-    public function hasAccess(User $user, Service $service): bool
+    public function findAndUpdate(array $filterByFields, array $data): Model
     {
-        $createdBy = (int) $service->getAttribute(self::FIELD_CREATED_BY);
-        $userId = (int) $user->getKey();
-        $owner = $createdBy && $userId && $createdBy === $userId;
-        $hasDirectorRole = $this->getRoleService()->hasRole($user, RoleService::DIRECTOR_ROLE);
-        $hasAdminRole = $this->getRoleService()->hasRole($user, RoleService::ADMIN_ROLE);
-        return $hasDirectorRole || $hasAdminRole || $owner;
-    }
-
-    /**
-     * @return RoleService
-     */
-    private function getRoleService(): RoleService
-    {
-        return $this->getServiceLocator()->get(RoleService::class);
+        $diagnostic = parent::findAndUpdate($filterByFields, $data);
+        $this->assignDiseases($diagnostic, $data);
+        return $diagnostic;
     }
 }

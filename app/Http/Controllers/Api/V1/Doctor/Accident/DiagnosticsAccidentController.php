@@ -107,7 +107,6 @@ class DiagnosticsAccidentController extends ApiController
                 DiagnosticService::FIELD_TITLE => $request->get('title', $diagnostic->title),
                 DiagnosticService::FIELD_DESCRIPTION => $request->get('description', $diagnostic->description),
                 DiagnosticService::FIELD_DIAGNOSTIC_CATEGORY_ID => $request->get('diagnosticCategoryId', 0),
-                DiagnosticService::FIELD_DISEASE_ID => $request->get('diseaseId', 0),
                 DiagnosticService::FIELD_STATUS => $request->get('status', DiagnosticService::STATUS_ACTIVE),
             ]);
         } else {
@@ -117,7 +116,6 @@ class DiagnosticsAccidentController extends ApiController
                 DiagnosticService::FIELD_DESCRIPTION => $request->get('description', ''),
                 DiagnosticService::FIELD_CREATED_BY => $this->user()->id,
                 DiagnosticService::FIELD_DIAGNOSTIC_CATEGORY_ID => $request->get('diagnosticCategoryId', 0),
-                DiagnosticService::FIELD_DISEASE_ID => $request->get('diseaseId', 0),
                 DiagnosticService::FIELD_STATUS => $request->get('status', DiagnosticService::STATUS_ACTIVE),
             ]);
 

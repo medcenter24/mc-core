@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
 use medcenter24\mcCore\App\Services\Entity\Contracts\CreatedByField;

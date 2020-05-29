@@ -15,12 +15,12 @@
  *
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\Entity\Survey;
-use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Helpers\StrHelper;
 use medcenter24\mcCore\App\Services\Core\Cache\ArrayCacheTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -40,7 +40,6 @@ class SurveyService extends AbstractModelService implements StatusableService, C
     public const FIELD_ID = 'id';
     public const FIELD_TITLE = 'title';
     public const FIELD_DESCRIPTION = 'description';
-    public const FIELD_DISEASE_ID = 'disease_id';
     public const FIELD_STATUS = 'status';
 
     /**
@@ -50,7 +49,6 @@ class SurveyService extends AbstractModelService implements StatusableService, C
         SurveyService::FIELD_TITLE,
         SurveyService::FIELD_DESCRIPTION,
         SurveyService::FIELD_CREATED_BY,
-        SurveyService::FIELD_DISEASE_ID,
         SurveyService::FIELD_STATUS,
     ];
 
@@ -60,7 +58,6 @@ class SurveyService extends AbstractModelService implements StatusableService, C
     public const UPDATABLE = [
         SurveyService::FIELD_TITLE,
         SurveyService::FIELD_DESCRIPTION,
-        SurveyService::FIELD_DISEASE_ID,
         SurveyService::FIELD_STATUS,
     ];
 
@@ -72,7 +69,6 @@ class SurveyService extends AbstractModelService implements StatusableService, C
         SurveyService::FIELD_TITLE,
         SurveyService::FIELD_DESCRIPTION,
         SurveyService::FIELD_CREATED_BY,
-        SurveyService::FIELD_DISEASE_ID,
         SurveyService::FIELD_STATUS,
     ];
 
@@ -92,7 +88,6 @@ class SurveyService extends AbstractModelService implements StatusableService, C
         return [
             self::FIELD_TITLE => '',
             self::FIELD_DESCRIPTION => '',
-            self::FIELD_DISEASE_ID => 0,
             self::FIELD_CREATED_BY => 0,
             self::FIELD_STATUS => self::STATUS_ACTIVE,
         ];
@@ -149,8 +144,16 @@ class SurveyService extends AbstractModelService implements StatusableService, C
         $survey = parent::create($data);
         $list = $this->getCache('letteredSurveys');
         $list[StrHelper::getLetters($survey->getAttribute(self::FIELD_TITLE))] = $survey;
+        $this->assignDiseases($survey, $data);
         $this->setCache('letteredSurveys', $list);
         return $survey;
+    }
+
+    public function findAndUpdate(array $filterByFields, array $data): Model
+    {
+        $diagnostic = parent::findAndUpdate($filterByFields, $data);
+        $this->assignDiseases($diagnostic, $data);
+        return $diagnostic;
     }
 
     /**

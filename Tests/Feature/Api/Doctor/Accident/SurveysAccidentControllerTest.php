@@ -51,7 +51,6 @@ class SurveysAccidentControllerTest extends TestCase
             'id' => 1,
             'title' => '',
             'description' => '',
-            'diseaseId' => 0,
             'status' => 'active',
             'type' => 'doctor',
         ]);
@@ -63,7 +62,6 @@ class SurveysAccidentControllerTest extends TestCase
         $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/surveys', [
             'title' => 'tit',
             'description' => 'desc',
-            'diseaseId' => 1,
             'status' => 'disabled',
             'type' => 'director',
         ]);
@@ -72,7 +70,6 @@ class SurveysAccidentControllerTest extends TestCase
             'id' => 1,
             'title' => 'tit',
             'description' => 'desc',
-            'diseaseId' => 1,
             'status' => 'disabled',
             'type' => 'doctor',
         ]);
@@ -99,7 +96,6 @@ class SurveysAccidentControllerTest extends TestCase
             'id' => $survey->getKey(),
             'title' => 'tit',
             'description' => 'desc',
-            'diseaseId' => 1,
             'status' => 'disabled',
             'type' => 'director',
         ]);
@@ -108,7 +104,6 @@ class SurveysAccidentControllerTest extends TestCase
             'id' => 1,
             'title' => 'tit',
             'description' => 'desc',
-            'diseaseId' => 1,
             'status' => 'disabled',
             'type' => 'doctor',
         ]);

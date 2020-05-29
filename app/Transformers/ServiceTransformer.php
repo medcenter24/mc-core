@@ -66,7 +66,6 @@ class ServiceTransformer extends AbstractTransformer
     public function inverseTransform(array $data): array
     {
         $transformed = parent::inverseTransform($data);
-        Log::error('a', [$data, $transformed]);
         $transformed = $this->inverseDiseasesTransform($transformed);
         return $transformed;
     }

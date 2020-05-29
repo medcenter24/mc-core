@@ -201,14 +201,12 @@ class DoctorCaseControllerTest extends TestCase
                 'id' => 1,
                 'title' => '',
                 'description' => '',
-                'disease_id' => '0',
                 'status' => 'active',
             ],
             [
                 'id' => 2,
                 'title' => '',
                 'description' => '',
-                'disease_id' => '0',
                 'status' => 'active',
             ],
         ], $accidentService->getAccidentServices($accident)->toArray());
@@ -219,7 +217,6 @@ class DoctorCaseControllerTest extends TestCase
                 'created_by' => '0',
                 'title' => '',
                 'description' => '',
-                'disease_id' => '0',
                 'status' => 'active',
             ],
             [
@@ -227,7 +224,6 @@ class DoctorCaseControllerTest extends TestCase
                 'created_by' => '0',
                 'title' => '',
                 'description' => '',
-                'disease_id' => '0',
                 'status' => 'active',
             ],
         ], $accident->caseable->surveys->toArray());
@@ -238,7 +234,6 @@ class DoctorCaseControllerTest extends TestCase
                 'created_by' => '0',
                 'diagnostic_category_id' => '0',
                 'title' => '',
-                'disease_id' => '0',
                 'status' => 'active',
                 'description' => '',
             ],
@@ -247,7 +242,6 @@ class DoctorCaseControllerTest extends TestCase
                 'created_by' => '0',
                 'diagnostic_category_id' => '0',
                 'title' => '',
-                'disease_id' => '0',
                 'status' => 'active',
                 'description' => '',
             ],

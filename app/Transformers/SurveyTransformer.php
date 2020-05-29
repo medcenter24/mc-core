@@ -22,26 +22,21 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
-use medcenter24\mcCore\App\Services\Entity\DoctorService;
 use medcenter24\mcCore\App\Services\Entity\SurveyService;
+use medcenter24\mcCore\App\Transformers\Traits\DiseasableTransformer;
+use medcenter24\mcCore\App\Transformers\Traits\UserTypeTransformer;
 
 class SurveyTransformer extends AbstractTransformer
 {
+    use DiseasableTransformer;
+    use UserTypeTransformer;
+
     public function transform(Model $model): array
     {
         $fields = parent::transform($model);
-        $fields['type'] = $this->getType($model);
-        $fields['diseaseTitle'] = $model->getAttribute('disease')
-            ? $model->getAttribute('disease')->getAttribute('title')
-            : '';
+        $fields['type'] = $this->getCreatorUserType($model);
+        $fields['diseases'] = $this->getTransformedDiseases($model->getAttribute('diseases'));
         return $fields;
-    }
-
-    private function getType(Model $model): string
-    {
-        $createdBy = (int) $model->getAttribute('created_by');
-        $type = $createdBy ? 'director' : 'system';
-        return $this->getDoctorService()->isDoctor($createdBy) ? 'doctor' : $type;
     }
 
     protected function getMap(): array
@@ -51,7 +46,7 @@ class SurveyTransformer extends AbstractTransformer
             SurveyService::FIELD_TITLE,
             SurveyService::FIELD_DESCRIPTION,
             SurveyService::FIELD_STATUS,
-            'diseaseId' => SurveyService::FIELD_DISEASE_ID,
+            'diseases',
         ];
     }
 
@@ -59,11 +54,13 @@ class SurveyTransformer extends AbstractTransformer
     {
         return [
             SurveyService::FIELD_ID => self::VAR_INT,
-            SurveyService::FIELD_DISEASE_ID => self::VAR_INT,
         ];
     }
 
-    private function getDoctorService(): DoctorService {
-        return $this->getServiceLocator()->get(DoctorService::class);
+    public function inverseTransform(array $data): array
+    {
+        $transformed = parent::inverseTransform($data);
+        $transformed = $this->inverseDiseasesTransform($transformed);
+        return $transformed;
     }
 }

@@ -15,6 +15,8 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+declare(strict_types=1);
 
 use Faker\Generator as Faker;
 use medcenter24\mcCore\App\Entity\FinanceCurrency;
@@ -22,11 +24,9 @@ use medcenter24\mcCore\App\Entity\Payment;
 
 $factory->define(Payment::class, function (Faker $faker) {
     return [
-        'value' => $faker->randomFloat(0, 10000),
-        'currency_id' => function () {
-            return factory(FinanceCurrency::class)->create()->id;
-        },
+        'value' => $faker->randomFloat(0, 100),
+        'currency_id' => factory(FinanceCurrency::class)->create()->id,
         'fixed' => 0,
-        'description' => 'Faker factory',
+        'description' => 'faked payment'
     ];
 });

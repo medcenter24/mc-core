@@ -21,18 +21,21 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 trait TestTraitApi
 {
+    use RefreshDatabase;
     use DatabaseMigrations;
     use JwtHeaders;
     use LoggedUser;
 
     /**
      * @var User
+     * // can't be typed because can't be used in the test
      */
     protected $user;
 

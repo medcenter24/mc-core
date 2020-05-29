@@ -15,7 +15,8 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
-
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+declare(strict_types=1);
 
 use medcenter24\mcCore\App\Entity\FinanceStorage;
 use Faker\Generator as Faker;

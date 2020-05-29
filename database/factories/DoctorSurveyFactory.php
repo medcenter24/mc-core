@@ -15,6 +15,7 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use Faker\Generator as Faker;
 use medcenter24\mcCore\App\Entity\Survey;

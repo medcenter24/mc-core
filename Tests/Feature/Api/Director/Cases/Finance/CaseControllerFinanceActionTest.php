@@ -650,7 +650,7 @@ class CaseControllerFinanceActionTest extends TestCase
                             'value' => -2,
                             'currencyId' => $currency->id,
                             'fixed' => true,
-                            'description' => 'Faker factory',
+                            'description' => 'faked payment',
                         ),
                     'formula' => 'fixed',
                     'calculatedValue' => 0,

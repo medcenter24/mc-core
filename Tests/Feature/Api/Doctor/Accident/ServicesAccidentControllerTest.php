@@ -51,7 +51,7 @@ class ServicesAccidentControllerTest extends TestCase
             'id' => 1,
             'title' => '',
             'description' => '',
-            'diseaseId' => 0,
+            'diseases' => [],
             'status' => 'active',
             'type' => 'doctor',
         ]);
@@ -72,7 +72,7 @@ class ServicesAccidentControllerTest extends TestCase
             'id' => 1,
             'title' => 'tit',
             'description' => 'desc',
-            'diseaseId' => 1,
+            'diseases' => [],
             'status' => 'disabled',
             'type' => 'doctor',
         ]);
@@ -99,7 +99,6 @@ class ServicesAccidentControllerTest extends TestCase
             'id' => $service->getKey(),
             'title' => 'tit',
             'description' => 'desc',
-            'diseaseId' => 1,
             'status' => 'disabled',
             'type' => 'director',
         ]);
@@ -108,7 +107,7 @@ class ServicesAccidentControllerTest extends TestCase
             'id' => 1,
             'title' => 'tit',
             'description' => 'desc',
-            'diseaseId' => 1,
+            'diseases' => [],
             'status' => 'disabled',
             'type' => 'doctor',
         ]);

@@ -52,7 +52,6 @@ class DiagnosticsAccidentControllerTest extends TestCase
             'title' => '',
             'description' => '',
             'diagnosticCategoryId' => 0,
-            'diseaseId' => 0,
             'status' => 'active',
             'type' => 'doctor',
         ]);
@@ -65,7 +64,6 @@ class DiagnosticsAccidentControllerTest extends TestCase
             'title' => 'tit',
             'description' => 'desc',
             'diagnosticCategoryId' => 1,
-            'diseaseId' => 1,
             'status' => 'disabled',
             'type' => 'director',
         ]);
@@ -75,7 +73,6 @@ class DiagnosticsAccidentControllerTest extends TestCase
             'title' => 'tit',
             'description' => 'desc',
             'diagnosticCategoryId' => 1,
-            'diseaseId' => 1,
             'status' => 'disabled',
             'type' => 'doctor',
         ]);
@@ -93,7 +90,6 @@ class DiagnosticsAccidentControllerTest extends TestCase
         ]);
         $doctorAccident->diagnostics()->attach($diagnostic);
 
-        /** @var Accident $accident */
         $accident = $this->createAccidentForDoc();
         $accident->setAttribute(AccidentService::FIELD_CASEABLE_ID, $doctorAccident->getKey());
         $accident->save();
@@ -103,7 +99,6 @@ class DiagnosticsAccidentControllerTest extends TestCase
             'title' => 'tit',
             'description' => 'desc',
             'diagnosticCategoryId' => 1,
-            'diseaseId' => 1,
             'status' => 'disabled',
             'type' => 'director',
         ]);
@@ -113,7 +108,6 @@ class DiagnosticsAccidentControllerTest extends TestCase
             'title' => 'tit',
             'description' => 'desc',
             'diagnosticCategoryId' => 1,
-            'diseaseId' => 1,
             'status' => 'disabled',
             'type' => 'doctor',
         ]);

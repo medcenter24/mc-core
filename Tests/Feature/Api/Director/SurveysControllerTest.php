@@ -101,7 +101,6 @@ class SurveysControllerTest extends DirectorApiModelTest
                     'id' => 1,
                     'title' => '123',
                     'description' => '',
-                    'diseaseTitle' => 0,
                     'type' => 'director',
                     'status' => 'active',
                 ],
@@ -110,14 +109,12 @@ class SurveysControllerTest extends DirectorApiModelTest
                 'data' => [
                     'title' => 'Php Unit test',
                     'description' => 'Desc',
-                    'diseaseId' => 2,
                     'status' => 'disabled'
                 ],
                 'expectedResponse' => [
                     'id' => 1,
                     'title' => 'Php Unit test',
                     'description' => 'Desc',
-                    'diseaseId' => 2,
                     'type' => 'director',
                     'status' => 'disabled',
                 ],
@@ -137,7 +134,6 @@ class SurveysControllerTest extends DirectorApiModelTest
                     'id' => 1,
                     'title' => 'Php Unit test',
                     'description' => 'Desc',
-                    'diseaseId' => 2,
                     'type' => 'doc',
                     'status' => 'disabled'
                 ],
@@ -145,7 +141,6 @@ class SurveysControllerTest extends DirectorApiModelTest
                     'id' => 1,
                     'title' => 'Php Unit test',
                     'description' => 'Desc',
-                    'diseaseId' => 2,
                     'type' => 'system',
                     'status' => 'disabled',
                 ],
@@ -176,7 +171,6 @@ class SurveysControllerTest extends DirectorApiModelTest
                             'id' => 1,
                             'title' => 'Text to be searched',
                             'description' => '',
-                            'diseaseId' => 0,
                             'status' => 'active',
                             'type' => 'system',
                         ],
@@ -184,7 +178,6 @@ class SurveysControllerTest extends DirectorApiModelTest
                             'id' => 2,
                             'title' => 'Php Unit test',
                             'description' => '',
-                            'diseaseId' => 0,
                             'status' => 'active',
                             'type' => 'system',
                         ],
@@ -192,7 +185,6 @@ class SurveysControllerTest extends DirectorApiModelTest
                             'id' => 3,
                             'title' => 'another text',
                             'description' => '',
-                            'diseaseId' => 0,
                             'status' => 'active',
                             'type' => 'system',
                         ],
@@ -227,7 +219,6 @@ class SurveysControllerTest extends DirectorApiModelTest
                         'id' => 1,
                         'title' => '123',
                         'description' => '',
-                        'diseaseId' => 0,
                         'type' => 'system',
                         'status' => 'active',
                     ]
@@ -237,7 +228,6 @@ class SurveysControllerTest extends DirectorApiModelTest
                 'data' => [
                     SurveyService::FIELD_TITLE => 'Php Unit test',
                     SurveyService::FIELD_DESCRIPTION => 'Desc',
-                    SurveyService::FIELD_DISEASE_ID => 2,
                     SurveyService::FIELD_STATUS => 'disabled'
                 ],
                 'expectedResponse' => [
@@ -245,7 +235,6 @@ class SurveysControllerTest extends DirectorApiModelTest
                         'id' => 1,
                         'title' => 'Php Unit test',
                         'description' => 'Desc',
-                        'diseaseId' => 2,
                         'type' => 'system',
                         'status' => 'disabled',
                     ],
@@ -267,7 +256,6 @@ class SurveysControllerTest extends DirectorApiModelTest
                 'data' => [
                     'title' => 'Php Unit test',
                     'description' => 'Desc',
-                    'diseaseId' => 2,
                     'status' => 'disabled'
                 ],
             ],

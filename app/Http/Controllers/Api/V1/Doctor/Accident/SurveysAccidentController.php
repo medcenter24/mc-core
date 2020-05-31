@@ -25,7 +25,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Accident;
-use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\Survey;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
@@ -107,7 +106,7 @@ class SurveysAccidentController extends ApiController
                 SurveyService::FIELD_ID => $surveyId,
                 SurveyService::FIELD_TITLE => $request->get('title', $survey->title),
                 SurveyService::FIELD_DESCRIPTION => $request->get('description', $survey->description),
-                SurveyService::FIELD_DISEASE_ID => $request->get('diseaseId', 0),
+                // SurveyService::FIELD_DISEASE_ID => $request->get('diseaseId', 0),
                 SurveyService::FIELD_STATUS => $request->get('status', SurveyService::STATUS_ACTIVE),
             ]);
         } else {
@@ -115,7 +114,7 @@ class SurveysAccidentController extends ApiController
                 SurveyService::FIELD_TITLE => $request->get('title', ''),
                 SurveyService::FIELD_DESCRIPTION => $request->get('description', ''),
                 SurveyService::FIELD_CREATED_BY => $this->user()->id,
-                SurveyService::FIELD_DISEASE_ID => $request->get('diseaseId', 0),
+                // SurveyService::FIELD_DISEASE_ID => $request->get('diseaseId', 0),
                 SurveyService::FIELD_STATUS => $request->get('status', SurveyService::STATUS_ACTIVE),
             ]);
             $doctorAccident->surveys()->attach($survey);

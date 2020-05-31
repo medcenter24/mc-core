@@ -20,24 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api;
 
-use medcenter24\mcCore\App\Entity\User;
-use medcenter24\mcCore\App\Services\Entity\RoleService;
-
 abstract class DirectorApiModelTest extends AbstractModelTest
 {
-    /**
-     * @inheritDoc
-     */
-    protected function getLoggedUser(): User
-    {
-        if (!$this->user) {
-            $this->user = $this->getUser([RoleService::DIRECTOR_ROLE]);
-        }
-        return $this->user;
-    }
-
-    protected function getHeaders(): array
-    {
-        return $this->headers($this->getLoggedUser());
-    }
+    use DirectorTestTraitApi;
 }

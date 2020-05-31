@@ -106,7 +106,6 @@ class ServicesAccidentController extends ApiController
                 ServiceService::FIELD_ID => $serviceId,
                 ServiceService::FIELD_TITLE => $request->get('title', $service->title),
                 ServiceService::FIELD_DESCRIPTION => $request->get('description', $service->description),
-                ServiceService::FIELD_DISEASE_ID => $request->get('diseaseId', 0),
                 ServiceService::FIELD_STATUS => $request->get('status', ServiceService::STATUS_ACTIVE),
             ]);
         } else {
@@ -115,7 +114,6 @@ class ServicesAccidentController extends ApiController
                 ServiceService::FIELD_TITLE => $request->get('title', ''),
                 ServiceService::FIELD_DESCRIPTION => $request->get('description', ''),
                 ServiceService::FIELD_CREATED_BY => $this->user()->id,
-                ServiceService::FIELD_DISEASE_ID => $request->get('diseaseId', 0),
                 ServiceService::FIELD_STATUS => $request->get('status', ServiceService::STATUS_ACTIVE),
             ]);
             $doctorAccident->services()->attach($service);

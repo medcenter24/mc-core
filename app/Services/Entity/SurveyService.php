@@ -15,42 +15,32 @@
  *
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\Entity\Survey;
-use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Helpers\StrHelper;
 use medcenter24\mcCore\App\Services\Core\Cache\ArrayCacheTrait;
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
+use medcenter24\mcCore\App\Services\Entity\Contracts\CreatedByField;
+use medcenter24\mcCore\App\Services\Entity\Contracts\StatusableService;
+use medcenter24\mcCore\App\Services\Entity\Traits\Access;
+use medcenter24\mcCore\App\Services\Entity\Traits\Diseasable;
 
-class SurveyService extends AbstractModelService
+class SurveyService extends AbstractModelService implements StatusableService, CreatedByField
 {
     use FiltersTrait;
     use ArrayCacheTrait;
+    use Access;
+    use Diseasable;
 
     public const FIELD_ID = 'id';
     public const FIELD_TITLE = 'title';
     public const FIELD_DESCRIPTION = 'description';
-    public const FIELD_DISEASE_ID = 'disease_id';
     public const FIELD_STATUS = 'status';
-    public const FIELD_CREATED_AT = 'created_at';
-    public const FIELD_CREATED_BY = 'created_by';
-
-    /**
-     * Visible and selectable
-     */
-    public const STATUS_ACTIVE = 'active';
-    /**
-     * Visible but not selectable
-     */
-    public const STATUS_HIDDEN = 'hidden';
-    /**
-     * Hidden and not accessible
-     */
-    public const STATUS_DISABLED = 'disabled';
 
     /**
      * That can be modified
@@ -59,7 +49,6 @@ class SurveyService extends AbstractModelService
         SurveyService::FIELD_TITLE,
         SurveyService::FIELD_DESCRIPTION,
         SurveyService::FIELD_CREATED_BY,
-        SurveyService::FIELD_DISEASE_ID,
         SurveyService::FIELD_STATUS,
     ];
 
@@ -69,7 +58,6 @@ class SurveyService extends AbstractModelService
     public const UPDATABLE = [
         SurveyService::FIELD_TITLE,
         SurveyService::FIELD_DESCRIPTION,
-        SurveyService::FIELD_DISEASE_ID,
         SurveyService::FIELD_STATUS,
     ];
 
@@ -81,7 +69,6 @@ class SurveyService extends AbstractModelService
         SurveyService::FIELD_TITLE,
         SurveyService::FIELD_DESCRIPTION,
         SurveyService::FIELD_CREATED_BY,
-        SurveyService::FIELD_DISEASE_ID,
         SurveyService::FIELD_STATUS,
     ];
 
@@ -101,7 +88,6 @@ class SurveyService extends AbstractModelService
         return [
             self::FIELD_TITLE => '',
             self::FIELD_DESCRIPTION => '',
-            self::FIELD_DISEASE_ID => 0,
             self::FIELD_CREATED_BY => 0,
             self::FIELD_STATUS => self::STATUS_ACTIVE,
         ];
@@ -158,8 +144,16 @@ class SurveyService extends AbstractModelService
         $survey = parent::create($data);
         $list = $this->getCache('letteredSurveys');
         $list[StrHelper::getLetters($survey->getAttribute(self::FIELD_TITLE))] = $survey;
+        $this->assignDiseases($survey, $data);
         $this->setCache('letteredSurveys', $list);
         return $survey;
+    }
+
+    public function findAndUpdate(array $filterByFields, array $data): Model
+    {
+        $diagnostic = parent::findAndUpdate($filterByFields, $data);
+        $this->assignDiseases($diagnostic, $data);
+        return $diagnostic;
     }
 
     /**
@@ -173,28 +167,5 @@ class SurveyService extends AbstractModelService
             $survey = $this->create($params);
         }
         return $survey;
-    }
-
-    /**
-     * @param User $user
-     * @param Survey $survey
-     * @return bool
-     */
-    public function hasAccess(User $user, Survey $survey): bool
-    {
-        $createdBy = (int) $survey->getAttribute(self::FIELD_CREATED_BY);
-        $userId = (int) $user->getKey();
-        $owner = $createdBy && $userId && $createdBy === $userId;
-        $hasDirectorRole = $this->getRoleService()->hasRole($user, RoleService::DIRECTOR_ROLE);
-        $hasAdminRole = $this->getRoleService()->hasRole($user, RoleService::ADMIN_ROLE);
-        return $hasDirectorRole || $hasAdminRole || $owner;
-    }
-
-    /**
-     * @return RoleService
-     */
-    private function getRoleService(): RoleService
-    {
-        return $this->getServiceLocator()->get(RoleService::class);
     }
 }

@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,25 +12,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+
 declare(strict_types=1);
 
-use Faker\Generator as Faker;
-use medcenter24\mcCore\App\Entity\Invoice;
-use medcenter24\mcCore\App\Entity\Payment;
-use medcenter24\mcCore\App\Entity\User;
+namespace medcenter24\mcCore\App\Transformers\Traits;
 
-$factory->define(Invoice::class, function (Faker $faker) {
-    return [
-        'created_by' => function () {
-            return factory(User::class)->create()->id;
-        },
-        'title' => $faker->text(30),
-        'payment_id' => function () {
-            return factory(Payment::class)->create()->id;
-        },
-        'status' => 'new',
-    ];
-});
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Entity\DoctorService;
+
+trait UserTypeTransformer
+{
+    protected function getCreatorUserType(Model $model): string
+    {
+        $createdBy = (int) $model->getAttribute('created_by');
+        $type = $createdBy ? 'director' : 'system';
+        return $this->getDoctorService()->isDoctor($createdBy) ? 'doctor' : $type;
+    }
+
+    /**
+     * @return DoctorService
+     */
+    private function getDoctorService(): DoctorService {
+        return $this->getServiceLocator()->get(DoctorService::class);
+    }
+}

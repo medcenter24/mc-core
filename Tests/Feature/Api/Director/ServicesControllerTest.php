@@ -20,6 +20,8 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
+use medcenter24\mcCore\App\Entity\Disease;
+use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\App\Services\Entity\ServiceService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorApiModelTest;
 
@@ -101,7 +103,6 @@ class ServicesControllerTest extends DirectorApiModelTest
                     'id' => 1,
                     'title' => '123',
                     'description' => '',
-                    'diseaseTitle' => 0,
                     'type' => 'director',
                     'status' => 'active',
                 ],
@@ -110,14 +111,12 @@ class ServicesControllerTest extends DirectorApiModelTest
                 'data' => [
                     'title' => 'Php Unit test',
                     'description' => 'Desc',
-                    'diseaseId' => 2,
                     'status' => 'disabled'
                 ],
                 'expectedResponse' => [
                     'id' => 1,
                     'title' => 'Php Unit test',
                     'description' => 'Desc',
-                    'diseaseId' => 2,
                     'type' => 'director',
                     'status' => 'disabled',
                 ],
@@ -137,7 +136,6 @@ class ServicesControllerTest extends DirectorApiModelTest
                     'id' => 1,
                     'title' => 'Php Unit test',
                     'description' => 'Desc',
-                    'diseaseId' => 2,
                     'type' => 'doc',
                     'status' => 'disabled'
                 ],
@@ -145,7 +143,6 @@ class ServicesControllerTest extends DirectorApiModelTest
                     'id' => 1,
                     'title' => 'Php Unit test',
                     'description' => 'Desc',
-                    'diseaseId' => 2,
                     'type' => 'system',
                     'status' => 'disabled',
                 ],
@@ -176,7 +173,6 @@ class ServicesControllerTest extends DirectorApiModelTest
                             'id' => 1,
                             'title' => 'Text to be searched',
                             'description' => '',
-                            'diseaseId' => 0,
                             'status' => 'active',
                             'type' => 'system',
                         ],
@@ -184,7 +180,6 @@ class ServicesControllerTest extends DirectorApiModelTest
                             'id' => 2,
                             'title' => 'Php Unit test',
                             'description' => '',
-                            'diseaseId' => 0,
                             'status' => 'active',
                             'type' => 'system',
                         ],
@@ -192,7 +187,6 @@ class ServicesControllerTest extends DirectorApiModelTest
                             'id' => 3,
                             'title' => 'another text',
                             'description' => '',
-                            'diseaseId' => 0,
                             'status' => 'active',
                             'type' => 'system',
                         ],
@@ -227,7 +221,6 @@ class ServicesControllerTest extends DirectorApiModelTest
                         'id' => 1,
                         'title' => '123',
                         'description' => '',
-                        'diseaseId' => 0,
                         'type' => 'system',
                         'status' => 'active',
                     ]
@@ -237,7 +230,6 @@ class ServicesControllerTest extends DirectorApiModelTest
                 'data' => [
                     ServiceService::FIELD_TITLE => 'Php Unit test',
                     ServiceService::FIELD_DESCRIPTION => 'Desc',
-                    ServiceService::FIELD_DISEASE_ID => 2,
                     ServiceService::FIELD_STATUS => 'disabled'
                 ],
                 'expectedResponse' => [
@@ -245,7 +237,6 @@ class ServicesControllerTest extends DirectorApiModelTest
                         'id' => 1,
                         'title' => 'Php Unit test',
                         'description' => 'Desc',
-                        'diseaseId' => 2,
                         'type' => 'system',
                         'status' => 'disabled',
                     ],
@@ -267,10 +258,60 @@ class ServicesControllerTest extends DirectorApiModelTest
                 'data' => [
                     'title' => 'Php Unit test',
                     'description' => 'Desc',
-                    'diseaseId' => 2,
                     'status' => 'disabled'
                 ],
             ],
         ];
+    }
+
+    public function testCreateWithDiseases(): void
+    {
+        $response = $this->sendPost($this->getUri(), [
+            'title' => 'phpunit title',
+            'description' => 'phpunit description',
+            'diseases' => factory(Disease::class, 3)->create()->toArray()
+        ]);
+
+        $response->assertStatus(201)->assertJson([
+            'id' => 1,
+            'title' => 'phpunit title',
+            'description' => 'phpunit description',
+            'status' => 'active',
+            'diseases' => [
+                [ 'id' => 1 ],
+                [ 'id' => 2 ],
+                [ 'id' => 3 ],
+            ]
+        ]);
+    }
+
+    public function testUpdateWithDiseases(): void
+    {
+        $service = factory(Service::class)->create([
+            'title' => 'phpunit title',
+            'description' => 'phpunit description',
+        ]);
+        $service->diseases()->attach(
+            factory(Disease::class, 4)->create()->get('id')
+        );
+
+        $response = $this->sendPut($this->getUri() . '/' . $service->getAttribute('id'), [
+            'id' => $service->getAttribute('id'),
+            'diseases' => [
+                [ 'id' => $disease = factory(Disease::class)->create()->getAttribute('id') ]
+            ],
+        ]);
+        $response->assertStatus(202)->assertJson([
+            'id' => $service->getAttribute('id'),
+            'title' => 'phpunit title',
+            'description' => 'phpunit description',
+            'diseases' => [
+                [
+                    'id' => $disease
+                ],
+            ],
+            'status' => 'active',
+            'type' => 'system',
+        ]);
     }
 }

@@ -16,6 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\AccidentStatus;

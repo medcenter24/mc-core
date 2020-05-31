@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
+use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
 /**
  * Used for the output into the data table

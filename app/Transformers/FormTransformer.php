@@ -21,10 +21,15 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Transformers;
 
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Services\Entity\FormService;
+use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
 class FormTransformer extends AbstractTransformer
 {
+    use CaseTypeTransformer;
+
     protected function getMap(): array
     {
         return [
@@ -34,5 +39,22 @@ class FormTransformer extends AbstractTransformer
             'formableType' => FormService::FIELD_FORMABLE_TYPE,
             FormService::FIELD_TEMPLATE,
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function transform (Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['formableType'] = 'accident';
+        return $fields;
+    }
+
+    public function inverseTransform(array $data): array
+    {
+        $data = parent::inverseTransform($data);
+        $data[FormService::FIELD_FORMABLE_TYPE] = Accident::class;
+        return $data;
     }
 }

@@ -23,6 +23,7 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
 class AccidentTransformer extends AbstractTransformer
 {

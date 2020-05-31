@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Services\Entity\ScenarioService;
+use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
 class ScenarioTransformer extends AbstractTransformer
 {

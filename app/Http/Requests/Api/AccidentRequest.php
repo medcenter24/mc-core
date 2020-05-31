@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use medcenter24\mcCore\App\Entity\Accident;
 use Illuminate\Validation\Rule;
-use medcenter24\mcCore\App\Transformers\CaseTypeTransformer;
+use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
 class AccidentRequest extends JsonRequest
 {

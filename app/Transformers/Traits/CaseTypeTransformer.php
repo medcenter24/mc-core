@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Transformers;
+namespace medcenter24\mcCore\App\Transformers\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
@@ -26,6 +26,11 @@ use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 
+/**
+ * Doctors case or Hospital case
+ * Trait CaseTypeTransformer
+ * @package medcenter24\mcCore\App\Transformers\Traits
+ */
 trait CaseTypeTransformer
 {
     private function getTransformedDoctorCase(): string
@@ -82,7 +87,7 @@ trait CaseTypeTransformer
     {
         $invMap = array_flip($this->getCaseTypeMap());
         if (!array_key_exists($guiType, $invMap)) {
-            throw new InconsistentDataException('Case type is not correct');
+            throw new InconsistentDataException('Type "'.$guiType.'" is not expected');
         }
         return $invMap[$guiType];
     }

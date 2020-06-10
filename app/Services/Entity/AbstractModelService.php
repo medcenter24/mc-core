@@ -126,13 +126,7 @@ abstract class AbstractModelService implements ModelService
      */
     public function findAndUpdate(array $filterByFields, array $data): Model
     {
-        $filter = [];
-        foreach ($filterByFields as $val) {
-            if (!array_key_exists($val, $data)) {
-                throw new InconsistentDataException('Required field "'.$val.'" not defined in the provided data');
-            }
-            $filter[$val] = $data[$val];
-        }
+        $filter = $this->convertToFilter($filterByFields, $data);
 
         $obj = $this->first($filter);
         if (!$obj) {
@@ -143,6 +137,24 @@ abstract class AbstractModelService implements ModelService
             throw new InconsistentDataException('Model can not be updated');
         }
         return $obj;
+    }
+
+    /**
+     * @param array $filters
+     * @param array $data
+     * @return array
+     * @throws InconsistentDataException
+     */
+    protected function convertToFilter(array $filters, array $data): array
+    {
+        $filter = [];
+        foreach ($filters as $val) {
+            if (!array_key_exists($val, $data)) {
+                throw new InconsistentDataException('Required field "'.$val.'" not defined in the provided data');
+            }
+            $filter[$val] = $data[$val];
+        }
+        return $filter;
     }
 
     /**

@@ -5,7 +5,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -14,61 +13,68 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
 declare(strict_types = 1);
 
-namespace medcenter24\mcCore\App\Events;
+namespace medcenter24\mcCore\App\Events\Accident\Caseable;
 
 use medcenter24\mcCore\App\Entity\AccidentAbstract;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class AccidentStatusChangedEvent
+class DoctorAccidentUpdatedEvent
 {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
 
     /**
-     * @var AccidentAbstract
+     * Data that were before updated
+     * @var DoctorAccident
      */
-    private $accident;
+    private ?DoctorAccident $previousDoctorAccident;
+
     /**
-     * @var string
+     * Current stored model
+     * @var DoctorAccident
      */
-    private $commentary;
+    private DoctorAccident $doctorAccident;
 
     /**
      * Create a new event instance.
      *
-     * @param AccidentAbstract $accident
-     * @param string $commentary
+     * DoctorAccidentUpdatedEvent constructor.
+     * @param AccidentAbstract|DoctorAccident $doctorAccident
+     * @param AccidentAbstract|DoctorAccident $previousDoctorAccident
      */
-    public function __construct(AccidentAbstract $accident, $commentary = '')
+    public function __construct(
+        AccidentAbstract $doctorAccident,
+        AccidentAbstract $previousDoctorAccident = null)
     {
-        $this->accident = $accident;
-        $this->commentary = $commentary;
+        $this->previousDoctorAccident = $previousDoctorAccident;
+        $this->doctorAccident = $doctorAccident;
     }
 
     /**
-     * @return AccidentAbstract
+     * @return DoctorAccident
      */
-    public function getAccident(): AccidentAbstract
+    public function getPreviousDoctorAccident(): ?DoctorAccident
     {
-        return $this->accident;
+        return $this->previousDoctorAccident;
     }
 
     /**
-     * @return string
+     * @return DoctorAccident
      */
-    public function getCommentary(): string
+    public function getDoctorAccident(): DoctorAccident
     {
-        return $this->commentary;
+        return $this->doctorAccident;
     }
 
     /**
@@ -76,7 +82,7 @@ class AccidentStatusChangedEvent
      *
      * @return Channel|array
      */
-    public function broadcastOn(): Channel
+    public function broadcastOn()
     {
         return new PrivateChannel('channel-name');
     }

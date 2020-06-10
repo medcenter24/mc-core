@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,69 +12,46 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
+
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Events;
 
 
-use medcenter24\mcCore\App\Entity\Accident;
-use medcenter24\mcCore\App\Entity\Payment;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
+use medcenter24\mcCore\App\Entity\Invoice;
 
-
-class AccidentPaymentChangedEvent
+class InvoiceChangedEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    private Invoice $invoice;
+    private ?Invoice $previousInvoice;
 
-    /**
-     * @var Accident
-     */
-    private $accident;
-
-    /**
-     * @var Payment
-     */
-    private $payment;
-
-    /**
-     * @var Payment
-     */
-    private $oldPayment;
-
-    public function __construct(Accident $accident, Payment $payment, Payment $oldPayment = null)
+    public function __construct(
+        Invoice $invoice,
+        Invoice $previousInvoice = null
+    )
     {
-        $this->accident = $accident;
-        $this->payment = $payment;
-        $this->oldPayment = $oldPayment;
+        $this->invoice = $invoice;
+        $this->previousInvoice = $previousInvoice;
     }
 
     /**
-     * @return Accident
+     * @return Invoice
      */
-    public function getAccident(): Accident
+    public function getInvoice(): Invoice
     {
-        return $this->accident;
+        return $this->invoice;
     }
 
     /**
-     * @return Payment|null
+     * @return Invoice|null
      */
-    public function getOldPayment(): ?Payment
+    public function getPreviousInvoice(): ?Invoice
     {
-        return $this->oldPayment;
-    }
-
-    /**
-     * @return Payment
-     */
-    public function getPayment(): Payment
-    {
-        return $this->payment;
+        return $this->previousInvoice;
     }
 
     /**

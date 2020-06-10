@@ -56,7 +56,7 @@ class ScenarioService extends AbstractModelService
      * Don't need to load it twice
      * @var array
      */
-    private $cache = [];
+    private array $cache = [];
 
     /**
      * @inheritDoc

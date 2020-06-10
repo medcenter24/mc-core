@@ -1,11 +1,9 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -14,33 +12,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\CaseServices;
+namespace medcenter24\mcCore\App\Services\CaseServices\AccidentStatusVisor;
 
-use medcenter24\mcCore\App\Entity\Accident;
-use Illuminate\Support\Collection;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
+use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 
-class CaseHistoryService
+class DoctorCaseVisorService extends AbstractVisorService
 {
-    private Collection $history;
-
-    public function generate(Accident $accident): self
+    protected function getStatusMap(): array
     {
-        $this->history = $accident->history()->orderBy('created_at')->get();
-        return $this;
-    }
-
-    public function getHistory(): Collection
-    {
-        return $this->history;
-    }
-
-    public function toArray(): array
-    {
-        return $this->history->toArray();
+        $a = 't';
+        return [
+            DoctorAccidentService::FIELD_DOCTOR_ID => [
+                self::STATUS_TITLE => AccidentStatusService::STATUS_ASSIGNED,
+                self::STATUS_TYPE => AccidentStatusService::TYPE_DOCTOR,
+            ],
+        ];
     }
 }

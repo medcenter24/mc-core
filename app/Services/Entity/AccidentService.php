@@ -25,12 +25,12 @@ use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\AccidentAbstract;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
-use medcenter24\mcCore\App\Entity\City;
 use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
-use medcenter24\mcCore\App\Events\AccidentStatusChangedEvent;
-use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Events\Accident\Caseable\AccidentUpdatedEvent;
+use medcenter24\mcCore\App\Events\Accident\Status\AccidentStatusChangedEvent;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 
 class AccidentService extends AbstractModelService
 {
@@ -47,6 +47,8 @@ class AccidentService extends AbstractModelService
     public const FIELD_CITY_ID = 'city_id';
     public const FIELD_CASEABLE_PAYMENT_ID = 'caseable_payment_id';
     public const FIELD_INCOME_PAYMENT_ID = 'income_payment_id';
+    // for the calculation and statistic payment could be changed
+    // and will be not the same as invoice payment is
     public const FIELD_ASSISTANT_PAYMENT_ID = 'assistant_payment_id';
     public const FIELD_CASEABLE_ID = 'caseable_id';
     public const FIELD_CASEABLE_TYPE = 'caseable_type';
@@ -58,6 +60,9 @@ class AccidentService extends AbstractModelService
     public const FIELD_SYMPTOMS = 'symptoms';
     public const FIELD_CREATED_BY = 'created_by';
     public const FIELD_CLOSED_AT = 'closed_at';
+
+    // invoice contains the real value of payment
+    public const RELATION_ASSISTANT_INVOICE = 'assistantInvoice';
 
     public const FILLABLE = [
         self::FIELD_PARENT_ID,
@@ -126,6 +131,13 @@ class AccidentService extends AbstractModelService
         self::FIELD_SYMPTOMS,
     ];
 
+    public const DATE_FIELDS = [
+        AccidentService::FIELD_CREATED_AT,
+        AccidentService::FIELD_DELETED_AT,
+        AccidentService::FIELD_UPDATED_AT,
+        AccidentService::FIELD_HANDLING_TIME,
+    ];
+
     public function getClassName(): string
     {
         return Accident::class;
@@ -156,16 +168,6 @@ class AccidentService extends AbstractModelService
         return $accident;
     }
 
-    /**
-     * @param string $ref
-     * @return Accident|null
-     */
-    public function getByRefNum (string $ref = ''): ?Accident
-    {
-        /** @var Accident $accident */
-        $accident = $this->first([self::FIELD_REF_NUM => $ref]);
-        return $accident;
-    }
 
     /**
      * Get all accidents, assigned to the assistance
@@ -175,28 +177,9 @@ class AccidentService extends AbstractModelService
      */
     public function getCountByAssistance($assistanceId, $fromDate): int
     {
-        return Accident::where(self::FIELD_CREATED_AT, '>=', $fromDate)
-            ->where('assistant_id', '=', $assistanceId)
+        return $this->getQuery([self::FIELD_ASSISTANT_ID => $assistanceId])
+            ->where(self::FIELD_CREATED_AT, '>=', $fromDate)
             ->count();
-    }
-
-    /**
-     * @param array $filters
-     * @return mixed
-     * @deprecated just don't do this
-     */
-    public function getCasesQuery(array $filters = [])
-    {
-        return Accident::orderBy(self::FIELD_CREATED_AT, 'desc');
-    }
-
-    /**
-     * @param Accident $accident
-     * @return City|mixed
-     */
-    public function getCity(Accident $accident)
-    {
-        return $accident->getAttribute(self::FIELD_CITY_ID) ?: new City();
     }
 
     /**
@@ -207,8 +190,8 @@ class AccidentService extends AbstractModelService
     {
         $services = null;
         if ($accident->isDoctorCaseable()) {
-            $caseable = $accident->getAttribute('caseable');
-            $services = $caseable->getAttribute('services');
+            $services = $accident->getAttribute('caseable')
+                ->getAttribute('services');
         }
         return $services ?: collect([]);
     }
@@ -247,8 +230,11 @@ class AccidentService extends AbstractModelService
      */
     public function isClosed(Accident $accident): bool
     {
-        return $accident->getAttribute('accidentStatus')->getAttribute('id')
-            === $this->getServiceLocator()->get(AccidentStatusService::class)->getClosedStatus()->getAttribute('id');
+        /** @var AccidentStatus $currentStatus */
+        $currentStatus = $accident->getAttribute('accidentStatus');
+        /** @var AccidentStatus $closedStatus */
+        $closedStatus = $this->getAccidentStatusesService()->getClosedStatus();
+        return $currentStatus && $currentStatus->getAttribute('id') === $closedStatus->getAttribute('id');
     }
 
     /**
@@ -256,18 +242,21 @@ class AccidentService extends AbstractModelService
      * @param AccidentAbstract $accident
      * @param AccidentStatus $status
      * @param string $comment
+     * @fires AccidentStatusChangedEvent
+     * @throws InconsistentDataException
      */
     public function setStatus(
         AccidentAbstract $accident,
         AccidentStatus $status,
         string $comment = ''): void
     {
-        // do not prevent changing on closed accident because it nonsense
-        // if we need to prevent then it needs to be in the controller not the service
-
-        // I need to prevent all the times when I'm changing the status
-        $accident->runStatusUpdating();
-        $accident->update([self::FIELD_ACCIDENT_STATUS_ID => $status->getAttribute('id')]);
+        $this->findAndUpdate([
+            self::FIELD_ID,
+        ], [
+            self::FIELD_ID => $accident->getAttribute(self::FIELD_ID),
+            self::FIELD_ACCIDENT_STATUS_ID => $status->getAttribute('id'),
+        ]);
+        // apply changes to loaded model
         $accident->refresh();
 
         Log::debug('Set new status to accident', [
@@ -276,30 +265,8 @@ class AccidentService extends AbstractModelService
             'status_type' => $status->getAttribute('type'),
             'accident_id' => $accident->getAttribute('id'),
         ]);
-        event(new AccidentStatusChangedEvent($accident, $comment));
-    }
 
-    /**
-     * @param Model $model
-     * @param Accident $accident
-     * @param array $events
-     * @param string $comment
-     */
-    private function setStatusByEvents(Model $model, Accident $accident, array $events, $comment = ''): void
-    {
-        if ($model->isDirty()) {
-            $dirty = array_keys($model->getDirty());
-            foreach ($dirty as $key) {
-                if (array_key_exists($key, $events) && $model->$key) {
-                    /** @var AccidentStatus $status */
-                    $status = $this->getAccidentStatusesService()->firstOrCreate([
-                        AccidentStatusService::FIELD_TITLE => $events[$key]['status'],
-                        AccidentStatusService::FIELD_TYPE => $events[$key]['type'],
-                    ]);
-                    $this->setStatus($accident, $status);
-                }
-            }
-        }
+        event(new AccidentStatusChangedEvent($accident, $comment));
     }
 
     /**
@@ -313,6 +280,7 @@ class AccidentService extends AbstractModelService
     /**
      * @param Accident $accident
      * @param string $comment
+     * @throws InconsistentDataException
      */
     public function moveDoctorAccidentToInProgressState(Accident $accident, $comment = 'moved'): void
     {
@@ -320,10 +288,8 @@ class AccidentService extends AbstractModelService
         $accidentStatus = $accident->getAttribute('accidentStatus');
 
         /** @var AccidentStatus $status */
-        $status = $this->getAccidentStatusesService()->getDoctorAssignedStatus();
-        if ($accidentStatus->getAttribute('id') === $status->getAttribute('id')) {
-            /** @var AccidentStatus $status */
-            $status = $this->getAccidentStatusesService()->getDoctorInProgressStatus();
+        $status = $this->getAccidentStatusesService()->getDoctorInProgressStatus();
+        if ($accidentStatus->getAttribute('id') !== $status->getAttribute('id')) {
             $this->setStatus($accident, $status, $comment);
         }
     }
@@ -331,96 +297,12 @@ class AccidentService extends AbstractModelService
     /**
      * @param $accident
      * @param string $comment
+     * @throws InconsistentDataException
      */
     public function rejectDoctorAccident($accident, $comment = 'rejected'): void
     {
         $status = $this->getAccidentStatusesService()->getDoctorRejectedStatus();
         $this->setStatus($accident, $status, $comment);
-    }
-
-    /**
-     * When the HospitalAccident's property updated
-     * @param HospitalAccident $hospitalAccident
-     * @param string $comment
-     */
-    public function updateHospitalAccidentStatus(HospitalAccident $hospitalAccident, $comment = 'Hospital accident changed'): void
-    {
-        if (!$hospitalAccident->getAttribute('accident')) {
-            return; // don't do status changing when we don't have an accident
-        }
-
-        // changing of the fields in `keys` will provide status from the `value`
-        $events = [
-            'hospital_id' => [
-                'status' => AccidentStatusService::STATUS_ASSIGNED,
-                'type' => AccidentStatusService::TYPE_HOSPITAL,
-            ],
-            'hospital_guarantee_id' => [
-                'status' => AccidentStatusService::STATUS_HOSPITAL_GUARANTEE,
-                'type' => AccidentStatusService::TYPE_HOSPITAL,
-            ],
-            'hospital_invoice_id' => [
-                'status' => AccidentStatusService::STATUS_HOSPITAL_INVOICE,
-                'type' => AccidentStatusService::TYPE_HOSPITAL,
-            ],
-        ];
-
-        $this->setStatusByEvents($hospitalAccident, $hospitalAccident->getAttribute('accident'), $events, $comment);
-    }
-
-    /**
-     * When the DoctorAccident's property updated
-     * @param DoctorAccident $doctorAccident
-     * @param string $comment
-     */
-    public function updateDoctorAccidentStatus(DoctorAccident $doctorAccident, $comment = 'Doctor accident changed'): void
-    {
-        if (!$doctorAccident->getAttribute('accident')) {
-            return; // don't do status changing when we don't have an accident
-        }
-
-        // changing of the fields in `keys` will provide status from the `value`
-        $events = [
-            'doctor_id' => [
-                'status' => AccidentStatusService::STATUS_ASSIGNED,
-                'type' => AccidentStatusService::TYPE_DOCTOR,
-            ],
-        ];
-
-        $this->setStatusByEvents($doctorAccident, $doctorAccident->getAttribute('accident'), $events, $comment);
-    }
-
-    /**
-     * When the accidents property updated
-     * @param Accident $accident
-     * @param string $comment
-     */
-    public function updateAccidentStatus(Accident $accident, $comment = 'Accident updated'): void
-    {
-        if ($accident->isStatusUpdatingRun()) {
-            $accident->stopStatusUpdating();
-            return; // skip saving of the status
-        }
-        $events = [
-            self::FIELD_ID => [
-                'status' => AccidentStatusService::STATUS_NEW,
-                'type' => AccidentStatusService::TYPE_ACCIDENT,
-            ],
-            self::FIELD_ASSISTANT_INVOICE_ID => [
-                'status' => AccidentStatusService::STATUS_ASSISTANT_INVOICE,
-                'type' => AccidentStatusService::TYPE_ASSISTANT,
-            ],
-            self::FIELD_ASSISTANT_GUARANTEE_ID => [
-                'status' => AccidentStatusService::STATUS_ASSISTANT_GUARANTEE,
-                'type' => AccidentStatusService::TYPE_ASSISTANT,
-            ],
-            self::FIELD_ASSISTANT_PAYMENT_ID => [
-                'status' => AccidentStatusService::STATUS_PAID,
-                'type' => AccidentStatusService::TYPE_ASSISTANT,
-            ],
-        ];
-
-        $this->setStatusByEvents($accident, $accident, $events, $comment);
     }
 
     /**
@@ -431,5 +313,51 @@ class AccidentService extends AbstractModelService
     public function closeAccident(Accident $accident, $comment = 'closed'): void
     {
         $this->setStatus($accident, $this->getAccidentStatusesService()->getClosedStatus(), $comment);
+    }
+
+    /**
+     * @param array $data
+     * @return Model
+     */
+    public function create(array $data = []): Model
+    {
+        /** @var Accident $accident */
+        $accident = parent::create($data);
+        event(new AccidentUpdatedEvent($accident));
+        $accident->refresh();
+        return $accident;
+    }
+
+    /**
+     * @param array $filterByFields
+     * @param array $data
+     * @return Model
+     * @throws InconsistentDataException
+     */
+    public function findAndUpdate(array $filterByFields, array $data): Model
+    {
+        /** @var Accident $previousAccident */
+        $previousAccident = $this->first(
+            $this->convertToFilter($filterByFields, $data)
+        );
+
+        if ($this->isClosed($previousAccident)) {
+            throw new InconsistentDataException('Accident closed and can not be changed', 422);
+        }
+
+        /** @var Accident $accident */
+        $accident = parent::findAndUpdate($filterByFields, $data);
+        event(new AccidentUpdatedEvent($accident, $previousAccident));
+        return $accident;
+    }
+
+    public function isDoctorAccident(Accident $accident): bool
+    {
+        return $accident->getAttribute(self::FIELD_CASEABLE_TYPE) === DoctorAccident::class;
+    }
+
+    public function isHospitalAccident(Accident $accident): bool
+    {
+        return $accident->getAttribute(self::FIELD_CASEABLE_TYPE) === HospitalAccident::class;
     }
 }

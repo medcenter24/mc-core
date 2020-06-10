@@ -51,7 +51,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected array $middleware = [
+    protected $middleware = [
         TrustProxies::class,
         HandleCors::class,
         CheckForMaintenanceMode::class,
@@ -65,7 +65,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected array $middlewareGroups = [
+    protected $middlewareGroups = [
         'web' => [
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,

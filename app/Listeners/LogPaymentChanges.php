@@ -15,15 +15,14 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
-
+declare(strict_types=1);
 namespace medcenter24\mcCore\App\Listeners;
-
 
 use medcenter24\mcCore\App\Events\AccidentPaymentChangedEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AccidentPaymentListener
+class LogPaymentChanges
 {
     /**
      * Create the event listener.

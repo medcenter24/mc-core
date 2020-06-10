@@ -21,27 +21,19 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Doctor;
 
 use medcenter24\mcCore\App\Entity\Doctor;
-use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Services\Entity\DoctorService;
-use medcenter24\mcCore\App\Services\Entity\RoleService;
+use medcenter24\mcCore\Tests\Feature\Api\LoggedDoctorUser;
 use medcenter24\mcCore\Tests\Feature\Api\TestTraitApi;
 
 trait TestTraitDoctorApi
 {
     use TestTraitApi;
+    use LoggedDoctorUser;
 
     /**
      * @var Doctor
      */
-    private $doctor;
-
-    protected function getLoggedUser(): User
-    {
-        if (!$this->user) {
-            $this->user = $this->getUser([RoleService::DOCTOR_ROLE]);
-        }
-        return $this->user;
-    }
+    private Doctor $doctor;
 
     protected function getCurrentDoctor(): Doctor
     {

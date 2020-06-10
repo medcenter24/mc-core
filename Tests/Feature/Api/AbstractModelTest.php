@@ -137,7 +137,6 @@ abstract class AbstractModelTest extends TestCase
      */
     public function testUpdate(array $data, array $update, array $expectedResponse): void
     {
-        /** @var Model $model */
         $model = $this->createModel($data);
         $response = $this->put($this->getUri().'/'.$model->getAttribute('id'), $update, $this->headers($this->getUser()));
         $response->assertStatus(self::STATUS_UPDATED);

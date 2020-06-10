@@ -26,7 +26,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 
 /**
  * Case|Accident|...
@@ -37,48 +36,8 @@ use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 class Accident extends AccidentAbstract
 {
     protected $fillable = AccidentService::FILLABLE;
-
-    protected $dates = [
-        AccidentService::FIELD_CREATED_AT,
-        AccidentService::FIELD_DELETED_AT,
-        AccidentService::FIELD_UPDATED_AT,
-        AccidentService::FIELD_HANDLING_TIME,
-    ];
-
+    protected $dates = AccidentService::DATE_FIELDS;
     protected $visible = AccidentService::VISIBLE;
-
-    /**
-     * On the save action we need to change status (if it is not status changing action only)
-     * @var bool
-     */
-    private $statusUpdating = false;
-
-    public static function boot(): void
-    {
-        parent::boot();
-
-        self::saved(static function(Accident $accident) {
-            $serviceLocator = ServiceLocator::instance();
-            /** @var AccidentService $accidentService */
-            $accidentService = $serviceLocator->get(AccidentService::class);
-            $accidentService->updateAccidentStatus($accident);
-        });
-    }
-
-    public function isStatusUpdatingRun(): bool
-    {
-        return $this->statusUpdating;
-    }
-
-    public function runStatusUpdating(): void
-    {
-        $this->statusUpdating = true;
-    }
-
-    public function stopStatusUpdating(): void
-    {
-        $this->statusUpdating = false;
-    }
 
     /**
      * @return BelongsTo
@@ -104,15 +63,6 @@ class Accident extends AccidentAbstract
     public function incomePayment(): BelongsTo
     {
         return $this->belongsTo(Payment::class, AccidentService::FIELD_INCOME_PAYMENT_ID);
-    }
-
-    /**
-     * Payment from the assistant
-     * @return BelongsTo
-     */
-    public function paymentFromAssistant(): BelongsTo
-    {
-        return $this->belongsTo(Payment::class, AccidentService::FIELD_ASSISTANT_PAYMENT_ID);
     }
 
     /**

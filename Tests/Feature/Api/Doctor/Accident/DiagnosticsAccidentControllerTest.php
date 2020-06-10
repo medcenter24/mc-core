@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Doctor\Accident;
 
-use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\Diagnostic;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;

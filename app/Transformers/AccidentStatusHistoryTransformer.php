@@ -22,6 +22,9 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusHistoryService;
@@ -32,6 +35,12 @@ use medcenter24\mcCore\App\Entity\User;
 class AccidentStatusHistoryTransformer extends AbstractTransformer
 {
     use ServiceLocatorTrait;
+
+    private const HISTORYABLE_TYPE_MAP = [
+        Accident::class => 'accident',
+        DoctorAccident::class => 'doctorAccident',
+        HospitalAccident::class => 'hospitalAccident',
+    ];
 
     protected function getMap(): array
     {
@@ -60,7 +69,7 @@ class AccidentStatusHistoryTransformer extends AbstractTransformer
     }
 
     /**
-     * @param Model $history
+     * @param Model $model
      * @return array
      * @throws InconsistentDataException
      */
@@ -77,6 +86,14 @@ class AccidentStatusHistoryTransformer extends AbstractTransformer
         $fields['statusTitle'] = $model->getAttribute('accidentStatus')
             ? $model->getAttribute('accidentStatus')->getAttribute('title')
             : '';
+        $fields['historyableType'] = $this->getTransformedHistoryableType($fields['historyableType']);
         return $fields;
+    }
+
+    private function getTransformedHistoryableType(string $fieldName): string
+    {
+        return array_key_exists($fieldName, self::HISTORYABLE_TYPE_MAP)
+            ? self::HISTORYABLE_TYPE_MAP[$fieldName]
+            : 'undefined';
     }
 }

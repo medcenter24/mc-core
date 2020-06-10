@@ -22,8 +22,6 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Entity;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 use medcenter24\mcCore\App\Services\Entity\HospitalAccidentService;
 
 class HospitalAccident extends AccidentAbstract
@@ -32,16 +30,6 @@ class HospitalAccident extends AccidentAbstract
     protected $dates = HospitalAccidentService::DATE_FIELDS;
     protected $fillable = HospitalAccidentService::FILLABLE;
     protected $visible = HospitalAccidentService::VISIBLE;
-
-    public static function boot(): void
-    {
-        parent::boot();
-
-        self::saved(static function (HospitalAccident $hospitalAccident) {
-            ServiceLocator::instance()->get(AccidentService::class)
-                ->updateHospitalAccidentStatus($hospitalAccident);
-        } );
-    }
 
     /**
      * Hospital of this accident

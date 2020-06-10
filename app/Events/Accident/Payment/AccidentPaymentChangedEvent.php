@@ -4,7 +4,6 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,44 +14,57 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Events;
 
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Payment;
 use Illuminate\Broadcasting\Channel;
-use medcenter24\mcCore\App\Entity\DatePeriod;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Queue\SerializesModels;
 
-class DatePeriodChangedEvent
+class AccidentPaymentChangedEvent
 {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
 
-    /**
-     * @var DatePeriod
-     */
-    private DatePeriod $datePeriod;
+    private Accident $accident;
+    private Payment $payment;
+    private ?Payment $oldPayment;
 
-    /**
-     * Create a new event instance.
-     *
-     * @param $datePeriod
-     * @return void
-     */
-    public function __construct(DatePeriod $datePeriod)
+    public function __construct(Accident $accident, Payment $payment, Payment $oldPayment = null)
     {
-        $this->datePeriod = $datePeriod;
+        $this->accident = $accident;
+        $this->payment = $payment;
+        $this->oldPayment = $oldPayment;
     }
 
     /**
-     * @return DatePeriod
+     * @return Accident
      */
-    public function getDatePeriod(): DatePeriod
+    public function getAccident(): Accident
     {
-        return $this->datePeriod;
+        return $this->accident;
+    }
+
+    /**
+     * @return Payment|null
+     */
+    public function getOldPayment(): ?Payment
+    {
+        return $this->oldPayment;
+    }
+
+    /**
+     * @return Payment
+     */
+    public function getPayment(): Payment
+    {
+        return $this->payment;
     }
 
     /**
@@ -60,7 +72,7 @@ class DatePeriodChangedEvent
      *
      * @return Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): Channel
     {
         return new PrivateChannel('channel-name');
     }

@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\Accident;
 
 use Dingo\Api\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
@@ -118,13 +119,10 @@ class PatientAccidentController extends ApiController
         }
 
         if (count($changedData)) {
-            $status = $this->getAccidentStatusService()->getDoctorAssignedStatus();
-            $this->getAccidentService()
-                ->setStatus(
-                    $accident,
-                    $status,
-                    'Updated by doctor ' . $this->user()->id . ' ' . json_encode($changedData)
-                );
+            Log::info('Patient updated by doctor', [
+                'user id' => $this->user()->id,
+                $changedData,
+            ]);
         }
         $patient->save();
 

@@ -23,7 +23,7 @@ namespace medcenter24\mcCore\App\Listeners;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Events\DoctorAccidentUpdatedEvent;
+use medcenter24\mcCore\App\Events\Accident\Caseable\DoctorAccidentUpdatedEvent;
 use Telegram;
 use Telegram\Bot\Keyboard\Button;
 use Telegram\Bot\Keyboard\Keyboard;
@@ -33,21 +33,12 @@ class SendTelegramMessageOnDocAssignment
 {
 
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * @param DoctorAccidentUpdatedEvent $event
      * @throws Throwable
      */
     public function handle(DoctorAccidentUpdatedEvent $event): void
     {
-        $prev = $event->getPreviousData();
+        $prev = $event->getPreviousDoctorAccident();
         $doctorAccident = $event->getDoctorAccident();
 
         Log::info('Run Telegram message sender on event', [

@@ -40,17 +40,17 @@ class StoryService implements ScenarioInterface
     /**
      * @var Collection of the AccidentStatusHistory
      */
-    private $history;
+    private Collection $history;
     /**
      * @var ScenarioInterface
      */
-    private $scenario;
+    private ScenarioInterface $scenario;
 
     /**
      * Aggregated story
      * @var Collection
      */
-    private $story;
+    private ?Collection $story = null;
 
     /**
      * Initialize story
@@ -93,10 +93,10 @@ class StoryService implements ScenarioInterface
         $scenario = $this->scenario()->scenario()->sortByDesc('order');
         // latest step will be marked as current
         $isCurrent = true;
-        $scenario->map(function ($step) use ($story, &$isCurrent) {
+        $scenario->map(static function ($step) use ($story, &$isCurrent) {
             // step was found in the history
-            if ( ($foundId = $story->search(function ($item) use ($step) {
-                return $item->accident_status_id == $step->accident_status_id;
+            if ( ($foundId = $story->search(static function ($item) use ($step) {
+                return $item->accident_status_id === $step->accident_status_id;
             })) !== false) {
                 if ($isCurrent) {
                     $isCurrent = false; // only one current per story

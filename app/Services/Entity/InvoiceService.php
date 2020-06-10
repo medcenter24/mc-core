@@ -20,11 +20,13 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
+use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\Invoice;
+use medcenter24\mcCore\App\Events\InvoiceChangedEvent;
+use medcenter24\mcCore\App\Http\Requests\Api\InvoiceUpdateRequest;
 
 class InvoiceService extends AbstractModelService
 {
-
     public const FIELD_TITLE = 'title';
     public const FIELD_PAYMENT_ID = 'payment_id';
     public const FIELD_CREATED_BY = 'created_by';
@@ -63,8 +65,8 @@ class InvoiceService extends AbstractModelService
      * Types of the source
      * can be uploaded or has some form
      */
-    const TYPE_UPLOAD = 'upload';
-    const TYPE_FORM = 'form';
+    public const TYPE_UPLOAD = 'upload';
+    public const TYPE_FORM = 'form';
 
     /**
      * @inheritDoc
@@ -86,5 +88,39 @@ class InvoiceService extends AbstractModelService
             self::FIELD_STATUS => self::STATUS_NEW,
             self::FIELD_CREATED_BY => 0,
         ];
+    }
+
+    public function getStatus(Invoice $invoice): string
+    {
+        return $invoice->getAttribute(self::FIELD_STATUS);
+    }
+
+    /**
+     * @param Invoice $invoice
+     * @return bool
+     */
+    public function isPaid(Invoice $invoice): bool
+    {
+        return $this->getStatus($invoice) === self::STATUS_PAID;
+    }
+
+    public function create(array $data = []): Model
+    {
+        /** @var Invoice $invoice */
+        $invoice = parent::create($data);
+        event(new InvoiceChangedEvent($invoice));
+        return $invoice;
+    }
+
+    public function findAndUpdate(array $filterByFields, array $data): Model
+    {
+        /** @var Invoice $previous */
+        $previous = $this->first(
+            $this->convertToFilter($filterByFields, $data)
+        );
+        /** @var Invoice $invoice */
+        $invoice = parent::findAndUpdate($filterByFields, $data);
+        event(new InvoiceChangedEvent($invoice, $previous));
+        return $invoice;
     }
 }

@@ -21,7 +21,6 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Entity\Doctor;
@@ -33,8 +32,11 @@ use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
-use medcenter24\mcCore\App\Entity\Upload;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
+use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
+use medcenter24\mcCore\App\Services\Entity\DoctorService;
+use medcenter24\mcCore\App\Services\Entity\HospitalAccidentService;
+use medcenter24\mcCore\App\Services\Entity\InvoiceService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
 use ScenariosTableSeeder;
@@ -44,6 +46,12 @@ class CaseControllerScenarioActionTest extends TestCase
     use DirectorTestTraitApi;
 
     private CaseAccidentService $caseAccidentService;
+    private InvoiceService $invoiceService;
+    private AccidentService $accidentService;
+    private AccidentStatusService $accidentStatusService;
+    private HospitalAccidentService $hospitalAccidentService;
+    private DoctorAccidentService $doctorAccidentService;
+    private DoctorService $doctorService;
 
     public function setUp(): void
     {
@@ -51,6 +59,12 @@ class CaseControllerScenarioActionTest extends TestCase
         // adding scenarios to the storage
         (new ScenariosTableSeeder())->run();
         $this->caseAccidentService = new CaseAccidentService();
+        $this->invoiceService = new InvoiceService();
+        $this->accidentService = new AccidentService();
+        $this->accidentStatusService = new AccidentStatusService();
+        $this->hospitalAccidentService = new HospitalAccidentService();
+        $this->doctorAccidentService = new DoctorAccidentService();
+        $this->doctorService = new DoctorService();
     }
 
     /**
@@ -122,6 +136,9 @@ class CaseControllerScenarioActionTest extends TestCase
             ]);
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testHospitalCaseScenarioCurrentNew(): void
     {
         $accident = $this->caseAccidentService->create([
@@ -212,26 +229,32 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testHospitalCaseScenarioPassAllSteps(): void
     {
-        $accident = factory(Accident::class)->create([
-            'caseable_type' => HospitalAccident::class,
-            'caseable_id' => factory(HospitalAccident::class)->create([
-                'hospital_id' => 0,
-                'hospital_guarantee_id' => 0,
-                'hospital_invoice_id' => 0,
-            ])->id,
-            'assistant_invoice_id' => factory(Invoice::class)->create()->id,
-            'assistant_payment_id' => factory(Payment::class)->create()->id,
-            'assistant_guarantee_id' => factory(Upload::class)->create()->id,
+        $invoice = $this->invoiceService->create();
+
+        $accident = $this->caseAccidentService->create([
+            CaseAccidentService::PROPERTY_ACCIDENT => [
+                // invoice can't be paid on creation (it won't work with events when accident does not exists)
+                AccidentService::FIELD_ASSISTANT_INVOICE_ID => $invoice->id,
+                AccidentService::FIELD_ASSISTANT_GUARANTEE_ID => factory(Invoice::class)->create()->id,
+                AccidentService::FIELD_CASEABLE_TYPE => HospitalAccident::class,
+            ],
+            CaseAccidentService::PROPERTY_HOSPITAL_ACCIDENT => [
+                HospitalAccidentService::FIELD_HOSPITAL_ID => factory(Hospital::class)->create()->id,
+                HospitalAccidentService::FIELD_HOSPITAL_GUARANTEE_ID => factory(Invoice::class)->create()->id,
+                HospitalAccidentService::FIELD_HOSPITAL_INVOICE_ID => factory(Invoice::class)->create()->id,
+            ]
         ]);
 
-        $accident->caseable->fill([
-            'hospital_id' => factory(Hospital::class)->create()->id,
-            'hospital_guarantee_id' => factory(Upload::class)->create()->id,
-            'hospital_invoice_id' => factory(Invoice::class)->create()->id,
-        ])->save();
-
+        // adding paid step into the history
+        $this->invoiceService->findAndUpdate([InvoiceService::FIELD_ID], [
+            InvoiceService::FIELD_ID => $invoice->id,
+            InvoiceService::FIELD_STATUS => InvoiceService::STATUS_PAID,
+        ]);
         (new AccidentService())->closeAccident($accident);
 
         $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
@@ -319,7 +342,8 @@ class CaseControllerScenarioActionTest extends TestCase
      */
     public function testHospitalCaseScenarioCreateAndClose(): void
     {
-        $accident = factory(Accident::class)->create([
+        /** @var Accident $accident */
+        $accident = $this->accidentService->create([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => 0,
             'assistant_invoice_id' => 0,
@@ -327,7 +351,7 @@ class CaseControllerScenarioActionTest extends TestCase
             'assistant_guarantee_id' => 0,
         ]);
 
-        (new AccidentService())->closeAccident($accident);
+        $this->accidentService->closeAccident($accident);
 
         $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
         $response2->assertStatus(200);
@@ -410,11 +434,15 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testHospitalCaseScenarioPartialSteps(): void
     {
-        $accident = factory(Accident::class)->create([
+        /** @var Accident $accident */
+        $accident = $this->accidentService->create([
             'caseable_type' => HospitalAccident::class,
-            'caseable_id' => factory(HospitalAccident::class)->create([
+            'caseable_id' => $this->hospitalAccidentService->create([
                 'hospital_id' => 0,
                 'hospital_guarantee_id' => 0,
                 'hospital_invoice_id' => 0,
@@ -425,13 +453,14 @@ class CaseControllerScenarioActionTest extends TestCase
             'accident_status_id' => (new AccidentStatusService())->getNewStatus(),
         ]);
 
-        $accident->caseable->fill([
+        $this->hospitalAccidentService->findAndUpdate([HospitalAccidentService::FIELD_ID], [
+            HospitalAccidentService::FIELD_ID => $accident->caseable_id,
             'hospital_id' => factory(Hospital::class)->create()->id,
             'hospital_guarantee_id' => 0,
             'hospital_invoice_id' => 0,
-        ])->save();
+        ]);
 
-        (new AccidentService())->closeAccident($accident);
+        $this->accidentService->closeAccident($accident);
 
         $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
         $response2->assertJson([
@@ -440,72 +469,72 @@ class CaseControllerScenarioActionTest extends TestCase
                     [
                         'id' => 8,
                         'tag' => 'hospital',
-                        'order' => '1',
+                        'order' => 1,
                         'mode' => 'step',
-                        'accidentStatusId' => '1',
+                        'accidentStatusId' => 1,
                         'status' => 'visited',
                         'title' => 'new',
                     ],
                     [
                         'id' => 9,
                         'tag' => 'hospital',
-                        'order' => '2',
+                        'order' => 2,
                         'mode' => 'step',
-                        'accidentStatusId' => '8',
+                        'accidentStatusId' => 8,
                         'status' => '',
                         'title' => 'assistant_guarantee',
                     ],
                     [
                         'id' => 10,
                         'tag' => 'hospital',
-                        'order' => '3',
+                        'order' => 3,
                         'mode' => 'step',
-                        'accidentStatusId' => '9',
-                        'status' => 'visited',
+                        'accidentStatusId' => 9,
+                        'status' => '',
                         'title' => 'assigned',
                     ],
                     [
                         'id' => 11,
                         'tag' => 'hospital',
-                        'order' => '4',
+                        'order' => 4,
                         'mode' => 'step',
-                        'accidentStatusId' => '10',
+                        'accidentStatusId' => 10,
                         'status' => '',
                         'title' => 'hospital_guarantee',
                     ],
                     [
                         'id' => 12,
                         'tag' => 'hospital',
-                        'order' => '5',
+                        'order' => 5,
                         'mode' => 'step',
-                        'accidentStatusId' => '11',
+                        'accidentStatusId' => 11,
                         'status' => '',
                         'title' => 'hospital_invoice',
                     ],
                     [
                         'id' => 13,
                         'tag' => 'hospital',
-                        'order' => '6',
+                        'order' => 6,
                         'mode' => 'step',
-                        'accidentStatusId' => '12',
+                        'accidentStatusId' => 12,
                         'status' => '',
                         'title' => 'assistant_invoice',
                     ],
                     [
                         'id' => 14,
                         'tag' => 'hospital',
-                        'order' => '7',
+                        'order' => 7,
                         'mode' => 'step',
-                        'accidentStatusId' => '13',
-                        'status' => 'visited',
+                        'accidentStatusId' => 13,
+                        'status' => '',
                         'title' => 'paid',
                     ],
                     [
                         'id' => 15,
                         'tag' => 'hospital',
-                        'order' => '8',
+                        'order' => 8,
                         'mode' => 'step',
-                        'accidentStatusId' => '7',
+                        'accidentStatusId' => 7,
                         'status' => 'current',
                         'title' => 'closed',
                     ],
@@ -515,8 +544,8 @@ class CaseControllerScenarioActionTest extends TestCase
 
     public function testDoctorCaseScenarioNew(): void
     {
-        $accidentId = (new AccidentService())->create([
-            'accident_status_id' => (new AccidentStatusService())->getNewStatus()->getAttribute('id'),
+        $accidentId = $this->accidentService->create([
+            'accident_status_id' => $this->accidentStatusService->getNewStatus()->getAttribute('id'),
             'caseable_type' => DoctorAccident::class,
         ])->getAttribute('id');
 
@@ -581,28 +610,43 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testDoctorCaseScenarioStoryAllSteps(): void
     {
+        // just good to know
+        // it wont change accidents statuses
+
         // status new accident
-        $accident = factory(Accident::class)->create([
+        /** @var Accident $accident */
+        /*$accident = $this->accidentService->create([
             'caseable_type' => DoctorAccident::class,
             'caseable_id' => factory(DoctorAccident::class)->create([
                 'doctor_id' => 0,
             ])->id,
+        ]);*/
+
+        /*$this->doctorAccidentService->findAndUpdate([DoctorAccidentService::FIELD_ID], [
+            'id' => $accident->caseable_id,
+            'doctor_id' => factory(Doctor::class)->create()->id, // todo assigned doesn't work to be fixed
+        ])->save();*/
+
+        // when it does change accidents statuses
+        $accident = $this->caseAccidentService->create([
+            CaseAccidentService::PROPERTY_ACCIDENT => [
+                AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
+            ],
+            CaseAccidentService::PROPERTY_DOCTOR_ACCIDENT => [
+                DoctorAccidentService::FIELD_DOCTOR_ID => $this->doctorService->create()->id,
+            ]
         ]);
 
-        $accident->caseable->fill([
-            'doctor_id' => factory(Doctor::class)->create()->id,
-        ])->save();
-
-        $accidentService = new AccidentService();
-
         // Doctor needs to visit accidents page to set status `in_progress`
-        $accident->refresh();
-        $accidentService->moveDoctorAccidentToInProgressState($accident);
+        $this->accidentService->moveDoctorAccidentToInProgressState($accident);
 
         // closing an accident
-        $accidentService->closeAccident($accident);
+        $this->accidentService->closeAccident($accident);
 
         $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
         $response2->assertOk()->assertJson([
@@ -610,54 +654,54 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     'id' => 1,
                     'tag' => 'doctor',
-                    'order' => '1',
+                    'order' => 1,
                     'mode' => 'step',
-                    'accidentStatusId' => '1',
+                    'accidentStatusId' => 1,
                     'status' => 'visited',
                     'title' => 'new',
                 ],
                 [
                     'id' => 2,
                     'tag' => 'doctor',
-                    'order' => '2',
+                    'order' => 2,
                     'mode' => 'step',
-                    'accidentStatusId' => '2',
+                    'accidentStatusId' => 2,
                     'status' => 'visited',
                     'title' => 'assigned',
                 ],
                 [
                     'id' => 3,
                     'tag' => 'doctor',
-                    'order' => '3',
+                    'order' => 3,
                     'mode' => 'step',
-                    'accidentStatusId' => '3',
+                    'accidentStatusId' => 3,
                     'status' => 'visited',
                     'title' => 'in_progress',
                 ],
                 [
                     'id' => 4,
                     'tag' => 'doctor',
-                    'order' => '4',
+                    'order' => 4,
                     'mode' => 'step',
-                    'accidentStatusId' => '4',
+                    'accidentStatusId' => 4,
                     'status' => '',
                     'title' => 'sent',
                 ],
                 [
                     'id' => 5,
                     'tag' => 'doctor',
-                    'order' => '5',
+                    'order' => 5,
                     'mode' => 'step',
-                    'accidentStatusId' => '5',
+                    'accidentStatusId' => 5,
                     'status' => '',
                     'title' => 'paid',
                 ],
                 [
                     'id' => 7,
                     'tag' => 'doctor',
-                    'order' => '7',
+                    'order' => 7,
                     'mode' => 'step',
-                    'accidentStatusId' => '7',
+                    'accidentStatusId' => 7,
                     'status' => 'current',
                     'title' => 'closed',
                 ],
@@ -665,23 +709,20 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testDoctorCaseScenarioStorySkippedStep(): void
     {
-        // status new accident
-        $accident = factory(Accident::class)->create([
-            'caseable_type' => DoctorAccident::class,
-            'caseable_id' => factory(DoctorAccident::class)->create([
-                'doctor_id' => 0,
-            ])->id,
+        $accident = $this->caseAccidentService->create([
+            CaseAccidentService::PROPERTY_ACCIDENT => [
+                AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
+            ],
         ]);
 
-        $accidentService = new AccidentService();
-        $accidentService->rejectDoctorAccident($accident);
+        $this->accidentService->rejectDoctorAccident($accident);
 
-        $rejectStatus = AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusService::STATUS_REJECT,
-            'type' => AccidentStatusService::TYPE_DOCTOR,
-        ]);
+        $rejectStatus = $this->accidentStatusService->getDoctorRejectedStatus();
         self::assertEquals($accident->accident_status_id, $rejectStatus->id);
 
         $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
@@ -690,27 +731,27 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     'id' => 1,
                     'tag' => 'doctor',
-                    'order' => '1',
+                    'order' => 1,
                     'mode' => 'step',
-                    'accidentStatusId' => '1',
+                    'accidentStatusId' => 1,
                     'status' => 'visited',
                     'title' => 'new',
                 ],
                 [
                     'id' => 6,
                     'tag' => 'doctor',
-                    'order' => '6',
+                    'order' => 6,
                     'mode' => 'skip:doctor',
-                    'accidentStatusId' => '6',
+                    'accidentStatusId' => 6,
                     'status' => 'current',
                     'title' => 'reject',
                 ],
                 [
                     'id' => 7,
                     'tag' => 'doctor',
-                    'order' => '7',
+                    'order' => 7,
                     'mode' => 'step',
-                    'accidentStatusId' => '7',
+                    'accidentStatusId' => 7,
                     'status' => '',
                     'title' => 'closed',
                 ],
@@ -718,27 +759,24 @@ class CaseControllerScenarioActionTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testDoctorCaseScenarioStorySkippedClosedStep(): void
     {
-        // status new accident
-        $accident = factory(Accident::class)->create([
-            'caseable_type' => DoctorAccident::class,
-            'caseable_id' => factory(DoctorAccident::class)->create([
-                'doctor_id' => 0,
-            ])->id,
+        $accident = $this->caseAccidentService->create([
+            CaseAccidentService::PROPERTY_ACCIDENT => [
+                AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
+            ],
         ]);
 
-        $accidentService = new AccidentService();
-        $accidentService->rejectDoctorAccident($accident);
+        $this->accidentService->rejectDoctorAccident($accident);
 
-        $rejectStatus = AccidentStatus::firstOrCreate([
-            'title' => AccidentStatusService::STATUS_REJECT,
-            'type' => AccidentStatusService::TYPE_DOCTOR,
-        ]);
+        $rejectStatus = $this->accidentStatusService->getDoctorRejectedStatus();
         self::assertEquals($accident->accident_status_id, $rejectStatus->id);
 
         // closing an accident
-        $accidentService->closeAccident($accident);
+        $this->accidentService->closeAccident($accident);
 
         $response2 = $this->sendGet('/api/director/cases/' . $accident->id . '/scenario');
         $response2->assertOk()->assertJson([
@@ -746,27 +784,27 @@ class CaseControllerScenarioActionTest extends TestCase
                 [
                     'id' => 1,
                     'tag' => 'doctor',
-                    'order' => '1',
+                    'order' => 1,
                     'mode' => 'step',
-                    'accidentStatusId' => '1',
+                    'accidentStatusId' => 1,
                     'status' => 'visited',
                     'title' => 'new',
                 ],
                 [
                     'id' => 6,
                     'tag' => 'doctor',
-                    'order' => '6',
+                    'order' => 6,
                     'mode' => 'skip:doctor',
-                    'accidentStatusId' => '6',
+                    'accidentStatusId' => 6,
                     'status' => 'visited',
                     'title' => 'reject',
                 ],
                 [
                     'id' => 7,
                     'tag' => 'doctor',
-                    'order' => '7',
+                    'order' => 7,
                     'mode' => 'step',
-                    'accidentStatusId' => '7',
+                    'accidentStatusId' => 7,
                     'status' => 'current',
                     'title' => 'closed',
                 ],

@@ -21,20 +21,14 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Listeners;
 
-use medcenter24\mcCore\App\Entity\AccidentStatusHistory;
-use medcenter24\mcCore\App\Events\AccidentStatusChangedEvent;
+use medcenter24\mcCore\App\Events\Accident\Status\AccidentStatusChangedEvent;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusHistoryService;
 
 class AccidentStatusHistoryListener
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+    use ServiceLocatorTrait;
 
     /**
      * Handle the event.
@@ -42,15 +36,23 @@ class AccidentStatusHistoryListener
      * @param  AccidentStatusChangedEvent  $event
      * @return void
      */
-    public function handle(AccidentStatusChangedEvent $event)
+    public function handle(AccidentStatusChangedEvent $event): void
     {
-        AccidentStatusHistory::create([
-            'user_id' => auth()->guest() ? 0 : auth()->user()->id,
-            'accident_status_id' => $event->getAccident()->accident_status_id,
-            'historyable_id' => $event->getAccident()->id,
-            'historyable_type' => get_class($event->getAccident()),
-            'commentary' => $event->getCommentary(),
-        ]);
+        if ($event->getAccident()->getAttribute(AccidentService::FIELD_ACCIDENT_STATUS_ID)) {
+            $this->getHistoryService()->create([
+                'user_id' => auth()->guest() ? 0 : auth()->user()->id,
+                'accident_status_id' => $event->getAccident()
+                    ->getAttribute(AccidentService::FIELD_ACCIDENT_STATUS_ID),
+                'historyable_id' => $event->getAccident()->id,
+                'historyable_type' => get_class($event->getAccident()),
+                'commentary' => $event->getCommentary(),
+            ]);
+        }
+    }
+
+    private function getHistoryService(): AccidentStatusHistoryService
+    {
+        return $this->getServiceLocator()->get(AccidentStatusHistoryService::class);
     }
 
 }

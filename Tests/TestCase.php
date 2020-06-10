@@ -31,7 +31,7 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
     private const ERR_CODES = [500, 422, 405];
-    private $errCodes = self::ERR_CODES;
+    private array $errCodes = self::ERR_CODES;
 
     protected function doNotPrintErrResponse($expectedErrCodes = []): void
     {

@@ -16,7 +16,7 @@
  */
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Events;
+namespace medcenter24\mcCore\App\Events\Payment;
 
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\Payment;

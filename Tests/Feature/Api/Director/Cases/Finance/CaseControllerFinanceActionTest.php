@@ -27,15 +27,22 @@ use medcenter24\mcCore\App\Entity\Assistant;
 use medcenter24\mcCore\App\Entity\City;
 use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
-use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\App\Entity\FinanceCurrency;
-use medcenter24\mcCore\App\Entity\FinanceStorage;
 use medcenter24\mcCore\App\Entity\Hospital;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Entity\Invoice;
 use medcenter24\mcCore\App\Entity\Payment;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
+use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
+use medcenter24\mcCore\App\Services\Entity\CityService;
+use medcenter24\mcCore\App\Services\Entity\CurrencyService;
+use medcenter24\mcCore\App\Services\Entity\FinanceConditionService;
+use medcenter24\mcCore\App\Services\Entity\FinanceStorageService;
+use medcenter24\mcCore\App\Services\Entity\HospitalAccidentService;
+use medcenter24\mcCore\App\Services\Entity\InvoiceService;
+use medcenter24\mcCore\App\Services\Entity\PaymentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
 
@@ -43,45 +50,62 @@ class CaseControllerFinanceActionTest extends TestCase
 {
     use DirectorTestTraitApi;
 
-    /**
-     * @var AccidentService
-     */
-    private $accidentService;
-    /**
-     * @var AccidentStatusService
-     */
-    private $accidentStatusService;
+    private AccidentService $accidentService;
+    private AccidentStatusService $accidentStatusService;
+    private CaseAccidentService $caseAccidentService;
+    private FinanceCurrency $currency;
+    private FinanceConditionService $financeConditionService;
+    private CityService $cityService;
+    private CurrencyService $currencyService;
+    private FinanceStorageService $financeStorageService;
+    private HospitalAccidentService $hospitalAccidentService;
+    private PaymentService $paymentService;
+    private InvoiceService $invoiceService;
 
     public function setUp(): void
     {
         parent::setUp();
 
+        $this->caseAccidentService = new CaseAccidentService();
         $this->accidentService = new AccidentService();
         $this->accidentStatusService = new AccidentStatusService();
+        $this->caseAccidentService = new CaseAccidentService();
+        $this->financeConditionService = new FinanceConditionService();
+        $this->cityService = new CityService();
+        $this->currencyService = new CurrencyService();
+        $this->financeStorageService = new FinanceStorageService();
+        $this->paymentService = new PaymentService();
+        $this->invoiceService = new InvoiceService();
+        $this->hospitalAccidentService = new HospitalAccidentService();
+
+        // one fake currency for storage
+        $this->currencyService->create();
     }
 
     /**
-     * @param array $data
      * @return Accident
-     */
-    private function createNewAccident(array $data = []): Model
-    {
-        return $this->accidentService->create(array_merge($data, [
-            'accident_status_id' => $this->accidentStatusService->getNewStatus()->getAttribute('id'),
-        ]));
-    }
-
-    /**
-     * @return Accident
+     * @throws InconsistentDataException
      */
     private function createNewDoctorCase(): Model
     {
-        $caseable = factory(DoctorAccident::class)->create();
-        $accident = $this->createNewAccident([
-            'caseable_type' => DoctorAccident::class,
-            'caseable_id' => $caseable->getAttribute('id'),
+        return $this->caseAccidentService->create([
+            CaseAccidentService::PROPERTY_ACCIDENT => [
+                AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class
+            ]
         ]);
-        return $accident;
+    }
+
+    /**
+     * @return Accident
+     * @throws InconsistentDataException
+     */
+    private function createNewHospitalCase(): Model
+    {
+        return $this->caseAccidentService->create([
+            CaseAccidentService::PROPERTY_ACCIDENT => [
+                AccidentService::FIELD_CASEABLE_TYPE => HospitalAccident::class
+            ]
+        ]);
     }
 
     public function test404(): void {
@@ -91,8 +115,7 @@ class CaseControllerFinanceActionTest extends TestCase
     }
 
     public function testWithoutCondition(): void {
-        $accident = $this->createNewAccident();
-        factory(FinanceCurrency::class)->create();
+        $accident = $this->accidentService->create();
         $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
         $response->assertStatus(200);
         $response->assertJson([
@@ -125,12 +148,12 @@ class CaseControllerFinanceActionTest extends TestCase
      */
     public function testAssistantCondition(): void
     {
-        $accident = $this->createNewAccident();
-        factory(FinanceCurrency::class)->create();
+        $accident = $this->accidentService->create();
 
         // condition
         // each accident has price 10
-        factory(FinanceCondition::class)->create([
+
+        $this->financeConditionService->create([
             'type' => 'add',
             'value' => '10',
             'currency_id' => 1,
@@ -173,14 +196,14 @@ class CaseControllerFinanceActionTest extends TestCase
      */
     public function testStoredAssistantCondition(): void
     {
-        $city = factory(City::class)->create();
-        $city2 = factory(City::class)->create();
-        $accident = $this->createNewAccident(['city_id' => $city->id]);
-        $currency = factory(FinanceCurrency::class)->create();
+        $city = $this->cityService->create();
+        $city2 = $this->cityService->create();
+        $accident = $this->accidentService->create(['city_id' => $city->id]);
+        $currency = $this->currencyService->create();
 
         // condition
         // each accident has price 10
-        FinanceCondition::create([
+        $this->financeConditionService->create([
             'title' => 'test',
             'type' => 'add',
             'value' => '10',
@@ -190,8 +213,8 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // condition for the city
-        FinanceStorage::create([
-            'finance_condition_id' => FinanceCondition::create([
+        $this->financeStorageService->create([
+            'finance_condition_id' => $this->financeConditionService->create([
                 'title' => 'test',
                 'type' => 'sub',
                 'value' => '1',
@@ -204,8 +227,8 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // condition for the city2
-        FinanceStorage::create([
-            'finance_condition_id' => FinanceCondition::create([
+        $this->financeStorageService->create([
+            'finance_condition_id' => $this->financeConditionService->create([
                 'title' => 'test',
                 'type' => 'add',
                 'value' => '500',
@@ -218,8 +241,8 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // second condition for the city
-        FinanceStorage::create([
-            'finance_condition_id' => FinanceCondition::create([
+        $this->financeStorageService->create([
+            'finance_condition_id' => $this->financeConditionService->create([
                 'title' => 'test',
                 'type' => 'add',
                 'value' => '7',
@@ -260,14 +283,17 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testDoctorCondition(): void
     {
         $accident = $this->createNewDoctorCase();
-        $currency = factory(FinanceCurrency::class)->create();
+        $currency = $this->currencyService->create();
 
         // condition
         // each doctors accident has price 10
-        factory(FinanceCondition::class)->create([
+        $this->financeConditionService->create([
             'type' => 'add',
             'value' => '10',
             'currency_id' => $currency->getAttribute('id'),
@@ -306,15 +332,16 @@ class CaseControllerFinanceActionTest extends TestCase
 
     /**
      * Both doctors and assistant conditions
+     * @throws InconsistentDataException
      */
     public function testIncomeAssistantDoctorConditions(): void
     {
         $accident = $this->createNewDoctorCase();
-        $currency = factory(FinanceCurrency::class)->create();
+        $currency = $this->currencyService->create();
 
         // condition
         // each accident has price 10
-        FinanceCondition::create([
+        $this->financeConditionService->create([
             'title' => 'test',
             'type' => 'add',
             'value' => '10',
@@ -324,7 +351,7 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // each accident has price +3450
-        FinanceCondition::create([
+        $this->financeConditionService->create([
             'title' => 'test',
             'type' => 'add',
             'value' => '3450',
@@ -334,7 +361,7 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // each doctor's case have to be smaller to 5%
-        FinanceCondition::create([
+        $this->financeConditionService->create([
             'title' => 'test',
             'type' => 'add',
             'value' => '5',
@@ -344,7 +371,7 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // each doctor's case have to be smaller to +5%
-        FinanceCondition::create([
+        $this->financeConditionService->create([
             'title' => 'test',
             'type' => 'add',
             'value' => '5',
@@ -354,7 +381,7 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // each doctor's case have to be paid by 4.99
-        FinanceCondition::create([
+        $this->financeConditionService->create([
             'title' => 'test',
             'type' => 'add',
             'value' => '4.991',
@@ -364,7 +391,7 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // each doctor's case have to be also paid by 2039
-        FinanceCondition::create([
+        $this->financeConditionService->create([
             'title' => 'test',
             'type' => 'add',
             'value' => '2039',
@@ -374,7 +401,7 @@ class CaseControllerFinanceActionTest extends TestCase
         ]);
 
         // each doctor's case have to be smaller to 5%
-        FinanceCondition::create([
+        $this->financeConditionService->create([
             'title' => 'test',
             'type' => 'add',
             'value' => '5',
@@ -415,11 +442,10 @@ class CaseControllerFinanceActionTest extends TestCase
     public function testAssistantDoctorComplexCondition(): void
     {
         $accident = $this->createNewDoctorCase();
-        factory(FinanceCurrency::class)->create();
 
         // condition
         // each accident has price 10
-        factory(FinanceCondition::class)->create([
+        $this->financeConditionService->create([
             'type' => 'add',
             'value' => '10',
             'currency_id' => 1,
@@ -427,7 +453,7 @@ class CaseControllerFinanceActionTest extends TestCase
             'model' => Assistant::class,
         ]);
         // each doctor will be paid for 4.99
-        factory(FinanceCondition::class)->create([
+        $this->financeConditionService->create([
             'type' => 'add',
             'value' => '4.991',
             'currency_id' => 1,
@@ -466,19 +492,16 @@ class CaseControllerFinanceActionTest extends TestCase
 
     /**
      * Checks that Hospital prices are taken from the invoices from the hospital or stored as a fixed payment
+     * @throws InconsistentDataException
      */
     public function testHospitalCondition(): void
     {
-        $caseable = factory(HospitalAccident::class)->create();
-        $accident = $this->createNewAccident([
-            'caseable_type' => HospitalAccident::class,
-            'caseable_id' => $caseable->id,
-        ]);
-        $currency = factory(FinanceCurrency::class)->create();
+        $accident = $this->createNewHospitalCase();
+        $currency = $this->currencyService->create();
 
         // condition
         // each accident has price 10
-        factory(FinanceCondition::class)->create([
+        $this->financeConditionService->create([
             'type' => 'add',
             'value' => '10',
             'currency_id' => $currency->id,
@@ -521,17 +544,17 @@ class CaseControllerFinanceActionTest extends TestCase
      */
     public function testHospitalInvoiceCondition(): void
     {
-        $caseable = factory(HospitalAccident::class)->create();
-        $currency = factory(FinanceCurrency::class)->create();
-        $payment = factory(Payment::class)->create([
+        $caseable = $this->hospitalAccidentService->create();
+        $currency = $this->currencyService->create();
+        $payment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 0,
             'value' => 5
         ]);
-        $invoice = factory(Invoice::class)->create([
+        $invoice = $this->invoiceService->create([
             'payment_id' => $payment->id,
         ]);
-        $accident = $accident = $this->createNewAccident([
+        $accident = $this->accidentService->create([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
             'assistant_invoice_id' => $invoice->id,
@@ -539,7 +562,7 @@ class CaseControllerFinanceActionTest extends TestCase
 
         // condition
         // each accident costs for the hospital 10
-        factory(FinanceCondition::class)->create([
+        $this->financeConditionService->create([
             'type' => 'add',
             'value' => '10',
             'currency_id' => $currency->id,
@@ -586,22 +609,22 @@ class CaseControllerFinanceActionTest extends TestCase
      */
     public function testHospitalFixedPayment(): void
     {
-        $caseable = factory(HospitalAccident::class)->create(['hospital_invoice_id' => 0]);
-        $currency = factory(FinanceCurrency::class)->create();
-        $payment = factory(Payment::class)->create([
+        $caseable = $this->hospitalAccidentService->create(['hospital_invoice_id' => 0]);
+        $currency = $this->currencyService->create();
+        $payment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 0,
             'value' => 5
         ]);
-        $caseablePayment = factory(Payment::class)->create([
+        $caseablePayment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 1,
             'value' => -2
         ]);
-        $invoice = factory(Invoice::class)->create([
+        $invoice = $this->invoiceService->create([
             'payment_id' => $payment->id,
         ]);
-        $accident = $accident = $this->createNewAccident([
+        $accident = $this->accidentService->create([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
             'assistant_invoice_id' => $invoice->id,
@@ -610,7 +633,7 @@ class CaseControllerFinanceActionTest extends TestCase
 
         // condition
         // each accident has price 10
-        factory(FinanceCondition::class)->create([
+        $this->financeConditionService->create([
             'type' => 'add',
             'value' => '10',
             'currency_id' => $currency->id,
@@ -650,7 +673,7 @@ class CaseControllerFinanceActionTest extends TestCase
                             'value' => -2,
                             'currencyId' => $currency->id,
                             'fixed' => true,
-                            'description' => 'faked payment',
+                            'description' => '',
                         ),
                     'formula' => 'fixed',
                     'calculatedValue' => 0,
@@ -661,27 +684,27 @@ class CaseControllerFinanceActionTest extends TestCase
 
     public function testFixedIncome(): void
     {
-        $caseable = factory(HospitalAccident::class)->create();
-        $currency = factory(FinanceCurrency::class)->create();
-        $payment = factory(Payment::class)->create([
+        $caseable = $this->hospitalAccidentService->create();
+        $currency = $this->currencyService->create();
+        $payment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 0,
             'value' => 5
         ]);
-        $caseablePayment = factory(Payment::class)->create([
+        $caseablePayment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 1,
             'value' => -2
         ]);
-        $invoice = factory(Invoice::class)->create([
+        $invoice = $this->invoiceService->create([
             'payment_id' => $payment->id,
         ]);
-        $incomePayment = factory(Payment::class)->create([
+        $incomePayment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 1,
             'value' => 700,
         ]);
-        $accident = $accident = $this->createNewAccident([
+        $accident = $this->accidentService->create([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
             'assistant_invoice_id' => $invoice->id,
@@ -691,7 +714,7 @@ class CaseControllerFinanceActionTest extends TestCase
 
         // condition
         // each accident has price 10
-        factory(FinanceCondition::class)->create([
+        $this->financeConditionService->create([
             'type' => 'add',
             'value' => '10',
             'currency_id' => $currency->id,
@@ -739,43 +762,56 @@ class CaseControllerFinanceActionTest extends TestCase
      */
     public function testIncomeFromFixed(): void
     {
-        $caseable = factory(HospitalAccident::class)->create();
-        $currency = factory(FinanceCurrency::class)->create();
-        $payment = factory(Payment::class)->create([
-            'currency_id' => $currency->id,
-            'fixed' => 0,
-            'value' => 5
-        ]);
-        $caseablePayment = factory(Payment::class)->create([
+        $caseable = $this->hospitalAccidentService->create();
+        $currency = $this->currencyService->create();
+
+        // payment for the assistant invoice
+        $assistantInvoicePayment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 1,
             'value' => 5
         ]);
-        $invoice = factory(Invoice::class)->create([
-            'payment_id' => $payment->id,
+        $assistantInvoice = $this->invoiceService->create([
+            'payment_id' => $assistantInvoicePayment->id,
         ]);
-        $incomePayment = factory(Payment::class)->create([
-            'currency_id' => $currency->id,
-            'fixed' => 0,
-            'value' => 700,
+
+        // is not fixed = should be calculated
+        $incomePayment = $this->paymentService->create([
+            PaymentService::FIELD_CURRENCY_ID => $currency->id,
+            PaymentService::FIELD_FIXED => 0,
+            PaymentService::FIELD_VALUE => 700,
         ]);
-        $assistantPayment = factory(Payment::class)->create([
+
+        // payment from assistant to accident, value to be used in calculation
+        $assistantPayment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 1,
             'value' => 20,
         ]);
-        $accident = $accident = $this->createNewAccident([
+
+        $caseablePayment = $this->paymentService->create([
+            'currency_id' => $currency->id,
+            'fixed' => 1,
+            'value' => 4,
+        ]);
+
+        $accident = $this->accidentService->create([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
-            'assistant_invoice_id' => $invoice->id,
+            // invoice won't be caunted as assistant and caseable are fixed
+            'assistant_invoice_id' => $assistantInvoice->id,
+            // fixed
             'caseable_payment_id' => $caseablePayment->id,
+            // calculated income
             'income_payment_id' => $incomePayment->id,
+            // fixed assistant
             'assistant_payment_id' => $assistantPayment->id,
         ]);
 
         // condition
         // each accident has price 10
-        factory(FinanceCondition::class)->create([
+        // won't be applied because will be used fixed
+        $this->financeConditionService->create([
             'type' => 'add',
             'value' => '10',
             'currency_id' => $currency->id,
@@ -790,8 +826,8 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'calculatedValue' => 0,
-                    'formula' => '5.00 - 5.00',
+                    'calculatedValue' => 1,
+                    'formula' => '5.00 - 4.00',
                     'payment' => [
                         'id' => $incomePayment->id,
                     ]
@@ -802,8 +838,8 @@ class CaseControllerFinanceActionTest extends TestCase
                     'calculatedValue' => 0,
                     'formula' => 'invoice',
                     'payment' => [
-                        'id' => $invoice->payment->id,
-                        'value' => $invoice->payment->value
+                        'id' => $assistantInvoice->payment->id,
+                        'value' => $assistantInvoice->payment->value
                     ],
                 ],
                 [
@@ -824,24 +860,24 @@ class CaseControllerFinanceActionTest extends TestCase
      */
     public function testIncomeFromCounted(): void
     {
-        $caseable = factory(HospitalAccident::class)->create();
-        $currency = factory(FinanceCurrency::class)->create();
-        $caseablePayment = factory(Payment::class)->create([
+        $caseable = $this->hospitalAccidentService->create();
+        $currency = $this->currencyService->create();
+        $caseablePayment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 0,
             'value' => 5
         ]);
-        $incomePayment = factory(Payment::class)->create([
+        $incomePayment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 0,
             'value' => 700,
         ]);
-        $assistantPayment = factory(Payment::class)->create([
+        $assistantPayment = $this->paymentService->create([
             'currency_id' => $currency->id,
             'fixed' => 0,
             'value' => 20,
         ]);
-        $accident = $accident = $this->createNewAccident([
+        $accident = $this->accidentService->create([
             'caseable_type' => HospitalAccident::class,
             'caseable_id' => $caseable->id,
             'caseable_payment_id' => $caseablePayment->id,
@@ -852,7 +888,7 @@ class CaseControllerFinanceActionTest extends TestCase
 
         // condition
         // each accident has price 10
-        factory(FinanceCondition::class)->create([
+        $this->financeConditionService->create([
             'type' => 'add',
             'value' => '10',
             'currency_id' => $currency->id,

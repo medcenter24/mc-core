@@ -48,6 +48,15 @@ class Accident extends AccidentAbstract
     }
 
     /**
+     * Payment from the assistant
+     * @return BelongsTo
+     */
+    public function paymentFromAssistant(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class, AccidentService::FIELD_ASSISTANT_PAYMENT_ID);
+    }
+
+    /**
      * Payment either to doctor or hospital
      * @return BelongsTo
      */

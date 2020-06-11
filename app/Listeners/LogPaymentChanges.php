@@ -18,7 +18,7 @@
 declare(strict_types=1);
 namespace medcenter24\mcCore\App\Listeners;
 
-use medcenter24\mcCore\App\Events\AccidentPaymentChangedEvent;
+use medcenter24\mcCore\App\Events\Payment\AccidentPaymentChangedEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

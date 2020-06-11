@@ -29,10 +29,7 @@ class CaseStoryControllerTest extends TestCase
 {
     use DirectorTestTraitApi;
 
-    /**
-     * @var CaseAccidentService
-     */
-    private $caseAccidentService;
+    private CaseAccidentService $caseAccidentService;
 
     protected function setUp(): void
     {

@@ -104,13 +104,15 @@ class CaseAccidentTransformer extends AbstractTransformer
                     $transformer = new HospitalAccidentTransformer();
                     break;
                 case CaseAccidentService::PROPERTY_SERVICES:
-                    $transformer = new ServiceTransformer();
-                    break;
+                    /*$transformer = new ServiceTransformer();
+                    break;*/
                 case CaseAccidentService::PROPERTY_DIAGNOSTICS:
-                    $transformer = new DiagnosticTransformer();
-                    break;
+                    /*$transformer = new DiagnosticTransformer();
+                    break;*/
                 case CaseAccidentService::PROPERTY_SURVEYS:
-                    $transformer = new SurveyTransformer();
+                    /*$transformer = new SurveyTransformer();
+                    break;*/
+                    $transformer = false;
                     break;
                 case CaseAccidentService::PROPERTY_DOCUMENTS:
                     $transformer = new DocumentTransformer();
@@ -124,7 +126,7 @@ class CaseAccidentTransformer extends AbstractTransformer
                 default: unset($data[$key]);
             }
 
-            if (isset($transformer)) {
+            if (isset($transformer) && $transformer) {
                 $data[$key] = $transformer->inverseTransform($data[$key]);
             }
         }

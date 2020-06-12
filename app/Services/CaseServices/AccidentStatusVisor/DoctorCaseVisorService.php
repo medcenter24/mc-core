@@ -26,7 +26,6 @@ class DoctorCaseVisorService extends AbstractVisorService
 {
     protected function getStatusMap(): array
     {
-        $a = 't';
         return [
             DoctorAccidentService::FIELD_DOCTOR_ID => [
                 self::STATUS_TITLE => AccidentStatusService::STATUS_ASSIGNED,

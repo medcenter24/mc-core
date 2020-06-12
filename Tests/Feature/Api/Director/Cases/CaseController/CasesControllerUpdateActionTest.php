@@ -28,6 +28,9 @@ use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
+use medcenter24\mcCore\App\Services\Entity\DiagnosticService;
+use medcenter24\mcCore\App\Services\Entity\ServiceService;
+use medcenter24\mcCore\App\Services\Entity\SurveyService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
 
@@ -35,12 +38,28 @@ class CasesControllerUpdateActionTest extends TestCase
 {
     use DirectorTestTraitApi;
 
+    private const API_URL = '/api/director/cases/';
+
+    private ?AccidentService $accidentService = null;
+    private ?SurveyService $surveyService = null;
+    private ?ServiceService $serviceService = null;
+    private ?DiagnosticService $diagnosticService = null;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->accidentService = new AccidentService();
+        $this->serviceService = new ServiceService();
+        $this->diagnosticService = new DiagnosticService();
+        $this->surveyService = new SurveyService();
+    }
+
     public function testUpdateWithoutData(): void
     {
         $accident = $this->getServiceLocator()->get(CaseAccidentService::class)->create();
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->sendPut('/api/director/cases/'.$accident->id, []);
+        $response = $this->sendPut(self::API_URL.$accident->id, []);
         $this->doNotPrintErrResponse();
         $response->assertStatus(422)
             ->assertJson([
@@ -72,7 +91,7 @@ class CasesControllerUpdateActionTest extends TestCase
         ];
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->sendPut('/api/director/cases/'.$accident->id, $data);
+        $response = $this->sendPut(self::API_URL.$accident->id, $data);
         $this->doNotPrintErrResponse();
 
         $response->assertStatus(422)->assertJson([
@@ -111,7 +130,7 @@ class CasesControllerUpdateActionTest extends TestCase
         ];
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->sendPut('/api/director/cases/'.$accident->id, $data);
+        $response = $this->sendPut(self::API_URL.$accident->id, $data);
         $this->doNotPrintErrResponse();
 
         $content = $response->assertStatus(422)->getContent();
@@ -171,7 +190,7 @@ class CasesControllerUpdateActionTest extends TestCase
         $accidentService->closeAccident($accident);
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->sendPut('/api/director/cases/'.$accident->id, $data);
+        $response = $this->sendPut(self::API_URL.$accident->id, $data);
         $this->doNotPrintErrResponse();
 
         $response->assertStatus(422)->assertJson([
@@ -198,7 +217,7 @@ class CasesControllerUpdateActionTest extends TestCase
         ];
 
         $this->doNotPrintErrResponse([422]);
-        $response = $this->sendPut('/api/director/cases/'.$accident->id, $data);
+        $response = $this->sendPut(self::API_URL.$accident->id, $data);
         $this->doNotPrintErrResponse();
 
         $response->assertStatus(422)->assertJson([
@@ -233,11 +252,44 @@ class CasesControllerUpdateActionTest extends TestCase
 
         $this->assertNotSame($doc1, $doc2);
         
-        $response = $this->sendPut('/api/director/cases/'.$accident->id, $data);
+        $response = $this->sendPut(self::API_URL.$accident->id, $data);
 
         $response->assertStatus(202);
 
         $accident->refresh();
         $this->assertSame($doc2, (int) $accident->caseable->doctor_id);
+    }
+
+    public function testCaseableMorphs(): void
+    {
+        /** @var Accident $accident */
+        $accident = $this->accidentService->create();
+        $response = $this->sendPut(self::API_URL . $accident->id, [
+            CaseAccidentService::PROPERTY_ACCIDENT => [
+                AccidentService::FIELD_ID => $accident->id,
+            ],
+            CaseAccidentService::PROPERTY_SERVICES => [
+                $this->serviceService->create()->id,
+                $this->serviceService->create()->id,
+                $this->serviceService->create()->id,
+            ],
+            CaseAccidentService::PROPERTY_DIAGNOSTICS => [
+                $this->diagnosticService->create()->id,
+                $this->diagnosticService->create()->id,
+                $this->diagnosticService->create()->id,
+            ],
+            CaseAccidentService::PROPERTY_SURVEYS => [
+                $this->surveyService->create()->id,
+                $this->surveyService->create()->id,
+                $this->surveyService->create()->id,
+            ]
+        ]);
+
+        $response->assertStatus(202);
+        $accident->refresh();
+        $services = $this->accidentService->getAccidentServices($accident);
+        $this->assertCount(3, $services);
+        $this->assertCount(3, $accident->caseable->diagnostics);
+        $this->assertCount(3, $accident->caseable->surveys);
     }
 }

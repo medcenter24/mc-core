@@ -190,8 +190,8 @@ class AccidentService extends AbstractModelService
     {
         $services = null;
         if ($accident->isDoctorCaseable()) {
-            $services = $accident->getAttribute('caseable')
-                ->getAttribute('services');
+            $caseable = $accident->getAttribute('caseable');
+            $services = $caseable->getAttribute('services');
         }
         return $services ?: collect([]);
     }

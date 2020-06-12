@@ -151,7 +151,7 @@ abstract class ModelApiController extends ApiController
      * Update model
      * @param int $id
      * @param JsonRequest $request
-     * @return Response|void
+     * @return Response
      */
     public function update(int $id, JsonRequest $request): Response
     {

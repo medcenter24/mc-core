@@ -28,6 +28,7 @@ class SurveysControllerTest extends TestCase
 
     public function testIndex(): void
     {
+        $this->getCurrentDoctor();
         $response = $this->sendGet('/api/doctor/surveys');
         $response->assertStatus(200);
         $response->assertJson([

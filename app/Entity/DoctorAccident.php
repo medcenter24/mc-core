@@ -23,8 +23,6 @@ namespace medcenter24\mcCore\App\Entity;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 
 /**
@@ -36,18 +34,8 @@ use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 class DoctorAccident extends AccidentAbstract
 {
     protected $dates = DoctorAccidentService::DATE_FIELDS;
-
     protected $fillable = DoctorAccidentService::FILLABLE;
     protected $visible = DoctorAccidentService::VISIBLE;
-
-    public static function boot(): void
-    {
-        parent::boot();
-        self::saved(static function (DoctorAccident $doctorAccident) {
-            $serviceLocator = ServiceLocator::instance();
-            $serviceLocator->get(AccidentService::class)->updateDoctorAccidentStatus($doctorAccident);
-        } );
-    }
 
     /**
      * Doctor of this accident

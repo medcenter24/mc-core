@@ -63,7 +63,8 @@ class PaymentService extends AbstractModelService
         return [
             self::FIELD_VALUE=> 0,
             self::FIELD_CURRENCY_ID => 0,
-            self::FIELD_FIXED => 1,
+            // default value should not be 1, it will replace all other values
+            self::FIELD_FIXED => 0,
             self::FIELD_DESCRIPTION => '',
         ];
     }

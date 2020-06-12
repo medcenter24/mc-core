@@ -18,6 +18,7 @@
 
 namespace medcenter24\mcCore\App\Events;
 
+use Illuminate\Broadcasting\Channel;
 use medcenter24\mcCore\App\Entity\DatePeriod;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -26,12 +27,14 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 
 class DatePeriodChangedEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     /**
      * @var DatePeriod
      */
-    private $datePeriod;
+    private DatePeriod $datePeriod;
 
     /**
      * Create a new event instance.
@@ -47,7 +50,7 @@ class DatePeriodChangedEvent
     /**
      * @return DatePeriod
      */
-    public function getDatePeriod()
+    public function getDatePeriod(): DatePeriod
     {
         return $this->datePeriod;
     }
@@ -55,7 +58,7 @@ class DatePeriodChangedEvent
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return Channel|array
      */
     public function broadcastOn()
     {

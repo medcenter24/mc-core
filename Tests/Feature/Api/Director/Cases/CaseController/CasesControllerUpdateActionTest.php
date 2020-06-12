@@ -25,6 +25,7 @@ use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
@@ -153,6 +154,9 @@ class CasesControllerUpdateActionTest extends TestCase
         ], json_decode($ans->errors->accident[0], true));
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testClosedAccident(): void
     {
         $accident = factory(Accident::class)->create(['accident_status_id' => 0]);
@@ -173,7 +177,7 @@ class CasesControllerUpdateActionTest extends TestCase
         $response->assertStatus(422)->assertJson([
             'message' => '422 Unprocessable Entity',
             'errors' => [
-                ['Already closed']
+                ['Accident closed and can not be changed']
             ],
         ]);
     }

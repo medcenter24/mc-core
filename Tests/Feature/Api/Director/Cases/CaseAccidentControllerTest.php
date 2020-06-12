@@ -25,7 +25,6 @@ use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\App\Services\Entity\PatientService;
-use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorApiModelTest;
 
 class CaseAccidentControllerTest extends DirectorApiModelTest

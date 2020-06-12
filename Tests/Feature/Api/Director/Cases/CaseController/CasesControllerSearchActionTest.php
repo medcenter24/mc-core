@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
 use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
@@ -53,12 +54,21 @@ class CasesControllerSearchActionTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testSearchClosed(): void
     {
+        $accidentService = new AccidentService();
+        $accidentStatusService = new AccidentStatusService();
         // I can't create closed Accident at all
-        (new AccidentService())->create([
-            'accident_status_id' => (new AccidentStatusService())->getClosedStatus()->getAttribute('id'),
+        /** @var Accident $accident */
+        $accident = $accidentService->create([
+            'accident_status_id' => $accidentStatusService->getNewStatus()->getAttribute('id'),
         ]);
+
+        $accidentService->setStatus($accident, $accidentStatusService->getClosedStatus());
+
         $response = $this->sendPost('/api/director/cases/search', []);
 
         $response->assertStatus(200)->assertJson([

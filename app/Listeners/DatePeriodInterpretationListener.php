@@ -25,15 +25,12 @@ use medcenter24\mcCore\App\Services\Entity\DatePeriodInterpretationService;
 class DatePeriodInterpretationListener
 {
 
-    /**
-     * @var DatePeriodInterpretationService
-     */
-    private $service;
+    private DatePeriodInterpretationService $service;
 
     /**
      * Create the event listener.
      *
-     * @return void
+     * @param DatePeriodInterpretationService $service
      */
     public function __construct(DatePeriodInterpretationService $service)
     {
@@ -44,10 +41,9 @@ class DatePeriodInterpretationListener
      * Handle the event.
      *
      * @param DatePeriodChangedEvent $event
-     * @param DatePeriodInterpretationService $service
      * @throws InconsistentDataException
      */
-    public function handle(DatePeriodChangedEvent $event)
+    public function handle(DatePeriodChangedEvent $event): void
     {
         $datePeriod = $event->getDatePeriod();
         $this->service->update($datePeriod);

@@ -28,6 +28,7 @@ class DiagnosticsControllerTest extends TestCase
 
     public function testIndex(): void
     {
+        $this->getCurrentDoctor();
         $response = $this->sendGet('/api/doctor/diagnostics');
         $response->assertStatus(200);
         $response->assertJson([

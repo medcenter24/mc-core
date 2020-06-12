@@ -31,8 +31,8 @@ use medcenter24\mcCore\App\Entity\AccidentAbstract;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Entity\Patient;
-use medcenter24\mcCore\App\Events\DoctorAccidentUpdatedEvent;
-use medcenter24\mcCore\App\Events\HospitalAccidentUpdatedEvent;
+use medcenter24\mcCore\App\Events\Accident\Caseable\DoctorAccidentUpdatedEvent;
+use medcenter24\mcCore\App\Events\Accident\Caseable\HospitalAccidentUpdatedEvent;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\ReferralNumberService;
@@ -76,6 +76,23 @@ class CaseAccidentService implements ModelService
     }
 
     /**
+     * @param Accident $accident
+     * @return Model|null|AccidentAbstract
+     */
+    private function getCaseable(Accident $accident): ?Model
+    {
+        $caseable = null;
+        if ($this->getAccidentService()->isDoctorAccident($accident)) {
+            $caseable = $this->getDoctorAccidentService()
+                ->first([DoctorAccidentService::FIELD_ID => $accident->getAttribute(AccidentService::FIELD_CASEABLE_ID)]);
+        } elseif ($this->getAccidentService()->isHospitalAccident($accident)) {
+            $caseable = $this->getHospitalAccidentService()
+                ->first([HospitalAccidentService::FIELD_ID => $accident->getAttribute(AccidentService::FIELD_CASEABLE_ID)]);
+        }
+        return $caseable;
+    }
+
+    /**
      * @param array $data
      * @param Accident|null|Model $accident
      * @return Accident
@@ -86,7 +103,9 @@ class CaseAccidentService implements ModelService
         try {
             DB::beginTransaction();
 
+            $previousCaseable = null;
             if ($accident) {
+                $previousCaseable = $this->getCaseable($accident);
                 $accident = $this->updateAccident($accident, $data);
             } else {
                 $accident = $this->createAccident($data);
@@ -110,7 +129,9 @@ class CaseAccidentService implements ModelService
             $this->storeRefNum($accident);
 
             // triggers an event
-            $this->emitCaseableEvent($data, $caseable);
+            // Have to update caseable here, because some important data could be changed
+            // for example caseable could be touched before accident creation
+            $this->emitCaseableEvent($data, $caseable, $previousCaseable);
 
             // only after we're sure that we have refNum record
             Log::info('created', ['ref' => $accident->getAttribute(AccidentService::FIELD_REF_NUM)]);
@@ -174,6 +195,7 @@ class CaseAccidentService implements ModelService
             $caseableId = (int) $accident->getAttribute(AccidentService::FIELD_CASEABLE_ID);
             $caseable = $this->updateCaseable($caseableId, $data);
         }
+
         return $caseable;
     }
 
@@ -231,34 +253,6 @@ class CaseAccidentService implements ModelService
     }
 
     /**
-     * @param Model|DoctorAccident $caseable
-     * @param Model|DoctorAccident|null $before
-     */
-    private function emitDoctorAccidentEvent(Model $caseable, Model $before = null): void
-    {
-        event(
-            new DoctorAccidentUpdatedEvent(
-                $before,
-                $caseable,
-                'Updated by the director')
-        );
-    }
-
-    /**
-     * @param Model|HospitalAccident $caseable
-     * @param Model|HospitalAccident $before
-     */
-    private function emitHospitalAccidentEvent(Model $caseable, Model $before = null): void
-    {
-        event(
-            new HospitalAccidentUpdatedEvent(
-                $before,
-                $caseable,
-                'Updated by the director')
-        );
-    }
-
-    /**
      * @return AccidentService
      */
     private function getAccidentService(): AccidentService
@@ -269,7 +263,6 @@ class CaseAccidentService implements ModelService
     /**
      * @param array $data
      * @return array
-     * @throws InconsistentDataException
      */
     private function getAccidentData(array $data): array
     {
@@ -295,7 +288,6 @@ class CaseAccidentService implements ModelService
     /**
      * @param array $data
      * @return string
-     * @throws InconsistentDataException
      */
     private function getCaseableType(array $data): string
     {
@@ -380,19 +372,23 @@ class CaseAccidentService implements ModelService
     private function updateCaseable(int $id, array $data): Model
     {
         if ( $this->isDoctorCase($data) ) {
-            $caseable = $this->getCaseable(
+            $caseable = $this->updateTypedCaseable(
                 $this->getDoctorAccidentService(),
                 $id,
                 $this->getDoctorAccidentData($data)
             );
         } elseif ( $this->isHospitalCase($data) ) {
-            $caseable = $this->getCaseable(
+            $caseable = $this->updateTypedCaseable(
                 $this->getHospitalAccidentService(),
                 $id,
                 $this->getHospitalAccidentData($data)
             );
         } else {
             throw new InconsistentDataException('Accidents caseable type is not correct');
+        }
+
+        if (!$caseable) {
+            throw new InconsistentDataException('Accidents caseable is not found');
         }
 
         return $caseable;
@@ -405,7 +401,7 @@ class CaseAccidentService implements ModelService
      * @return Model
      * @throws InconsistentDataException
      */
-    private function getCaseable(AbstractModelService $service, int $id, array $caseableData): ?Model
+    private function updateTypedCaseable(AbstractModelService $service, int $id, array $caseableData): ?Model
     {
         if (count ($caseableData)) {
             if (
@@ -424,22 +420,26 @@ class CaseAccidentService implements ModelService
     }
 
     /**
-     * @param $data
-     * @param $caseable
+     * @param array $data
+     * @param AccidentAbstract $caseable
+     * @param AccidentAbstract|null $previousCaseable
      */
-    private function emitCaseableEvent(array $data, AccidentAbstract $caseable): void
+    private function emitCaseableEvent(
+        array $data,
+        AccidentAbstract $caseable,
+        AccidentAbstract $previousCaseable = null
+    ): void
     {
         if ($this->isDoctorCase($data)) {
-            $this->emitDoctorAccidentEvent($caseable);
+            event(new DoctorAccidentUpdatedEvent($caseable, $previousCaseable));
         } elseif ( $this->isHospitalCase($data) ) {
-            $this->emitHospitalAccidentEvent($caseable);
+            event(new HospitalAccidentUpdatedEvent($caseable, $previousCaseable));
         }
     }
 
     /**
      * @param array $data
      * @return bool
-     * @throws InconsistentDataException
      */
     private function isDoctorCase(array $data): bool
     {
@@ -449,7 +449,6 @@ class CaseAccidentService implements ModelService
     /**
      * @param array $data
      * @return bool
-     * @throws InconsistentDataException
      */
     private function isHospitalCase(array $data): bool
     {

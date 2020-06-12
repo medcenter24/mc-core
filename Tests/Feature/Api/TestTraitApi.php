@@ -23,8 +23,6 @@ namespace medcenter24\mcCore\Tests\Feature\Api;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
-use medcenter24\mcCore\App\Entity\User;
-use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 trait TestTraitApi
 {
@@ -34,28 +32,11 @@ trait TestTraitApi
     use LoggedUser;
 
     /**
-     * @var User
-     * // can't be typed because can't be used in the test
-     */
-    protected $user;
-
-    /**
      * @return array
      */
     protected function getHeaders(): array
     {
         return $this->headers($this->getLoggedUser());
-    }
-
-    /**
-     * @return User
-     */
-    protected function getLoggedUser(): User
-    {
-        if (!$this->user) {
-            $this->user = $this->getUser([RoleService::LOGIN_ROLE]);
-        }
-        return $this->user;
     }
 
     /**

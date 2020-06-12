@@ -21,7 +21,9 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\Finance;
 
+use Illuminate\Support\Facades\Event;
 use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Events\Payment\AccidentPaymentChangedEvent;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Services\Entity\PaymentService;
@@ -31,6 +33,18 @@ use medcenter24\mcCore\Tests\TestCase;
 class CaseFinanceControllerSaveTest extends TestCase
 {
     use DirectorTestTraitApi;
+
+    private CurrencyService $currencyService;
+    private AccidentService $accidentService;
+    private PaymentService $paymentService;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->currencyService = new CurrencyService();
+        $this->paymentService = new PaymentService();
+        $this->accidentService = new AccidentService();
+    }
 
     public function dataProvider(): array
     {
@@ -124,21 +138,17 @@ class CaseFinanceControllerSaveTest extends TestCase
      */
     public function testSave(array $accidentData, array $paymentData, array $toSavePaymentData, array $results): void
     {
-        $this->getServiceLocator()->get(CurrencyService::class)->create();
-        /** @var Accident $accident */
-        $accident = $this->getServiceLocator()
-            ->get(AccidentService::class)
-            ->create($accidentData);
+        Event::fake([
+            AccidentPaymentChangedEvent::class,
+        ]);
 
-        $incomePayment = $this->getServiceLocator()
-            ->get(PaymentService::class)
-            ->create($paymentData['incomePayment']);
-        $caseablePayment = $this->getServiceLocator()
-            ->get(PaymentService::class)
-            ->create($paymentData['caseablePayment']);
-        $assistantPayment = $this->getServiceLocator()
-            ->get(PaymentService::class)
-            ->create($paymentData['assistantPayment']);
+        $this->currencyService->create();
+        /** @var Accident $accident */
+        $accident = $this->accidentService->create($accidentData);
+
+        $incomePayment = $this->paymentService->create($paymentData['incomePayment']);
+        $caseablePayment = $this->paymentService->create($paymentData['caseablePayment']);
+        $assistantPayment = $this->paymentService->create($paymentData['assistantPayment']);
 
         $accident->incomePayment()->associate($incomePayment);
         $accident->paymentToCaseable()->associate($caseablePayment);

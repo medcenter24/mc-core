@@ -20,18 +20,8 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api;
 
-use medcenter24\mcCore\App\Entity\User;
-use medcenter24\mcCore\App\Services\Entity\RoleService;
-
 trait DirectorTestTraitApi
 {
     use TestTraitApi;
-
-    protected function getLoggedUser(): User
-    {
-        if (!$this->user) {
-            $this->user = $this->getUser([RoleService::DIRECTOR_ROLE]);
-        }
-        return $this->user;
-    }
+    use LoggedDirectorUser;
 }

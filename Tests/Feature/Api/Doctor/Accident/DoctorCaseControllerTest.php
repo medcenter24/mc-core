@@ -81,12 +81,14 @@ class DoctorCaseControllerTest extends TestCase
 
     public function testShowNoAccident(): void
     {
+        $this->getCurrentDoctor();
         $response = $this->sendGet('/api/doctor/accidents/0');
         $response->assertStatus(404);
     }
 
     public function testShowNoDoctorAccident(): void
     {
+        $this->getCurrentDoctor();
         $accident = factory(Accident::class)->create([
             AccidentService::FIELD_CASEABLE_TYPE => HospitalAccident::class,
         ]);
@@ -96,6 +98,7 @@ class DoctorCaseControllerTest extends TestCase
 
     public function testShowAnotherDoctorAccident(): void
     {
+        $this->getCurrentDoctor();
         $accident = factory(Accident::class)->create([
             AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
         ]);

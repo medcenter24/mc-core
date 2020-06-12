@@ -26,19 +26,10 @@ use Illuminate\Support\Collection;
 
 class CaseHistoryService
 {
-    /**
-     * @var Accident
-     */
-    private $accident;
-
-    /**
-     * @var Collection History
-     */
-    private $history;
+    private Collection $history;
 
     public function generate(Accident $accident): self
     {
-        $this->accident = $accident;
         $this->history = $accident->history()->orderBy('created_at')->get();
         return $this;
     }

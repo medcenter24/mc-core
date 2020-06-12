@@ -28,6 +28,7 @@ class AccidentTypesControllerTest extends TestCase
 
     public function testIndex(): void
     {
+        $this->getCurrentDoctor();
         $response = $this->sendGet('/api/doctor/caseTypes');
         $response->assertStatus(200);
         $response->assertJson([

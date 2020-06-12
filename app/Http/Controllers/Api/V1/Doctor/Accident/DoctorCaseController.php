@@ -103,6 +103,9 @@ class DoctorCaseController extends ApiController
     {
         /** @var Accident $accident */
         $accident = $this->getAccidentService()->first([AccidentService::FIELD_ID => $id]);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
         $this->checkAccess($accident);
 
         /** @var AccidentStatusService $accidentStatusesService */

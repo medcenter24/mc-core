@@ -33,7 +33,7 @@ trait TestTraitDoctorApi
     /**
      * @var Doctor
      */
-    private Doctor $doctor;
+    private ?Doctor $doctor = null;
 
     protected function getCurrentDoctor(): Doctor
     {
@@ -43,12 +43,5 @@ trait TestTraitDoctorApi
             ]);
         }
         return $this->doctor;
-    }
-
-    protected function getHeaders(): array
-    {
-        // create Doctor instance for the User (otherwise it won't work)
-        $this->getCurrentDoctor();
-        return $this->headers($this->getLoggedUser());
     }
 }

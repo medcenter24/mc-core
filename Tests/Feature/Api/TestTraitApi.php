@@ -23,8 +23,6 @@ namespace medcenter24\mcCore\Tests\Feature\Api;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
-use medcenter24\mcCore\App\Entity\User;
-use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 trait TestTraitApi
 {

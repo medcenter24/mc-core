@@ -68,7 +68,7 @@ class CaseFinanceController extends ApiController
      * @param int $id
      * @param string $type
      * @param CaseFinanceService $caseFinanceService
-     * @param Request $request
+     * @param JsonRequest $request
      * @param CaseFinanceViewService $caseFinanceViewService
      * @param AccidentService $accidentService
      * @return Response
@@ -90,10 +90,11 @@ class CaseFinanceController extends ApiController
         if (!$accident) {
             $this->response->errorNotFound();
         }
+        $jsonData = $request->json() ? $request->json()->all() : [];
         $caseFinanceService->save(
             $accident,
             $type,
-            $request->json()->all());
+            $jsonData);
         return $this->getResponse(
             CaseFinanceViewService::FINANCE_TYPES,
             $accident,

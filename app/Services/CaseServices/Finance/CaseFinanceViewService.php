@@ -27,6 +27,7 @@ use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Services\Entity\CurrencyService;
+use medcenter24\mcCore\App\Services\Entity\PaymentService;
 use medcenter24\mcCore\App\Services\Formula\FormulaResultService;
 use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
 use Illuminate\Support\Collection;
@@ -99,9 +100,8 @@ class CaseFinanceViewService
                 'type' => $type,
                 'loading' => false,
                 'payment' => $data['payment'],
-                'currency' => $data['payment'] ? $data['payment']->currency : $this->currencyService->getDefaultCurrency(),
-                'calculatedValue' => array_key_exists('formula', $data) && $data['formula'] instanceof FormulaBuilder
-                    ? $this->formulaResultService->calculate($data['formula']) : 0,
+                'currency' => $this->hasPayment($data) ? $this->getPayment($data)->currency : $this->currencyService->getDefaultCurrency(),
+                'calculatedValue' => $this->getCalculatedValue($data),
                 'formulaView' => array_key_exists('formula', $data) && $data['formula'] instanceof FormulaBuilder
                     ? $this->formulaViewService->render($data['formula']) : $data['formula'],
             ]);
@@ -109,6 +109,38 @@ class CaseFinanceViewService
         }
 
         return $financeDataCollection;
+    }
+
+    /**
+     * @param array $data
+     * @return float
+     * @throws FormulaException
+     */
+    private function getCalculatedValue(array $data): float
+    {
+        $value = 0;
+        if (array_key_exists('formula', $data)) {
+            if ($data['formula'] instanceof FormulaBuilder) {
+                $value = $this->formulaResultService->calculate($data['formula']);
+            } elseif ($data['formula'] === 'invoice' && $this->hasPayment($data)) {
+                $value = $this->getPayment($data)->getAttribute(PaymentService::FIELD_VALUE);
+            }
+        }
+        return (float) $value;
+    }
+
+    private function hasPayment(array $data): bool
+    {
+        return array_key_exists('payment', $data) && $data['payment'] instanceof Payment;
+    }
+
+    private function getPayment(array $data): ?Payment
+    {
+        $payment = null;
+        if ($this->hasPayment($data)) {
+            $payment = $data['payment'];
+        }
+        return $payment;
     }
 
     /**

@@ -29,10 +29,15 @@ class InvoiceTransformer extends AbstractTransformer
     public function transform (Model $model): array
     {
         $fields = parent::transform($model);
-        $fields['price'] = (float) ($model->getAttribute('payment')
-            ? $model->getAttribute('payment')->getAttribute('value')
-            : 0);
+        $fields['price'] = $this->getPaymentValue($model);
         return $fields;
+    }
+
+    private function getPaymentValue(Model $model): float
+    {
+        $payment = $model->getAttribute('payment');
+        $price = $payment ? $payment->getAttribute('value') : 0;
+        return (float) $price;
     }
 
     protected function getMap(): array

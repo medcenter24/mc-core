@@ -21,9 +21,11 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Entity\FinanceCurrency;
 use medcenter24\mcCore\App\Entity\Invoice;
+use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Events\InvoiceChangedEvent;
-use medcenter24\mcCore\App\Http\Requests\Api\InvoiceUpdateRequest;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 
 class InvoiceService extends AbstractModelService
 {
@@ -122,5 +124,37 @@ class InvoiceService extends AbstractModelService
         $invoice = parent::findAndUpdate($filterByFields, $data);
         event(new InvoiceChangedEvent($invoice, $previous));
         return $invoice;
+    }
+
+    /**
+     * @param Invoice $invoice
+     * @param int $price
+     * @param FinanceCurrency $currency
+     * @throws InconsistentDataException
+     */
+    public function setPrice(Invoice $invoice, int $price, FinanceCurrency $currency): void
+    {
+        /** @var Payment $payment */
+        $paymentId = $invoice->getAttribute(self::FIELD_PAYMENT_ID);
+        if (!$paymentId) {
+            $payment = $this->getPaymentService()->create([
+                PaymentService::FIELD_VALUE => $price,
+                PaymentService::FIELD_CURRENCY_ID => $currency->getKey(),
+                PaymentService::FIELD_FIXED => 0,
+            ]);
+            $invoice->payment()->associate($payment);
+            $invoice->save();
+        } else {
+            $this->getPaymentService()->findAndUpdate([PaymentService::FIELD_ID], [
+                PaymentService::FIELD_ID => $paymentId,
+                PaymentService::FIELD_VALUE => $price,
+                PaymentService::FIELD_CURRENCY_ID => $currency->getKey(),
+            ]);
+        }
+    }
+
+    private function getPaymentService(): PaymentService
+    {
+        return $this->getServiceLocator()->get(PaymentService::class);
     }
 }

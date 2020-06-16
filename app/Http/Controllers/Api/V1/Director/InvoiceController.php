@@ -24,7 +24,6 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
-use medcenter24\mcCore\App\Entity\FinanceCurrency;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\InvoiceRequest;
@@ -34,7 +33,6 @@ use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
 use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Services\Entity\FormService;
 use medcenter24\mcCore\App\Services\Entity\InvoiceService;
-use medcenter24\mcCore\App\Services\Entity\PaymentService;
 use medcenter24\mcCore\App\Services\Entity\UploadService;
 use medcenter24\mcCore\App\Transformers\FormTransformer;
 use medcenter24\mcCore\App\Transformers\InvoiceTransformer;
@@ -60,11 +58,6 @@ class InvoiceController extends ModelApiController
     protected function getCurrencyService(): CurrencyService
     {
         return $this->getServiceLocator()->get(CurrencyService::class);
-    }
-
-    protected function getPaymentService(): PaymentService
-    {
-        return $this->getServiceLocator()->get(PaymentService::class);
     }
 
     protected function getFormService(): FormService
@@ -95,46 +88,6 @@ class InvoiceController extends ModelApiController
         return InvoiceUpdateRequest::class;
     }
 
-    /**
-     * @param int $id
-     * @param JsonRequest $request
-     * @return Response
-     * @throws InconsistentDataException
-     */
-    public function update2(int $id, JsonRequest $request): Response
-    {
-        /** @var InvoiceRequest $request */
-        $request = call_user_func([$this->getUpdateRequestClass(), 'createFromBase'], $request);
-        $request->validate();
-
-        /** @var Invoice $invoice */
-        $invoice = $this->getInvoiceService()->first([InvoiceService::FIELD_ID => $id]);
-        if (!$invoice) {
-            $this->response->errorNotFound();
-        }
-
-        try {
-            $invoice = $this->getInvoiceService()->findAndUpdate([InvoiceService::FIELD_ID], [
-                InvoiceService::FIELD_ID => $id,
-                InvoiceService::FIELD_TITLE => $request->get('title', ''),
-                InvoiceService::FIELD_TYPE => $request->get('type', InvoiceService::TYPE_UPLOAD),
-                InvoiceService::FIELD_STATUS => $request->get('status', 'new'),
-            ]);
-
-            // Add payment (for the price)
-            $price = (int)$request->get('price', 0);
-            $this->assignPayment($invoice, $price, $this->getCurrencyService()->getDefaultCurrency());
-            // assign Form or Uploaded file (depends on the invoice type)
-            $this->assignInvoiceTypeResource($invoice, $request);
-        } catch (QueryException $e) {
-            Log::error($e->getMessage(), [$e]);
-            $this->response->errorInternal();
-        }
-
-        $transformer = $this->getDataTransformer();
-        return $this->response->accepted(null, $transformer->transform($invoice));
-    }
-
     public function update(int $id, JsonRequest $request): Response
     {
         /** @var Invoice $invoice */
@@ -150,7 +103,13 @@ class InvoiceController extends ModelApiController
 
         // Add payment (for the price)
         $price = (int) $request->get('price', 0);
-        $this->assignPayment($invoice, $price, $this->getCurrencyService()->getDefaultCurrency());
+        try {
+            $this->getInvoiceService()->setPrice($invoice, $price, $this->getCurrencyService()->getDefaultCurrency());
+        } catch (InconsistentDataException $e) {
+            Log::error($e->getMessage(), [$e]);
+            $this->response->errorInternal();
+        }
+
         // assign Form or Uploaded file (depends on the invoice type)
 
         /** @var InvoiceRequest $request */
@@ -213,29 +172,15 @@ class InvoiceController extends ModelApiController
             ]);
 
             $price = (int)$request->get('price', 0);
-            $this->assignPayment($invoice, $price, $this->getCurrencyService()->getDefaultCurrency());
+            $this->getInvoiceService()->setPrice($invoice, $price, $this->getCurrencyService()->getDefaultCurrency());
 
             $this->assignInvoiceTypeResource($invoice, $request);
-
-            $transformer = $this->getDataTransformer();
-        } catch (QueryException $e) {
+        } catch (QueryException | InconsistentDataException $e) {
             Log::error($e->getMessage(), [$e]);
             $this->response->errorInternal();
         }
 
-        return $this->response->created(null, $transformer->transform($invoice));
-    }
-
-    private function assignPayment(Invoice $invoice, int $price, FinanceCurrency $currency): void
-    {
-        $payment = $this->getPaymentService()->create([
-            'value' => $price,
-            'currency_id' => $currency->getKey(),
-            'fixed' => 0,
-            'description' => '',
-        ]);
-        $invoice->payment()->associate($payment);
-        $invoice->save();
+        return $this->response->created(null, $this->getDataTransformer()->transform($invoice));
     }
 
     /**

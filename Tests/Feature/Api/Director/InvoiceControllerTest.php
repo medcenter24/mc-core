@@ -21,12 +21,23 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use medcenter24\mcCore\App\Services\Entity\InvoiceService;
+use medcenter24\mcCore\App\Services\Entity\PaymentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorApiModelTest;
 
 class InvoiceControllerTest extends DirectorApiModelTest
 {
 
     private const URI = 'api/director/invoice';
+
+    private InvoiceService $invoiceService;
+    private PaymentService $paymentService;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->invoiceService = new InvoiceService();
+        $this->paymentService = new PaymentService();
+    }
 
     /**
      * @inheritDoc
@@ -216,5 +227,48 @@ class InvoiceControllerTest extends DirectorApiModelTest
                 ],
             ],
         ];
+    }
+
+    public function testSearchData(): void
+    {
+        $invoice = $this->invoiceService->create([
+            InvoiceService::FIELD_PAYMENT_ID => $this->paymentService->create([
+                PaymentService::FIELD_VALUE => 5,
+            ])->id,
+        ]);
+
+        $response = $this->sendPost(self::URI .'/search', [
+            'filter' => [
+                'fields' => [
+                    [
+                        'elType' => 'text',
+                        'field' => 'id',
+                        'match' => 'eq',
+                        'value' => $invoice->id,
+                    ],
+                ],
+            ],
+        ]);
+
+        $response->assertOk()
+            ->assertJson(['data' => [
+                [
+                    'id' => 1,
+                    'title' => '',
+                    'type' => 'upload',
+                    'status' => 'new',
+                    'price' => 5,
+                ]
+            ],
+                'meta' => [
+                    'pagination' => [
+                        'total' => 1,
+                        'count' => 1,
+                        'per_page' => 15,
+                        'current_page' => 1,
+                        'total_pages' => 1,
+                        'links' => []
+                    ]
+                ]]);
     }
 }

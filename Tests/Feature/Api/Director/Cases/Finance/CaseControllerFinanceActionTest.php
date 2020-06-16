@@ -586,10 +586,10 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'calculatedValue' => 0,
+                    'calculatedValue' => 5,
                     'currency' => [],
                     'payment' => [
-                        'value' => '5',
+                        'value' => 5,
                     ],
                     'formula' => 'invoice',
                 ],
@@ -655,7 +655,7 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'calculatedValue' => 0,
+                    'calculatedValue' => 5,
                     'currency' => [],
                     'payment' => [
                         'value' => $payment->value,
@@ -740,7 +740,7 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'calculatedValue' => 0,
+                    'calculatedValue' => 5,
                     'currency' => [],
                     'formula' => 'invoice',
                 ],
@@ -835,7 +835,7 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'calculatedValue' => 0,
+                    'calculatedValue' => 5,
                     'formula' => 'invoice',
                     'payment' => [
                         'id' => $assistantInvoice->payment->id,

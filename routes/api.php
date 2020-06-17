@@ -58,6 +58,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics\TrafficCo
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\SurveysController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\UploadsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\UsersController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\Accident\CaseTypeController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\AccidentTypesController as DoctorAccidentTypesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\Accident\DiagnosticsAccidentController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\DiagnosticsController as DoctorDiagnosticsController;
@@ -100,25 +101,25 @@ $api->group([
                 $api->put('{id}/patient', PatientAccidentController::class . '@updatePatient');
 
                 $api->get('{id}/status', StatusAccidentController::class . '@status');
-                $api->patch('{id}/reject', StatusAccidentController::class . '@reject');
+                $api->post('{id}/reject', StatusAccidentController::class . '@reject');
                 $api->post('send', StatusAccidentController::class . '@send');
 
                 $api->get('{id}/services', ServicesAccidentController::class . '@services');
-                $api->patch('{id}/services', ServicesAccidentController::class . '@saveService');
+                $api->post('{id}/services', ServicesAccidentController::class . '@saveService');
 
                 $api->post('{id}/documents', DocumentsAccidentController::class . '@createDocument');
                 $api->get('{id}/documents', DocumentsAccidentController::class . '@documents');
 
                 $api->get('{id}/surveys', SurveysAccidentController::class . '@surveys');
-                $api->patch('{id}/surveys', SurveysAccidentController::class . '@createSurvey');
+                $api->post('{id}/surveys', SurveysAccidentController::class . '@createSurvey');
 
                 $api->get('{id}/diagnostics', DiagnosticsAccidentController::class . '@diagnostics');
-                $api->patch('{id}/diagnostics', DiagnosticsAccidentController::class . '@saveDiagnostic');
+                $api->post('{id}/diagnostics', DiagnosticsAccidentController::class . '@saveDiagnostic');
 
                 $api->get('', DoctorCaseController::class . '@index');
-                $api->get('{id}/caseType', DoctorCaseController::class . '@type');
+                $api->get('{id}/caseType', CaseTypeController::class . '@show');
                 $api->get('{id}', DoctorCaseController::class . '@show');
-                $api->put('{id}', DoctorCaseController::class . '@update');
+                $api->post('{id}', DoctorCaseController::class . '@update');
             });
 
             $api->get('me', ProfileController::class . '@me');
@@ -135,7 +136,7 @@ $api->group([
             $api->group(['prefix' => 'documents'], static function (Router $api) {
                 $api->get('{id}', DoctorDocumentsController::class . '@show');
                 $api->delete('{id}', DoctorDocumentsController::class . '@destroy');
-                $api->put('{id}', DoctorDocumentsController::class . '@update');
+                $api->patch('{id}', DoctorDocumentsController::class . '@update');
             });
         });
 

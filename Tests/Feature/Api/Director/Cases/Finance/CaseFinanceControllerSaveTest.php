@@ -23,7 +23,7 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\Finance;
 
 use Illuminate\Support\Facades\Event;
 use medcenter24\mcCore\App\Entity\Accident;
-use medcenter24\mcCore\App\Events\Payment\AccidentPaymentChangedEvent;
+use medcenter24\mcCore\App\Events\Accident\Payment\AccidentPaymentChangedEvent;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Services\Entity\PaymentService;

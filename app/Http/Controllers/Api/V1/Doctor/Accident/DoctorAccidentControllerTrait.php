@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\Accident;
 
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Doctor\ApiDoctorTrait;
@@ -43,19 +44,42 @@ trait DoctorAccidentControllerTrait
         }
 
         $caseDoctorId = (int) $doctorAccident->getAttribute(DoctorAccidentService::FIELD_DOCTOR_ID);
-        if (!$caseDoctorId || $caseDoctorId !== $this->getDoctorId()) {
+        if (!$this->isValidIdentifier($caseDoctorId) || !$this->isSameDoctor($caseDoctorId)) {
+            Log::warning('Wrong access for the accident', ['accident_id' => $accident->getKey()]);
             $this->response->errorNotFound();
         }
 
-        if (
-            !$accident->accidentStatus->type === AccidentStatusService::TYPE_DOCTOR
-            || ( !in_array($accident->accidentStatus->title, [
-                AccidentStatusService::STATUS_ASSIGNED,
-                AccidentStatusService::STATUS_IN_PROGRESS,
-            ], false)
-            )
-        ) {
+        if (!$this->isCorrectAccidentStatus($accident)) {
             $this->response->errorMethodNotAllowed('You cant\'t change this case');
         }
+    }
+
+    private function isValidIdentifier(int $id): bool
+    {
+        if($id > 0) {
+            return true;
+        }
+
+        Log::warning('Doctor is not assigned to the case');
+        return false;
+    }
+
+    private function isSameDoctor(int $doctorId): bool
+    {
+        if ($doctorId === $this->getDoctorId()) {
+            return true;
+        }
+
+        Log::warning('Doctor is not the current in the case');
+        return false;
+    }
+
+    private function isCorrectAccidentStatus(Accident $accident): bool
+    {
+        return $accident->accidentStatus->type === AccidentStatusService::TYPE_DOCTOR
+            && in_array($accident->accidentStatus->title, [
+                AccidentStatusService::STATUS_ASSIGNED,
+                AccidentStatusService::STATUS_IN_PROGRESS,
+            ], true);
     }
 }

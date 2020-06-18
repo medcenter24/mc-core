@@ -28,7 +28,7 @@ use medcenter24\mcCore\App\Entity\DatePeriod;
 use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\Service;
-use medcenter24\mcCore\App\Events\Payment\AccidentPaymentChangedEvent;
+use medcenter24\mcCore\App\Events\Accident\Payment\AccidentPaymentChangedEvent;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\App\Entity\FinanceStorage;

@@ -61,7 +61,7 @@ class AccidentInvoiceVisorService extends AbstractVisorService
 
     /**
      * @param Model|Invoice $model
-     * @return Accident|null
+     * @return Accident|null|Model
      */
     protected function popAccident(Model $model): ?Accident
     {

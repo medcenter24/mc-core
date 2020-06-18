@@ -19,9 +19,10 @@
 namespace medcenter24\mcCore\App\Console;
 
 use medcenter24\mcCore\App\Console\Commands\CleanInvites;
-use medcenter24\mcCore\App\Console\Commands\CleanStorageDev;
+use medcenter24\mcCore\App\Console\Commands\Development\CleanStorageDev;
 use medcenter24\mcCore\App\Console\Commands\CopierCommand;
 use medcenter24\mcCore\App\Console\Commands\CreateUserCommand;
+use medcenter24\mcCore\App\Console\Commands\Development\GenerateFakeData;
 use medcenter24\mcCore\App\Console\Commands\SeedInstallerCommand;
 use medcenter24\mcCore\App\Console\Commands\SetupEnvironmentCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -41,6 +42,7 @@ class Kernel extends ConsoleKernel
         CopierCommand::class,
         SeedInstallerCommand::class,
         CleanStorageDev::class,
+        GenerateFakeData::class,
     ];
 
     /**

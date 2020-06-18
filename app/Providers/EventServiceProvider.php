@@ -23,7 +23,7 @@ use medcenter24\mcCore\App\Events\Accident\Caseable\AccidentUpdatedEvent;
 use medcenter24\mcCore\App\Events\Accident\Caseable\DoctorAccidentUpdatedEvent;
 use medcenter24\mcCore\App\Events\Accident\Caseable\HospitalAccidentUpdatedEvent;
 use medcenter24\mcCore\App\Events\Accident\Status\AccidentStatusChangedEvent;
-use medcenter24\mcCore\App\Events\Payment\AccidentPaymentChangedEvent;
+use medcenter24\mcCore\App\Events\Accident\Payment\AccidentPaymentChangedEvent;
 use medcenter24\mcCore\App\Events\DatePeriodChangedEvent;
 use medcenter24\mcCore\App\Events\InvoiceChangedEvent;
 use medcenter24\mcCore\App\Listeners\Accident\UpdateAccidentStatus\OnInvoiceUpdated;

@@ -60,6 +60,7 @@ abstract class AbstractVisorService
 
         foreach ($this->getStatusMap() as $fieldName => $status) {
             if ($this->isStatusUpdatable($fieldName, $model, $previousModel)) {
+                Log::error('Update status', [$accident, $status]);
                 $this->updateStatus($accident, $status);
             }
         }

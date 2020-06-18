@@ -25,7 +25,6 @@ use medcenter24\mcCore\App\Helpers\Date;
 
 class Filter extends RequestBuilder
 {
-
     public const FIELD_MATCH = 'match';
     public const FIELD_EL_TYPE = 'elType';
 

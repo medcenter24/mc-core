@@ -20,6 +20,8 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
+use medcenter24\mcCore\App\Entity\Assistant;
+use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 use medcenter24\mcCore\App\Services\Entity\AssistantService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorApiModelTest;
 
@@ -154,22 +156,14 @@ class AssistantsControllerTest extends DirectorApiModelTest
                 'expectedResponse' => [
                     'data' => [
                         [
-                            'id' => 1,
-                            'title' => 'Text to be searched',
-                        ],
-                        [
                             'id' => 2,
                             'title' => 'Php Unit test',
-                        ],
-                        [
-                            'id' => 3,
-                            'title' => 'another text',
                         ],
                     ],
                     'meta' => [
                         'pagination' => [
                             'total' => 3,
-                            'count' => 3,
+                            'count' => 1,
                             'per_page' => 15,
                             'current_page' => 1,
                             'total_pages' => 1,
@@ -227,5 +221,45 @@ class AssistantsControllerTest extends DirectorApiModelTest
                 ],
             ],
         ];
+    }
+
+    public function testFilteredSearch(): void
+    {
+        factory(Assistant::class)->create(['title' => 'Text to be searched']);
+        factory(Assistant::class)->create(['title' => 'Php Unit test']);
+        factory(Assistant::class)->create(['title' => 'another text']);
+
+        $response = $this->sendPost(self::URI . '/search', [
+            'filter' => [
+                'fields' => [
+                    [
+                        Filter::FIELD_NAME => 'title',
+                        Filter::FIELD_MATCH => Filter::MATCH_CONTENTS,
+                        Filter::FIELD_VALUE => 'php',
+                        Filter::FIELD_EL_TYPE => Filter::TYPE_TEXT,
+                    ],
+                ],
+            ],
+        ]);
+
+        $response->assertOk()->assertJson([
+            'data' => [
+                [
+                    'id' => 2,
+                    'title' => 'Php Unit test',
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                    'total' => 1,
+                    'count' => 1,
+                    'per_page' => 15,
+                    'current_page' => 1,
+                    'total_pages' => 1,
+                    'links' => [
+                    ],
+                ],
+            ],
+        ]);
     }
 }

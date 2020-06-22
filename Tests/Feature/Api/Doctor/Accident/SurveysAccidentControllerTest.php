@@ -45,7 +45,7 @@ class SurveysAccidentControllerTest extends TestCase
     public function testCreateSurvey(): void
     {
         $accident = $this->createAccidentForDoc();
-        $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/surveys', []);
+        $response = $this->sendPost('/api/doctor/accidents/'.$accident->id.'/surveys', []);
         $response->assertStatus(202);
         $response->assertJson([
             'id' => 1,
@@ -59,7 +59,7 @@ class SurveysAccidentControllerTest extends TestCase
     public function testCreateSurveyFilled(): void
     {
         $accident = $this->createAccidentForDoc();
-        $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/surveys', [
+        $response = $this->sendPost('/api/doctor/accidents/'.$accident->id.'/surveys', [
             'title' => 'tit',
             'description' => 'desc',
             'status' => 'disabled',
@@ -92,7 +92,7 @@ class SurveysAccidentControllerTest extends TestCase
         $accident->setAttribute(AccidentService::FIELD_CASEABLE_ID, $doctorAccident->getKey());
         $accident->save();
 
-        $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/surveys', [
+        $response = $this->sendPost('/api/doctor/accidents/'.$accident->id.'/surveys', [
             'id' => $survey->getKey(),
             'title' => 'tit',
             'description' => 'desc',

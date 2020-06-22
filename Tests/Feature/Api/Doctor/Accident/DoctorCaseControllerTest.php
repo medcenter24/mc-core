@@ -148,9 +148,8 @@ class DoctorCaseControllerTest extends TestCase
         /** @var SurveyService $surveyService */
         $surveyService = $this->getServiceLocator()->get(SurveyService::class);
 
-        /** @var Accident $accident */
         $accident = $this->createAccidentForDoc();
-        $response = $this->sendPut('/api/doctor/accidents/' . $accident->getKey(), [
+        $response = $this->sendPost('/api/doctor/accidents/' . $accident->getKey(), [
             'diagnose' => 'Recommendation',
             'investigation' => 'Investigation',
             'visitDateTime' => '2017-01-20 01:30:54',

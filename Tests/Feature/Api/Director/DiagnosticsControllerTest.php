@@ -242,7 +242,7 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
                         'pagination' => [
                             'total' => 3,
                             'count' => 3,
-                            'per_page' => 15,
+                            'per_page' => 25,
                             'current_page' => 1,
                             'total_pages' => 1,
                             'links' => [

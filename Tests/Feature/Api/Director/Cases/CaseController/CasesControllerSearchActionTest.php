@@ -45,7 +45,7 @@ class CasesControllerSearchActionTest extends TestCase
                 'pagination' => [
                     'total' => 7,
                     'count' => 7,
-                    'per_page' => 15,
+                    'per_page' => 25,
                     'current_page' => 1,
                     'total_pages' => 1,
                     'links' => [],
@@ -79,7 +79,7 @@ class CasesControllerSearchActionTest extends TestCase
                 'pagination' => [
                     'total' => 1,
                     'count' => 1,
-                    'per_page' => 15,
+                    'per_page' => 25,
                     'current_page' => 1,
                     'total_pages' => 1,
                     'links' => [],

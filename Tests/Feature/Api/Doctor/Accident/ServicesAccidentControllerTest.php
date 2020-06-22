@@ -45,7 +45,7 @@ class ServicesAccidentControllerTest extends TestCase
     public function testCreateService(): void
     {
         $accident = $this->createAccidentForDoc();
-        $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/services', []);
+        $response = $this->sendPost('/api/doctor/accidents/'.$accident->id.'/services', []);
         $response->assertStatus(202);
         $response->assertJson([
             'id' => 1,
@@ -60,7 +60,7 @@ class ServicesAccidentControllerTest extends TestCase
     public function testCreateServiceFilled(): void
     {
         $accident = $this->createAccidentForDoc();
-        $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/services', [
+        $response = $this->sendPost('/api/doctor/accidents/'.$accident->id.'/services', [
             'title' => 'tit',
             'description' => 'desc',
             'diseaseId' => 1,
@@ -95,7 +95,7 @@ class ServicesAccidentControllerTest extends TestCase
         $accident->setAttribute(AccidentService::FIELD_CASEABLE_ID, $doctorAccident->getKey());
         $accident->save();
 
-        $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/services', [
+        $response = $this->sendPost('/api/doctor/accidents/'.$accident->id.'/services', [
             'id' => $service->getKey(),
             'title' => 'tit',
             'description' => 'desc',

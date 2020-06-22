@@ -44,7 +44,7 @@ class DiagnosticsAccidentControllerTest extends TestCase
     public function testCreateDiagnostic(): void
     {
         $accident = $this->createAccidentForDoc();
-        $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/diagnostics', []);
+        $response = $this->sendPost('/api/doctor/accidents/'.$accident->id.'/diagnostics', []);
         $response->assertStatus(202);
         $response->assertJson([
             'id' => 1,
@@ -59,7 +59,7 @@ class DiagnosticsAccidentControllerTest extends TestCase
     public function testCreateDiagnosticFilled(): void
     {
         $accident = $this->createAccidentForDoc();
-        $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/diagnostics', [
+        $response = $this->sendPost('/api/doctor/accidents/'.$accident->id.'/diagnostics', [
             'title' => 'tit',
             'description' => 'desc',
             'diagnosticCategoryId' => 1,
@@ -93,7 +93,7 @@ class DiagnosticsAccidentControllerTest extends TestCase
         $accident->setAttribute(AccidentService::FIELD_CASEABLE_ID, $doctorAccident->getKey());
         $accident->save();
 
-        $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/diagnostics', [
+        $response = $this->sendPost('/api/doctor/accidents/'.$accident->id.'/diagnostics', [
             'id' => $diagnostic->getKey(),
             'title' => 'tit',
             'description' => 'desc',

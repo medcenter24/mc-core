@@ -42,7 +42,7 @@ class StatusAccidentControllerTest extends TestCase
     public function testReject(): void
     {
         $accident = $this->createAccidentForDoc();
-        $response = $this->sendPatch('/api/doctor/accidents/'.$accident->id.'/reject', []);
+        $response = $this->sendPost('/api/doctor/accidents/'.$accident->id.'/reject', []);
         $response->assertStatus(204);
         $accident->refresh();
         $this->assertSame('reject', $accident->accidentStatus->title);

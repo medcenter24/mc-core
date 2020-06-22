@@ -20,14 +20,22 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AccidentStatusRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Transformers\AccidentStatusTransformer;
 use League\Fractal\TransformerAbstract;
 
-// todo director shouldn't be able to control accidents' statuses
+/**
+ * Selector of statuses for datatable filtering
+ * Class AccidentStatusesController
+ * @package medcenter24\mcCore\App\Http\Controllers\Api\V1\Director
+ */
 class AccidentStatusesController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
@@ -35,48 +43,8 @@ class AccidentStatusesController extends ModelApiController
         return new AccidentStatusTransformer();
     }
 
-    protected function getModelClass(): string
+    protected function getModelService(): ModelService
     {
-        return AccidentStatus::class;
-    }
-
-    public function index()
-    {
-        $accidentStatus = AccidentStatus::orderBy('title')->get();
-        return $this->response->collection($accidentStatus, new AccidentStatusTransformer());
-    }
-
-    public function show($id)
-    {
-        $accidentStatus = AccidentStatus::findOrFail($id);
-        return $this->response->item($accidentStatus, new AccidentStatusTransformer());
-    }
-
-    public function store(AccidentStatusRequest $request)
-    {
-        $accidentStatus = AccidentStatus::create([
-            'title' => $request->json('title', ''),
-            'type' => $request->json('type', ''),
-        ]);
-        $transformer = new AccidentStatusTransformer();
-        return $this->response->created(null, $transformer->transform($accidentStatus));
-    }
-
-    public function update($id, AccidentStatusRequest $request)
-    {
-        $accidentStatus = AccidentStatus::findOrFail($id);
-        $accidentStatus->title = $request->json('title', '');
-        $accidentStatus->type = $request->json('type', '');
-        $accidentStatus->save();
-        Log::info('Accident status updated', [$accidentStatus, $this->user()]);
-        $this->response->item($accidentStatus, new AccidentStatusTransformer());
-    }
-
-    public function destroy($id)
-    {
-        $accidentStatus = AccidentStatus::findOrFail($id);
-        Log::info('Accident status deleted', [$accidentStatus, $this->user()]);
-        $accidentStatus->delete();
-        return $this->response->noContent();
+        return $this->getServiceLocator()->get(AccidentStatusService::class);
     }
 }

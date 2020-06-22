@@ -29,7 +29,7 @@ class Sorter extends RequestBuilder
     /**
      * @var Collection
      */
-    private $sortBy;
+    private Collection $sortBy;
 
     public function inject(array $config): void
     {

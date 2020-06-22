@@ -245,7 +245,7 @@ class ApiSearchService
         $this->attachSort($eloquent, $requestBuilder->getSorter()->getSortBy());
 
         return $eloquent->paginate(
-            $requestBuilder->getPaginator()->getOffset(),
+            $requestBuilder->getPaginator()->getLimit(),
             // working with models, other info will be got later
             [$model->getTable() . '.*'],
             'page',

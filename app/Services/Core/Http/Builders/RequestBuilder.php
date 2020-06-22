@@ -24,7 +24,7 @@ use Illuminate\Support\Collection;
 
 abstract class RequestBuilder
 {
-    private const FIELDS = 'fields';
+    public const FIELDS = 'fields';
 
     public const FIELD_NAME = 'field';
     public const FIELD_VALUE = 'value';
@@ -32,12 +32,12 @@ abstract class RequestBuilder
     /**
      * @var array
      */
-    private $config = [];
+    private array $config = [];
 
     /**
      * @var Collection
      */
-    private $fields;
+    private ?Collection $fields = null;
 
     /**
      * Creates new object of the class by the service

@@ -20,14 +20,14 @@ namespace medcenter24\mcCore\App\Services\Core\Http\Builders;
 
 class Paginator extends RequestBuilder
 {
-    private const FIELD_OFFSET = 'offset';
-    private const FIELD_LIMIT = 'limit';
+    public const FIELD_OFFSET = 'offset';
+    public const FIELD_LIMIT = 'limit';
 
     private const DEFAULT_OFFSET = 0;
     private const DEFAULT_LIMIT = 25;
 
-    private $offset = self::DEFAULT_OFFSET;
-    private $limit = self::DEFAULT_LIMIT;
+    private int $offset = self::DEFAULT_OFFSET;
+    private int $limit = self::DEFAULT_LIMIT;
 
     /**
      * @param array $paginationConf

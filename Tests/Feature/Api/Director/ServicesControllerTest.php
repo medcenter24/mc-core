@@ -22,6 +22,10 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use medcenter24\mcCore\App\Entity\Disease;
 use medcenter24\mcCore\App\Entity\Service;
+use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
+use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
+use medcenter24\mcCore\App\Services\Core\Http\Builders\Sorter;
+use medcenter24\mcCore\App\Services\Core\Http\DataLoaderRequestBuilder;
 use medcenter24\mcCore\App\Services\Entity\ServiceService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorApiModelTest;
 
@@ -312,6 +316,123 @@ class ServicesControllerTest extends DirectorApiModelTest
             ],
             'status' => 'active',
             'type' => 'system',
+        ]);
+    }
+
+    public function testSearchFiltered(): void
+    {
+        // 1
+        factory(Service::class)->create([
+            ServiceService::FIELD_TITLE => '3 service 1 phpunit',
+            ServiceService::FIELD_STATUS => ServiceService::STATUS_ACTIVE,
+        ]);
+        // 2
+        factory(Service::class)->create([
+            ServiceService::FIELD_TITLE => '1 service 2 phpunit',
+            ServiceService::FIELD_STATUS => ServiceService::STATUS_DISABLED
+        ]);
+        // 3
+        factory(Service::class)->create([
+            ServiceService::FIELD_TITLE => '2 service 3 phpunit',
+            ServiceService::FIELD_STATUS => ServiceService::STATUS_HIDDEN,
+        ]);
+        // 4
+        factory(Service::class)->create([
+            ServiceService::FIELD_TITLE => '3 service 1 phpunit',
+            ServiceService::FIELD_STATUS => ServiceService::STATUS_ACTIVE,
+        ]);
+        // 5
+        factory(Service::class)->create([
+            ServiceService::FIELD_TITLE => '5 service 1 phpunit',
+            ServiceService::FIELD_STATUS => ServiceService::STATUS_ACTIVE,
+        ]);
+        // 6
+        factory(Service::class)->create([
+            ServiceService::FIELD_TITLE => '8 service 1 phpunit',
+            ServiceService::FIELD_STATUS => ServiceService::STATUS_ACTIVE,
+        ]);
+        // 7
+        factory(Service::class)->create([
+            ServiceService::FIELD_TITLE => '9 service 1 phpunit',
+            ServiceService::FIELD_STATUS => ServiceService::STATUS_ACTIVE,
+        ]);
+
+        $response = $this->sendPost(self::URI . '/search', [
+            DataLoaderRequestBuilder::FILTER => [
+                Filter::FIELDS => [
+                    [
+                        Filter::FIELD_NAME => ServiceService::FIELD_STATUS,
+                        Filter::FIELD_MATCH => Filter::MATCH_EQ,
+                        Filter::FIELD_VALUE => ServiceService::STATUS_ACTIVE,
+                        Filter::FIELD_EL_TYPE => Filter::TYPE_TEXT,
+                    ],
+                ],
+            ],
+            DataLoaderRequestBuilder::SORTER => [
+                Sorter::FIELDS => [
+                    [
+                        Sorter::FIELD_NAME => ServiceService::FIELD_TITLE,
+                        Sorter::FIELD_VALUE => 'desc',
+                    ],
+                    [
+                        Sorter::FIELD_NAME => ServiceService::FIELD_ID,
+                        Sorter::FIELD_VALUE => 'asc',
+                    ],
+                ],
+            ],
+            DataLoaderRequestBuilder::PAGINATOR => [
+                Paginator::FIELDS => [
+                    [
+                        Paginator::FIELD_NAME => Paginator::FIELD_LIMIT,
+                        Paginator::FIELD_VALUE => 3,
+                    ],
+                    [
+                        Paginator::FIELD_NAME => Paginator::FIELD_OFFSET,
+                        Paginator::FIELD_VALUE => 3,
+                    ]
+                ]
+            ]
+        ]);
+
+        $response->assertOk()->assertJson([
+            'data' => [
+                // order by title desc
+                /*
+                 * offset 3
+                 * [
+                    'id' => 7,
+                    'title' => '9 service 1 phpunit',
+                ],
+                [
+                    'id' => 6,
+                    'title' => '8 service 1 phpunit',
+                ],
+                [
+                    'id' => 5,
+                    'title' => '5 service 1 phpunit'
+                ],
+                */
+                // order by id asc
+                [
+                    'id' => 1,
+                    'title' => '3 service 1 phpunit',
+                ],
+                [
+                    'id' => 4,
+                    'title' => '3 service 1 phpunit',
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                        'total' => 5,
+                        'count' => 2,
+                        'per_page' => 3,
+                        'current_page' => 2,
+                        'total_pages' => 2,
+                        'links' => [
+                    ],
+                ],
+            ],
         ]);
     }
 }

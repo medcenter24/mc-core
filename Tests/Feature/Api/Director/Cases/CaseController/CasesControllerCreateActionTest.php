@@ -31,7 +31,6 @@ use medcenter24\mcCore\App\Entity\FormReport;
 use medcenter24\mcCore\App\Entity\Patient;
 use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
-use medcenter24\mcCore\App\Transformers\CaseAccidentTransformer;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
 

@@ -48,7 +48,7 @@ class CaseAccidentTransformer extends AbstractTransformer
         $fields['checkpoints'] = $model->getAttribute('checkpoints')
             ? $model->getAttribute('checkpoints')->implode('title', ', ')
             : '';
-        $fields['statusTitle'] = $model->getAttribute('accidentStatus')
+        $fields['status'] = $model->getAttribute('accidentStatus')
             ? $model->getAttribute('accidentStatus')->getAttribute('title')
             : '';
         $fields['cityTitle'] = $model->getAttribute('city')

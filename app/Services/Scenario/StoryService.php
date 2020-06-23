@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Scenario;
 
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Scenario;
 use medcenter24\mcCore\App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;
@@ -91,15 +92,17 @@ class StoryService implements ScenarioInterface
     {
         $story = $this->history;
         $scenario = $this->scenario()->scenario()->sortByDesc('order');
-        // latest step will be marked as current
-        $isCurrent = true;
-        $scenario->map(static function ($step) use ($story, &$isCurrent) {
+        
+        // current step is a last action of the history
+        $currentAccidentStatusId = $this->history->last()->accident_status_id;
+
+        // fill scenario with passed history events
+        $scenario->map(static function ($step) use ($currentAccidentStatusId, $story) {
             // step was found in the history
-            if ( ($foundId = $story->search(static function ($item) use ($step) {
+            if ( ($story->search(static function ($item) use ($step) {
                 return $item->accident_status_id === $step->accident_status_id;
             })) !== false) {
-                if ($isCurrent) {
-                    $isCurrent = false; // only one current per story
+                if ($step->accident_status_id === $currentAccidentStatusId) {
                     $step->status = self::STATUS_CURRENT;
                 } else {
                     $step->status = self::STATUS_VISITED;
@@ -129,24 +132,24 @@ class StoryService implements ScenarioInterface
         });
 
         $story = $this->history;
-        $skipSteps->each(function(Scenario $skipStep) use ($story, &$scenario) {
+        $skipSteps->each(static function(Scenario $skipStep) use ($story, &$scenario) {
             // search in history if this status was assigned
             $foundInHistory = $story->filter(function ($step) use ($skipStep) {
-                return $step->accident_status_id == $skipStep->accident_status_id;
+                return $step->accident_status_id === $skipStep->accident_status_id;
             });
 
             if ($foundInHistory->count()) {
                 $skipType = $skipStep->getStatusType();
                 $previousMatched = false;
                 $newScenario = collect([]);
-                $scenario->map(function ($step) use ($skipStep, $skipType, &$previousMatched, &$newScenario) {
-                    if ($step->accidentStatus->type == $skipType) {
+                $scenario->map(static function ($step) use ($skipStep, $skipType, &$previousMatched, &$newScenario) {
+                    if ($step->accidentStatus->type === $skipType) {
                         $previousMatched = true;
                         if ($step->status) {
                             $newScenario->push($step);
                         }
                     } else {
-                        if ($previousMatched == true) {
+                        if ($previousMatched === true) {
                             $previousMatched = false;
                             $newScenario->push($skipStep);
                         }

@@ -99,7 +99,7 @@ class AuthenticateController extends ApiController
                     break;
             }
 
-            if ($hasAccess) {
+            if ($hasAccess && Roles::hasRole($this->guard()->user(), RoleService::LOGIN_ROLE)) {
                 Log::debug('User Has Access, token returned');
                 return $this->respondWithToken($token);
             }

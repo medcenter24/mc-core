@@ -79,7 +79,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\System\ExtensionsController;
 /** @var Router $api */
 $api = app(Router::class);
 
-$api->version('v1', ['middleware' => 'api'], static function (Router $api) {
+$api->version('v1', ['middleware' => ['api']], static function (Router $api) {
     $api->post('authenticate', AuthenticateController::class . '@authenticate');
 });
 $api->group([
@@ -94,7 +94,7 @@ $api->group([
         $api->get('user/company', AuthenticateController::class . '@getCompany');
         $api->get('system/extensions/{extName}', ExtensionsController::class . '@index');
 
-        $api->group(['prefix' => 'doctor', 'middleware' => ['doctor']], static function (Router $api) {
+        $api->group(['prefix' => 'doctor', 'middleware' => ['doctor', 'role:login']], static function (Router $api) {
 
             $api->group(['prefix' => 'accidents'], static function (Router $api) {
                 $api->get('{id}/patient', PatientAccidentController::class . '@patient');
@@ -140,7 +140,7 @@ $api->group([
             });
         });
 
-        $api->group(['prefix' => 'director', 'middleware' => ['role:director']], static function (Router $api) {
+        $api->group(['prefix' => 'director', 'middleware' => ['role:director', 'role:login']], static function (Router $api) {
 
             // Secure file uploader
             # uses for invoices, forms, etc.

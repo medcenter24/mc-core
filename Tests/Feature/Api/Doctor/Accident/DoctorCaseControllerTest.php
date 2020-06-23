@@ -56,7 +56,7 @@ class DoctorCaseControllerTest extends TestCase
                     'id' => 3,
                     'assistantId' => 3,
                     'repeated' => 0,
-                    'statusTitle' => 'assigned',
+                    'status' => 'assigned',
                     'price' => 0,
                     'doctorsFee' => 0,
                     'caseType' => 'doctor',

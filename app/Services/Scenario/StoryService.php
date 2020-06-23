@@ -21,7 +21,6 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Scenario;
 
-use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Scenario;
 use medcenter24\mcCore\App\Services\ScenarioInterface;
 use Illuminate\Support\Collection;

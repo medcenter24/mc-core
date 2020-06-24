@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,19 +17,42 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\City;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Entity\CityService;
 
 class CityTransformer extends AbstractTransformer
 {
-    public function transform(City $city): array
+    public function transform(Model $model): array
+    {
+        
+        $fields = parent::transform($model);
+        $fields['regionTitle'] = $model->getAttribute('region')
+            ? $model->getAttribute('region')->getAttribute('title')
+            : '';
+        $fields['countryTitle'] = $model->getAttribute('region') && $model->getAttribute('region')->getAttribute('country')
+        ? $model->getAttribute('region')->getAttribute('country')->getAttribute('title')
+        : '';
+        return $fields;
+    }
+    
+    protected function getMap(): array
     {
         return [
-            'id' => (int)$city->id,
-            'title' => $city->title,
-            'regionId' => $city->region_id,
+            CityService::FIELD_ID,
+            CityService::FIELD_TITLE,
+            'regionId' => CityService::FIELD_REGION_ID,
+        ];
+    }
+    
+    protected function getMappedTypes(): array
+    {
+        return [
+            CityService::FIELD_ID => self::VAR_INT,
+            CityService::FIELD_REGION_ID => self::VAR_INT,
         ];
     }
 }

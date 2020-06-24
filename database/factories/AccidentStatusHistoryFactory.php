@@ -15,10 +15,13 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\AccidentStatusHistory;
 
-$factory->define(medcenter24\mcCore\App\AccidentStatusHistory::class, function (Faker $faker) {
+$factory->define(AccidentStatusHistory::class, function (Faker $faker) {
     return [
         'commentary' => $faker->text(20),
         'accident_status_id' => function () use ($faker) {
@@ -26,8 +29,8 @@ $factory->define(medcenter24\mcCore\App\AccidentStatusHistory::class, function (
         },
         'historyable_id' => function () {
             // could be each of accident Doctor_Accident Accident Hospital_Accident ...
-            return factory(\medcenter24\mcCore\App\Accident::class)->create()->id;
+            return factory(Accident::class)->create()->id;
         },
-        'historyable_type' => \medcenter24\mcCore\App\Accident::class,
+        'historyable_type' => Accident::class,
     ];
 });

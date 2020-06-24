@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,15 +17,18 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services\CaseServices\Finance;
 
-
-use medcenter24\mcCore\App\Accident;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
-use medcenter24\mcCore\App\Payment;
-use medcenter24\mcCore\App\Services\CurrencyService;
+use medcenter24\mcCore\App\Entity\Payment;
+use medcenter24\mcCore\App\Services\Entity\CurrencyService;
+use medcenter24\mcCore\App\Services\Entity\PaymentService;
 use medcenter24\mcCore\App\Services\Formula\FormulaResultService;
 use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
 use Illuminate\Support\Collection;
@@ -93,20 +97,75 @@ class CaseFinanceViewService
                 default:
                     throw new InconsistentDataException('Undefined finance type');
             }
+
+            $currency = $this->hasPayment($data)
+                ? $this->getPayment($data)->currency
+                : $this->currencyService->getDefaultCurrency();
+
             $typeResult = collect([
                 'type' => $type,
                 'loading' => false,
                 'payment' => $data['payment'],
-                'currency' => $data['payment'] ? $data['payment']->currency : $this->currencyService->getDefaultCurrency(),
-                'calculatedValue' => array_key_exists('formula', $data) && $data['formula'] instanceof FormulaBuilder
-                    ? $this->formulaResultService->calculate($data['formula']) : 0,
+                'currency' => $currency,
+                'calculatedValue' => $this->getCalculatedValue($data),
                 'formulaView' => array_key_exists('formula', $data) && $data['formula'] instanceof FormulaBuilder
                     ? $this->formulaViewService->render($data['formula']) : $data['formula'],
+                'view' => $this->getFinalActiveValue($data) . ' ' . $currency->code,
             ]);
             $financeDataCollection->push($typeResult);
         }
 
         return $financeDataCollection;
+    }
+
+    private function getFinalActiveValue(array $data): string
+    {
+        /** @var Payment $payment */
+        $payment = $data['payment'];
+        if ($payment && (int)$payment->getAttribute(PaymentService::FIELD_FIXED)) {
+            $val = $payment->getAttribute(PaymentService::FIELD_VALUE);
+        } else {
+            try {
+                $val = $this->getCalculatedValue($data);
+            } catch (FormulaException $e) {
+                Log::error('Formula can not be calculated', [$e]);
+                $val = 'formula_error';
+            }
+        }
+
+        return (string) $val;
+    }
+
+    /**
+     * @param array $data
+     * @return float
+     * @throws FormulaException
+     */
+    private function getCalculatedValue(array $data): float
+    {
+        $value = 0;
+        if (array_key_exists('formula', $data)) {
+            if ($data['formula'] instanceof FormulaBuilder) {
+                $value = $this->formulaResultService->calculate($data['formula']);
+            } elseif ($data['formula'] === 'invoice' && $this->hasPayment($data)) {
+                $value = $this->getPayment($data)->getAttribute(PaymentService::FIELD_VALUE);
+            }
+        }
+        return (float) $value;
+    }
+
+    private function hasPayment(array $data): bool
+    {
+        return array_key_exists('payment', $data) && $data['payment'] instanceof Payment;
+    }
+
+    private function getPayment(array $data): ?Payment
+    {
+        $payment = null;
+        if ($this->hasPayment($data)) {
+            $payment = $data['payment'];
+        }
+        return $payment;
     }
 
     /**
@@ -142,7 +201,7 @@ class CaseFinanceViewService
     /**
      * @param array $data
      * @return float
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     private function getValueFromData(array $data): float
     {
@@ -157,7 +216,7 @@ class CaseFinanceViewService
             $res = $this->formulaResultService->calculate($data['formula']);
         }
 
-        return $res;
+        return (float) $res;
     }
 
     /**

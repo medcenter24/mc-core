@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,15 +17,16 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
-
 use Illuminate\Http\JsonResponse;
-use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Services\CaseServices\CaseHistoryService;
 use Illuminate\Http\Request;
-use medcenter24\mcCore\App\Services\FormService;
+use medcenter24\mcCore\App\Services\Entity\FormService;
 
 class CasesController extends AdminController
 {

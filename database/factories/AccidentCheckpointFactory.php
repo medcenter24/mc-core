@@ -16,9 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use Faker\Generator as Faker;
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-$factory->define(medcenter24\mcCore\App\AccidentCheckpoint::class, function (Faker $faker) {
+use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\AccidentCheckpoint;
+
+$factory->define(AccidentCheckpoint::class, function (Faker $faker) {
     return [
         'title' => $faker->title,
         'description' => $faker->text(),

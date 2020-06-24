@@ -15,11 +15,13 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+declare(strict_types=1);
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Doctor;
-use medcenter24\mcCore\App\FinanceCondition;
-use medcenter24\mcCore\App\Services\FinanceConditionService;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\FinanceCondition;
+use medcenter24\mcCore\App\Services\Entity\FinanceConditionService;
 use Faker\Generator as Faker;
 
 $factory->define(FinanceCondition::class, function (Faker $faker) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,22 +17,44 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Form;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Services\Entity\FormService;
+use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
 class FormTransformer extends AbstractTransformer
 {
-    public function transform(Form $form): array
+    use CaseTypeTransformer;
+
+    protected function getMap(): array
     {
         return [
-            'id' => (int)$form->id,
-            'title' => $form->title,
-            'description' => $form->description,
-            'type' => $form->formable_type,
-            'template' => $form->template,
-            'formableType' => $form->formable_type,
+            FormService::FIELD_ID,
+            FormService::FIELD_TITLE,
+            FormService::FIELD_DESCRIPTION,
+            'formableType' => FormService::FIELD_FORMABLE_TYPE,
+            FormService::FIELD_TEMPLATE,
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function transform (Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['formableType'] = 'accident';
+        return $fields;
+    }
+
+    public function inverseTransform(array $data): array
+    {
+        $data = parent::inverseTransform($data);
+        $data[FormService::FIELD_FORMABLE_TYPE] = Accident::class;
+        return $data;
     }
 }

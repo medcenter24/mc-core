@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,7 +18,8 @@
  */
 
 namespace medcenter24\mcCore\App\Services;
-use medcenter24\mcCore\App\AccidentStatus;
+use Illuminate\Support\Collection;
+use medcenter24\mcCore\App\Entity\AccidentStatus;
 
 /**
  * Scenario is a set of the statuses which should be done for the case completion
@@ -42,7 +44,7 @@ interface ScenarioInterface
 
     /**
      * Current scenario
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function scenario();
 

@@ -15,11 +15,14 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+declare(strict_types=1);
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Entity\Hospital;
 
-$factory->define(medcenter24\mcCore\App\Hospital::class, function (Faker $faker) {
+$factory->define(Hospital::class, function (Faker $faker) {
     return [
         'title' => $faker->text(30),
         'description' => $faker->text(),

@@ -15,12 +15,14 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Comment;
+use medcenter24\mcCore\App\Entity\User;
 use Faker\Generator as Faker;
 
-$factory->define(medcenter24\mcCore\App\Comment::class, function (Faker $faker) {
+$factory->define(Comment::class, function (Faker $faker) {
     return [
         'created_by' => function () {
             return factory(User::class)->create()->id;

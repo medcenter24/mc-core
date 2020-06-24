@@ -19,20 +19,45 @@
 namespace medcenter24\mcCore\App\Transformers;
 
 
-use medcenter24\mcCore\App\HospitalAccident;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\HospitalAccidentService;
 
 class HospitalCaseTransformer extends AbstractTransformer
 {
-    public function transform(HospitalAccident $hospitalAccident): array
+    public function transform(Model $model): array
+    {
+        $fields = parent::transform($model);
+        $accident = $this->getAccident($model);
+        $fields['accidentId'] = (int) $accident->getAttribute(AccidentService::FIELD_ID);
+        $fields['assistantInvoiceId'] = (int) $accident->getAttribute(AccidentService::FIELD_ASSISTANT_INVOICE_ID);
+        $fields['assistantGuaranteeId'] = (int) $accident->getAttribute(AccidentService::FIELD_ASSISTANT_GUARANTEE_ID);
+        return $fields;
+    }
+
+    private function getAccident(Model $model): Accident
+    {
+        return $model->getAttribute('accident');
+    }
+
+    protected function getMap(): array
     {
         return [
-            'id' => $hospitalAccident->id,
-            'accidentId' => $hospitalAccident->accident->id,
-            'hospitalId' => $hospitalAccident->hospital_id,
-            'hospitalGuaranteeId' => $hospitalAccident->hospital_guarantee_id,
-            'hospitalInvoiceId' => $hospitalAccident->hospital_invoice_id,
-            'assistantInvoiceId' => $hospitalAccident->assistant_invoice_id,
-            'assistantGuaranteeId' => $hospitalAccident->assistant_guarantee_id,
+            HospitalAccidentService::FIELD_ID,
+            'hospitalId' => HospitalAccidentService::FIELD_HOSPITAL_ID,
+            'hospitalGuaranteeId' => HospitalAccidentService::FIELD_HOSPITAL_GUARANTEE_ID,
+            'hospitalInvoiceId' => HospitalAccidentService::FIELD_HOSPITAL_INVOICE_ID,
+        ];
+    }
+
+    protected function getMappedTypes(): array
+    {
+        return [
+            HospitalAccidentService::FIELD_ID => self::VAR_INT,
+            HospitalAccidentService::FIELD_HOSPITAL_ID => self::VAR_INT,
+            HospitalAccidentService::FIELD_HOSPITAL_GUARANTEE_ID => self::VAR_INT,
+            HospitalAccidentService::FIELD_HOSPITAL_INVOICE_ID => self::VAR_INT,
         ];
     }
 }

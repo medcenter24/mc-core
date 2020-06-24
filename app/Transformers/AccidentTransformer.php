@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,65 +17,85 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Helpers\Date;
-use medcenter24\mcCore\App\Services\UserService;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
 class AccidentTransformer extends AbstractTransformer
 {
+    use CaseTypeTransformer;
+
     /**
-     * @param Accident $accident
-     * @return array
+     * @inheritDoc
      */
-    public function transform (Accident $accident): array
+    public function transform (Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['caseableType'] = $this->getTransformedCaseType($model);
+        return $fields;
+    }
+
+    protected function getMap(): array
     {
         return [
-            'id' => $accident->id,
-            'createdBy' =>$accident->created_by,
-            'parentId' => $accident->parent_id,
-            'patientId' => $accident->patient_id,
-            'accidentTypeId' => $accident->accident_type_id,
-            'accidentStatusId' => $accident->accident_status_id,
-            'assistantId' => $accident->assistant_id,
-            'caseableId' => $accident->caseable_id,
-            'cityId' => $accident->city_id,
-            'formReportId' => $accident->form_report_id,
-            'caseableType' => $accident->caseable_type,
-            'assistantPaymentId' => $accident->assistant_payment_id,
-            'incomePaymentId' => $accident->income_payment_id,
-            'assistantInvoiceId' => $accident->assistant_invoice_id,
-            'assistantGuaranteeId' => $accident->assistant_guarantee_id,
-            'caseablePaymentId' => $accident->caseable_payment_id,
-            'refNum' => $accident->ref_num,
-            'assistantRefNum' => $accident->assistant_ref_num,
-            'title' => $accident->title,
-            'address' => $accident->address,
-            'contacts' => $accident->contacts,
-            'symptoms' => $accident->symptoms,
-            // system format needed by the director case editor
-            'createdAt' => Date::sysDate(
-                $accident->getAttribute('created_at'),
-                $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
-            'updatedAt' => Date::sysDate(
-                $accident->getAttribute('updated_at'),
-                $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
-            'deletedAt' => Date::sysDate(
-                $accident->getAttribute('deleted_at'),
-                $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
-            'closedAt' => Date::sysDate(
-                $accident->getAttribute('closed_at'),
-                $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
-            'handlingTime' => Date::sysDate(
-                $accident->getAttribute('handling_time'),
-                $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
+            AccidentService::FIELD_ID,
+            'createdBy' => AccidentService::FIELD_CREATED_BY,
+            'parentId' => AccidentService::FIELD_PARENT_ID,
+            'patientId' => AccidentService::FIELD_PATIENT_ID,
+            'accidentTypeId' => AccidentService::FIELD_ACCIDENT_TYPE_ID,
+            'accidentStatusId' => AccidentService::FIELD_ACCIDENT_STATUS_ID,
+            'assistantId' => AccidentService::FIELD_ASSISTANT_ID,
+            'caseableId' => AccidentService::FIELD_CASEABLE_ID,
+            'cityId' => AccidentService::FIELD_CITY_ID,
+            'formReportId' => AccidentService::FIELD_FORM_REPORT_ID,
+            // will be transformed later
+            'caseableType' => AccidentService::FIELD_CASEABLE_TYPE,
+            'assistantPaymentId' => AccidentService::FIELD_ASSISTANT_PAYMENT_ID,
+            'incomePaymentId' => AccidentService::FIELD_INCOME_PAYMENT_ID,
+            'assistantInvoiceId' => AccidentService::FIELD_ASSISTANT_INVOICE_ID,
+            'assistantGuaranteeId' => AccidentService::FIELD_ASSISTANT_GUARANTEE_ID,
+            'caseablePaymentId' => AccidentService::FIELD_CASEABLE_PAYMENT_ID,
+            'refNum' => AccidentService::FIELD_REF_NUM,
+            'assistantRefNum' => AccidentService::FIELD_ASSISTANT_REF_NUM,
+            'title' => AccidentService::FIELD_TITLE,
+            'address' => AccidentService::FIELD_ADDRESS,
+            'contacts' => AccidentService::FIELD_CONTACTS,
+            'symptoms' => AccidentService::FIELD_SYMPTOMS,
+            'createdAt' => AccidentService::FIELD_CREATED_AT,
+            'closedAt' => AccidentService::FIELD_CLOSED_AT,
+            'handlingTime' => AccidentService::FIELD_HANDLING_TIME,
+            'updatedAt' => AccidentService::FIELD_UPDATED_AT,
+            'deletedAt' => AccidentService::FIELD_DELETED_AT,
+        ];
+    }
+
+    protected function getMappedTypes(): array
+    {
+        return [
+            AccidentService::FIELD_ID => self::VAR_INT,
+            AccidentService::FIELD_CREATED_BY => self::VAR_INT,
+            AccidentService::FIELD_PARENT_ID => self::VAR_INT,
+            AccidentService::FIELD_PATIENT_ID => self::VAR_INT,
+            AccidentService::FIELD_ACCIDENT_TYPE_ID => self::VAR_INT,
+            AccidentService::FIELD_ACCIDENT_STATUS_ID => self::VAR_INT,
+            AccidentService::FIELD_ASSISTANT_ID => self::VAR_INT,
+            AccidentService::FIELD_CASEABLE_ID => self::VAR_INT,
+            AccidentService::FIELD_CITY_ID => self::VAR_INT,
+            AccidentService::FIELD_FORM_REPORT_ID => self::VAR_INT,
+            AccidentService::FIELD_ASSISTANT_PAYMENT_ID => self::VAR_INT,
+            AccidentService::FIELD_INCOME_PAYMENT_ID => self::VAR_INT,
+            AccidentService::FIELD_ASSISTANT_INVOICE_ID => self::VAR_INT,
+            AccidentService::FIELD_ASSISTANT_GUARANTEE_ID => self::VAR_INT,
+            AccidentService::FIELD_CASEABLE_PAYMENT_ID => self::VAR_INT,
+            AccidentService::FIELD_CREATED_AT => self::VAR_DATETIME,
+            AccidentService::FIELD_HANDLING_TIME => self::VAR_DATETIME,
+            AccidentService::FIELD_CLOSED_AT => self::VAR_DATETIME,
+            AccidentService::FIELD_UPDATED_AT => self::VAR_DATETIME,
+            AccidentService::FIELD_DELETED_AT => self::VAR_DATETIME,
         ];
     }
 }

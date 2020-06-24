@@ -16,23 +16,26 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+
 use Illuminate\Support\Str;
-use medcenter24\mcCore\App\AccidentStatus;
-use medcenter24\mcCore\App\AccidentType;
-use medcenter24\mcCore\App\Assistant;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\DoctorAccident;
-use medcenter24\mcCore\App\FormReport;
-use medcenter24\mcCore\App\Patient;
-use medcenter24\mcCore\App\Services\AccidentTypeService;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\AccidentStatus;
+use medcenter24\mcCore\App\Entity\AccidentType;
+use medcenter24\mcCore\App\Entity\Assistant;
+use medcenter24\mcCore\App\Entity\City;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\FormReport;
+use medcenter24\mcCore\App\Entity\Patient;
+use medcenter24\mcCore\App\Services\Entity\AccidentTypeService;
+use medcenter24\mcCore\App\Entity\User;
 use Faker\Generator as Faker;
 
 /**
  * Notice:
  * Everything changed to create to have real id's otherwise phpunit tests will be failed
  */
-$factory->define(\medcenter24\mcCore\App\Accident::class, function (Faker $faker) {
+$factory->define(Accident::class, function (Faker $faker) {
     $refNum = $faker->toUpper(Str::random(3)) . '-' . $faker->toUpper(Str::random(3)) . $faker->toUpper(Str::random(3));
     return [
         'created_by' => function () {

@@ -15,10 +15,12 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\Survey;
 
-$factory->define(medcenter24\mcCore\App\DoctorSurvey::class, function (Faker $faker) {
+$factory->define(Survey::class, function (Faker $faker) {
     return [
         'title' => $faker->text(20),
         'description' => $faker->text(),

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,21 +17,28 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1;
 
-
-use medcenter24\mcCore\App\Company;
+use Dingo\Api\Http\Response;
+use Illuminate\Contracts\Auth\Guard;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Entity\CompanyService;
+use medcenter24\mcCore\App\Services\Entity\UserService;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
+use medcenter24\mcCore\App\Support\Facades\Roles;
 use medcenter24\mcCore\App\Transformers\CompanyTransformer;
 use medcenter24\mcCore\App\Transformers\UserTransformer;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class AuthenticateController extends ApiController
 {
@@ -48,12 +56,17 @@ class AuthenticateController extends ApiController
     /**
      * Get current Company (by authenticated user)
      */
-    public function getCompany()
+    /**
+     * @return Response
+     */
+    public function getCompany(): Response
     {
         $company = $this->user()->company;
         if (!$company) {
-            $company = Company::create(['title' => '']);
-            $this->user()->company_id = $company->id;
+            /** @var CompanyService $companyService */
+            $companyService = $this->getServiceLocator()->get(CompanyService::class);
+            $company = $companyService->create();
+            $this->user()->company_id = $company->getAttribute(CompanyService::FIELD_ID);
             $this->user()->save();
         }
         return $this->response->item($company, new CompanyTransformer());
@@ -63,8 +76,8 @@ class AuthenticateController extends ApiController
      *  API Login, on success return JWT Auth token
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \ErrorException
+     * @return Response|null|void
+     * @throws InconsistentDataException
      */
     public function authenticate(Request $request)
     {
@@ -79,21 +92,24 @@ class AuthenticateController extends ApiController
             $hasAccess = false;
             switch ($request->header('Origin')) {
                 case env('CORS_ALLOW_ORIGIN_DIRECTOR'):
-                    $hasAccess = \Roles::hasRole($this->guard()->user(), RoleService::DIRECTOR_ROLE);
+                    $hasAccess = Roles::hasRole($this->guard()->user(), RoleService::DIRECTOR_ROLE);
                     break;
                 case env('CORS_ALLOW_ORIGIN_DOCTOR'):
-                    $hasAccess = \Roles::hasRole($this->guard()->user(), RoleService::DOCTOR_ROLE);
+                    $hasAccess = Roles::hasRole($this->guard()->user(), RoleService::DOCTOR_ROLE);
                     break;
             }
 
-            if ($hasAccess) {
+            if ($hasAccess && Roles::hasRole($this->guard()->user(), RoleService::LOGIN_ROLE)) {
+                Log::debug('User Has Access, token returned');
                 return $this->respondWithToken($token);
-            } else {
-                Log::warning('User does not have required access role', ['email' => $credentials->get('email')]);
             }
+
+            Log::warning('User does not have required access role', ['email' => $credentials->get('email')]);
+        } else {
+            Log::debug('Incorrect credentials, unauthorized');
         }
 
-        return response()->json(['error' => 'Unauthorized'], 401);
+        $this->response->errorUnauthorized();
     }
 
     /**
@@ -101,58 +117,66 @@ class AuthenticateController extends ApiController
      * Invalidate the token, so user cannot use it anymore
      * They have to relogin to get a new token
      */
-    public function logout()
+    public function logout(): Response
     {
         $this->guard()->logout();
-        return response()->json(['message' => 'Successfully logged out']);
+        return $this->response->noContent();
     }
     /**
      * Returns the authenticated user
      */
-    public function authenticatedUser()
+    public function authenticatedUser(): Response
     {
         return $this->response->item($this->guard()->user(), new UserTransformer());
     }
+
     /**
      * Refresh the token
      *
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \ErrorException
+     * @return Response|null
+     * @throws InconsistentDataException
      */
-    public function getToken()
+    public function getToken(): ?Response
     {
          try {
              return $this->respondWithToken($this->guard()->refresh());
         } catch (TokenBlacklistedException $e) {
-             Log::debug('Token can not be updated for user', [$this->guard()->user()]);
-             return response()->json(['error' => 'Invalid token'], 401);
-        }
+             Log::info('Token blacklisted', [$this->guard()->user()]);
+             $this->response->error('Invalid token', 401);
+        } catch (TokenExpiredException $e) {
+             Log::info('Token expired', [$this->guard()->user()]);
+             $this->response->error('Invalid token', 401);
+         }
+         return null;
     }
 
     /**
      * Get the token array structure.
      * @param $token
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \ErrorException
+     * @return Response
+     * @throws InconsistentDataException
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token): Response
     {
-        return response()->json([
+        /** @var User $user */
+        $user = $this->guard()->user();
+        return $this->response->accepted(url()->to('/'), [
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $this->guard()->factory()->getTTL() * 60,
-            'lang' => $this->guard()->user()->lang,
-            'thumb' => $this->guard()->user()->hasMedia(LogoService::FOLDER)
-                ? MediaHelper::b64($this->guard()->user(), LogoService::FOLDER, User::THUMB_45) : ''
+            'lang' => $user->lang,
+            'thumb' => $user->hasMedia(LogoService::FOLDER)
+                ? MediaHelper::b64($user, LogoService::FOLDER, UserService::THUMB_45)
+                : ''
         ]);
     }
 
     /**
      * Get the guard to be used during authentication.
      *
-     * @return \Illuminate\Contracts\Auth\Guard
+     * @return Guard
      */
-    public function guard()
+    public function guard(): Guard
     {
         return Auth::guard('api');
     }

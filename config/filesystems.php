@@ -16,9 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\Services\DocumentService;
+use medcenter24\mcCore\App\Services\Entity\DocumentService;
+use medcenter24\mcCore\App\Services\Entity\FormService;
 use medcenter24\mcCore\App\Services\File\TmpFileService;
-use medcenter24\mcCore\App\Services\FormService;
 use medcenter24\mcCore\App\Services\LogoService;
 use medcenter24\mcCore\App\Services\UploaderService;
 

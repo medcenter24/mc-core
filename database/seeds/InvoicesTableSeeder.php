@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-use medcenter24\mcCore\App\Invoice;
+use medcenter24\mcCore\App\Entity\Invoice;
 use Illuminate\Database\Seeder;
 
 class InvoicesTableSeeder extends Seeder

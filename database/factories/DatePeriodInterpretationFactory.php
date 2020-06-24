@@ -15,10 +15,12 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\DatePeriodInterpretation;
 
-$factory->define(\medcenter24\mcCore\App\DatePeriodInterpretation::class, function (Faker $faker) {
+$factory->define(DatePeriodInterpretation::class, function (Faker $faker) {
     return [
         'day_of_week',
         'from',

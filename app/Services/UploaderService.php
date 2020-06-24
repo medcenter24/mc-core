@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,13 +17,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\Support\Core\Configurable;
-use medcenter24\mcCore\App\Upload;
+use medcenter24\mcCore\App\Entity\Upload;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-
 
 /**
  * Media storage for storing images which were uploaded but still haven't been bound to the any model
@@ -31,10 +33,10 @@ use Illuminate\Support\Facades\Storage;
  */
 class UploaderService extends Configurable
 {
-    const CONF_DISK = 'disk';
-    const CONF_FOLDER = 'folder';
+    public const CONF_DISK = 'disk';
+    public const CONF_FOLDER = 'folder';
 
-    const CONF_DEFAULT = 'uploads';
+    public const CONF_DEFAULT = 'uploads';
 
     private $_defaults = [
         self::CONF_DISK => self::CONF_DEFAULT,
@@ -52,22 +54,23 @@ class UploaderService extends Configurable
         parent::__construct($options);
     }
 
-    public function upload(UploadedFile $file)
+    public function upload(UploadedFile $file): Upload
     {
         return new Upload([
-            'path' => Storage::disk($this->getOption(self::CONF_DISK))->putFile($this->randDir($this->getOption(self::CONF_FOLDER)), $file),
+            'path' => Storage::disk($this->getOption(self::CONF_DISK))
+                ->putFile($this->randDir($this->getOption(self::CONF_FOLDER)), $file),
             'file_name' => $file->getClientOriginalName(),
             'storage' => $this->getOption(self::CONF_FOLDER),
         ]);
     }
 
-    public function getPathById($uploadId = 0)
+    public function getPathById($uploadId = 0): string
     {
         $upload = Upload::findOrFail($uploadId);
         return storage_path($this->getOption(self::CONF_DISK) . DIRECTORY_SEPARATOR . $upload->path);
     }
 
-    public function delete($uploadId)
+    public function delete($uploadId): void
     {
         $upload = Upload::findOrFail($uploadId);
         Storage::disk($this->getOption(self::CONF_DISK))->delete($upload->path);
@@ -79,7 +82,7 @@ class UploaderService extends Configurable
      * @param $rootFolderName
      * @return string
      */
-    private function randDir($rootFolderName)
+    private function randDir($rootFolderName): string
     {
         $nested = sprintf("%02x" . DIRECTORY_SEPARATOR . "%02x", mt_rand(0, 255), mt_rand(0, 255));
         return $rootFolderName . DIRECTORY_SEPARATOR . $nested;

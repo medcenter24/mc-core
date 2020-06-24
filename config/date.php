@@ -19,6 +19,7 @@
 return [
     'actionFormat' => 'd.m.Y H:i:s',
     'systemFormat' => 'Y-m-d H:i:s',
+    'sysDateFormat' => 'Y-m-d',
     'dateFormat'   => 'd.m.Y',
     'timeFormat'   => 'H:i',
 ];

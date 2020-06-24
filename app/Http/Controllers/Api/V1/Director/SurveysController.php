@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,64 +17,40 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\DoctorSurvey;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Http\Requests\Api\DoctorSurveyRequest;
-use medcenter24\mcCore\App\Transformers\DoctorSurveyTransformer;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\SurveyRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\SurveyUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\SurveyService;
+use medcenter24\mcCore\App\Transformers\SurveyTransformer;
 
-class SurveysController extends ApiController
+class SurveysController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
-        return new DoctorSurveyTransformer();
+        return new SurveyTransformer();
     }
 
-    protected function getModelClass(): string
+    /**
+     * @return ModelService|SurveyService
+     */
+    protected function getModelService(): ModelService
     {
-        return DoctorSurvey::class;
+        return $this->getServiceLocator()->get(SurveyService::class);
     }
 
-    public function update($id, DoctorSurveyRequest $request): Response
+    protected function getRequestClass(): string
     {
-        /** @var DoctorSurvey $doctorSurvey */
-        $doctorSurvey = DoctorSurvey::find($id);
-        if (!$doctorSurvey) {
-            $this->response->errorNotFound();
-        }
-
-        $doctorSurvey->title= $request->json('title', '');
-        $doctorSurvey->description = $request->json('description', '');
-        $doctorSurvey->created_by = $this->user()->id;
-        $doctorSurvey->setAttribute('status', $request->json('status', 'active'));
-        $doctorSurvey->save();
-
-        $transformer = new DoctorSurveyTransformer();
-        return $this->response->accepted(null, $transformer->transform($doctorSurvey));
+        return SurveyRequest::class;
     }
 
-    public function store(DoctorSurveyRequest $request): Response
+    protected function getUpdateRequestClass(): string
     {
-        $doctorSurvey = DoctorSurvey::create([
-            'title' => $request->json('title', ''),
-            'description' => $request->json('description', ''),
-            'created_by' => $this->user()->id,
-            'status' => $request->json('status', 'active'),
-        ]);
-        $transformer = new DoctorSurveyTransformer();
-        return $this->response->created(null, $transformer->transform($doctorSurvey));
-    }
-    
-    public function destroy($id): Response
-    {
-        $service = DoctorSurvey::find($id);
-        if (!$service) {
-            $this->response->errorNotFound();
-        }
-        $service->delete();
-        return $this->response->noContent();
+        return SurveyUpdateRequest::class;
     }
 }

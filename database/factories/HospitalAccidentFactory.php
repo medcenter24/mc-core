@@ -15,10 +15,13 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+declare(strict_types=1);
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\HospitalAccident;
 
-$factory->define(medcenter24\mcCore\App\HospitalAccident::class, function (Faker $faker) {
+$factory->define(HospitalAccident::class, function (Faker $faker) {
     return [
         'hospital_id' => 0,
         'hospital_guarantee_id' => 0, //

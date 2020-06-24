@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,18 +17,28 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\DoctorAccident;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 
 class DoctorAccidentStatusTransformer extends AbstractTransformer
 {
-    public function transform(DoctorAccident $doctorAccident): array
+    public function transform(Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['hasParent'] = $model->getAttribute('accident')
+            && $model->getAttribute('accident')->getAttribute('parent_id');
+
+        return $fields;
+    }
+
+    protected function getMap(): array
     {
         return [
-            'id' => $doctorAccident->id,
-            'status' => $doctorAccident->accident->parent_id ? 'old' : 'new'
+            DoctorAccidentService::FIELD_ID,
         ];
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,92 +17,37 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use medcenter24\mcCore\App\FinanceCurrency;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FinanceCurrencyRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\FinanceCurrencyUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Transformers\FinanceCurrencyTransformer;
-use Dingo\Api\Http\Response;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use League\Fractal\TransformerAbstract;
 
-class FinanceCurrencyController extends ApiController
+class FinanceCurrencyController extends ModelApiController
 {
-    protected function applyCondition($eloquent, Request $request = null): Builder
-    {
-        if ($request) {
-            $id = (int) $request->json('id', false);
-            if ($id) {
-                $eloquent->where('id', $id);
-            }
-        }
-        return $eloquent;
-    }
-
     protected function getDataTransformer(): TransformerAbstract
     {
         return new FinanceCurrencyTransformer();
     }
 
-    protected function getModelClass(): string
+    protected function getModelService(): ModelService
     {
-        return FinanceCurrency::class;
+        return $this->getServiceLocator()->get(CurrencyService::class);
     }
 
-    /**
-     * @param $id
-     * @return \Dingo\Api\Http\Response
-     */
-    public function show($id): Response
+    protected function getRequestClass(): string
     {
-        $currency = FinanceCurrency::findOrFail($id);
-        return $this->response->item($currency, new FinanceCurrencyTransformer());
+        return FinanceCurrencyRequest::class;
     }
 
-    /**
-     * Add new rule
-     * @param FinanceCurrencyRequest $request
-     * @return \Dingo\Api\Http\Response
-     */
-    public function store(FinanceCurrencyRequest $request): Response
+    protected function getUpdateRequestClass(): string
     {
-        $currency = FinanceCurrency::create([
-            'title' => $request->json('title', ''),
-            'code' => $request->json('code', ''),
-            'ico' => $request->json('ico', ''),
-        ]);
-        $transformer = new FinanceCurrencyTransformer();
-        return $this->response->created(url("pages/finance/currencies/{$currency->id}"), $transformer->transform($currency));
-    }
-
-    /**
-     * Update existing rule
-     * @param $id
-     * @param FinanceCurrencyRequest $request
-     * @return \Dingo\Api\Http\Response
-     */
-    public function update($id, FinanceCurrencyRequest $request): Response
-    {
-        $currency = FinanceCurrency::findOrFail($id);
-        $currency->title = $request->json('title', '');
-        $currency->code = $request->json('code', '');
-        $currency->ico = $request->json('ico', '');
-        $currency->save();
-        return $this->response->item($currency, new FinanceCurrencyTransformer());
-    }
-
-    /**
-     * Destroy rule
-     * @param $id
-     * @return \Dingo\Api\Http\Response
-     */
-    public function destroy($id): Response
-    {
-        $currency = FinanceCurrency::findOrFail($id);
-        \Log::info('Currency deleted', [$currency, $this->user()]);
-        $currency->delete();
-        return $this->response->noContent();
+        return FinanceCurrencyUpdateRequest::class;
     }
 }

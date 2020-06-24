@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,15 +16,14 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use Faker\Generator as Faker;
-use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Entity\Service;
 
-$factory->define(medcenter24\mcCore\App\DoctorService::class, function (Faker $faker) {
-    $refKey = $faker->toUpper(Str::random(3));
+$factory->define(Service::class, function (Faker $faker) {
     return [
-        'title' => 'DoctorService ' . $refKey,
+        'title' => 'DoctorService',
         'description' => $faker->text(),
-        'disease_code' => $refKey,
     ];
 });

@@ -18,10 +18,10 @@
 
 namespace medcenter24\mcCore\App\Console\Commands;
 
-use medcenter24\mcCore\App\Role;
-use medcenter24\mcCore\App\Services\RoleService;
-use medcenter24\mcCore\App\Services\UserService;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\Role;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
+use medcenter24\mcCore\App\Services\Entity\UserService;
+use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
 
@@ -114,7 +114,7 @@ class CreateUserCommand extends Command
     private function showUser(): void
     {
         $headers = ['E-Mail', 'Name', 'Roles'];
-        $rows = [$this->email, $this->username, implode($this->roles, ',')];
+        $rows = [$this->email, $this->username, implode(',', $this->roles)];
         $this->table($headers, [$rows]);
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,46 +17,83 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\AccidentStatusHistory;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusHistoryService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Services\UserService;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\User;
 
 class AccidentStatusHistoryTransformer extends AbstractTransformer
 {
     use ServiceLocatorTrait;
 
+    private const HISTORYABLE_TYPE_MAP = [
+        Accident::class => 'accident',
+        DoctorAccident::class => 'doctorAccident',
+        HospitalAccident::class => 'hospitalAccident',
+    ];
+
+    protected function getMap(): array
+    {
+        return [
+            AccidentStatusHistoryService::FIELD_ID,
+            'userId' => AccidentStatusHistoryService::FIELD_USER_ID,
+            'accidentStatusId' => AccidentStatusHistoryService::FIELD_ACCIDENT_STATUS_ID,
+            'historyableId' => AccidentStatusHistoryService::FIELD_HISTORYABLE_ID,
+            'historyableType' => AccidentStatusHistoryService::FIELD_HISTORYABLE_TYPE,
+            AccidentStatusHistoryService::FIELD_COMMENTARY,
+            'createdAt' => AccidentStatusHistoryService::FIELD_CREATED_AT,
+            'updatedAt' => AccidentStatusHistoryService::FIELD_UPDATED_AT,
+        ];
+    }
+
+    protected function getMappedTypes(): array
+    {
+        return [
+            AccidentStatusHistoryService::FIELD_ID => self::VAR_INT,
+            AccidentStatusHistoryService::FIELD_USER_ID => self::VAR_INT,
+            AccidentStatusHistoryService::FIELD_ACCIDENT_STATUS_ID => self::VAR_INT,
+            AccidentStatusHistoryService::FIELD_HISTORYABLE_ID => self::VAR_INT,
+            AccidentStatusHistoryService::FIELD_CREATED_AT => self::VAR_DATETIME,
+            AccidentStatusHistoryService::FIELD_UPDATED_AT => self::VAR_DATETIME,
+        ];
+    }
+
     /**
-     * @param AccidentStatusHistory $history
+     * @param Model $model
      * @return array
      * @throws InconsistentDataException
      */
-    public function transform(AccidentStatusHistory $history): array
+    public function transform(Model $model): array
     {
-        return [
-            'id' => $history->id,
-            'user_id' => $history->user_id,
-            'user_name' => $history->user_id ? $history->user->name : '',
-            'user_thumb' => $history->user_id && $history->user->hasMedia(LogoService::FOLDER)
-                ? MediaHelper::b64($history->user, LogoService::FOLDER, User::THUMB_45) : '',
-            'accident_status_id' => $history->accident_status_id,
-            'status' => $history->accidentStatus->title,
-            'commentary' => $history->commentary,
-            'created_at' => Date::sysDate(
-                $history->getAttribute('created_at'),
-                $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
-            'updated_at' => Date::sysDate(
-                $history->getAttribute('updated_at'),
-                $this->getServiceLocator()->get(UserService::class)->getTimezone()
-            ),
-        ];
+        $fields = parent::transform($model);
+        $fields['userName'] = $model->getAttribute('user')
+            ? $model->getAttribute('user')->getAttribute('name')
+            : '';
+        $fields['userThumb'] = $model->getAttribute('user')
+            && $model->getAttribute('user')->hasMedia(LogoService::FOLDER)
+            ? MediaHelper::b64($model->getAttribute('user'), LogoService::FOLDER, User::THUMB_45)
+            : '';
+        $fields['statusTitle'] = $model->getAttribute('accidentStatus')
+            ? $model->getAttribute('accidentStatus')->getAttribute('title')
+            : '';
+        $fields['historyableType'] = $this->getTransformedHistoryableType($fields['historyableType']);
+        return $fields;
+    }
+
+    private function getTransformedHistoryableType(string $fieldName): string
+    {
+        return array_key_exists($fieldName, self::HISTORYABLE_TYPE_MAP)
+            ? self::HISTORYABLE_TYPE_MAP[$fieldName]
+            : 'undefined';
     }
 }

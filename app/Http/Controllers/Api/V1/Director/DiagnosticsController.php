@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,68 +17,40 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Diagnostic;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticRequest;
-use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
 use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\DiagnosticUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\DiagnosticService;
+use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
 
-class DiagnosticsController extends ApiController
+class DiagnosticsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
         return new DiagnosticTransformer();
     }
 
-    protected function getModelClass(): string
+    /**
+     * @return ModelService|DiagnosticService
+     */
+    protected function getModelService(): ModelService
     {
-        return Diagnostic::class;
+        return $this->getServiceLocator()->get(DiagnosticService::class);
     }
 
-    public function update($id, DiagnosticRequest $request): Response
+    protected function getRequestClass(): string
     {
-        /** @var Diagnostic $diagnostic */
-        $diagnostic = Diagnostic::find($id);
-        if (!$diagnostic) {
-            $this->response->errorNotFound();
-        }
-
-        $diagnostic->setAttribute('title', $request->json('title', ''));
-        $diagnostic->setAttribute('disease_code', $request->json('diseaseCode', ''));
-        $diagnostic->setAttribute('description', $request->json('description', ''));
-        $diagnostic->setAttribute('diagnostic_category_id', $request->json('diagnosticCategoryId', 0));
-        $diagnostic->setAttribute('created_by', $this->user()->id);
-        $diagnostic->setAttribute('status', $request->json('status', 'active'));
-        $diagnostic->save();
-
-        $transformer = new DiagnosticTransformer();
-        return $this->response->accepted(null, $transformer->transform($diagnostic));
+        return DiagnosticRequest::class;
     }
 
-    public function store(DiagnosticRequest $request): Response
+    protected function getUpdateRequestClass(): string
     {
-        $diagnostic = Diagnostic::create([
-            'title' => $request->json('title', ''),
-            'disease_code' => $request->json('diseaseCode', ''),
-            'description' => $request->json('description', ''),
-            'diagnostic_category_id' => $request->json('diagnosticCategoryId', 0),
-            'created_by' => $this->user()->id,
-            'status' => $request->json('status', 'active'),
-        ]);
-        $transformer = new DiagnosticTransformer();
-        return $this->response->created(null, $transformer->transform($diagnostic));
-    }
-
-    public function destroy($id): Response
-    {
-        $diagnostic = Diagnostic::find($id);
-        if (!$diagnostic) {
-            $this->response->errorNotFound();
-        }
-        $diagnostic->delete();
-        return $this->response->noContent();
+        return DiagnosticUpdateRequest::class;
     }
 }

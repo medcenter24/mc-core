@@ -16,13 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Admin\Messenger;
 
-
+use Illuminate\Support\Facades\Auth;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Http\Requests\Messenger\CreateMessage;
 use medcenter24\mcCore\App\Services\Messenger\ThreadService;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\User;
 use Carbon\Carbon;
 use Cmgmyr\Messenger\Models\Message;
 use Cmgmyr\Messenger\Models\Participant;
@@ -50,7 +52,7 @@ class ThreadController extends AdminController
     {
         $thread = Thread::findOrFail($id);
 
-        $userId = \Auth::id();
+        $userId = Auth::id();
         $users = User::whereNotIn('id', $thread->participantsUserIds($userId))->get();
 
         // $thread->markAsRead($userId);

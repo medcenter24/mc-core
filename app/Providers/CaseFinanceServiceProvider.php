@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,13 +17,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Providers;
 
-use medcenter24\mcCore\App\Services\AccidentService;
 use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceService;
-use medcenter24\mcCore\App\Services\FinanceConditionService;
-use medcenter24\mcCore\App\Services\Formula\FormulaResultService;
-use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use Illuminate\Support\ServiceProvider;
 
 class CaseFinanceServiceProvider extends ServiceProvider
@@ -46,13 +45,8 @@ class CaseFinanceServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(CaseFinanceService::class, function() {
-            return new CaseFinanceService(
-                $this->app->make(FormulaService::class),
-                $this->app->make(AccidentService::class),
-                $this->app->make(FinanceConditionService::class),
-                $this->app->make(FormulaResultService::class)
-            );
+        $this->app->singleton(CaseFinanceService::class, static function() {
+            return new CaseFinanceService();
         });
     }
 }

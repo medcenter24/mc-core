@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,20 +17,24 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\FinanceCurrency;
+use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 
 class FinanceCurrencyTransformer extends AbstractTransformer
 {
-    public function transform(FinanceCurrency $financeCurrency): array
+    /**
+     * @inheritDoc
+     */
+    protected function getMap(): array
     {
         return [
-            'id' => $financeCurrency->id,
-            'title' => $financeCurrency->title,
-            'code' => $financeCurrency->code,
-            'ico' => $financeCurrency->ico,
+            CurrencyService::FIELD_ID,
+            CurrencyService::FIELD_TITLE,
+            CurrencyService::FIELD_CODE,
+            CurrencyService::FIELD_ICO,
         ];
     }
 }

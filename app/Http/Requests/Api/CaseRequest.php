@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,8 +17,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Requests\Api;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Http\Requests\Api;
 
 class CaseRequest extends JsonRequest
 {
@@ -30,10 +32,12 @@ class CaseRequest extends JsonRequest
     {
         return [
             'accident' => [
-                function ($attrName, $accidentValues, $failFunc) {
+                static function ($attrName, $accidentValues, $failFunc) {
                     if (!is_array($accidentValues)) {
                         $failFunc($attrName . ' has to be an array');
+                        return;
                     }
+
                     $accidentRequest = new AccidentRequest();
                     $validator = validator($accidentValues, $accidentRequest->rules());
 

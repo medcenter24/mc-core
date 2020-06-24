@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,12 +17,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
+declare(strict_types = 1);
 
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
 
 use Dingo\Api\Http\Response;
 use Exception;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Transformers\statistics\TrafficTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -82,7 +85,7 @@ class TrafficController extends ApiController
     
     public function years(): Response
     {
-        if (env('DB_CONNECTION') === 'sqlite') {
+        if (Str::startsWith(env('DB_CONNECTION'), 'sqlite')) {
             $years = DB::table('accidents')
                 ->distinct()
                 ->select(DB::raw('strftime(\'%Y\', accidents.created_at) as year'))

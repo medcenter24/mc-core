@@ -62,7 +62,8 @@
       "redis_port"                    : "6379",
       "session_driver"                : "file",
       "log_channel"                   : "single",
-      "slack_webhook_url"             : ""
+      "slack_webhook_url"             : "",
+      "jwt_blacklist_grace_period"    : 30
     },
     "director-gui": {
       "development": {

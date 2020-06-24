@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +17,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Exports;
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\Services\CaseServices\CaseSeekerService;
+use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\AccidentCheckpoint;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Entity\AccidentCheckpointService;
 use medcenter24\mcCore\App\Transformers\CaseExportTransformer;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -30,16 +35,24 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 class CasesExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
     use Exportable;
-    private $filters;
+    use ServiceLocatorTrait;
 
-    public function __construct(array $filters = [])
+    private Collection $accidents;
+
+    public function __construct(Collection $accidents)
     {
-        $this->filters = $filters;
+        $this->accidents = $accidents;
     }
 
     public function headings(): array
     {
-        return [
+        /** @var AccidentCheckpointService $checkpointService */
+        $checkpointService = $this->getServiceLocator()->get(AccidentCheckpointService::class);
+        $checkpoints = $checkpointService->search()->map(static function (AccidentCheckpoint $checkpoint) {
+            return $checkpoint->getAttribute(AccidentCheckpointService::FIELD_TITLE);
+        })->toArray();
+
+        $staticFields = [
             trans('content.npp'),
             trans('content.patient_name'),
             trans('content.assistant'),
@@ -51,25 +64,19 @@ class CasesExport implements FromCollection, WithHeadings, ShouldAutoSize
             trans('content.caseable_type'),
             trans('content.caseable_title'),
             trans('content.caseable_payment'),
-            trans('content.report'),
-            trans('content.policy'),
-            trans('content.passport'),
-            trans('content.passport_checks'),
-            trans('content.payment_guaranty'),
-            trans('content.paid'),
         ];
+
+        return array_merge($staticFields, $checkpoints);
     }
 
     /**
-    * @return \Illuminate\Support\Collection
+    * @return Collection
     */
     public function collection(): Collection
     {
-        $caseSeekerService = new CaseSeekerService();
-        $accidents = $caseSeekerService->search($this->filters);
         $transformer = new CaseExportTransformer();
         $npp = 0;
-        return $accidents->map(function (Accident $accident) use ($transformer, &$npp) {
+        return $this->accidents->map(static function (Accident $accident) use ($transformer, &$npp) {
             $data = $transformer->transform($accident);
             array_unshift($data, ++$npp);
             return $data;

@@ -19,7 +19,7 @@
 namespace medcenter24\mcCore\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use medcenter24\mcCore\App\Services\RoleService;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 class UpdateFormReport extends FormRequest
 {

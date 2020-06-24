@@ -19,22 +19,18 @@
 namespace medcenter24\mcCore\App\Listeners;
 
 use medcenter24\mcCore\App\Events\DatePeriodChangedEvent;
-use medcenter24\mcCore\App\Services\DatePeriod\DatePeriodInterpretationService;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Services\Entity\DatePeriodInterpretationService;
 
 class DatePeriodInterpretationListener
 {
 
-    /**
-     * @var DatePeriodInterpretationService
-     */
-    private $service;
+    private DatePeriodInterpretationService $service;
 
     /**
      * Create the event listener.
      *
-     * @return void
+     * @param DatePeriodInterpretationService $service
      */
     public function __construct(DatePeriodInterpretationService $service)
     {
@@ -45,10 +41,9 @@ class DatePeriodInterpretationListener
      * Handle the event.
      *
      * @param DatePeriodChangedEvent $event
-     * @param DatePeriodInterpretationService $service
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @throws InconsistentDataException
      */
-    public function handle(DatePeriodChangedEvent $event)
+    public function handle(DatePeriodChangedEvent $event): void
     {
         $datePeriod = $event->getDatePeriod();
         $this->service->update($datePeriod);

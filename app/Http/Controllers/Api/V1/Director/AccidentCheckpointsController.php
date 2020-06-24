@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,69 +17,40 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use medcenter24\mcCore\App\AccidentCheckpoint;
-use medcenter24\mcCore\App\Exceptions\NotImplementedException;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AccidentCheckpointRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\AccidentCheckpointUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\AccidentCheckpointService;
 use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
-use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
-class AccidentCheckpointsController extends ApiController
+class AccidentCheckpointsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
         return new AccidentCheckpointTransformer();
     }
 
-    protected function getModelClass(): string
-    {
-        return AccidentCheckpoint::class;
-    }
-
     /**
-     * @return Response
-     * @throws NotImplementedException
+     * @inheritDoc
      */
-    public function index(): Response
+    protected function getModelService(): ModelService
     {
-        $accidentCheckpoint = AccidentCheckpoint::orderBy('title')->get();
-        return $this->response->collection($accidentCheckpoint, $this->getDataTransformer());
+        return $this->getServiceLocator()->get(AccidentCheckpointService::class);
     }
 
-    public function show($id): Response
+    protected function getRequestClass(): string
     {
-        $accidentCheckpoint = AccidentCheckpoint::findOrFail($id);
-        return $this->response->item($accidentCheckpoint, new AccidentCheckpointTransformer());
+        return AccidentCheckpointRequest::class;
     }
 
-    public function store(AccidentCheckpointRequest $request): Response
+    protected function getUpdateRequestClass(): string
     {
-        $accidentCheckpoint = AccidentCheckpoint::create([
-            'title' => $request->json('title', ''),
-            'description' => $request->json('description', ''),
-        ]);
-        $transformer = new AccidentCheckpointTransformer();
-        return $this->response->created(null, $transformer->transform($accidentCheckpoint));
-    }
-
-    public function update($id, AccidentCheckpointRequest $request): Response
-    {
-        $accidentCheckpoint = AccidentCheckpoint::findOrFail($id);
-        $accidentCheckpoint->title = $request->json('title', '');
-        $accidentCheckpoint->description = $request->json('description', '');
-        $accidentCheckpoint->save();
-        \Log::info('Accident status updated', [$accidentCheckpoint, $this->user()]);
-        return $this->response->item($accidentCheckpoint, new AccidentCheckpointTransformer());
-    }
-
-    public function destroy($id): Response
-    {
-        $accidentCheckpoint = AccidentCheckpoint::findOrFail($id);
-        \Log::info('Accident status deleted', [$accidentCheckpoint, $this->user()]);
-        $accidentCheckpoint->delete();
-        return $this->response->noContent();
+        return AccidentCheckpointUpdateRequest::class;
     }
 }

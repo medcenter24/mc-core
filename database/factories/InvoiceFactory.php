@@ -15,17 +15,22 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+declare(strict_types=1);
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\Invoice;
+use medcenter24\mcCore\App\Entity\Payment;
+use medcenter24\mcCore\App\Entity\User;
 
-$factory->define(medcenter24\mcCore\App\Invoice::class, function (Faker $faker) {
+$factory->define(Invoice::class, function (Faker $faker) {
     return [
         'created_by' => function () {
-            return factory(\medcenter24\mcCore\App\User::class)->create()->id;
+            return factory(User::class)->create()->id;
         },
         'title' => $faker->text(30),
         'payment_id' => function () {
-            return factory(\medcenter24\mcCore\App\Payment::class)->create()->id;
+            return factory(Payment::class)->create()->id;
         },
         'status' => 'new',
     ];

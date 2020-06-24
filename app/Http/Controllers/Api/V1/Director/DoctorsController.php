@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,21 +17,24 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\Doctor;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
-use medcenter24\mcCore\App\Http\Requests\Api\StoreDoctor;
-use medcenter24\mcCore\App\Http\Requests\Api\UpdateDoctor;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
+use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
+use medcenter24\mcCore\App\Http\Requests\Api\DoctorRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\DoctorUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\CityService;
+use medcenter24\mcCore\App\Services\Entity\DoctorService;
 use medcenter24\mcCore\App\Transformers\CityTransformer;
 use medcenter24\mcCore\App\Transformers\DoctorTransformer;
 use Dingo\Api\Http\Response;
 use Illuminate\Http\Request;
 use League\Fractal\TransformerAbstract;
 
-class DoctorsController extends ApiController
+class DoctorsController extends ModelApiController
 {
 
     protected function getDataTransformer(): TransformerAbstract
@@ -38,57 +42,19 @@ class DoctorsController extends ApiController
         return new DoctorTransformer();
     }
 
-    protected function getModelClass(): string
+    protected function getModelService(): ModelService
     {
-        return Doctor::class;
+        return $this->getServiceLocator()->get(DoctorService::class);
     }
 
-    public function index(): Response
+    protected function getRequestClass(): string
     {
-        $doctors = Doctor::orderBy('name')->get();
-        return $this->response->collection($doctors, new DoctorTransformer());
+        return DoctorRequest::class;
     }
 
-    public function show($id): Response
+    protected function getUpdateRequestClass(): string
     {
-        $doctor = Doctor::findOrFail($id);
-        return $this->response->item($doctor, new DoctorTransformer());
-    }
-
-    public function store(StoreDoctor $request): Response
-    {
-        $doctor = Doctor::create([
-            'name' => $request->json('name', ''),
-            'description' => $request->json('description', ''),
-            'ref_key' => $request->json('refKey', ''),
-            'medical_board_num' => $request->json('medicalBoardNumber', ''),
-            'user_id' => (int)$request->json('userId', 0),
-        ]);
-        $transformer = new DoctorTransformer();
-        return $this->response->created(null, $transformer->transform($doctor));
-    }
-
-    public function update($id, UpdateDoctor $request): Response
-    {
-        $doctor = Doctor::findOrFail($id);
-        $doctor->name = $request->json('name', '');
-        $doctor->ref_key = $request->json('refKey', '');
-        $doctor->user_id = (int)$request->json('userId', 0);
-        $doctor->description = $request->json('description', '');
-        $doctor->medical_board_num = $request->json('medicalBoardNumber', '');
-        $doctor->save();
-
-        \Log::info('Doctor updated', [$doctor]);
-
-        return $this->response->item($doctor, new DoctorTransformer());
-    }
-
-    public function destroy($id): Response
-    {
-        $doctor = Doctor::findOrFail($id);
-        \Log::info('Doctor deleted', [$doctor]);
-        $doctor->delete();
-        return $this->response->noContent();
+        return DoctorUpdateRequest::class;
     }
 
     /**
@@ -98,13 +64,28 @@ class DoctorsController extends ApiController
      */
     public function cities($id): Response
     {
-        $doctor = Doctor::findOrFail($id);
+        /** @var Doctor $doctor */
+        $doctor = $this->getModelService()->first([DoctorService::FIELD_ID => $id]);
+        if (!$doctor) {
+            $this->response->errorNotFound();
+        }
         return $this->response->collection($doctor->cities, new CityTransformer());
     }
 
+    /**
+     * Set doctors cities list
+     * @param $id
+     * @param Request $request
+     * @return Response
+     */
     public function setCities($id, Request $request): Response
     {
-        $doctor = Doctor::findOrFail($id);
+        /** @var Doctor $doctor */
+        $doctor = $this->getModelService()->first([DoctorService::FIELD_ID => $id]);
+        if (!$doctor) {
+            $this->response->errorNotFound();
+        }
+
         $doctor->cities()->detach();
         $cities = $request->json('cities', []);
         if (count($cities)) {
@@ -113,9 +94,19 @@ class DoctorsController extends ApiController
         return $this->response->accepted();
     }
 
+    /**
+     * Load Doctors by
+     * @param $cityId
+     * @return Response
+     */
     public function getDoctorsByCity($cityId): Response
     {
-        $city = City::findOrFail($cityId);
+        /** @var CityService $cityService */
+        $cityService = $this->getServiceLocator()->get(CityService::class);
+        $city = $cityService->first([CityService::FIELD_ID => $cityId]);
+        if (!$city) {
+            $this->response->errorNotFound();
+        }
         return $this->response->collection($city->doctors, new DoctorTransformer());
     }
 }

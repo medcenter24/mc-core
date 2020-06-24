@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,56 +17,44 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use medcenter24\mcCore\App\Accident;
-use medcenter24\mcCore\App\AccidentStatus;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
+use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\StoreAccident;
-use medcenter24\mcCore\App\Http\Requests\UpdateAccident;
-use medcenter24\mcCore\App\Services\AccidentService;
-use medcenter24\mcCore\App\Services\AccidentStatusesService;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Transformers\AccidentTransformer;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
-class AccidentsController extends ApiController
+/**
+ * List of accidents to assign as a parent to the case
+ *
+ * Class AccidentsController
+ * @package medcenter24\mcCore\App\Http\Controllers\Api\V1\Director
+ */
+class AccidentsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
         return new AccidentTransformer();
     }
 
-    protected function getModelClass(): string
-    {
-        return Accident::class;
-    }
-
-    public function index(): Response
-    {
-        $accidents = Accident::orderBy('created_at', 'desc')->get();
-        return $this->response->collection($accidents, new AccidentTransformer());
-    }
-
     /**
-     * @param StoreAccident $request
-     * @param AccidentService $accidentService
-     * @param AccidentStatusesService $accidentStatusesService
+     * @param int $id
      * @return Response
-     * @throws InconsistentDataException
      */
-    public function store(StoreAccident $request, AccidentService $accidentService, AccidentStatusesService $accidentStatusesService): Response
+    public function show(int $id): Response
     {
+        /** @var AccidentService $accidentService */
+        $accidentService = $this->getServiceLocator()->get(AccidentService::class);
         /** @var Accident $accident */
-        $accident = $accidentService->create($request->all());
-        $accidentService->setStatus($accident, $accidentStatusesService->getNewStatus());
-        return $this->response->created('', ['id' => $accident->getAttribute('id')]);
-    }
-
-    public function show($id): Response
-    {
-        $accident = Accident::find($id);
+        $accident = $accidentService->first([AccidentService::FIELD_ID => $id]);
         if (!$accident) {
             $this->response->errorNotFound();
         }
@@ -73,23 +62,11 @@ class AccidentsController extends ApiController
         return $this->response->item($accident, new AccidentTransformer());
     }
 
-    public function update(UpdateAccident $request, $id): array
+    /**
+     * @inheritDoc
+     */
+    protected function getModelService(): ModelService
     {
-        /** @var \Eloquent $accident */
-        $accident = Accident::findOrFail($id);
-        foreach ($accident->getVisible() as $item) {
-            if ($request->has($item)) {
-                $accident->$item = $request->get($item);
-            }
-        }
-        $accident->save();
-
-        return ['success' => true];
-    }
-
-    public function destroy($id): array
-    {
-        Accident::destroy($id);
-        return ['success' => true];
+        return $this->getServiceLocator()->get(AccidentService::class);
     }
 }

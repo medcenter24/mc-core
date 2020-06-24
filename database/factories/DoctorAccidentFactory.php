@@ -15,10 +15,12 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use Faker\Generator as Faker;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
 
-$factory->define(medcenter24\mcCore\App\DoctorAccident::class, function (Faker $faker) {
+$factory->define(DoctorAccident::class, function (Faker $faker) {
     return [
         'doctor_id' => 0,
         'recommendation' => $faker->paragraphs(3, true),

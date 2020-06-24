@@ -15,17 +15,24 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Providers;
 
-use medcenter24\mcCore\App\Events\AccidentPaymentChangedEvent;
-use medcenter24\mcCore\App\Events\AccidentStatusChangedEvent;
+use medcenter24\mcCore\App\Events\Accident\Caseable\AccidentUpdatedEvent;
+use medcenter24\mcCore\App\Events\Accident\Caseable\DoctorAccidentUpdatedEvent;
+use medcenter24\mcCore\App\Events\Accident\Caseable\HospitalAccidentUpdatedEvent;
+use medcenter24\mcCore\App\Events\Accident\Status\AccidentStatusChangedEvent;
+use medcenter24\mcCore\App\Events\Accident\Payment\AccidentPaymentChangedEvent;
 use medcenter24\mcCore\App\Events\DatePeriodChangedEvent;
-use medcenter24\mcCore\App\Events\DoctorAccidentUpdatedEvent;
-use medcenter24\mcCore\App\Events\HospitalAccidentUpdatedEvent;
-use medcenter24\mcCore\App\Listeners\AccidentPaymentListener;
+use medcenter24\mcCore\App\Events\InvoiceChangedEvent;
+use medcenter24\mcCore\App\Listeners\Accident\UpdateAccidentStatus\OnInvoiceUpdated;
+use medcenter24\mcCore\App\Listeners\LogPaymentChanges;
 use medcenter24\mcCore\App\Listeners\AccidentStatusHistoryListener;
+use medcenter24\mcCore\App\Listeners\Accident\UpdateAccidentStatus\OnAccidentUpdateListener;
 use medcenter24\mcCore\App\Listeners\DatePeriodInterpretationListener;
+use medcenter24\mcCore\App\Listeners\Accident\UpdateAccidentStatus\OnDoctorAccidentUpdated;
+use medcenter24\mcCore\App\Listeners\Accident\UpdateAccidentStatus\OnHospitalAccidentUpdated;
 use medcenter24\mcCore\App\Listeners\SendTelegramMessageOnDocAssignment;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -40,16 +47,24 @@ class EventServiceProvider extends ServiceProvider
         AccidentStatusChangedEvent::class => [
             AccidentStatusHistoryListener::class,
         ],
+        AccidentUpdatedEvent::class => [
+            OnAccidentUpdateListener::class,
+        ],
         DoctorAccidentUpdatedEvent::class => [
+            OnDoctorAccidentUpdated::class,
             SendTelegramMessageOnDocAssignment::class,
         ],
         HospitalAccidentUpdatedEvent::class => [
+            OnHospitalAccidentUpdated::class,
         ],
         DatePeriodChangedEvent::class => [
             DatePeriodInterpretationListener::class,
         ],
         AccidentPaymentChangedEvent::class => [
-            AccidentPaymentListener::class,
+            LogPaymentChanges::class,
+        ],
+        InvoiceChangedEvent::class => [
+            OnInvoiceUpdated::class,
         ]
     ];
 
@@ -61,7 +76,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

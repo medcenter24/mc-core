@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,27 +17,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Services\CaseServices;
 
-
-use medcenter24\mcCore\App\Accident;
+use medcenter24\mcCore\App\Entity\Accident;
 use Illuminate\Support\Collection;
 
 class CaseHistoryService
 {
-    /**
-     * @var Accident
-     */
-    private $accident;
-
-    /**
-     * @var Collection History
-     */
-    private $history;
+    private Collection $history;
 
     public function generate(Accident $accident): self
     {
-        $this->accident = $accident;
         $this->history = $accident->history()->orderBy('created_at')->get();
         return $this;
     }

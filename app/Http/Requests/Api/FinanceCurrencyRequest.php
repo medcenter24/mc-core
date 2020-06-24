@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,23 +17,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Http\Requests\Api;
+declare(strict_types = 1);
 
-use medcenter24\mcCore\App\Services\RoleService;
+namespace medcenter24\mcCore\App\Http\Requests\Api;
 
 class FinanceCurrencyRequest extends JsonRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return \Auth::check()
-            && \Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *

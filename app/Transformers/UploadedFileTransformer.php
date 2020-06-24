@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,22 +17,19 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Upload;
+use medcenter24\mcCore\App\Services\Entity\UploadService;
 
 class UploadedFileTransformer extends AbstractTransformer
 {
-    /**
-     * @param Upload $file
-     * @return array
-     */
-    public function transform (Upload $file): array
+    protected function getMap(): array
     {
         return [
-            'id'   => $file->id,
-            'name' => $file->file_name,
+            UploadService::FIELD_ID,
+            'name' => UploadService::FIELD_FILE_NAME,
         ];
     }
 }

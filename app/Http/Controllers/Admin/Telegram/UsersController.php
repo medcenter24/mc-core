@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,11 +17,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Admin\Telegram;
 
-
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
-use medcenter24\mcCore\App\TelegramUser;
+use medcenter24\mcCore\App\Entity\TelegramUser;
 use Illuminate\Http\Request;
 
 class UsersController extends AdminController

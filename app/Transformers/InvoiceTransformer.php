@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,25 +17,36 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Transformers;
 
-
-use medcenter24\mcCore\App\Invoice;
+use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Entity\InvoiceService;
 
 class InvoiceTransformer extends AbstractTransformer
 {
-    /**
-     * @param Invoice $invoice
-     * @return array
-     */
-    public function transform (Invoice $invoice): array
+    public function transform (Model $model): array
+    {
+        $fields = parent::transform($model);
+        $fields['price'] = $this->getPaymentValue($model);
+        return $fields;
+    }
+
+    private function getPaymentValue(Model $model): float
+    {
+        $payment = $model->getAttribute('payment');
+        $price = $payment ? $payment->getAttribute('value') : 0;
+        return (float) $price;
+    }
+
+    protected function getMap(): array
     {
         return [
-            'id'   => $invoice->id,
-            'title' => $invoice->title,
-            'type' => $invoice->type,
-            'price' => $invoice->payment ? $invoice->payment->value : 0,
-            'status' => $invoice->status,
+            InvoiceService::FIELD_ID,
+            InvoiceService::FIELD_TITLE,
+            InvoiceService::FIELD_TYPE,
+            InvoiceService::FIELD_STATUS,
         ];
     }
 }

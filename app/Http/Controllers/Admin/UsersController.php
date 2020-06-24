@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,10 +19,9 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
-
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Http\Requests\UserRequest;
-use medcenter24\mcCore\App\User;
+use medcenter24\mcCore\App\Entity\User;
 
 class UsersController extends AdminController
 {

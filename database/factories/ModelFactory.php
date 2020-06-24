@@ -15,20 +15,24 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+declare(strict_types=1);
+
+use medcenter24\mcCore\App\Entity\AccidentStatus;
 
 if (!function_exists('getRandomAccidentStatus')) {
     /**
      * @param \Faker\Generator $faker
-     * @return \medcenter24\mcCore\App\AccidentStatus
+     * @return AccidentStatus
      */
     function getRandomAccidentStatus(\Faker\Generator $faker)
     {
         $status = $faker->randomElement(AccidentStatusesTableSeeder::ACCIDENT_STATUSES);
 
-        $_status = \medcenter24\mcCore\App\AccidentStatus::where('title', $status['title'])
+        $_status = AccidentStatus::where('title', $status['title'])
             ->where('type', $status['type'])
             ->first();
 
-        return $_status && $_status->id ? $_status : factory(\medcenter24\mcCore\App\AccidentStatus::class)->create($status);
+        return $_status && $_status->id ? $_status : factory(AccidentStatus::class)->create($status);
     }
 }

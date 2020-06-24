@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,15 +17,20 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use Cmgmyr\Messenger\Models\Message;
+use Cmgmyr\Messenger\Models\Participant;
+use medcenter24\mcCore\App\Entity\User;
+use Cmgmyr\Messenger\Models\Thread;
+
 return [
 
-    'user_model' => medcenter24\mcCore\App\User::class,
+    'user_model' => User::class,
 
-    'message_model' => Cmgmyr\Messenger\Models\Message::class,
+    'message_model' => Message::class,
 
-    'participant_model' => Cmgmyr\Messenger\Models\Participant::class,
+    'participant_model' => Participant::class,
 
-    'thread_model' => Cmgmyr\Messenger\Models\Thread::class,
+    'thread_model' => Thread::class,
 
     /**
      * Define custom database table names - without prefixes.

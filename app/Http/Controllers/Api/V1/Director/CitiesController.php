@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,59 +17,37 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\City;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CityRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\CityUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\CityService;
 use medcenter24\mcCore\App\Transformers\CityTransformer;
 use League\Fractal\TransformerAbstract;
 
-class CitiesController extends ApiController
+class CitiesController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
         return new CityTransformer();
     }
 
-    protected function getModelClass(): string
+    protected function getModelService(): ModelService
     {
-        return City::class;
+        return $this->getServiceLocator()->get(CityService::class);
     }
 
-    public function index(): Response
+    protected function getRequestClass(): string
     {
-        $cities = City::orderBy('title')->get();
-        return $this->response->collection($cities, new CityTransformer());
+        return CityRequest::class;
     }
 
-    public function store(CityRequest $request): Response
+    protected function getUpdateRequestClass(): string
     {
-        $city = City::create([
-            'title' => $request->json('title', ''),
-            'region_id' => $request->json('regionId', 0),
-        ]);
-        $transformer = new CityTransformer();
-        return $this->response->created(null, $transformer->transform($city));
-    }
-
-    public function update($id, CityRequest $request): Response
-    {
-        $city = City::findOrFail($id);
-        $city->title = $request->json('title', '');
-        $city->region_id = $request->json('regionId', 0);
-        $city->save();
-
-        \Log::info('City updated', [$city, $this->user()]);
-        return $this->response->item($city, new CityTransformer());
-    }
-
-    public function destroy($id): Response
-    {
-        $city = City::findOrFail($id);
-        \Log::info('City deleted', [$city, $this->user()]);
-        $city->delete();
-        return $this->response->noContent();
+        return CityUpdateRequest::class;
     }
 }

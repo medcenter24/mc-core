@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,18 +17,23 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\View\View;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Http\Requests\RoleRequest;
-use medcenter24\mcCore\App\Role;
+use medcenter24\mcCore\App\Entity\Role;
 
 
 class RolesController extends AdminController
 {
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @throws \medcenter24\mcCore\App\Exceptions\InconsistentDataException
+     * @return Factory|View
+     * @throws InconsistentDataException
      */
     public function index()
     {

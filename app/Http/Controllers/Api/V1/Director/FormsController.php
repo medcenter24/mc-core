@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,100 +17,61 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-
-use Dingo\Api\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Form;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use medcenter24\mcCore\App\Entity\Form;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FormRequest;
-use medcenter24\mcCore\App\Services\FormService;
+use medcenter24\mcCore\App\Http\Requests\Api\FormUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\FormService;
 use medcenter24\mcCore\App\Transformers\FormTransformer;
 use League\Fractal\TransformerAbstract;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class FormsController extends ApiController
+class FormsController extends ModelApiController
 {
     protected function getDataTransformer(): TransformerAbstract
     {
         return new FormTransformer();
     }
 
-    /**
-     * @return string
-     */
-    protected function getModelClass(): string
+    protected function getRequestClass(): string
     {
-        return Form::class;
+        return FormRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return FormUpdateRequest::class;
     }
 
     /**
-     * @return Response
+     * @inheritDoc
      */
-    public function index(): Response
+    protected function getModelService(): ModelService
     {
-        $cities = Form::orderBy('title')->get();
-        return $this->response->collection($cities, new FormTransformer());
-    }
-
-    /**
-     * @param $id
-     * @return Response
-     */
-    public function show($id): Response
-    {
-        $form = Form::findOrFail($id);
-        return $this->response->item($form, new FormTransformer());
-    }
-
-    public function store(FormRequest $request): Response
-    {
-        $form = Form::create([
-            'title' => $request->json('title', ''),
-            'template' => $request->json('template', ''),
-            'variables' => json_encode($request->json('variables', [])),
-            'formable_type' => $request->json('formableType', ''),
-        ]);
-        $transformer = new FormTransformer();
-        return $this->response->created(null, $transformer->transform($form));
-    }
-
-    public function update($id, FormRequest $request): Response
-    {
-        $form = Form::findOrFail($id);
-        $form->title = $request->json('title', '');
-        $form->template = $request->json('template', '');
-        $form->formable_type = $request->json('formableType', '');
-        $form->save();
-
-
-        Log::info('Form updated', [$form, $this->user()]);
-        return $this->response->item($form, new FormTransformer());
-    }
-
-    public function destroy($id): Response
-    {
-        $form = Form::findOrFail($id);
-        Log::info('Form deleted', [$form, $this->user()]);
-        $form->delete();
-        return $this->response->noContent();
+        return $this->getServiceLocator()->get(FormService::class);
     }
 
     /**
      * @param $formId
      * @param $srcId
-     * @param FormService $formService
      * @return BinaryFileResponse
-     * @throws InconsistentDataException
      */
-    public function pdf($formId, $srcId, FormService $formService): BinaryFileResponse
+    public function pdf($formId, $srcId): BinaryFileResponse
     {
-        $form = Form::findOrFail($formId);
+        /** @var Form $form */
+        $form = $this->getModelService()->first([FormService::FIELD_ID => $formId]);
+        if (!$form) {
+            $this->response->errorNotFound();
+        }
         $source = call_user_func([$form->formable_type, 'findOrFail'], $srcId);
-        return response()->download($formService->getPdfPath($form, $source));
+        return response()->download($this->getModelService()->getPdfPath($form, $source));
     }
 
     /**
@@ -121,7 +83,11 @@ class FormsController extends ApiController
      */
     public function html($formId, $srcId, FormService $formService): JsonResponse
     {
-        $form = Form::findOrFail($formId);
+        /** @var Form $form */
+        $form = $this->getModelService()->first([FormService::FIELD_ID => $formId]);
+        if (!$form) {
+            $this->response->errorNotFound();
+        }
         $source = call_user_func([$form->formable_type, 'findOrFail'], $srcId);
         return response()->json(['data' => $formService->getHtml($form, $source)]);
     }

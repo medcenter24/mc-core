@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,142 +17,205 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types = 1);
+
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-
-use medcenter24\mcCore\App\FinanceCurrency;
-use medcenter24\mcCore\App\Form;
-use medcenter24\mcCore\App\Http\Controllers\ApiController;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
+use medcenter24\mcCore\App\Contract\General\Service\ModelService;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\InvoiceRequest;
-use medcenter24\mcCore\App\Invoice;
-use medcenter24\mcCore\App\Payment;
-use medcenter24\mcCore\App\Services\CurrencyService;
+use medcenter24\mcCore\App\Entity\Invoice;
+use medcenter24\mcCore\App\Http\Requests\Api\InvoiceUpdateRequest;
+use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
+use medcenter24\mcCore\App\Services\Entity\CurrencyService;
+use medcenter24\mcCore\App\Services\Entity\FormService;
+use medcenter24\mcCore\App\Services\Entity\InvoiceService;
+use medcenter24\mcCore\App\Services\Entity\UploadService;
 use medcenter24\mcCore\App\Transformers\FormTransformer;
 use medcenter24\mcCore\App\Transformers\InvoiceTransformer;
 use medcenter24\mcCore\App\Transformers\UploadedFileTransformer;
-use medcenter24\mcCore\App\Upload;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
 
-class InvoiceController extends ApiController
+class InvoiceController extends ModelApiController
 {
-
     /**
-     * @return InvoiceTransformer|\League\Fractal\TransformerAbstract
+     * @return InvoiceTransformer|TransformerAbstract
      */
     protected function getDataTransformer(): TransformerAbstract
     {
         return new InvoiceTransformer();
     }
 
-    protected function getModelClass(): string
+    protected function getInvoiceService(): InvoiceService
     {
-        return Invoice::class;
+        return $this->getServiceLocator()->get(InvoiceService::class);
+    }
+
+    protected function getCurrencyService(): CurrencyService
+    {
+        return $this->getServiceLocator()->get(CurrencyService::class);
+    }
+
+    protected function getFormService(): FormService
+    {
+        return $this->getServiceLocator()->get(FormService::class);
+    }
+
+    protected function getUploadService(): UploadService
+    {
+        return $this->getServiceLocator()->get(UploadService::class);
     }
 
     /**
-     * @param $id
-     * @param InvoiceRequest $request
-     * @param CurrencyService $currencyService
-     * @return \Dingo\Api\Http\Response
+     * @inheritDoc
      */
-    public function update($id, InvoiceRequest $request, CurrencyService $currencyService): Response
+    protected function getModelService(): ModelService
     {
-        $invoice = Invoice::findOrFail($id);
+        return $this->getInvoiceService();
+    }
+
+    protected function getRequestClass(): string
+    {
+        return InvoiceRequest::class;
+    }
+
+    protected function getUpdateRequestClass(): string
+    {
+        return InvoiceUpdateRequest::class;
+    }
+
+    public function update(int $id, JsonRequest $request): Response
+    {
+        /** @var Invoice $invoice */
+        $invoice = $this->getInvoiceService()->first([InvoiceService::FIELD_ID => $id]);
         if (!$invoice) {
             $this->response->errorNotFound();
         }
 
-        $invoice->title= $request->json('title', '');
-        $invoice->type = $request->json('type', '');
-        $invoice->status = $request->json('status', 'new');
-        $invoice->save();
+        // default model update
+        parent::update($id, $request);
 
-        $price = $request->json('price', 0);
-        $this->assignPayment($invoice, $price, $currencyService->getDefaultCurrency());
+        $invoice->refresh();
 
+        // Add payment (for the price)
+        $price = (int) $request->get('price', 0);
+        try {
+            $this->getInvoiceService()->setPrice($invoice, $price, $this->getCurrencyService()->getDefaultCurrency());
+        } catch (InconsistentDataException $e) {
+            Log::error($e->getMessage(), [$e]);
+            $this->response->errorInternal();
+        }
+
+        // assign Form or Uploaded file (depends on the invoice type)
+
+        /** @var InvoiceRequest $request */
+        $request = call_user_func([$this->getUpdateRequestClass(), 'createFromBase'], $request);
+        $request->setContainer(app());
+        $request->validateResolved();
         $this->assignInvoiceTypeResource($invoice, $request);
 
         $transformer = $this->getDataTransformer();
         return $this->response->accepted(null, $transformer->transform($invoice));
     }
 
-    private function assignInvoiceTypeResource(Invoice $invoice, $request): void
+    private function assignInvoiceTypeResource(Invoice $invoice, JsonRequest $request): void
     {
         if ($invoice->type === 'form' && $request->json('formId', false)) {
-            $form = Form::findOrFail($request->json('formId'));
-            if ($form && !$invoice->forms()->where('id', $form->id)->count()) {
+
+            $form = $this->getFormService()->first([FormService::FIELD_ID => $request->json('formId', 0)]);
+
+            if (!$form) {
+                $this->response->errorNotFound();
+            }
+
+            if (!$invoice->forms()->where('id', $form->id)->count()) {
                 $invoice->forms()->detach();
                 $invoice->forms()->attach($form);
             }
         } elseif ($invoice->type === 'file' && $request->json('fileId', false)) {
-            $file = Upload::findOrFail($request->json('fileId'));
-            if ($file && !$invoice->uploads()->where('id', $file->id)->count()) {
+
+            $file = $this->getUploadService()
+                ->first([UploadService::FIELD_ID => $request->json('fileId', 0)]);
+
+            if (!$file) {
+                $this->response->errorNotFound();
+            }
+
+            if (!$invoice->uploads()->where('id', $file->id)->count()) {
                 $invoice->uploads()->delete();
                 $invoice->uploads()->save($file);
             }
         }
     }
 
-    public function store(InvoiceRequest $request, CurrencyService $currencyService): Response
+    /**
+     * @param JsonRequest $request
+     * @return Response
+     */
+    public function store(JsonRequest $request): Response
     {
-        $invoice = Invoice::create([
-            'title' => $request->json('title', ''),
-            'type' => $request->json('type', ''),
-            'created_by' => $this->user()->id,
-            'status' => $request->json('status', 'new'),
-        ]);
+        /** @var InvoiceRequest $request */
+        $request = call_user_func([$this->getRequestClass(), 'createFromBase'], $request);
+        $request->validate();
 
-        $price = $request->json('price', 0);
-        $this->assignPayment($invoice, $price, $currencyService->getDefaultCurrency());
+        try {
+            /** @var Invoice $invoice */
+            $invoice = $this->getInvoiceService()->create([
+                'title' => $request->get('title', ''),
+                'type' => $request->get('type', InvoiceService::TYPE_UPLOAD),
+                'created_by' => $this->user()->id,
+                'status' => $request->get('status', 'new'),
+            ]);
 
-        $this->assignInvoiceTypeResource($invoice, $request);
+            $price = (int)$request->get('price', 0);
+            $this->getInvoiceService()->setPrice($invoice, $price, $this->getCurrencyService()->getDefaultCurrency());
 
-        $transformer = $this->getDataTransformer();
-        return $this->response->created(null, $transformer->transform($invoice));
-    }
+            $this->assignInvoiceTypeResource($invoice, $request);
+        } catch (QueryException | InconsistentDataException $e) {
+            Log::error($e->getMessage(), [$e]);
+            $this->response->errorInternal();
+        }
 
-    private function assignPayment(Invoice $invoice, int $price, FinanceCurrency $currency): void
-    {
-        $payment = Payment::create([
-            'value' => $price,
-            'currency_id' => $currency->id,
-            'fixed' => 0,
-            'description' => '',
-        ]);
-        $invoice->payment()->associate($payment);
-        $invoice->save();
+        return $this->response->created(null, $this->getDataTransformer()->transform($invoice));
     }
 
     /**
      * Getting form of the invoice
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
-    public function form($id): Response
+    public function form(int $id): Response
     {
         /** @var Invoice $invoice */
-        $invoice = Invoice::findOrFail($id);
-        $form = $invoice->forms()->first();
-        if (!$invoice->forms()->count()) {
-            return $this->response->noContent();
+        $invoice = $this->getInvoiceService()->first([InvoiceService::FIELD_ID => $id]);
+
+        if (!$invoice) {
+            $this->response->errorNotFound();
         }
+
+        $form = $invoice->forms()->first();
         return $this->response->item($form, new FormTransformer());
     }
 
     /**
      * Getting invoices file
      * @param $id
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function file($id): Response
     {
         /** @var Invoice $invoice */
-        $invoice = Invoice::findOrFail($id);
-        $upload = $invoice->uploads()->first();
-        if (!$invoice->uploads()->count()) {
-            return $this->response->noContent();
+        $invoice = $this->getInvoiceService()->first([InvoiceService::FIELD_ID => $id]);
+
+        if (!$invoice) {
+            $this->response->errorNotFound();
         }
+
+        $upload = $invoice->uploads()->first();
         return $this->response->item($upload, new UploadedFileTransformer());
     }
 }

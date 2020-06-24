@@ -10,7 +10,7 @@ cache:
   - node_modules
   - vendor
 before_script:
-  - phpenv config-rm xdebug.ini
+  # - phpenv config-rm xdebug.ini makes it faster
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
   - php artisan setup:seed --force

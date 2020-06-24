@@ -1,4 +1,6 @@
-#CRM My Doctors
+[![Build Status](https://travis-ci.org/your/repo.svg?branch=master)](https://travis-ci.com/medcenter24/mc-core)
+
+# CRM My Doctors
 
 CRM system that provide opportunity to store, aggregate and automatize all business
 processes.

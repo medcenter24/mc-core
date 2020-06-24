@@ -10,7 +10,7 @@ before_script:
   - composer install --prefer-source --no-interaction --dev
   - php artisan setup:seed --force
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit --configuration phpunit.xml --coverage-text
 notifications:
   email:
     recipients:

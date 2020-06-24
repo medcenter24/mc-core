@@ -10,11 +10,9 @@ before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
   - php artisan setup:seed --force
-env:
-  - TEST_SUITE=Unit
-  - TEST_SUITE=Feature
 script:
-  - vendor/bin/phpunit --configuration phpunit.xml --testsuite=$TEST_SUITE
+  - vendor/bin/phpunit --configuration phpunit.xml
+  if: branch = master
 notifications:
   email:
     recipients:

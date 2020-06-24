@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/your/repo.svg?branch=master)](https://travis-ci.com/medcenter24/mc-core)
+[![Build Status](https://travis-ci.com/medcenter24/mc-core.svg?branch=master)](https://travis-ci.com/medcenter24/mc-core)
 
 # CRM My Doctors
 

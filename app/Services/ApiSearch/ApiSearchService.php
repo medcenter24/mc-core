@@ -38,23 +38,9 @@ class ApiSearchService
 {
     use ServiceLocatorTrait;
 
-    /**
-     * @var SearchFieldLogic
-     */
-    private $searchFieldLogicService;
-
-    /**
-     * @var array
-     */
-    private $joined = [];
-
-    /**
-     * @return DataLoaderRequestBuilder
-     */
-    private function getRequestBuilder(): DataLoaderRequestBuilder
-    {
-        return $this->getServiceLocator()->get(DataLoaderRequestBuilder::class);
-    }
+    private ?SearchFieldLogic $searchFieldLogicService = null;
+    private array $joined = [];
+    private ?DataLoaderRequestBuilder $requestBuilder = null;
 
     /**
      * @param Request $request
@@ -225,6 +211,28 @@ class ApiSearchService
         });
     }
 
+    private function getRequestBuilder(Request $request)
+    {
+        if (!$this->requestBuilder) {
+            $this->requestBuilder = $this->getServiceLocator()->get(DataLoaderRequestBuilder::class);
+            $this->requestBuilder->setPaginator($this->getPaginator($request));
+            $this->requestBuilder->setSorter($this->getSorter($request));
+            $this->requestBuilder->setFilter($this->getFilter($request));
+        }
+        return $this->requestBuilder;
+    }
+
+    private function getEloquent(Request $request, Model $model): Builder
+    {
+        $eloquent = $model->newQuery();
+
+        $this->joinRelations($eloquent);
+        $this->attachFilter($eloquent, $this->getRequestBuilder($request)->getFilter()->getFilters());
+        $this->attachSort($eloquent, $this->getRequestBuilder($request)->getSorter()->getSortBy());
+
+        return $eloquent;
+    }
+
     /**
      * @param Request $request
      * @param Model $model
@@ -232,24 +240,17 @@ class ApiSearchService
      */
     public function search(Request $request, Model $model): LengthAwarePaginator
     {
-        $requestBuilder = $this->getRequestBuilder();
-
-        $requestBuilder->setPaginator($this->getPaginator($request));
-        $requestBuilder->setSorter($this->getSorter($request));
-        $requestBuilder->setFilter($this->getFilter($request));
-
-        $eloquent = $model->newQuery();
-
-        $this->joinRelations($eloquent);
-        $this->attachFilter($eloquent, $requestBuilder->getFilter()->getFilters());
-        $this->attachSort($eloquent, $requestBuilder->getSorter()->getSortBy());
-
-        return $eloquent->paginate(
-            $requestBuilder->getPaginator()->getLimit(),
+        return $this->getEloquent($request, $model)->paginate(
+            $this->getRequestBuilder($request)->getPaginator()->getLimit(),
             // working with models, other info will be got later
             [$model->getTable() . '.*'],
             'page',
-            $requestBuilder->getPage()
+            $this->getRequestBuilder($request)->getPage()
         );
+    }
+
+    public function getCollection(Request $request, Model $model): Collection
+    {
+        return $this->getEloquent($request, $model)->get([$model->getTable() . '.*']);
     }
 }

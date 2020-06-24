@@ -17,6 +17,11 @@
  */
 
 return [
+    'hospital' => 'Госпиталь',
+    'caseable_title' => 'Исполнитель',
+    'caseable_type' => 'Тип случая',
+    'caseable_payment' => 'Оплата исполнителю',
+    'not_set' => 'Не установленно',
     'address' => 'Адрес',
     'symptoms' => 'Симптомы',
     'new_case_created' => 'Вам назначено новое дело',

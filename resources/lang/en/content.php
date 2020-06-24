@@ -17,6 +17,11 @@
  */
 
 return [
+    'hospital' => 'Hospital',
+    'caseable_title' => 'Executor',
+    'caseable_type' => 'Caseable Type',
+    'caseable_payment' => 'Caseable Payment',
+    'not_set' => 'Not set',
     'address' => 'Address',
     'symptoms' => 'Symptoms',
     'new_case_created' => 'You have new case',

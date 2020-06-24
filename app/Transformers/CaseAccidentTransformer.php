@@ -109,6 +109,9 @@ class CaseAccidentTransformer extends AbstractTransformer
                 case CaseAccidentService::PROPERTY_DIAGNOSTICS:
                     /*$transformer = new DiagnosticTransformer();
                     break;*/
+                case CaseAccidentService::PROPERTY_CHECKPOINTS:
+                    /*$transformer = new AccidentCheckpointTransformer();
+                    break;*/
                 case CaseAccidentService::PROPERTY_SURVEYS:
                     /*$transformer = new SurveyTransformer();
                     break;*/
@@ -116,9 +119,6 @@ class CaseAccidentTransformer extends AbstractTransformer
                     break;
                 case CaseAccidentService::PROPERTY_DOCUMENTS:
                     $transformer = new DocumentTransformer();
-                    break;
-                case CaseAccidentService::PROPERTY_CHECKPOINTS:
-                    $transformer = new AccidentCheckpointTransformer();
                     break;
                 case CaseAccidentService::PROPERTY_PATIENT:
                     $transformer = new PatientTransformer();

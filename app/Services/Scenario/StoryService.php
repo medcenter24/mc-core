@@ -93,7 +93,13 @@ class StoryService implements ScenarioInterface
         $scenario = $this->scenario()->scenario()->sortByDesc('order');
         
         // current step is a last action of the history
-        $currentAccidentStatusId = $this->history->last()->accident_status_id;
+        $lastAction = $this->history->last();
+        if ($lastAction) {
+            $currentAccidentStatusId = $lastAction->accident_status_id;
+        } else {
+            // for the faked accidents is possible that story was not filled
+            $currentAccidentStatusId = 0;
+        }
 
         // fill scenario with passed history events
         $scenario->map(static function ($step) use ($currentAccidentStatusId, $story) {

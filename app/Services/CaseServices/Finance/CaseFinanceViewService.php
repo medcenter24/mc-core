@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\CaseServices\Finance;
 
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
@@ -96,19 +97,43 @@ class CaseFinanceViewService
                 default:
                     throw new InconsistentDataException('Undefined finance type');
             }
+
+            $currency = $this->hasPayment($data)
+                ? $this->getPayment($data)->currency
+                : $this->currencyService->getDefaultCurrency();
+
             $typeResult = collect([
                 'type' => $type,
                 'loading' => false,
                 'payment' => $data['payment'],
-                'currency' => $this->hasPayment($data) ? $this->getPayment($data)->currency : $this->currencyService->getDefaultCurrency(),
+                'currency' => $currency,
                 'calculatedValue' => $this->getCalculatedValue($data),
                 'formulaView' => array_key_exists('formula', $data) && $data['formula'] instanceof FormulaBuilder
                     ? $this->formulaViewService->render($data['formula']) : $data['formula'],
+                'view' => $this->getFinalActiveValue($data) . ' ' . $currency->code,
             ]);
             $financeDataCollection->push($typeResult);
         }
 
         return $financeDataCollection;
+    }
+
+    private function getFinalActiveValue(array $data): string
+    {
+        /** @var Payment $payment */
+        $payment = $data['payment'];
+        if ($payment && (int)$payment->getAttribute(PaymentService::FIELD_FIXED)) {
+            $val = $payment->getAttribute(PaymentService::FIELD_VALUE);
+        } else {
+            try {
+                $val = $this->getCalculatedValue($data);
+            } catch (FormulaException $e) {
+                Log::error('Formula can not be calculated', [$e]);
+                $val = 'formula_error';
+            }
+        }
+
+        return (string) $val;
     }
 
     /**

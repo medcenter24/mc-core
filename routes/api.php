@@ -30,6 +30,7 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseAccidentCo
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseCaseableController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseCommentController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseDocumentController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseExporterController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseFinanceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseHistoryController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\ExporterController;
@@ -183,11 +184,11 @@ $api->group([
                 $api->delete('{id}/logo', CompaniesController::class . '@deleteLogo');
             });
 
-            /** Exporter (same mechanism for exporters: binary response) */
-            $api->post('export/{form}', ExporterController::class . '@export');
-
             // Cases
             $api->group(['prefix' => 'cases'], static function (Router $api) {
+
+                /** Exporter (same mechanism for exporters: binary response) */
+                $api->post('export', CaseExporterController::class . '@export');
 
                 /** Case Accident model */
                 $api->post('search', CaseAccidentController::class . '@search');

@@ -1,0 +1,23 @@
+language: php
+php:
+  - 7.4
+cache:
+  directories:
+  - node_modules
+  - vendor
+before_script:
+  - phpenv config-rm xdebug.ini
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
+  - php artisan setup:seed --force
+script:
+  - vendor/bin/phpunit --configuration phpunit.xml
+  if: branch = master
+notifications:
+  email:
+    recipients:
+    - dev@medcenter24.com
+    on_success: never
+    on_failure: always
+  slack:
+    secure: EdIZYJL9HtGcLjOQexihyLwxnIw5JRUGiiJMokx2tdGcUWxU/eyHCPycUr7mhyryVytm53x80VAD/0u0YryeJa5/Olf11N8A5cN/pjyh+hIUZaURTxvyrDO1MF8DRguvbs55/4LXhogmyO8Vsh2rJ6ka1iBEemelyWrFD+/WpxAh/mMklhTB/g+WJvBrEzoX04xKjkUVxenbCJRxcjxx94Gs1d3y8+axrr8lyQeFV9jT8Zy4gqoO8hnRGdKmadZWBg5Yf4ZX2P1uDzP4AgqQmQbx1dIayP7Urz0v9LUkJWZ+fm7jeCOpN8u/sePRsigwe/jRWSFjeQ0yPh/0hwUPvrgZm5y0TOLlVZDTV1IvKYvdk/2snBfKTtffT3VAWumzUtDyaiVBWeC6IaPbtPw9K8O87G6QSlSsHJqazuvQ9QoUFaf+hKJqsmTX+OIC3nv0YXFIa4kL3H8cw+idI2s4+5cjsBE1EkMgV1b3ajdtwS50EPMH3ab01peVP5ksIjxpfndSNZIhd/BA96mM+XANEoxBE1+JfecFJQ3onmcbXeOBsB5B1UPH1N2XwxGqlkhl1wwriTEDu9c3nv3hAY79y57SAbkH//pRl9YhZ1iP8zPmD2eZHxRpPJldQEbDbdWq06XuanU/c2/Ur6ItRX0XIo3paAtqktZ0iThcSRjGneo=

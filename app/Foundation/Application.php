@@ -22,10 +22,10 @@ namespace medcenter24\mcCore\App\Foundation;
 use Illuminate\Foundation\PackageManifest;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\CommonException;
-use medcenter24\mcCore\App\Foundation\PackageManifest as Mc24PackageManifest;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 use Illuminate\Foundation\Application as BaseApplication;
+use medcenter24\mcCore\App\Services\Core\VendorService;
 
 class Application extends BaseApplication
 {
@@ -153,9 +153,9 @@ class Application extends BaseApplication
     public function make($abstract, array $parameters = [])
     {
         if ($abstract === PackageManifest::class) {
-            // $abstract = Mc24PackageManifest::class;
-            $t = 'a';
-            $b = parent::make($abstract, $parameters);
+            $packageManifest = parent::make($abstract, $parameters);
+            $packageManifest->vendorPath = VendorService::instance()->getVendorPath();
+            return $packageManifest;
         }
 
         return parent::make($abstract, $parameters);

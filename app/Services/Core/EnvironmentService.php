@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types=1);
+
 namespace medcenter24\mcCore\App\Services\Core;
 
-
 use medcenter24\mcCore\App\Contract\General\Environment;
-use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Support\Core\Configurable;
@@ -32,10 +32,7 @@ use medcenter24\mcCore\App\Support\Core\Configurable;
  */
 class EnvironmentService extends Configurable implements Environment
 {
-    /**
-     * @var self
-     */
-    private static $instance;
+    private static ?EnvironmentService $instance = null;
 
     /**
      * State of the environment
@@ -43,20 +40,20 @@ class EnvironmentService extends Configurable implements Environment
      *  false - environment was configured and it's stable)
      * @var bool
      */
-    private static $isTmpEnv = false;
+    private static bool $isTmpEnv = false;
 
     /**
      * Temporary directory which needs to be deleted after the tmp action
      * @var string
      */
-    private static $tmpDir = '';
+    private static string $tmpDir = '';
 
     /**
      * That class is very low layer of the project
      * so we need to have opportunity to handle errors by himself
      * @var array
      */
-    private static $errors = [];
+    private static array $errors = [];
 
     /**
      * @param string $configPath

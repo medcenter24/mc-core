@@ -27,14 +27,14 @@
 |
 */
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
     return redirect('admin');
 });
 
-Auth::routes();
+Route::mixin(new \Laravel\Ui\AuthRouteMethods());
+Route::auth(['verify' => true]);
 
 Route::get('/home', static function () {
     return redirect('admin');

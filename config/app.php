@@ -16,6 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use Laravel\Ui\UiServiceProvider;
 use medcenter24\mcCore\App\Services\Messenger\LocMessengerServiceProvider;
 
 $app = [
@@ -194,6 +195,7 @@ $app = [
         \medcenter24\mcCore\App\Providers\FormulaServiceProvider::class,
         \medcenter24\mcCore\App\Providers\ValidatorServiceProvider::class,
         Nwidart\Modules\LaravelModulesServiceProvider::class,
+        UiServiceProvider::class,
     ],
 
     /*

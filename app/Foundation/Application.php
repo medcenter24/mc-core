@@ -15,12 +15,14 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Foundation;
 
-
+use Illuminate\Foundation\PackageManifest;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\CommonException;
+use medcenter24\mcCore\App\Foundation\PackageManifest as Mc24PackageManifest;
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 use Illuminate\Foundation\Application as BaseApplication;
@@ -146,5 +148,16 @@ class Application extends BaseApplication
         }
 
         return $this['env'];
+    }
+
+    public function make($abstract, array $parameters = [])
+    {
+        if ($abstract === PackageManifest::class) {
+            // $abstract = Mc24PackageManifest::class;
+            $t = 'a';
+            $b = parent::make($abstract, $parameters);
+        }
+
+        return parent::make($abstract, $parameters);
     }
 }

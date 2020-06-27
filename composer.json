@@ -10,8 +10,7 @@
         "medcenter24-extension-name": "mcCore",
         "laravel": {
             "dont-discover": [
-                "cmgmyr/messenger",
-                "Cmgmyr\\Messenger\\MessengerServiceProvider"
+                "cmgmyr/messenger"
             ]
         }
     },

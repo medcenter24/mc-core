@@ -9,7 +9,9 @@
     "extra": {
         "medcenter24-extension-name": "mcCore",
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "cmgmyr/messenger"
+            ]
         }
     },
     "require": {

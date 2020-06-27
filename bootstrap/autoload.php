@@ -16,6 +16,8 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use medcenter24\mcCore\App\Services\Core\VendorService;
+
 define('LARAVEL_START', microtime(true));
 
 /*
@@ -35,8 +37,13 @@ $appPath = dirname(__DIR__, 2).'/vendor/autoload.php';
 
 if (!file_exists($devPath)) {
     // default place
-    require $appPath;
+    $path = $appPath;
 } else {
     // if installed within other packages for the medCenter CRM
-    require $devPath;
+    $path = $devPath;
 }
+
+require $path;
+
+// initialize service to use it later
+VendorService::instance(dirname($path));

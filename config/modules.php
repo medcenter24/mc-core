@@ -168,8 +168,8 @@ return [
     'composer' => [
         'vendor' => 'medcenter24',
         'author' => [
-            'name' => 'Oleksandr Zagovorychev',
-            'email' => 'zagovorychev@gmail.com',
+            'name' => 'MedCenter24',
+            'email' => 'dev@medcenter24.com',
         ],
     ],
     /*

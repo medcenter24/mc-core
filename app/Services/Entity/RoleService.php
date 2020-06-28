@@ -39,7 +39,7 @@ class RoleService extends AbstractModelService
     public const ROLES = [
         self::LOGIN_ROLE,
         self::DIRECTOR_ROLE,
-        self::DIRECTOR_ROLE,
+        self::DOCTOR_ROLE,
         self::ADMIN_ROLE,
     ];
 

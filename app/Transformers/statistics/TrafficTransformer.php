@@ -25,7 +25,8 @@ use League\Fractal\TransformerAbstract;
 
 class TrafficTransformer extends TransformerAbstract
 {
-    public function transform($statistic) {
+    public function transform($statistic): array
+    {
         return [
             'id' => $statistic->id,
             'name' => $statistic->name,

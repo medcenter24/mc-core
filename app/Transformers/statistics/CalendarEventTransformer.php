@@ -33,6 +33,7 @@ class CalendarEventTransformer extends AbstractTransformer
         $fields['statusTitle'] = $model->getAttribute('accidentStatus')
             ? $model->getAttribute('accidentStatus')->getAttribute('title')
             : '';
+        $fields['title'] = $fields['title'] ?: $model->getAttribute(AccidentService::FIELD_REF_NUM);
         return $fields;
     }
 

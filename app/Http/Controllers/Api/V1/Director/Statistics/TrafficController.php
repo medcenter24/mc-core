@@ -24,6 +24,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
 use Dingo\Api\Http\Response;
 use Exception;
 use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Transformers\statistics\TrafficTransformer;
 use Carbon\Carbon;
@@ -47,7 +48,7 @@ class TrafficController extends ApiController
 
         $statistic = DB::table('accidents')
             ->join('doctor_accidents', static function ($join) {
-                $join->where('accidents.caseable_type', '=', 'medcenter24\mcCore\App\DoctorAccident')
+                $join->where('accidents.caseable_type', '=', DoctorAccident::class)
                     ->on('accidents.caseable_id', '=', 'doctor_accidents.id');
             })
             ->join('doctors', 'doctors.id', '=', 'doctor_accidents.doctor_id')

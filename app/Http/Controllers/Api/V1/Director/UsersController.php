@@ -115,7 +115,6 @@ class UsersController extends ModelApiController
     /**
      * @param JsonRequest $request
      * @return Response
-     * @throws NotImplementedException
      */
     public function store(JsonRequest $request): Response
     {
@@ -127,6 +126,18 @@ class UsersController extends ModelApiController
             $data = $this->getDataTransformer()->inverseTransform($request->all());
             /** @var User $user */
             $user = $this->getModelService()->create($data);
+
+            // director could create only users with doctor role
+            $doctorRole = $this->getRoleService()->first(['title' => RoleService::DOCTOR_ROLE]);
+            if (!$doctorRole) {
+                $this->response->errorInternal('Role doctor was not assigned');
+            }
+            $user->roles()->attach($doctorRole);
+
+            return $this->response->created(
+                $this->urlToTheSource($user->getAttribute('id')),
+                $this->getDataTransformer()->transform($user)
+            );
         } catch(InconsistentDataException $e) {
             throw new ValidationHttpException([$e->getMessage()]);
         } catch (NotImplementedException $e) {
@@ -137,17 +148,7 @@ class UsersController extends ModelApiController
             $this->response->errorInternal();
         }
 
-        // director could create only users with doctor role
-        $doctorRole = $this->getRoleService()->first(['title' => RoleService::DOCTOR_ROLE]);
-        if (!$doctorRole) {
-            $this->response->errorInternal('Role doctor was not assigned');
-        }
-        $user->roles()->attach($doctorRole);
-
-        return $this->response->created(
-            $this->urlToTheSource($user->getAttribute('id')),
-            $this->getDataTransformer()->transform($user)
-        );
+        return $this->response->noContent();
     }
 
     public function updatePhoto($id): Response

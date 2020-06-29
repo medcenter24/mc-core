@@ -16,6 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use Illuminate\Database\Seeder;
@@ -34,7 +35,7 @@ class AccidentStatusesTableSeeder extends Seeder
      * 8. accident rejected
      * 9. accident closed
      */
-    const ACCIDENT_STATUSES = [
+    public const ACCIDENT_STATUSES = [
         [
             'title' => AccidentStatusService::STATUS_NEW,
             'type' => AccidentStatusService::TYPE_ACCIDENT,
@@ -78,7 +79,7 @@ class AccidentStatusesTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment('production') &&medcenter24\mcCore\App\AccidentStatus::all()->count()) {
+        if (App::environment('production') && AccidentStatus::all()->count()) {
             return;
         }
         if (!App::environment('production')) {

@@ -20,10 +20,6 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use Illuminate\Support\Facades\Auth;
-use medcenter24\mcCore\App\Services\Entity\RoleService;
-use medcenter24\mcCore\App\Support\Facades\Roles;
-
 class DoctorUpdateRequest extends JsonRequest
 {
     /**
@@ -36,7 +32,7 @@ class DoctorUpdateRequest extends JsonRequest
         return [
             'name' => 'min:1|max:150',
             'description' => 'max:255',
-            'refKey' => 'min:1|max:5|unique:doctors',
+            'refKey' => 'min:1|max:5',
         ];
     }
 }

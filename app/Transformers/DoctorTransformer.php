@@ -36,4 +36,5 @@ class DoctorTransformer extends AbstractTransformer
             'medicalBoardNumber' => DoctorService::FIELD_MEDICAL_BOARD_NUM,
         ];
     }
+
 }

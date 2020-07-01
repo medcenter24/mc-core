@@ -69,7 +69,7 @@ class UserTransformer extends AbstractTransformer
         $transformed = parent::inverseTransform($data);
 
         if (array_key_exists(UserService::FIELD_PASSWORD, $data)) {
-            $data['password'] = bcrypt($data['password']);
+            $transformed['password'] = bcrypt($data['password']);
         }
         return $transformed;
     }

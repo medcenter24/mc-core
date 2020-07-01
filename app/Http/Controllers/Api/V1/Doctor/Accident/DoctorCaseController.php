@@ -137,7 +137,7 @@ class DoctorCaseController extends ApiController
         $this->checkAccess($accident);
 
         $accident->accident_type_id = (int)$request->json('caseType', 1);
-        $accident->caseable->recommendation = (string)$request->json('diagnose', '');
+        $accident->caseable->recommendation = (string)$request->json('recommendation', '');
         $accident->caseable->investigation = (string)$request->json('investigation', '');
 
         $visitTime = $request->json('visitDateTime', '');

@@ -128,10 +128,12 @@ class UsersController extends ModelApiController
 
             // director could create only users with doctor role
             $doctorRole = $this->getRoleService()->first(['title' => RoleService::DOCTOR_ROLE]);
-            if (!$doctorRole) {
-                $this->response->errorInternal('Role doctor was not assigned');
+            $loginRole = $this->getRoleService()->first(['title' => RoleService::LOGIN_ROLE]);
+            if (!$doctorRole || !$loginRole) {
+                $this->response->errorInternal('Role doctor or login was not assigned');
             }
             $user->roles()->attach($doctorRole);
+            $user->roles()->attach($loginRole);
 
             return $this->response->created(
                 $this->urlToTheSource($user->getAttribute('id')),

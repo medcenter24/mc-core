@@ -22,7 +22,6 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Exception\ValidationHttpException;
-use Dingo\Api\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use Dingo\Api\Http\Response;
@@ -79,7 +78,7 @@ class UsersController extends ModelApiController
      */
     public function show($id): Response
     {
-        $user = $this->getModelService()->first(['id' => $id]);
+        $user = $this->getModelService()->first(['users.id' => $id]);
         if (!$user) {
             $this->response->errorNotFound();
         }
@@ -92,7 +91,7 @@ class UsersController extends ModelApiController
 
     public function destroy($id): Response
     {
-        $user = $this->getModelService()->first(['id' => $id]);
+        $user = $this->getModelService()->first(['users.id' => $id]);
         if (!$user) {
             $this->response->errorNotFound();
         }
@@ -154,7 +153,7 @@ class UsersController extends ModelApiController
     public function updatePhoto($id): Response
     {
         /** @var User $user */
-        $user = $this->getModelService()->first(['id' => $id]);
+        $user = $this->getModelService()->first(['users.id' => $id]);
         if (!$user) {
             $this->response->errorNotFound();
         }
@@ -177,7 +176,7 @@ class UsersController extends ModelApiController
 
     public function deletePhoto($id): Response
     {
-        $user = $this->getModelService()->first(['id' => $id]);
+        $user = $this->getModelService()->first(['users.id' => $id]);
         if (!$user) {
             $this->response->errorNotFound();
         }

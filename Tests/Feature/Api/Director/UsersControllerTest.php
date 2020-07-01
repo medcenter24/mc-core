@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
 use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\Role;
 use medcenter24\mcCore\App\Services\Entity\DoctorService;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
 use medcenter24\mcCore\App\Services\Entity\UserService;
@@ -289,5 +290,79 @@ class UsersControllerTest extends DirectorApiModelTest
     public function showDataProvider(): array
     {
         return [[['a'],['b']]];
+    }
+
+    public function testSearchUserById(): void
+    {
+        factory(User::class, 7)->create();
+
+        $response = $this->sendPost(self::URI.'/search', [
+            'filter' => [
+                'fields' => [
+                    'elType' => 'text',
+                    'field' => 'id',
+                    'match' => 'eq',
+                    'value' => '3',
+                ]
+            ]
+        ]);
+
+        $response->assertStatus(200)->assertJson([
+            'data' => [
+            ],
+            'meta' => [
+                'pagination' => [
+                    'total' => 0,
+                    'count' => 0,
+                    'per_page' => 25,
+                    'current_page' => 1,
+                    'total_pages' => 1,
+                    'links' => [],
+                ]
+            ]
+        ]);
+    }
+
+    public function testSearchDoctorUserById(): void
+    {
+        $roleDoctor = factory(Role::class)->create([
+            RoleService::FIELD_TITLE => RoleService::DOCTOR_ROLE,
+        ]);
+        factory(Doctor::class, 7)->create([
+            DoctorService::FIELD_USER_ID => static function() use ($roleDoctor) {
+                    $user = factory(User::class)->create();
+                    $user->roles()->attach($roleDoctor);
+                    return $user->id;
+                },
+        ]);
+
+        $response = $this->sendPost(self::URI.'/search', [
+            'filter' => [
+                'fields' => [
+                    [
+                        'elType' => 'text',
+                        'field' => 'users.id',
+                        'match' => 'eq',
+                        'value' => '3',
+                    ]
+                ]
+            ]
+        ]);
+
+        $response->assertStatus(200)->assertJson([
+            'data' => [
+                ['id' => 3]
+            ],
+            'meta' => [
+                'pagination' => [
+                    'total' => 1,
+                    'count' => 1,
+                    'per_page' => 25,
+                    'current_page' => 1,
+                    'total_pages' => 1,
+                    'links' => [],
+                ]
+            ]
+        ]);
     }
 }

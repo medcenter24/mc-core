@@ -20,22 +20,8 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Requests\Api;
 
-use Illuminate\Support\Facades\Auth;
-use medcenter24\mcCore\App\Services\Entity\RoleService;
-use medcenter24\mcCore\App\Support\Facades\Roles;
-
 class DoctorRequest extends JsonRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return Auth::check() && Roles::hasRole(auth()->user(), RoleService::DIRECTOR_ROLE);
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -46,7 +32,7 @@ class DoctorRequest extends JsonRequest
         return [
             'name' => 'required|max:150',
             'description' => 'max:255',
-            'refKey' => 'required|max:5|unique:doctors',
+            'refKey' => 'required|max:5',
         ];
     }
 }

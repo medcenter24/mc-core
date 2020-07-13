@@ -19,7 +19,6 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Listeners\Accident\UpdateAccidentStatus;
 
-
 use medcenter24\mcCore\App\Events\InvoiceChangedEvent;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\CaseServices\AccidentStatusVisor\AccidentInvoiceVisorService;

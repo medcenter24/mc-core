@@ -28,6 +28,11 @@ use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 
+/**
+ * Accident Statuses Supervisor
+ * Class AbstractVisorService
+ * @package medcenter24\mcCore\App\Services\CaseServices\AccidentStatusVisor
+ */
 abstract class AbstractVisorService
 {
     use ServiceLocatorTrait;
@@ -60,7 +65,7 @@ abstract class AbstractVisorService
 
         foreach ($this->getStatusMap() as $fieldName => $status) {
             if ($this->isStatusUpdatable($fieldName, $model, $previousModel)) {
-                Log::error('Update status', [$accident, $status]);
+                Log::info('Update status', [$accident, $status]);
                 $this->updateStatus($accident, $status);
             }
         }

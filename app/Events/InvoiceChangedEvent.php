@@ -19,7 +19,6 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Events;
 
-
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
 use medcenter24\mcCore\App\Entity\Invoice;

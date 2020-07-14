@@ -70,10 +70,11 @@ class HospitalInvoiceVisorService extends AbstractVisorService
         /** @var HospitalAccident $hospitalAccident */
         $hospitalAccident = $this->getHospitalAccidentService()
             ->first([HospitalAccidentService::FIELD_HOSPITAL_INVOICE_ID => $model->getAttribute(InvoiceService::FIELD_ID)]);
-        return $this->getAccidentService()->first([
+
+        return $hospitalAccident ? $this->getAccidentService()->first([
             AccidentService::FIELD_CASEABLE_TYPE => AccidentService::CASEABLE_TYPE_HOSPITAL,
             AccidentService::FIELD_CASEABLE_ID => $hospitalAccident->getAttribute(HospitalAccidentService::FIELD_ID),
-        ]);
+        ]) : null;
     }
 
     private function getHospitalAccidentService(): HospitalAccidentService

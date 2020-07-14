@@ -16,8 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Transformers;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\Accident;
@@ -31,8 +32,6 @@ class HospitalCaseTransformer extends AbstractTransformer
         $fields = parent::transform($model);
         $accident = $this->getAccident($model);
         $fields['accidentId'] = (int) $accident->getAttribute(AccidentService::FIELD_ID);
-        $fields['assistantInvoiceId'] = (int) $accident->getAttribute(AccidentService::FIELD_ASSISTANT_INVOICE_ID);
-        $fields['assistantGuaranteeId'] = (int) $accident->getAttribute(AccidentService::FIELD_ASSISTANT_GUARANTEE_ID);
         return $fields;
     }
 

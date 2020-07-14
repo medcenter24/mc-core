@@ -23,6 +23,7 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Helpers\Date;
+use medcenter24\mcCore\App\Services\Entity\HospitalAccidentService;
 use medcenter24\mcCore\App\Services\Entity\UserService;
 
 class HospitalAccidentTransformer extends AbstractTransformer
@@ -33,11 +34,14 @@ class HospitalAccidentTransformer extends AbstractTransformer
         $fields['status'] = $model->getAttribute('caseable')
             ? $model->getAttribute('caseable')->getAttribute('status')
             : '';
-        $fields['accidentStatusId'] = $model->getAttribute('caseable')
-            ? $model->getAttribute('caseable')->getAttribute('accident_status_id')
-            : '';
         $fields['hospitalId'] = $model->getAttribute('caseable')
             ? $model->getAttribute('caseable')->getAttribute('hospital_id')
+            : '';
+        $fields['hospitalGuaranteeId'] = $model->getAttribute('caseable')
+            ? $model->getAttribute('caseable')->getAttribute(HospitalAccidentService::FIELD_HOSPITAL_GUARANTEE_ID)
+            : '';
+        $fields['hospitalInvoiceId'] = $model->getAttribute('caseable')
+            ? $model->getAttribute('caseable')->getAttribute(HospitalAccidentService::FIELD_HOSPITAL_INVOICE_ID)
             : '';
         $fields['createdAt'] = Date::sysDate(
             $model->getAttribute('caseable')
@@ -50,6 +54,11 @@ class HospitalAccidentTransformer extends AbstractTransformer
 
     protected function getMap(): array
     {
-        return [];
+        return [
+            HospitalAccidentService::FIELD_ID,
+            'hospitalId' => HospitalAccidentService::FIELD_HOSPITAL_ID,
+            'hospitalGuaranteeId' => HospitalAccidentService::FIELD_HOSPITAL_GUARANTEE_ID,
+            'hospitalInvoiceId' => HospitalAccidentService::FIELD_HOSPITAL_INVOICE_ID,
+        ];
     }
 }

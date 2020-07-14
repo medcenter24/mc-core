@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\App\Listeners\Accident\UpdateAccidentStatus;
 use medcenter24\mcCore\App\Events\InvoiceChangedEvent;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\CaseServices\AccidentStatusVisor\AccidentInvoiceVisorService;
+use medcenter24\mcCore\App\Services\CaseServices\AccidentStatusVisor\HospitalInvoiceVisorService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
 class OnInvoiceUpdated
@@ -34,11 +35,19 @@ class OnInvoiceUpdated
      */
     public function handle(InvoiceChangedEvent $event): void
     {
+        // if invoice assigned to accident directly - it means that this is AccidentInvoice
         $this->getAccidentInvoiceVisorService()->applyChanges($event->getInvoice(), $event->getPreviousInvoice());
+        // if invoice assigned to HospitalAccident directly - that is HospitalInvoice
+        $this->getHospitalInvoiceVisorService()->applyChanges($event->getInvoice(), $event->getPreviousInvoice());
     }
     
     public function getAccidentInvoiceVisorService(): AccidentInvoiceVisorService
     {
         return $this->getServiceLocator()->get(AccidentInvoiceVisorService::class);
+    }
+
+    public function getHospitalInvoiceVisorService(): HospitalInvoiceVisorService
+    {
+        return $this->getServiceLocator()->get(HospitalInvoiceVisorService::class);
     }
 }

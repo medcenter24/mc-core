@@ -55,11 +55,9 @@ abstract class AbstractVisorService
         $accident = $this->popAccident($model);
 
         if (!$accident) {
-            Log::error('Accident does not found',
-                [
-                    'id' => $model->getAttribute('id'),
-                    'type' => get_class($model)
-                ]);
+            // can happen on the
+            // - new models without assignment to the accident
+            // - AccidentInvoice and HospitalInvoice are working in parallel on the invoice change event
             return; // don't do status changing when we don't have an accident
         }
 

@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\Tests\Feature\Services\Entity;
+namespace medcenter24\mcCore\Tests\Integration\Services\Entity;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Event;

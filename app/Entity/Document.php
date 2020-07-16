@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Entity;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -44,7 +45,7 @@ class Document extends Model implements HasMedia
     use InteractsWithMedia;
 
     protected $fillable = DocumentService::FILLABLE;
-    protected $visible = DocumentService::UPDATABLE;
+    protected $visible = DocumentService::VISIBLE;
 
     /**
      * @param Media|null $media
@@ -82,5 +83,20 @@ class Document extends Model implements HasMedia
     public function users(): MorphToMany
     {
         return $this->morphedByMany(User::class, 'documentable');
+    }
+
+    public function b64(): string {
+        return MediaHelper::b64($this, DocumentService::CASES_FOLDERS);
+    }
+
+    public function getAttribute($key)
+    {
+        if ($key === 'b64') {
+            $val = $this->b64();
+        } else {
+            $val = parent::getAttribute($key);
+        }
+
+        return $val;
     }
 }

@@ -1,0 +1,1 @@
+Integration tests - to test services as components. After data preparation we can run complex service tests.

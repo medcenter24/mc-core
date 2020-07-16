@@ -56,6 +56,7 @@ class CaseStoryControllerTest extends TestCase
                             'accidentStatusId' => 1,
                             'status' => 'current',
                             'title' => 'new',
+                            'accidentStatusType' => 'accident',
                         ),
                     1 =>
                         array (
@@ -66,6 +67,7 @@ class CaseStoryControllerTest extends TestCase
                             'accidentStatusId' => 2,
                             'status' => '',
                             'title' => 'assigned',
+                            'accidentStatusType' => 'doctor',
                         ),
                     2 =>
                         array (
@@ -76,6 +78,7 @@ class CaseStoryControllerTest extends TestCase
                             'accidentStatusId' => 3,
                             'status' => '',
                             'title' => 'in_progress',
+                            'accidentStatusType' => 'doctor',
                         ),
                     3 =>
                         array (
@@ -86,6 +89,7 @@ class CaseStoryControllerTest extends TestCase
                             'accidentStatusId' => 4,
                             'status' => '',
                             'title' => 'sent',
+                            'accidentStatusType' => 'doctor',
                         ),
                     4 =>
                         array (
@@ -96,6 +100,7 @@ class CaseStoryControllerTest extends TestCase
                             'accidentStatusId' => 5,
                             'status' => '',
                             'title' => 'paid',
+                            'accidentStatusType' => 'doctor',
                         ),
                     5 =>
                         array (
@@ -105,8 +110,20 @@ class CaseStoryControllerTest extends TestCase
                             'mode' => 'step',
                             'accidentStatusId' => 7,
                             'status' => '',
-                            'title' => 'closed',
+                            'title' => 'paid',
+                            'accidentStatusType' => 'assistant',
                         ),
+                    6 =>
+                        array (
+                            'id' => 8,
+                            'tag' => 'doctor',
+                            'order' => 8,
+                            'mode' => 'step',
+                            'accidentStatusId' => 8,
+                            'status' => '',
+                            'title' => 'closed',
+                            'accidentStatusType' => 'accident',
+                        )
                 ),
         ));
     }

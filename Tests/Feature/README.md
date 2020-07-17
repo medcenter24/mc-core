@@ -1,0 +1,1 @@
+Feature tests - when we have virtual application, that can run http request or Console commands.

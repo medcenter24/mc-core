@@ -39,6 +39,8 @@ class DocumentService extends AbstractModelService
     public const FIELD_CREATED_BY = 'created_by';
     public const FIELD_TYPE = 'type';
 
+    public const RELATION_MEDIA_B64 = 'b64';
+
     public const TYPE_ALL = 'all';
     public const TYPE_ACCIDENT = 'accident';
     public const TYPE_USER = 'user';
@@ -56,8 +58,9 @@ class DocumentService extends AbstractModelService
         self::FIELD_CREATED_BY,
     ];
 
-    public const UPDATABLE = [
+    public const VISIBLE = [
         self::FIELD_TITLE,
+        self::RELATION_MEDIA_B64,
         self::FIELD_CREATED_BY,
     ];
 
@@ -117,6 +120,7 @@ class DocumentService extends AbstractModelService
     }
 
     /**
+     * @todo move to AccidentDocumentService
      * @param User|null $user
      * @param Accident|null $accident
      * @param string $type - all, user or accident
@@ -153,6 +157,7 @@ class DocumentService extends AbstractModelService
     }
 
     /**
+     * @todo move to AccidentDocumentService
      * Load docs from accident
      * @param Accident $accident
      * @param string $type

@@ -1,0 +1,1 @@
+Unit tests - testing business logic of the particular unit. (Test conditions and logic of the smallest piece of the code.) 

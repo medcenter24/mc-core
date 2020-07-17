@@ -64,6 +64,9 @@ class AccidentService extends AbstractModelService
     // invoice contains the real value of payment
     public const RELATION_ASSISTANT_INVOICE = 'assistantInvoice';
 
+    public const CASEABLE_TYPE_HOSPITAL = HospitalAccident::class;
+    public const CASEABLE_TYPE_DOCTOR = DoctorAccident::class;
+
     public const FILLABLE = [
         self::FIELD_PARENT_ID,
         self::FIELD_PATIENT_ID,

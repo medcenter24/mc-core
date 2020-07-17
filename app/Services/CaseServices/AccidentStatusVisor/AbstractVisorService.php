@@ -28,6 +28,11 @@ use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 
+/**
+ * Accident Statuses Supervisor
+ * Class AbstractVisorService
+ * @package medcenter24\mcCore\App\Services\CaseServices\AccidentStatusVisor
+ */
 abstract class AbstractVisorService
 {
     use ServiceLocatorTrait;
@@ -50,17 +55,15 @@ abstract class AbstractVisorService
         $accident = $this->popAccident($model);
 
         if (!$accident) {
-            Log::error('Accident does not found',
-                [
-                    'id' => $model->getAttribute('id'),
-                    'type' => get_class($model)
-                ]);
+            // can happen on the
+            // - new models without assignment to the accident
+            // - AccidentInvoice and HospitalInvoice are working in parallel on the invoice change event
             return; // don't do status changing when we don't have an accident
         }
 
         foreach ($this->getStatusMap() as $fieldName => $status) {
             if ($this->isStatusUpdatable($fieldName, $model, $previousModel)) {
-                Log::error('Update status', [$accident, $status]);
+                Log::info('Update status', [$accident, $status]);
                 $this->updateStatus($accident, $status);
             }
         }

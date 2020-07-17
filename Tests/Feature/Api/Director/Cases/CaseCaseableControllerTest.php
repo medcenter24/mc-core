@@ -35,7 +35,7 @@ class CaseCaseableControllerTest extends TestCase
     /**
      * @var CaseAccidentService
      */
-    private $caseAccidentService;
+    private CaseAccidentService $caseAccidentService;
 
     protected function setUp(): void
     {
@@ -59,8 +59,6 @@ class CaseCaseableControllerTest extends TestCase
             'data' => [
                 'id' => 1,
                 'accidentId' => 1,
-                'assistantGuaranteeId' => 0,
-                'assistantInvoiceId' => 0,
                 'hospitalGuaranteeId' => 0,
                 'hospitalId' => 0,
                 'hospitalInvoiceId' => 0,

@@ -179,6 +179,12 @@ class FormsVariablesControllerTest extends TestCase
                             'key' => ':accident.city.title',
                             'type' => FormVariableService::TYPE_ACCIDENT,
                         ),
+                    24 =>
+                        array (
+                            'title' => 'Accident Documents',
+                            'key' => ':accident.documents',
+                            'type' => FormVariableService::TYPE_ACCIDENT,
+                        ),
                 ),
         ));
     }

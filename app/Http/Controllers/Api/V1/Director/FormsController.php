@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Entity\Form;
@@ -86,7 +87,7 @@ class FormsController extends ModelApiController
         /** @var Form $form */
         $form = $this->getModelService()->first([FormService::FIELD_ID => $formId]);
         if (!$form) {
-            $this->response->errorNotFound();
+            $this->response->errorNotFound('Form not found');
         }
         $source = call_user_func([$form->formable_type, 'findOrFail'], $srcId);
         return response()->json(['data' => $formService->getHtml($form, $source)]);

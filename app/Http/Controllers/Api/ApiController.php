@@ -51,7 +51,7 @@ abstract class ApiController extends Controller
             return parent::callAction($method, $parameters);
         } catch (ModelNotFoundException $e) {
             $this->log($e->getMessage());
-            $this->response->error('Not found', 404);
+            $this->response->error('Model not found', 404);
         }
         return null;
     }

@@ -49,6 +49,7 @@ class FormVariableService
     public const VAR_ACCIDENT_CITY_REGION_COUNTRY_TITLE = ':accident.city.region.country.title';
     public const VAR_ACCIDENT_CITY_REGION_TITLE = ':accident.city.region.title';
     public const VAR_ACCIDENT_CITY_TITLE = ':accident.city.title';
+    public const VAR_ACCIDENT_DOCUMENTS = ':accident.documents';
 
     public function getAccidentVariables(): array
     {
@@ -77,6 +78,7 @@ class FormVariableService
             self::VAR_ACCIDENT_CITY_REGION_COUNTRY_TITLE,
             self::VAR_ACCIDENT_CITY_REGION_TITLE,
             self::VAR_ACCIDENT_CITY_TITLE,
+            self::VAR_ACCIDENT_DOCUMENTS,
         ];
     }
 }

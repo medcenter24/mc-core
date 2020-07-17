@@ -49,6 +49,7 @@ class ScenariosTableSeeder extends Seeder
             'type' => AccidentStatusService::TYPE_DOCTOR,
         ],
         5 => [
+            // payment to the doctor
             'order' => 5,
             'title' => AccidentStatusService::STATUS_PAID,
             'type' => AccidentStatusService::TYPE_DOCTOR,
@@ -62,7 +63,13 @@ class ScenariosTableSeeder extends Seeder
             // skip doctor means that all type doctor will be skipped after that step
         ],
         7 => [
+            // payment from the assistant
             'order' => 7,
+            'title' => AccidentStatusService::STATUS_PAID,
+            'type' => AccidentStatusService::TYPE_ASSISTANT,
+        ],
+        8 => [
+            'order' => 8,
             'title' => AccidentStatusService::STATUS_CLOSED,
             'type' => AccidentStatusService::TYPE_ACCIDENT,
         ],
@@ -99,19 +106,26 @@ class ScenariosTableSeeder extends Seeder
             'title' => AccidentStatusService::STATUS_HOSPITAL_INVOICE,
             'type' => AccidentStatusService::TYPE_HOSPITAL,
         ],
-        /** Invoice sent to the assistant */
         6 => [
+            // payment to the hospital
             'order' => 6,
+            'title' => AccidentStatusService::STATUS_PAID,
+            'type' => AccidentStatusService::TYPE_HOSPITAL,
+        ],
+        /** Invoice sent to the assistant */
+        7 => [
+            'order' => 7,
             'title' => AccidentStatusService::STATUS_ASSISTANT_INVOICE,
             'type' => AccidentStatusService::TYPE_ASSISTANT,
         ],
-        7 => [
-            'order' => 7,
+        8 => [
+            // payment from the assistant
+            'order' => 8,
             'title' => AccidentStatusService::STATUS_PAID,
             'type' => AccidentStatusService::TYPE_ASSISTANT,
         ],
-        8 => [
-            'order' => 8,
+        9 => [
+            'order' => 9,
             'title' => AccidentStatusService::STATUS_CLOSED,
             'type' => AccidentStatusService::TYPE_ACCIDENT,
         ],

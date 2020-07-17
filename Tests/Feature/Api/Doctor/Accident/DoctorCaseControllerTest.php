@@ -150,7 +150,7 @@ class DoctorCaseControllerTest extends TestCase
 
         $accident = $this->createAccidentForDoc();
         $response = $this->sendPost('/api/doctor/accidents/' . $accident->getKey(), [
-            'diagnose' => 'Recommendation',
+            'recommendation' => 'Recommendation',
             'investigation' => 'Investigation',
             'visitDateTime' => '2017-01-20 01:30:54',
             'diagnostics' => [
@@ -185,8 +185,8 @@ class DoctorCaseControllerTest extends TestCase
                 'assistantInvoiceId' => 0,
                 'assistantGuaranteeId' => 0,
                 'caseablePaymentId' => 0,
-                'deletedAt' => '',
-                'closedAt' => '',
+                'deletedAt' => null,
+                'closedAt' => null,
                 'recommendation' => 'Recommendation',
                 'investigation' => 'Investigation',
                 'doctorId' => 1,

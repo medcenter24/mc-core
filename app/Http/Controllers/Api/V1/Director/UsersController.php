@@ -60,6 +60,9 @@ class UsersController extends ModelApiController
         return UserUpdate::class;
     }
 
+    /**
+     * @return UserService
+     */
     protected function getModelService(): ModelService
     {
         return $this->getServiceLocator()->get(UserService::class);
@@ -123,15 +126,18 @@ class UsersController extends ModelApiController
 
         try {
             $data = $this->getDataTransformer()->inverseTransform($request->all());
-            /** @var User $user */
-            $user = $this->getModelService()->create($data);
+            /** @var UserService $userService */
+            $userService = $this->getModelService();
+            $user = $userService->create($data);
 
             // director could create only users with doctor role
             $doctorRole = $this->getRoleService()->first(['title' => RoleService::DOCTOR_ROLE]);
-            if (!$doctorRole) {
-                $this->response->errorInternal('Role doctor was not assigned');
+            $loginRole = $this->getRoleService()->first(['title' => RoleService::LOGIN_ROLE]);
+            if (!$doctorRole || !$loginRole) {
+                $this->response->errorInternal('Role doctor or login was not assigned');
             }
             $user->roles()->attach($doctorRole);
+            $user->roles()->attach($loginRole);
 
             return $this->response->created(
                 $this->urlToTheSource($user->getAttribute('id')),

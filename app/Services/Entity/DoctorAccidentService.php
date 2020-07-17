@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
-use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 
 class DoctorAccidentService extends AbstractModelService
@@ -68,16 +67,9 @@ class DoctorAccidentService extends AbstractModelService
     protected function getFillableFieldDefaults(): array
     {
         return [
-            'doctor_id' => 0,
-            'recommendation' => '',
-            'investigation' => '',
+            self::FIELD_DOCTOR_ID => 0,
+            self::FIELD_RECOMMENDATION => '',
+            self::FIELD_INVESTIGATION => '',
         ];
-    }
-
-    public function findAndUpdate(array $filterByFields, array $data): Model
-    {
-        $model = parent::findAndUpdate($filterByFields, $data);
-
-        return $model;
     }
 }

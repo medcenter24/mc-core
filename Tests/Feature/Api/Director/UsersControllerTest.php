@@ -365,4 +365,30 @@ class UsersControllerTest extends DirectorApiModelTest
             ]
         ]);
     }
+
+    public function testCheckCreatedUser(): void
+    {
+        factory(Role::class)->create([
+            RoleService::FIELD_TITLE => RoleService::DOCTOR_ROLE,
+        ]);
+        factory(Role::class)->create([
+            RoleService::FIELD_TITLE => RoleService::LOGIN_ROLE,
+        ]);
+        $response = $this->sendPost(self::URI, [
+            'email' => 'test@a.c',
+            'name' => 'user name',
+            'password' => '123',
+        ]);
+
+        $response->assertStatus(201)->assertJson([
+            'id' => 2,
+            'name' => 'user name',
+            'email' => 'test@a.c',
+            'phone' => '',
+            'lang' => 'en',
+            'timezone' => 'UTC',
+            'thumb200' => '',
+            'thumb45' => '',
+        ]);
+    }
 }

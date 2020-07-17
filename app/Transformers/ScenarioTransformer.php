@@ -36,9 +36,11 @@ class ScenarioTransformer extends AbstractTransformer
         $fields = parent::transform($model);
         $fields['tag'] = $this->getTransformedType($fields['tag']);
         $fields['status'] = $model->getAttribute('status') ?: '';
-        $fields['title'] = $model->getAttribute('accidentStatus')
-            ? $model->getAttribute('accidentStatus')->getAttribute(AccidentStatusService::FIELD_TITLE)
-            : '';
+
+        $accidentStatus = $model->getAttribute('accidentStatus');
+        $fields['title'] = $accidentStatus ? $accidentStatus->getAttribute(AccidentStatusService::FIELD_TITLE) : '';
+        $fields['accidentStatusType'] = $accidentStatus ? $accidentStatus->getAttribute(AccidentStatusService::FIELD_TYPE) : '';
+
         return $fields;
     }
 

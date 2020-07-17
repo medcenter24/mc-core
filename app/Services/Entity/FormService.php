@@ -213,6 +213,12 @@ class FormService extends AbstractModelService
         return $template;
     }
 
+    /**
+     * @param string $template
+     * @param Model $source
+     * @return string
+     * @throws InconsistentDataException
+     */
     private function applyConditions(string $template, Model $source): string
     {
         // exclude errors with tags that can be auto fixed

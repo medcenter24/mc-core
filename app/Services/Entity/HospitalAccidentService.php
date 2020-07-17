@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Services\Entity;
 
 use medcenter24\mcCore\App\Entity\HospitalAccident;
-use medcenter24\mcCore\App\Entity\Invoice;
 
 class HospitalAccidentService extends AbstractModelService
 {
@@ -56,37 +55,10 @@ class HospitalAccidentService extends AbstractModelService
 
     protected function getFillableFieldDefaults(): array
     {
-        return [];
-    }
-
-    public function saveHospitalInvoice(HospitalAccident $hospitalAccident, array $data = null)
-    {
-        $this->saveInvoice($hospitalAccident, $data, 'hospital');
-    }
-
-    public function saveAssistantInvoice(HospitalAccident $hospitalAccident, array $data = null)
-    {
-        $this->saveInvoice($hospitalAccident, $data, 'assistant');
-    }
-
-    private function saveInvoice(HospitalAccident $hospitalAccident, array $data = null, $name = 'hospital')
-    {
-        $uri = $name . '_invoice_id';
-        $morphName = $name . 'Invoice';
-        if (!$hospitalAccident->$uri) {
-            $invoice = Invoice::create();
-            $hospitalAccident->$uri = $invoice->id;
-        } else {
-            $invoice = $hospitalAccident->$morphName;
-        }
-
-        if ($data && is_array($data)) {
-            if (isset($data['documentId'])) {
-                // save morph doc todo?
-            }
-            if (isset($data['price'])) {
-                $invoice->price = $data['price'];
-            }
-        }
+        return [
+            self::FIELD_HOSPITAL_ID => 0,
+            self::FIELD_HOSPITAL_GUARANTEE_ID => 0,
+            self::FIELD_HOSPITAL_INVOICE_ID => 0,
+        ];
     }
 }

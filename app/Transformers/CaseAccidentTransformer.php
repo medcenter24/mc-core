@@ -118,7 +118,11 @@ class CaseAccidentTransformer extends AbstractTransformer
                     $transformer = false;
                     break;
                 case CaseAccidentService::PROPERTY_DOCUMENTS:
-                    $transformer = new DocumentTransformer();
+                    /*
+                     * from the case editor we have identifiers only
+                     * $transformer = new DocumentTransformer();
+                    */
+                    $transformer = false;
                     break;
                 case CaseAccidentService::PROPERTY_PATIENT:
                     $transformer = new PatientTransformer();
@@ -130,12 +134,12 @@ class CaseAccidentTransformer extends AbstractTransformer
                 $data[$key] = $transformer->inverseTransform($data[$key]);
             }
         }
-        
+
         // transform case type if provided
         $data = $this->inverseTransformCaseType($data);
         return $data;
     }
-    
+
     /**
      * @inheritDoc
      */

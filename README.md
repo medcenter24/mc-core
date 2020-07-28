@@ -1,5 +1,8 @@
 [![Build Status](https://travis-ci.com/medcenter24/mc-core.svg?branch=master)](https://travis-ci.com/medcenter24/mc-core)
 
+![GitHub](https://img.shields.io/github/license/medcenter24/mc-core.svg)
+![GitHub release](https://img.shields.io/github/release/medcenter24/mc-core.svg)
+
 # CRM My Doctors
 
 CRM system that provide opportunity to store, aggregate and automatize all business

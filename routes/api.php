@@ -33,7 +33,6 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseDocumentCo
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseExporterController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseFinanceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseHistoryController;
-use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\ExporterController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseSourceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseStatusController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases\CaseStoryController;

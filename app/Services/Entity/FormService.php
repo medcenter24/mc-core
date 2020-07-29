@@ -174,7 +174,7 @@ class FormService extends AbstractModelService
 
             $mpdf->Output(Storage::disk(self::PDF_DISK)->path($path), Destination::FILE);
         } catch (MpdfException $e) {
-            Log::debug($e->getMessage());
+            Log::error($e->getMessage());
         }
     }
 
@@ -370,7 +370,6 @@ class FormService extends AbstractModelService
     private function getModelValue(Model $model, string $var): string
     {
         if ($this->isProgrammedVariable($var)) {
-            Log::emergency('a', [$this->getProgrammedVariableValue($model, $var)]);
             return $this->getProgrammedVariableValue($model, $var);
         }
 

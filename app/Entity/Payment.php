@@ -26,6 +26,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use medcenter24\mcCore\App\Services\Entity\PaymentService;
 
+/**
+ * @property bool fixed
+ */
 class Payment extends Model
 {
     use SoftDeletes;

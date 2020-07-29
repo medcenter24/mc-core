@@ -38,25 +38,10 @@ class CaseFinanceViewService
 {
     public const FINANCE_TYPES = ['income', 'assistant', 'caseable'];
 
-    /**
-     * @var CaseFinanceService
-     */
-    private $caseFinanceService;
-
-    /**
-     * @var FormulaResultService
-     */
-    private $formulaResultService;
-
-    /**
-     * @var CurrencyService
-     */
-    private $currencyService;
-
-    /**
-     * @var FormulaViewService
-     */
-    private $formulaViewService;
+    private CaseFinanceService $caseFinanceService;
+    private FormulaResultService $formulaResultService;
+    private CurrencyService $currencyService;
+    private FormulaViewService $formulaViewService;
 
     public function __construct(
         CaseFinanceService $caseFinanceService,

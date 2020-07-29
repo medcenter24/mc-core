@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -31,6 +32,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * Case|Accident|...
  *
  * Class Accident
+ * @property Payment incomePayment
+ * @property Collection income
  * @package App
  */
 class Accident extends AccidentAbstract

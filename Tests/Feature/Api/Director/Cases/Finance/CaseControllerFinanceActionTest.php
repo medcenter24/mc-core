@@ -826,8 +826,8 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type'  => 'income',
                     'loading' => false,
-                    'calculatedValue' => 1,
-                    'formula' => '5.00 - 4.00',
+                    'calculatedValue' => 16,
+                    'formula' => '20.00 - 4.00',
                     'payment' => [
                         'id' => $incomePayment->id,
                     ]
@@ -835,11 +835,11 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type' => 'assistant',
                     'loading' => false,
-                    'calculatedValue' => 5,
-                    'formula' => 'invoice',
+                    'calculatedValue' => 0,
+                    'formula' => 'fixed',
                     'payment' => [
-                        'id' => $assistantInvoice->payment->id,
-                        'value' => $assistantInvoice->payment->value
+                        'id' => $assistantPayment->id,
+                        'value' => $assistantPayment->value
                     ],
                 ],
                 [
@@ -914,7 +914,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'loading' => false,
                     'calculatedValue' => 10,
                     'formula' => '10.00',
-                    'payment' => ['id' => $assistantPayment->id],
+                    'payment' => null,
                 ],
                 [
                     'type' => 'caseable',

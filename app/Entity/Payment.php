@@ -28,6 +28,7 @@ use medcenter24\mcCore\App\Services\Entity\PaymentService;
 
 /**
  * @property bool fixed
+ * @property mixed value
  */
 class Payment extends Model
 {

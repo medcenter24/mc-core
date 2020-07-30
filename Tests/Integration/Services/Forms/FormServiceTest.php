@@ -136,6 +136,7 @@ class FormServiceTest extends TestCase
         $income = factory(Payment::class)->create([
             'currency_id' => $currency->getAttribute('id'),
             'value' => 10,
+            'fixed' => true,
         ]);
         $accident = new Accident([
             'income_payment_id' => $income->getAttribute('id'),
@@ -147,6 +148,32 @@ class FormServiceTest extends TestCase
             'formable_type' => Accident::class,
         ]);
         self::assertSame('CurrIco CurrName 10', $this->service->getHtml($form, $accident));
+    }
+
+    /**
+     * @throws InconsistentDataException
+     */
+    public function testIncomeCurrencyZeroValueData(): void
+    {
+        $currency = factory(FinanceCurrency::class)->create([
+            'title' => 'CurrName',
+            'ico' => 'CurrIco'
+        ]);
+        $income = factory(Payment::class)->create([
+            'currency_id' => $currency->getAttribute('id'),
+            'value' => 0,
+            'fixed' => true,
+        ]);
+        $accident = new Accident([
+            'income_payment_id' => $income->getAttribute('id'),
+        ]);
+        $form = new Form([
+            'template' => FormVariableService::VAR_ACCIDENT_INCOME_CURRENCY_ICO
+                . ' ' . FormVariableService::VAR_ACCIDENT_INCOME_CURRENCY_TITLE
+                . ' ' . FormVariableService::VAR_ACCIDENT_INCOME_VALUE,
+            'formable_type' => Accident::class,
+        ]);
+        self::assertSame('CurrIco CurrName 0', $this->service->getHtml($form, $accident));
     }
 
     /**

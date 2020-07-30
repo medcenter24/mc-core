@@ -235,7 +235,9 @@ class FormService extends AbstractModelService
      * @param string $template
      * @param Model $source
      * @return string
+     * @throws FormulaException
      * @throws InconsistentDataException
+     * @throws Throwable
      */
     private function applyIfConditions(string $template, Model $source): string
     {
@@ -339,13 +341,17 @@ class FormService extends AbstractModelService
      * @param string $template
      * @param Model $source
      * @return string
+     * @throws FormulaException
      * @throws InconsistentDataException
+     * @throws Throwable
      */
     private function applyVariables(string $template, Model $source): string
     {
         foreach ($this->getFormVariableService()->getAccidentVariables() as $map) {
             $value = $this->getModelValue($source, $map);
-            $value = $value ?: 'VARIABLE_STILL_NOT_SET_'.$map;
+            if ($value !== '0') {
+                $value = $value ?: 'VARIABLE_STILL_NOT_SET_' . $map;
+            }
             $template = str_replace($map, $value, $template);
         }
         return $template;
@@ -397,15 +403,15 @@ class FormService extends AbstractModelService
 
             switch ($var) {
                 case FormVariableService::VAR_ACCIDENT_INCOME_VALUE:
-                    return $income instanceof Collection ? (string)$income->get('calculatedValue') : '???';
+                    return $income instanceof Collection ? (string)$income->get('finalActiveValue') : '';
                 case FormVariableService::VAR_ACCIDENT_INCOME_CURRENCY_TITLE:
-                    return $income instanceof Collection ? $income->get('currency')->title : '???';
+                    return $income instanceof Collection ? $income->get('currency')->title : '';
                 case FormVariableService::VAR_ACCIDENT_INCOME_CURRENCY_ICO:
-                    return $income instanceof Collection ? $income->get('currency')->ico : '???';
+                    return $income instanceof Collection ? $income->get('currency')->ico : '';
             }
         }
 
-        return 'NOT_FOUND';
+        return '';
     }
 
     private function getCaseFinanceViewService(): CaseFinanceViewService

@@ -33,12 +33,15 @@ use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Entity\Form;
 use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
+use medcenter24\mcCore\App\Services\CaseServices\Finance\CaseFinanceViewService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\File\TmpFileService;
 use medcenter24\mcCore\App\Services\Form\FormVariableService;
 use Mpdf\Mpdf;
 use Mpdf\MpdfException;
 use Mpdf\Output\Destination;
+use Throwable;
 
 class FormService extends AbstractModelService
 {
@@ -171,7 +174,7 @@ class FormService extends AbstractModelService
 
             $mpdf->Output(Storage::disk(self::PDF_DISK)->path($path), Destination::FILE);
         } catch (MpdfException $e) {
-            Log::debug($e->getMessage());
+            Log::error($e->getMessage());
         }
     }
 
@@ -232,7 +235,9 @@ class FormService extends AbstractModelService
      * @param string $template
      * @param Model $source
      * @return string
+     * @throws FormulaException
      * @throws InconsistentDataException
+     * @throws Throwable
      */
     private function applyIfConditions(string $template, Model $source): string
     {
@@ -240,7 +245,7 @@ class FormService extends AbstractModelService
         /** @var DOMElement $el */
         foreach ($this->findDomElements('starts-with(name(@*),"'.self::CONDITION_IF.'")', $doc) as $el) {
             $attr = $el->getAttribute(self::CONDITION_IF);
-            $attrVal = $this->getAccidentValue($source, $attr);
+            $attrVal = $this->getModelValue($source, $attr);
             // if should not be shown
             if (!$attrVal || empty($attrVal) || $attrVal === '0') {
                 $el->parentNode->removeChild($el);
@@ -332,11 +337,21 @@ class FormService extends AbstractModelService
         return $template;
     }
 
+    /**
+     * @param string $template
+     * @param Model $source
+     * @return string
+     * @throws FormulaException
+     * @throws InconsistentDataException
+     * @throws Throwable
+     */
     private function applyVariables(string $template, Model $source): string
     {
         foreach ($this->getFormVariableService()->getAccidentVariables() as $map) {
-            $value = $this->getAccidentValue($source, $map);
-            $value = $value ?: 'VARIABLE_STILL_NOT_SET_'.$map;
+            $value = $this->getModelValue($source, $map);
+            if ($value !== '0') {
+                $value = $value ?: 'VARIABLE_STILL_NOT_SET_' . $map;
+            }
             $template = str_replace($map, $value, $template);
         }
         return $template;
@@ -351,16 +366,70 @@ class FormService extends AbstractModelService
     }
 
     /**
-     * @param Model $accident
+     * @param Model $model
+     * @param string $var
+     * @return string
+     * @throws FormulaException
+     * @throws InconsistentDataException
+     * @throws Throwable
+     */
+    private function getModelValue(Model $model, string $var): string
+    {
+        if ($this->isProgrammedVariable($var)) {
+            return $this->getProgrammedVariableValue($model, $var);
+        }
+
+        return $this->loadValueFromModel($model, $var);
+    }
+
+    private function isProgrammedVariable(string $varName): bool
+    {
+        return in_array($varName, FormVariableService::PROGRAMMED_VARS, true);
+    }
+
+    /**
+     * @param Model $model
+     * @param string $var
+     * @return string
+     * @throws InconsistentDataException
+     * @throws Throwable
+     * @throws FormulaException
+     */
+    private function getProgrammedVariableValue(Model $model, string $var): string
+    {
+        if ($model instanceof Accident && in_array($var, FormVariableService::INCOME_VARS)) {
+            /** @var Collection $income */
+            $income = $this->getCaseFinanceViewService()->get($model, ['income'])->first();
+
+            switch ($var) {
+                case FormVariableService::VAR_ACCIDENT_INCOME_VALUE:
+                    return $income instanceof Collection ? (string)$income->get('finalActiveValue') : '';
+                case FormVariableService::VAR_ACCIDENT_INCOME_CURRENCY_TITLE:
+                    return $income instanceof Collection ? $income->get('currency')->title : '';
+                case FormVariableService::VAR_ACCIDENT_INCOME_CURRENCY_ICO:
+                    return $income instanceof Collection ? $income->get('currency')->ico : '';
+            }
+        }
+
+        return '';
+    }
+
+    private function getCaseFinanceViewService(): CaseFinanceViewService
+    {
+        return $this->getServiceLocator()->get(CaseFinanceViewService::class);
+    }
+
+    /**
+     * @param Model $model
      * @param string $var
      * @return string
      * @throws InconsistentDataException
      */
-    private function getAccidentValue(Model $accident, string $var): string
+    private function loadValueFromModel(Model $model, string $var): string
     {
         $map = trim($var, ':');
         $map = explode('.', $map);
-        $obj = $accident;
+        $obj = $model;
         array_shift($map); // pop accident
         $val = '';
         $date = null;

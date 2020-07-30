@@ -38,25 +38,10 @@ class CaseFinanceViewService
 {
     public const FINANCE_TYPES = ['income', 'assistant', 'caseable'];
 
-    /**
-     * @var CaseFinanceService
-     */
-    private $caseFinanceService;
-
-    /**
-     * @var FormulaResultService
-     */
-    private $formulaResultService;
-
-    /**
-     * @var CurrencyService
-     */
-    private $currencyService;
-
-    /**
-     * @var FormulaViewService
-     */
-    private $formulaViewService;
+    private CaseFinanceService $caseFinanceService;
+    private FormulaResultService $formulaResultService;
+    private CurrencyService $currencyService;
+    private FormulaViewService $formulaViewService;
 
     public function __construct(
         CaseFinanceService $caseFinanceService,
@@ -111,6 +96,7 @@ class CaseFinanceViewService
                 'formulaView' => array_key_exists('formula', $data) && $data['formula'] instanceof FormulaBuilder
                     ? $this->formulaViewService->render($data['formula']) : $data['formula'],
                 'view' => $this->getFinalActiveValue($data) . ' ' . $currency->code,
+                'finalActiveValue' => $this->getFinalActiveValue($data),
             ]);
             $financeDataCollection->push($typeResult);
         }
@@ -226,12 +212,12 @@ class CaseFinanceViewService
      */
     private function getAssistantData(Accident $accident): array
     {
-        $payment = $this->getAssistantInvoice($accident);
-        $formula = 'invoice';
-        if (!$payment) {
-            $payment = $accident->paymentFromAssistant;
-            $formula = 'fixed';
-            if (!$payment || !$payment->fixed) {
+        $payment = $accident->paymentFromAssistant;
+        $formula = 'fixed';
+        if (!$payment || !$payment->fixed) {
+            $payment = $this->getAssistantInvoice($accident);
+            $formula = 'invoice';
+            if (!$payment) {
                 $formula = $this->caseFinanceService->getFromAssistantFormula($accident);
             }
         }

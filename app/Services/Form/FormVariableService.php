@@ -39,17 +39,30 @@ class FormVariableService
     public const VAR_ACCIDENT_CASEABLE_DOCTOR_NAME = ':accident.caseable.doctor.name';
     public const VAR_ACCIDENT_CASEABLE_DOCTOR_MEDICAL_BOARD_NUM = ':accident.caseable.doctor.medical_board_num';
     public const VAR_ACCIDENT_CASEABLE_HOSPITAL_TITLE = ':accident.caseable.hospital.title';
-    public const VAR_ACCIDENT_INCOME_CURRENCY_ICO = ':accident.incomePayment.currency.ico';
     public const VAR_ACCIDENT_CASEABLE_DIAGNOSTICS = ':accident.caseable.diagnostics';
+    public const VAR_ACCIDENT_CASEABLE_SURVEYS = ':accident.caseable.surveys';
     public const VAR_ACCIDENT_CASEABLE_SERVICES = ':accident.caseable.services';
-    public const VAR_ACCIDENT_INCOME_CURRENCY_TITLE = ':accident.incomePayment.currency.title';
-    public const VAR_ACCIDENT_INCOME_VALUE = ':accident.incomePayment.value';
     public const VAR_ACCIDENT_CASEABLE_VISIT_TIME_TIME = ':accident.caseable.visit_time.time';
     public const VAR_ACCIDENT_CASEABLE_VISIT_TIME_DATE = ':accident.caseable.visit_time.date';
     public const VAR_ACCIDENT_CITY_REGION_COUNTRY_TITLE = ':accident.city.region.country.title';
     public const VAR_ACCIDENT_CITY_REGION_TITLE = ':accident.city.region.title';
     public const VAR_ACCIDENT_CITY_TITLE = ':accident.city.title';
     public const VAR_ACCIDENT_DOCUMENTS = ':accident.documents';
+
+    public const VAR_ACCIDENT_INCOME_CURRENCY_ICO = ':accident.income.currency.ico';
+    public const VAR_ACCIDENT_INCOME_CURRENCY_TITLE = ':accident.income.currency.title';
+    public const VAR_ACCIDENT_INCOME_VALUE = ':accident.income.value';
+
+    public const INCOME_VARS = [
+        self::VAR_ACCIDENT_INCOME_CURRENCY_ICO,
+        self::VAR_ACCIDENT_INCOME_CURRENCY_TITLE,
+        self::VAR_ACCIDENT_INCOME_VALUE,
+    ];
+
+    /**
+     * Variables that should be loaded with services
+     */
+    public const PROGRAMMED_VARS = self::INCOME_VARS;
 
     public function getAccidentVariables(): array
     {
@@ -70,6 +83,7 @@ class FormVariableService
             self::VAR_ACCIDENT_CASEABLE_HOSPITAL_TITLE,
             self::VAR_ACCIDENT_INCOME_CURRENCY_ICO,
             self::VAR_ACCIDENT_CASEABLE_DIAGNOSTICS,
+            self::VAR_ACCIDENT_CASEABLE_SURVEYS,
             self::VAR_ACCIDENT_CASEABLE_SERVICES,
             self::VAR_ACCIDENT_INCOME_CURRENCY_TITLE,
             self::VAR_ACCIDENT_INCOME_VALUE,

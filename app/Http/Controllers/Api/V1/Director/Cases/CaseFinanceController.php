@@ -91,10 +91,12 @@ class CaseFinanceController extends ApiController
             $this->response->errorNotFound();
         }
         $jsonData = $request->json() ? $request->json()->all() : [];
+
         $caseFinanceService->save(
             $accident,
             $type,
             $jsonData);
+
         return $this->getResponse(
             CaseFinanceViewService::FINANCE_TYPES,
             $accident,

@@ -149,15 +149,7 @@ class CaseFinanceControllerTest extends TestCase
                         array (
                             'type' => 'assistant',
                             'loading' => false,
-                            'payment' =>
-                                array (
-                                    'id' => 2,
-                                    'createdBy' => 1,
-                                    'value' => 1.87,
-                                    'currencyId' => 1,
-                                    'fixed' => false,
-                                    'description' => 'Created from CaseFinanceService',
-                                ),
+                            'payment' => null,
                             'currency' =>
                                 array (
                                     'id' => 1,
@@ -225,15 +217,7 @@ class CaseFinanceControllerTest extends TestCase
                         array (
                             'type' => 'assistant',
                             'loading' => false,
-                            'payment' =>
-                                array (
-                                    'id' => 2,
-                                    'createdBy' => 1,
-                                    'value' => 1.87,
-                                    'currencyId' => 1,
-                                    'fixed' => false,
-                                    'description' => 'Created from CaseFinanceService',
-                                ),
+                            'payment' =>null, // as it is not fixed - won't be counted
                             'currency' =>
                                 array (
                                     'id' => 1,

@@ -22,7 +22,6 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Entity\Form;

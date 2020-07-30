@@ -45,6 +45,7 @@ use medcenter24\mcCore\App\Services\Entity\FormService;
  *  fe: model FeatureTemplate: title: feature 1, values: {firstName: 'Forest', lastName: 'Abigail', featureName: 'feature First'}
  *
  * Class Form
+ * @property mixed formable_type
  * @package App
  */
 class Form extends Model

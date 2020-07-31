@@ -31,7 +31,7 @@ class FinanceCurrenciesTableSeeder extends Seeder
         FinanceCurrency::truncate();
         FinanceCurrency::firstOrCreate([
             'title' => 'Euro',
-            'code' => 'eur',
+            'code' => 'eu',
             'ico' => 'fa fa-euro',
         ]);
     }

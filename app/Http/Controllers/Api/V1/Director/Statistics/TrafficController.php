@@ -89,15 +89,15 @@ class TrafficController extends ApiController
         if (Str::startsWith(env('DB_CONNECTION'), 'sqlite')) {
             $years = DB::table('accidents')
                 ->distinct()
-                ->select(DB::raw('strftime(\'%Y\', accidents.created_at) as year'))
-                ->groupBy(DB::raw('strftime(\'%Y\', accidents.created_at)'))
+                ->select(DB::raw('strftime(\'%Y\', accidents.handling_time) as year'))
+                ->groupBy(DB::raw('strftime(\'%Y\', accidents.handling_time)'))
                 ->get();
         } else {
             $years = DB::table('accidents')
                 ->distinct()
-                ->select(DB::raw('EXTRACT(YEAR FROM accidents.created_at) as year'))
+                ->select(DB::raw('EXTRACT(YEAR FROM accidents.handling_time) as year'))
                 ->whereNotNull('accidents.handling_time')
-                ->groupBy(DB::raw('EXTRACT(YEAR FROM accidents.created_at)'))
+                ->groupBy(DB::raw('EXTRACT(YEAR FROM accidents.handling_time)'))
                 ->get();
         }
         $years = $years->filter(static function($y) {

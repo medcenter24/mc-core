@@ -79,12 +79,12 @@ class DiagnosticsAccidentControllerTest extends TestCase
 
     public function testUpdateDiagnostic(): void
     {
-        $diagnostic = factory(Diagnostic::class)->create([
+        $diagnostic = Diagnostic::factory()->create([
             DiagnosticService::FIELD_CREATED_BY => $this->getLoggedUser()->getKey()
         ]);
 
         /** @var DoctorAccident $doctorAccident */
-        $doctorAccident = factory(DoctorAccident::class)->create([
+        $doctorAccident = DoctorAccident::factory()->create([
             DoctorAccidentService::FIELD_DOCTOR_ID => $this->getCurrentDoctor()->getKey(),
         ]);
         $doctorAccident->diagnostics()->attach($diagnostic);

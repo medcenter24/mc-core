@@ -15,17 +15,21 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
 
+namespace Database\Seeders;
+
+use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Entity\AccidentStatusHistory;
 use medcenter24\mcCore\App\Entity\AccidentType;
 use medcenter24\mcCore\App\Entity\Assistant;
+use medcenter24\mcCore\App\Entity\City;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\Form;
 use medcenter24\mcCore\App\Entity\FormReport;
 use medcenter24\mcCore\App\Entity\Patient;
-use medcenter24\mcCore\App\Services\Entity\AccidentTypeService;
 use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Database\Seeder;
 
@@ -42,37 +46,37 @@ class AccidentStatusHistoriesTableSeeder extends Seeder
             return;
         } elseif (!App::environment('production')) {
             AccidentStatusHistory::truncate();
-            factory(AccidentStatusHistory::class, 10)->create([
+            AccidentStatusHistory::factory()->count(10)->create([
                 'historyable_id' => function () {
                     // could be each of accident Doctor_Accident Accident Hospital_Accident ...
-                    return factory(Accident::class)->create([
-                        'created_by' => factory(User::class)->create(),
-                        'patient_id' => factory(Patient::class)->create(),
+                    return Accident::factory()->create([
+                        'created_by' => User::factory()->create(),
+                        'patient_id' => Patient::factory()->create(),
                         'accident_type_id' => function () {
                             return !AccidentType::count()
-                                ? factory(AccidentType::class)->create()
+                                ? AccidentType::factory()->create()
                                 : AccidentType::first();
                         },
                         'accident_status_id' => function () {
                             return AccidentStatus::count()
                                 ? AccidentStatus::first()
-                                : factory(AccidentStatus::class)->create();
+                                : AccidentStatus::factory()->create();
                         },
                         'assistant_id' => function () {
-                            return factory(Assistant::class)->create();
+                            return Assistant::factory()->create();
                         },
                         'caseable_id' => function () {
-                            return factory(DoctorAccident::class)->create();
+                            return DoctorAccident::factory()->create();
                         },
                         'form_report_id' => function () {
-                            return factory(FormReport::class)->create([
+                            return FormReport::factory()->create([
                                 'form_id' => function () {
-                                    return factory(Form::class)->create();
+                                    return Form::factory()->create();
                                 }
                             ]);
                         },
                         'city_id' => function () {
-                            return factory(\App\City::class)->create();
+                            return City::factory()->create();
                         },
                     ]);
                 },

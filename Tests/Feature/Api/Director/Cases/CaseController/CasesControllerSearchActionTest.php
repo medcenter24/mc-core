@@ -34,7 +34,7 @@ class CasesControllerSearchActionTest extends TestCase
 
     public function testSearch(): void
     {
-        factory(Accident::class, 7)->create();
+        Accident::factory()->count(7)->create();
         $response = $this->sendPost('/api/director/cases/search', []);
 
         $response->assertStatus(200)->assertJson([

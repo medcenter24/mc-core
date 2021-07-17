@@ -21,9 +21,8 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
+use Database\Seeders\ScenariosTableSeeder;
 use medcenter24\mcCore\App\Entity\Accident;
-use medcenter24\mcCore\App\Entity\AccidentStatus;
-use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\Hospital;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
@@ -39,7 +38,6 @@ use medcenter24\mcCore\App\Services\Entity\HospitalAccidentService;
 use medcenter24\mcCore\App\Services\Entity\InvoiceService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
-use ScenariosTableSeeder;
 
 class CaseControllerScenarioActionTest extends TestCase
 {
@@ -274,13 +272,13 @@ class CaseControllerScenarioActionTest extends TestCase
             CaseAccidentService::PROPERTY_ACCIDENT => [
                 // invoice can't be paid on creation (it won't work with events when accident does not exists)
                 AccidentService::FIELD_ASSISTANT_INVOICE_ID => $invoice->id,
-                AccidentService::FIELD_ASSISTANT_GUARANTEE_ID => factory(Invoice::class)->create()->id,
+                AccidentService::FIELD_ASSISTANT_GUARANTEE_ID => Invoice::factory()->create()->id,
                 AccidentService::FIELD_CASEABLE_TYPE => HospitalAccident::class,
             ],
             CaseAccidentService::PROPERTY_HOSPITAL_ACCIDENT => [
-                HospitalAccidentService::FIELD_HOSPITAL_ID => factory(Hospital::class)->create()->id,
-                HospitalAccidentService::FIELD_HOSPITAL_GUARANTEE_ID => factory(Invoice::class)->create()->id,
-                HospitalAccidentService::FIELD_HOSPITAL_INVOICE_ID => factory(Invoice::class)->create()->id,
+                HospitalAccidentService::FIELD_HOSPITAL_ID => Hospital::factory()->create()->id,
+                HospitalAccidentService::FIELD_HOSPITAL_GUARANTEE_ID => Invoice::factory()->create()->id,
+                HospitalAccidentService::FIELD_HOSPITAL_INVOICE_ID => Invoice::factory()->create()->id,
             ]
         ]);
 
@@ -499,14 +497,14 @@ class CaseControllerScenarioActionTest extends TestCase
                 'hospital_invoice_id' => 0,
             ])->id,
             'assistant_invoice_id' => 0,
-            'assistant_payment_id' => factory(Payment::class)->create()->id,
+            'assistant_payment_id' => Payment::factory()->create()->id,
             'assistant_guarantee_id' => 0,
             'accident_status_id' => (new AccidentStatusService())->getNewStatus(),
         ]);
 
         $this->hospitalAccidentService->findAndUpdate([HospitalAccidentService::FIELD_ID], [
             HospitalAccidentService::FIELD_ID => $accident->caseable_id,
-            'hospital_id' => factory(Hospital::class)->create()->id,
+            'hospital_id' => Hospital::factory()->create()->id,
             'hospital_guarantee_id' => 0,
             'hospital_invoice_id' => 0,
         ]);

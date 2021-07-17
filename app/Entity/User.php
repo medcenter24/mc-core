@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -45,6 +46,7 @@ class User extends Authenticable implements JWTSubject, HasMedia
     use SoftDeletes;
     use InteractsWithMedia;
     use Messagable;
+    use HasFactory;
 
     /**
      * The attributes that should be mutated to dates.

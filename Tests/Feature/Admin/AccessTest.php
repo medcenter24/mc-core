@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\Tests\Feature\Admin;
 
 use medcenter24\mcCore\App\Entity\User;
+use medcenter24\mcCore\App\Support\Facades\Roles;
 use medcenter24\mcCore\Tests\TestCase;
 
 class AccessTest extends TestCase
@@ -27,10 +28,10 @@ class AccessTest extends TestCase
     // redirect to the admin page
     public function testMain(): void
     {
-        \Roles::shouldReceive('hasRole')->times(0);
+        Roles::shouldReceive('hasRole')->times(0);
 
         $response = $this
-            ->actingAs(factory(User::class)->make())
+            ->actingAs(User::factory()->make())
             ->get('/');
 
         $response
@@ -40,14 +41,14 @@ class AccessTest extends TestCase
 
     public function testAdmin(): void
     {
-        \Roles::shouldReceive('hasRole')
+        Roles::shouldReceive('hasRole')
             ->times(9)
             ->andReturnUsing(static function ($user, $role) {
                 return true;
             });
 
         $response = $this
-            ->actingAs(factory(User::class)->make())
+            ->actingAs(User::factory()->make())
             ->get('/admin');
 
         $response->assertStatus(200);
@@ -55,14 +56,14 @@ class AccessTest extends TestCase
 
     public function testDoctor(): void
     {
-        \Roles::shouldReceive('hasRole')
+        Roles::shouldReceive('hasRole')
             ->times(5)
             ->andReturnUsing(function ($user, $role) {
                 return false;
             });
 
         $response = $this
-            ->actingAs(factory(User::class)->make())
+            ->actingAs(User::factory()->make())
             ->get('/admin');
 
         $response->assertStatus(403);
@@ -70,14 +71,14 @@ class AccessTest extends TestCase
 
     public function testDirector(): void
     {
-        \Roles::shouldReceive('hasRole')
+        Roles::shouldReceive('hasRole')
             ->times(5)
             ->andReturnUsing(function ($user, $role) {
                 return false;
             });
 
         $response = $this
-            ->actingAs(factory(User::class)->make())
+            ->actingAs(User::factory()->make())
             ->get('/admin');
 
         $response->assertStatus(403);

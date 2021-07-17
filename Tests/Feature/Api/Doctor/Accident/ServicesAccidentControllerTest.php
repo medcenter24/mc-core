@@ -80,12 +80,12 @@ class ServicesAccidentControllerTest extends TestCase
 
     public function testUpdateService(): void
     {
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             DiagnosticService::FIELD_CREATED_BY => $this->getLoggedUser()->getKey()
         ]);
 
         /** @var DoctorAccident $doctorAccident */
-        $doctorAccident = factory(DoctorAccident::class)->create([
+        $doctorAccident = DoctorAccident::factory()->create([
             DoctorAccidentService::FIELD_DOCTOR_ID => $this->getCurrentDoctor()->getKey(),
         ]);
         $doctorAccident->services()->attach($service);

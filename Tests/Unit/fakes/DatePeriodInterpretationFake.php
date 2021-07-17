@@ -15,7 +15,7 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
-
+declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
@@ -25,6 +25,6 @@ class DatePeriodInterpretationFake implements Fake
 {
     public static function make(array $params = [], array $additionalParams = [])
     {
-        return factory(DatePeriodInterpretation::class)->make($params);
+        return DatePeriodInterpretation::factory()->make($params);
     }
 }

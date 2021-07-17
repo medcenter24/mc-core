@@ -40,6 +40,9 @@ class CaseDocumentControllerTest extends TestCase
 
     public function testDocuments(): void
     {
+        if(!function_exists('imagejpeg')) {
+            $this->markTestSkipped('ImageJpeg not installed');
+        }
         Storage::fake('documents');
 
         $accident = $this->caseAccidentService->create();

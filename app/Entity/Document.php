@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
@@ -43,6 +44,7 @@ class Document extends Model implements HasMedia
 {
     use SoftDeletes;
     use InteractsWithMedia;
+    use HasFactory;
 
     protected $fillable = DocumentService::FILLABLE;
     protected $visible = DocumentService::VISIBLE;

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -53,6 +54,7 @@ use medcenter24\mcCore\App\Services\Entity\FinanceConditionService;
 class FinanceCondition extends Model
 {
     use SoftDeletes;
+    use HasFactory;
 
     protected $fillable = FinanceConditionService::FILLABLE;
     protected $visible = FinanceConditionService::VISIBLE;

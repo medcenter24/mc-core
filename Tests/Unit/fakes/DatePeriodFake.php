@@ -15,9 +15,8 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
-
+declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Unit\fakes;
-
 
 use medcenter24\mcCore\App\Entity\DatePeriod;
 
@@ -25,6 +24,6 @@ class DatePeriodFake implements Fake
 {
     public static function make(array $params = [], array $additionalParams = [])
     {
-        return factory(DatePeriod::class)->make($params);
+        return DatePeriod::factory()->make($params);
     }
 }

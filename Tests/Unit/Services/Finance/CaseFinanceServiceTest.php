@@ -35,15 +35,14 @@ use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Services\Entity\FinanceConditionService;
 use medcenter24\mcCore\App\Services\Formula\FormulaService;
 use Illuminate\Support\Collection;
-use Prophecy\Argument;
-use Prophecy\Prophecy\ObjectProphecy;
+use PHPUnit\Framework\MockObject\MockObject;
 use medcenter24\mcCore\Tests\TestCase;
 
 class CaseFinanceServiceTest extends TestCase
 {
-    private function getExpectation($key, $list)
+    private function getExpectation($key, $list): int
     {
-        return array_key_exists($key, $list) ? $list[$key] : 0;
+        return array_key_exists($key, $list) ? (int)$list[$key] : 0;
     }
 
     /**
@@ -59,58 +58,55 @@ class CaseFinanceServiceTest extends TestCase
     {
         $formulaBuilder = new FormulaBuilderUnit();
 
-        /** @var ObjectProphecy|FormulaService $formulaServiceMock */
-        $formulaServiceMock = $this->prophesize(FormulaService::class);
-        $formulaServiceMock->createFormula()
-            ->shouldBeCalledTimes($this->getExpectation('formulaServiceMock->createFormula', $expects))
+        /** @var MockObject|FormulaService $formulaServiceMock */
+        $formulaServiceMock = $this->createMock(FormulaService::class);
+        $formulaServiceMock
+            ->expects(self::exactly($this->getExpectation('formulaServiceMock->createFormula', $expects)))
+            ->method('createFormula')
             ->willReturn($formulaBuilder);
-        $formulaServiceMock->createFormulaFromConditions(Argument::type(Collection::class))
-            ->shouldBeCalledTimes($this->getExpectation('formulaServiceMock->createFormulaFromConditions', $expects))
+        $formulaServiceMock
+            ->expects(self::exactly($this->getExpectation('formulaServiceMock->createFormulaFromConditions', $expects)))
+            ->method('createFormulaFromConditions')
+            ->with($this->isInstanceOf(Collection::class))
             ->willReturn($formulaBuilder);
-        /** @var FormulaService $formulaService */
-        $formulaService = $formulaServiceMock->reveal();
 
-        $accidentServiceMock = $this->prophesize(AccidentService::class);
+        /** @var MockObject|AccidentService $accidentServiceMock */
+        $accidentServiceMock = $this->createMock(AccidentService::class);
+        $accidentServiceMock
+            ->method('getAccidentServices')
+            ->willReturn(collect());
 
-        $accidentServiceMock->getAccidentServices(Argument::type(Accident::class))->willReturn(collect());
-
-        /** @var AccidentService $accidentService */
-        $accidentService = $accidentServiceMock->reveal();
-
-        /** @var FinanceConditionService|ObjectProphecy $financeConditionServiceMock */
-        $financeConditionServiceMock = $this->prophesize(FinanceConditionService::class);
-        $financeConditionServiceMock->findConditions(Argument::type('string'), Argument::type('array'))
-            ->shouldBeCalledTimes($this->getExpectation('financeConditionServiceMock->findConditions', $expects))
-            ->will(function ($args) {
-            if (array_key_exists(DoctorAccident::class, $args[1])) {
-                if (!$args[1][DoctorAccident::class]) {
-                    return collect([]);
+        /** @var FinanceConditionService|MockObject $financeConditionServiceMock */
+        $financeConditionServiceMock = $this->createMock(FinanceConditionService::class);
+        $financeConditionServiceMock
+            ->expects(self::exactly($this->getExpectation('financeConditionServiceMock->findConditions', $expects)))
+            ->method('findConditions')
+            ->willReturnCallback(function ($className, $collection) {
+                if (array_key_exists(DoctorAccident::class, $collection)) {
+                    if (!$collection[DoctorAccident::class]) {
+                        return collect([]);
+                    }
+                    return collect([1]);
                 }
-                return collect([1]);
-            }
 
-            if (array_key_exists(HospitalAccident::class, $args[1])) {
-                if (!$args[1][HospitalAccident::class]) {
-                    return collect([]);
+                if (array_key_exists(HospitalAccident::class, $collection)) {
+                    if (!$collection[HospitalAccident::class]) {
+                        return collect([]);
+                    }
+                    return collect([1]);
                 }
-                return collect([1]);
-            }
 
-            return collect([]);
-        });
+                return collect([]);
+            });
 
-        /** @var FinanceConditionService $financeConditionService */
-        $financeConditionService = $financeConditionServiceMock->reveal();
-
-        $currencyServiceMock = $this->prophesize(CurrencyService::class);
-        /** @var CurrencyService $currencyService */
-        $currencyService = $currencyServiceMock->reveal();
+        /** @var MockObject|CurrencyService $currencyServiceMock */
+        $currencyServiceMock = $this->createMock(CurrencyService::class);
 
         $mockedServiceLocator = $this->mockServiceLocator([
-            FormulaService::class => $formulaService,
-            AccidentService::class => $accidentService,
-            FinanceConditionService::class => $financeConditionService,
-            CurrencyService::class => $currencyService,
+            FormulaService::class => $formulaServiceMock,
+            AccidentService::class => $accidentServiceMock,
+            FinanceConditionService::class => $financeConditionServiceMock,
+            CurrencyService::class => $currencyServiceMock,
         ]);
 
         $caseFinanceService =  new CaseFinanceService();
@@ -118,57 +114,55 @@ class CaseFinanceServiceTest extends TestCase
         return $caseFinanceService;
     }
 
-    private function getAccidentMock(): ObjectProphecy
+    private function getAccidentMock(): MockObject
     {
-        return $this->prophesize(Accident::class);
+        return $this->createMock(Accident::class);
     }
 
-    /**
-     * @return ObjectProphecy
-     */
-    private function getDoctorAccidentMock(): ObjectProphecy
+    private function getDoctorAccidentMock(): MockObject
     {
-        /** @var ObjectProphecy $accidentMock */
+        /** @var MockObject|Accident $accidentMock */
         $accidentMock = $this->getAccidentMock();
-        $accidentMock->isDoctorCaseable()->willReturn(true);
-        $accidentMock->isHospitalCaseable()->willReturn(false);
+        $accidentMock
+            ->method('isDoctorCaseable')
+            ->willReturn(true);
+        $accidentMock
+            ->method('isHospitalCaseable')
+            ->willReturn(false);
         $doctorAccidentMock = $this->createMock(DoctorAccident::class);
-        $accidentMock->getAttribute(Argument::type('string'))->will(function ($args) use ($doctorAccidentMock) {
-            $value = null;
-            if ($args['0'] === 'caseable_type') {
-                $value = DoctorAccident::class;
-            }
-            if ($args['0'] === 'caseable') {
-                $doctorAccidentMock->method('getAttribute')->willReturn(collect());
-                $value = $doctorAccidentMock;
-            }
-            return $value;
-        });
+        $accidentMock->method('getAttribute')
+            ->willReturnCallback(function ($name) use ($doctorAccidentMock) {
+                return match ($name) {
+                    'caseable_type' => DoctorAccident::class,
+                    'caseable' => $doctorAccidentMock->method('getAttribute')->willReturn(collect()),
+                    default => null,
+                };
+            });
         return $accidentMock;
     }
 
-    /**
-     * @return ObjectProphecy
-     */
-    private function getHospitalAccidentMock(): ObjectProphecy
+    private function getHospitalAccidentMock(): MockObject
     {
-        $hospitalCase = $this->prophesize(HospitalAccident::class);
+        $hospitalCase = $this->createMock(HospitalAccident::class);
 
         $accidentMock = $this->getAccidentMock();
-        $accidentMock->isHospitalCaseable()->willReturn(true);
-        $accidentMock->isDoctorCaseable()->willReturn(false);
-        $accidentMock->getAttribute(Argument::type('string'))->will(function ($args) use ($hospitalCase) {
-            $value = null;
-            switch ($args['0']) {
-                case 'caseable_type':
-                    $value = HospitalAccident::class;
-                    break;
-                case 'caseable':
-                    $value = $hospitalCase->reveal();
-            }
+        $accidentMock
+            ->method('isHospitalCaseable')
+            ->willReturn(true);
+        $accidentMock
+            ->method('isDoctorCaseable')
+            ->willReturn(false);
+        $accidentMock
+            ->method('getAttribute')
+            ->willReturnCallback(
+                function ($name) use ($hospitalCase) {
+                    return match ($name) {
+                        AccidentService::FIELD_CASEABLE_TYPE => HospitalAccident::class,
+                        'caseable' => $hospitalCase,
+                        default => null,
+                    };
+                });
 
-            return $value;
-        });
         return $accidentMock;
     }
 
@@ -180,7 +174,7 @@ class CaseFinanceServiceTest extends TestCase
     public function testEmptyDoctorCase(): void
     {
         /** @var Accident $accident */
-        $accident = $this->getDoctorAccidentMock()->reveal();
+        $accident = $this->getDoctorAccidentMock();
 
         // how much do we need to pay to the doctor?
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
@@ -204,7 +198,7 @@ class CaseFinanceServiceTest extends TestCase
     public function testEmptyHospitalCase(): void
     {
         /** @var Accident $accident */
-        $accident = $this->getHospitalAccidentMock()->reveal();
+        $accident = $this->getHospitalAccidentMock();
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
@@ -227,7 +221,7 @@ class CaseFinanceServiceTest extends TestCase
         $this->expectExceptionMessage('Hospital Case only');
 
         /** @var Accident $accident */
-        $accident = $this->getDoctorAccidentMock()->reveal();
+        $accident = $this->getDoctorAccidentMock();
         $this->financeService()->getToHospitalFormula($accident);
     }
 
@@ -241,7 +235,7 @@ class CaseFinanceServiceTest extends TestCase
         $this->expectExceptionMessage('DoctorAccident only');
 
         /** @var Accident $accident */
-        $accident = $this->getHospitalAccidentMock()->reveal();
+        $accident = $this->getHospitalAccidentMock();
         $this->financeService()->getToDoctorFormula($accident);
     }
 
@@ -251,22 +245,23 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testStoredFromAssistantPayment(): void
     {
-        $paymentMock = $this->prophesize(Payment::class);
-        $paymentMock->getAttribute(Argument::type('string'))->willReturn(10);
+        $paymentMock = $this->createMock(Payment::class);
+        $paymentMock
+            ->method('getAttribute')
+            ->willReturn(10);
 
+        /** @var Accident|MockObject $accidentMock */
         $accidentMock = $this->getAccidentMock();
-        $accidentMock->getAttribute(Argument::type('string'))->will(function($args) use($paymentMock) {
-            if ($args[0] == 'paymentFromAssistant') {
-                return $paymentMock->reveal();
-            }
-        });
-        /** @var Accident $accident */
-        $accident = $accidentMock->reveal();
+        $accidentMock
+            ->method('getAttribute')
+            ->willReturnCallback(function($name) use($paymentMock) {
+                return $name === 'paymentFromAssistant' ? $paymentMock : null;
+            });
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'financeConditionServiceMock->findConditions' => 1,
-        ])->getFromAssistantFormula($accident));
+        ])->getFromAssistantFormula($accidentMock));
     }
 
     /**
@@ -275,14 +270,13 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testCalculateFromAssistantEmptyPayment(): void
     {
+        /** @var Accident $accidentMock */
         $accidentMock = $this->getAccidentMock();
-        /** @var Accident $accident */
-        $accident = $accidentMock->reveal();
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'financeConditionServiceMock->findConditions' => 1,
-        ])->getFromAssistantFormula($accident));
+        ])->getFromAssistantFormula($accidentMock));
     }
 
     /**
@@ -291,33 +285,37 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testCalculateFromAssistantPaymentWithCondition(): void
     {
-        $paymentMock = $this->prophesize(Payment::class);
-        $paymentMock->getAttribute(Argument::type('string'))->willReturn(987);
+        $paymentMock = $this->createMock(Payment::class);
+        $paymentMock
+            ->method('getAttribute')
+            ->willReturn(987);
 
-        $assistantGuaranteeMock = $this->prophesize(Invoice::class);
-        $assistantGuaranteeMock->getAttribute(Argument::type('string'))->will(function($args) use ($paymentMock){
-            if ($args[0] == 'payment') {
-                return $paymentMock->reveal();
-            }
-        });
+        $assistantGuaranteeMock = $this->createMock(Invoice::class);
+        $assistantGuaranteeMock
+            ->method('getAttribute')
+            ->willReturnCallback(function($name) use ($paymentMock){
+                if ($name == 'payment') {
+                    return $paymentMock;
+                }
+                return null;
+            });
 
+        /** @var Accident|MockObject $accidentMock */
         $accidentMock = $this->getAccidentMock();
-        $accidentMock->getAttribute(Argument::type('string'))->will(function($args) use ($assistantGuaranteeMock) {
-            if ($args[0] == 'assistantGuarantee') {
-                return $assistantGuaranteeMock->reveal();
-            }
-            if ($args[0] == 'caseable_id') {
-                return 5;
-            }
-        });
-        /** @var Accident $accident */
-        $accident = $accidentMock->reveal();
+        $accidentMock
+            ->method('getAttribute')
+            ->willReturnCallback(function($name) use ($assistantGuaranteeMock) {
+                return match ($name) {
+                    'assistantGuarantee' => $assistantGuaranteeMock,
+                    'caseable_id' => 5,
+                    default => null,
+                };
+            });
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'financeConditionServiceMock->findConditions' => 1,
-            'formulaServiceMock->createFormulaFromConditions' => 1,
-        ])->getFromAssistantFormula($accident));
+        ])->getFromAssistantFormula($accidentMock));
     }
 
     /**
@@ -326,23 +324,25 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testCalculateToDoctorPayment(): void
     {
+        /** @var Accident|MockObject $accidentMock */
         $accidentMock = $this->getAccidentMock();
-        $accidentMock->isDoctorCaseable()->willReturn(true);
-        $accidentMock->getAttribute(Argument::type('string'))->will(function($args) {
-            if ($args[0] == 'caseable_type') {
-                return DoctorAccident::class;
-            }
-            if ($args[0] == 'caseable_id') {
-                return 0;
-            }
-        });
-        /** @var Accident $accident */
-        $accident = $accidentMock->reveal();
+        $accidentMock
+            ->method('isDoctorCaseable')
+            ->willReturn(true);
+        $accidentMock
+            ->method('getAttribute')
+            ->willReturnCallback(function($name) {
+                return match ($name) {
+                    'caseable_type' => DoctorAccident::class,
+                    'caseable_id' => 0,
+                    default => null,
+                };
+            });
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'financeConditionServiceMock->findConditions' => 1,
-        ])->getToDoctorFormula($accident));
+        ])->getToDoctorFormula($accidentMock));
     }
 
     /**
@@ -351,25 +351,26 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testCalculateToDoctorPaymentWithCondition(): void
     {
+        /** @var Accident|MockObject $accidentMock */
         $accidentMock = $this->getAccidentMock();
-        $accidentMock->isDoctorCaseable()->willReturn(true);
-        $accidentMock->getAttribute(Argument::type('string'))->will(function($args) {
-            if ($args[0] == 'caseable_type') {
-                return DoctorAccident::class;
-            }
-            if ($args[0] == 'caseable_id') {
-                return 5;
-            }
-            return null;
-        });
-        /** @var Accident $accident */
-        $accident = $accidentMock->reveal();
+        $accidentMock
+            ->method('isDoctorCaseable')
+            ->willReturn(true);
+
+        $accidentMock
+            ->method('getAttribute')
+            ->willReturnCallback(function($name) {
+                return match ($name) {
+                    'caseable_type' => DoctorAccident::class,
+                    'caseable_id' => 5,
+                    default => null,
+                };
+            });
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'financeConditionServiceMock->findConditions' => 1,
-            'formulaServiceMock->createFormulaFromConditions' => 1,
-        ])->getToDoctorFormula($accident));
+        ])->getToDoctorFormula($accidentMock));
     }
 
     /**
@@ -378,28 +379,30 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testStoredToDoctorPayment(): void
     {
-        $paymentMock = $this->prophesize(Payment::class);
-        $paymentMock->getAttribute(Argument::type('string'))->willReturn(10);
+        $paymentMock = $this->createMock(Payment::class);
+        $paymentMock
+            ->method('getAttribute')
+            ->willReturn(10);
 
+        /** @var Accident|MockObject $accidentMock */
         $accidentMock = $this->getAccidentMock();
-        $accidentMock->isDoctorCaseable()->willReturn(true);
-        $accidentMock->getAttribute(Argument::type('string'))->will(function($args) use($paymentMock) {
-            if ($args[0] == 'caseable_type') {
-                return DoctorAccident::class;
-            }
-            if ($args[0] == 'paymentToCaseable') {
-                return $paymentMock->reveal();
-            }
-
-            return null;
-        });
-        /** @var Accident $accident */
-        $accident = $accidentMock->reveal();
+        $accidentMock
+            ->method('isDoctorCaseable')
+            ->willReturn(true);
+        $accidentMock
+            ->method('getAttribute')
+            ->willReturnCallback(function($name) use($paymentMock) {
+                return match ($name) {
+                    'caseable_type' => DoctorAccident::class,
+                    'paymentToCaseable' => $paymentMock,
+                    default => null,
+                };
+            });
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'financeConditionServiceMock->findConditions' => 1,
-        ])->getToDoctorFormula($accident));
+        ])->getToDoctorFormula($accidentMock));
     }
 
     /**
@@ -408,32 +411,29 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testCalculateToHospitalPayment(): void
     {
+        /** @var Accident|MockObject $accidentMock */
         $accidentMock = $this->getAccidentMock();
-        $accidentMock->isDoctorCaseable()->willReturn(false);
-        $accidentMock->isHospitalCaseable()->willReturn(true);
-        $accidentMock->getAttribute(Argument::type('string'))->will(function($args) {
-            $res = '';
-            switch ($args[0]) {
-                case 'caseable_type':
-                    $res = HospitalAccident::class;
-                    break;
-                case 'caseable_id':
-                    $res = 0;
-                    break;
-                case 'caseable':
-                    $res = false;
-                    break;
-            }
-
-            return $res;
-        });
-        /** @var Accident $accident */
-        $accident = $accidentMock->reveal();
+        $accidentMock
+            ->method('isDoctorCaseable')
+            ->willReturn(false);
+        $accidentMock
+            ->method('isHospitalCaseable')
+            ->willReturn(true);
+        $accidentMock
+            ->method('getAttribute')
+            ->willReturnCallback(function($name) {
+                return match ($name) {
+                    'caseable_type' => HospitalAccident::class,
+                    'caseable_id' => 0,
+                    'caseable' => false,
+                    default => '',
+                };
+            });
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'financeConditionServiceMock->findConditions' => 1,
-        ])->getToHospitalFormula($accident));
+        ])->getToHospitalFormula($accidentMock));
     }
 
     /**
@@ -442,32 +442,26 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testCalculateToHospitalPaymentWithCondition(): void
     {
+        /** @var MockObject|Accident $accidentMock */
         $accidentMock = $this->getAccidentMock();
-        $accidentMock->isHospitalCaseable()->willReturn(true);
-        $accidentMock->getAttribute(Argument::type('string'))->will(function($args) {
-            $res = null;
-            switch ($args[0]) {
-                case 'caseable_type':
-                    $res = HospitalAccident::class;
-                    break;
-                case 'caseable_id':
-                    $res = 5;
-                    break;
-                case 'caseable':
-                    $res = false;
-                    break;
-            }
-
-            return $res;
-        });
-        /** @var Accident $accident */
-        $accident = $accidentMock->reveal();
+        $accidentMock
+            ->method('isHospitalCaseable')
+            ->willReturn(true);
+        $accidentMock
+            ->method('getAttribute')
+            ->willReturnCallback(function($name) {
+                return match ($name) {
+                    'caseable_type' => HospitalAccident::class,
+                    'caseable_id' => 5,
+                    'caseable' => false,
+                    default => null,
+                };
+            });
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'financeConditionServiceMock->findConditions' => 1,
-            'formulaServiceMock->createFormulaFromConditions' => 1,
-        ])->getToHospitalFormula($accident));
+        ])->getToHospitalFormula($accidentMock));
     }
 
     /**
@@ -476,28 +470,29 @@ class CaseFinanceServiceTest extends TestCase
      */
     public function testStoredToHospitalPayment(): void
     {
-        $paymentMock = $this->prophesize(Payment::class);
-        $paymentMock->getAttribute(Argument::type('string'))->willReturn(10);
+        $paymentMock = $this->createMock(Payment::class);
+        $paymentMock
+            ->method('getAttribute')
+            ->willReturn(10);
 
         $accidentMock = $this->getAccidentMock();
-        $accidentMock->isHospitalCaseable()->willReturn(true);
-        $accidentMock->getAttribute(Argument::type('string'))->will(function($args) use($paymentMock) {
-            if ($args[0] == 'caseable_type') {
-                return HospitalAccident::class;
-            }
-            if ($args[0] == 'paymentToCaseable') {
-                return $paymentMock->reveal();
-            }
-
-            return null;
-        });
-        /** @var Accident $accident */
-        $accident = $accidentMock->reveal();
+        $accidentMock
+            ->method('isHospitalCaseable')
+            ->willReturn(true);
+        $accidentMock
+            ->method('getAttribute')
+            ->willReturnCallback(function($name) use($paymentMock) {
+                return match ($name) {
+                    'caseable_type' => HospitalAccident::class,
+                    'paymentToCaseable' => $paymentMock,
+                    default => null,
+                };
+            });
 
         self::assertInstanceOf(FormulaBuilder::class, $this->financeService([
             'formulaServiceMock->createFormula' => 1,
             'financeConditionServiceMock->findConditions' => 1,
-        ])->getToHospitalFormula($accident));
+        ])->getToHospitalFormula($accidentMock));
     }
 
 }

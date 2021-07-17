@@ -18,10 +18,10 @@
 
 namespace medcenter24\mcCore\Tests\Feature\Admin;
 
-
 use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Testing\TestResponse;
+use medcenter24\mcCore\App\Support\Facades\Roles;
 use medcenter24\mcCore\Tests\TestCase;
 
 class AuthorizationTest extends TestCase
@@ -63,7 +63,7 @@ class AuthorizationTest extends TestCase
     {
         $mail = 'mail@example.com';
         $passwd = 'secure';
-        $this->user = factory(User::class)->create([
+        $this->user = User::factory()->create([
             'email' => $mail,
             'password' => bcrypt($passwd),
         ]);
@@ -87,12 +87,12 @@ class AuthorizationTest extends TestCase
         $mail = 'mail@example.com';
         $passwd = 'secure';
         /** @var User user */
-        $this->user = factory(User::class)->create([
+        $this->user = User::factory()->create([
             'email' => $mail,
             'password' => bcrypt($passwd),
         ]);
 
-        \Roles::shouldReceive('hasRole')
+        Roles::shouldReceive('hasRole')
             ->times(9)
             ->andReturnUsing(function ($user, $role) {
                 return true;

@@ -74,13 +74,13 @@ class CasesControllerUpdateActionTest extends TestCase
      */
     public function testUpdateWithAnotherAccident(): void
     {
-        $accident = factory(Accident::class)->create([
-            'accident_status_id' => factory(AccidentStatus::class)->create([
+        $accident = Accident::factory()->create([
+            'accident_status_id' => AccidentStatus::factory()->create([
                 'title' => 'anything1'
             ])->id,
         ]);
-        $accident2 = factory(Accident::class)->create([
-            'accident_status_id' => factory(AccidentStatus::class)->create([
+        $accident2 = Accident::factory()->create([
+            'accident_status_id' => AccidentStatus::factory()->create([
                 'title' => 'anything2'
             ])->id,
         ]);
@@ -106,8 +106,8 @@ class CasesControllerUpdateActionTest extends TestCase
      */
     public function testUpdateWithNonExistingRelations(): void
     {
-        $accident = factory(Accident::class)->create([
-            'accident_status_id' => factory(AccidentStatus::class)->create([
+        $accident = Accident::factory()->create([
+            'accident_status_id' => AccidentStatus::factory()->create([
                 'title' => 'anything'
             ])->id,
         ]);
@@ -178,7 +178,7 @@ class CasesControllerUpdateActionTest extends TestCase
      */
     public function testClosedAccident(): void
     {
-        $accident = factory(Accident::class)->create(['accident_status_id' => 0]);
+        $accident = Accident::factory()->create(['accident_status_id' => 0]);
         $data = [
             'accident' => [
                 'id' => $accident->id,
@@ -204,8 +204,8 @@ class CasesControllerUpdateActionTest extends TestCase
     public function testDeletedAccident(): void
     {
         /** @var Accident $accident */
-        $accident = factory(Accident::class)->create([
-            'accident_status_id' => factory(AccidentStatus::class)->create([
+        $accident = Accident::factory()->create([
+            'accident_status_id' => AccidentStatus::factory()->create([
                 'title' => 'anything'
             ])->id,
         ]);
@@ -231,12 +231,12 @@ class CasesControllerUpdateActionTest extends TestCase
     public function testChangeDoctorAccident(): void
     {
         /** @var Accident $accident */
-        $accident = factory(Accident::class)->create([
-            'accident_status_id' => factory(AccidentStatus::class)->create([
+        $accident = Accident::factory()->create([
+            'accident_status_id' => AccidentStatus::factory()->create([
                 'title' => 'anything'
             ])->id,
-            'caseable_id' => $caseableId = factory(DoctorAccident::class)->create([
-                'doctor_id' => $doc1 = factory(Doctor::class)->create()->id
+            'caseable_id' => $caseableId = DoctorAccident::factory()->create([
+                'doctor_id' => $doc1 = Doctor::factory()->create()->id
             ])->id,
         ]);
         
@@ -246,7 +246,7 @@ class CasesControllerUpdateActionTest extends TestCase
             ],
             'doctorAccident' => [
                 'id' => $caseableId,
-                'doctorId' => $doc2 = factory(Doctor::class)->create()->id // new doc
+                'doctorId' => $doc2 = Doctor::factory()->create()->id // new doc
             ],
         ];
 

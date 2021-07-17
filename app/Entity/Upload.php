@@ -21,12 +21,15 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use medcenter24\mcCore\App\Services\Entity\UploadService;
 
 class Upload extends Model
 {
+    use HasFactory;
+
     protected $fillable = UploadService::FILLABLE;
     protected $visible = UploadService::VISIBLE;
 

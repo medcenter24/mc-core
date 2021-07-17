@@ -15,7 +15,7 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
-
+declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
@@ -25,7 +25,6 @@ class HospitalFake implements Fake
 {
     public static function make(array $params = [], array $additionalParams = [])
     {
-        $hospital = factory(Hospital::class)->make($params);
-        return $hospital;
+        return Hospital::factory()->make($params);
     }
 }

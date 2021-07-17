@@ -15,6 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
+
+namespace Database\Seeders;
 
 use medcenter24\mcCore\App\Entity\Invoice;
 use Illuminate\Database\Seeder;
@@ -29,6 +32,6 @@ class InvoicesTableSeeder extends Seeder
     public function run()
     {
         Invoice::truncate();
-        factory(Invoice::class, 10)->create();
+        Invoice::factory()->count(10)->create();
     }
 }

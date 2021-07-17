@@ -79,11 +79,12 @@ class ReferralNumberServiceTest extends TestCase
                 'city_id' => 1,
             ],
         ];
-        $accident = factory(Accident::class)->create($params + [
-            'assistant_id' => factory(Assistant::class)->create($additionalParams['assistant']),
+        /** @var Accident $accident */
+        $accident = Accident::factory()->create($params + [
+            'assistant_id' => Assistant::factory()->create($additionalParams['assistant']),
             'caseable_type' => DoctorAccident::class,
-            'caseable_id' => factory(DoctorAccident::class)->create([
-                'doctor_id' => factory(Doctor::class)->create($additionalParams['doctor']),
+            'caseable_id' => DoctorAccident::factory()->create([
+                'doctor_id' => Doctor::factory()->create($additionalParams['doctor']),
             ])
         ]);
         self::assertEquals('T0003-'
@@ -120,11 +121,11 @@ class ReferralNumberServiceTest extends TestCase
             ],
         ];
 
-        $accident = factory(Accident::class)->create($params + [
-            'assistant_id' => factory(Assistant::class)->create($additionalParams['assistant']),
+        $accident = Accident::factory()->create($params + [
+            'assistant_id' => Assistant::factory()->create($additionalParams['assistant']),
             'caseable_type' => HospitalAccident::class,
-            'caseable_id' => factory(HospitalAccident::class)->create([
-                'hospital_id' => factory(Hospital::class)->create($additionalParams['hospital']),
+            'caseable_id' => HospitalAccident::factory()->create([
+                'hospital_id' => Hospital::factory()->create($additionalParams['hospital']),
             ])
         ]);
 

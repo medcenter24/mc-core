@@ -18,8 +18,6 @@
 
 namespace medcenter24\mcCore\App\Helpers;
 
-
-
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use Spatie\MediaLibrary\HasMedia;
 

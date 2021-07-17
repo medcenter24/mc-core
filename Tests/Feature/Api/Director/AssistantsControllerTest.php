@@ -242,9 +242,9 @@ class AssistantsControllerTest extends DirectorApiModelTest
 
     public function testFilteredSearch(): void
     {
-        factory(Assistant::class)->create(['title' => 'Text to be searched']);
-        factory(Assistant::class)->create(['title' => 'Php Unit test']);
-        factory(Assistant::class)->create(['title' => 'another text']);
+        Assistant::factory()->create(['title' => 'Text to be searched']);
+        Assistant::factory()->create(['title' => 'Php Unit test']);
+        Assistant::factory()->create(['title' => 'another text']);
 
         $response = $this->sendPost(self::URI . '/search', [
             'filter' => [

@@ -15,12 +15,17 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
 
+namespace Database\Seeders;
+
+use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Entity\Accident;
-medcenter24\mcCore\App\Services\Entity\AccidentCheckpoint;
+use medcenter24\mcCore\App\Entity\AccidentCheckpoint;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Entity\AccidentType;
 use medcenter24\mcCore\App\Entity\Assistant;
+use medcenter24\mcCore\App\Entity\City;
 use medcenter24\mcCore\App\Entity\Diagnostic;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\Service;
@@ -44,31 +49,27 @@ class AccidentsTableSeeder extends Seeder
             return;
         } elseif (!App::environment('production')) {
             Accident::truncate();
-            factory(Accident::class, 5)->create([
-                'created_by' => factory(User::class)->create(),
-                'patient_id' => factory(Patient::class)->create(),
+            Accident::factory()->create(5)->create([
+                'created_by' => User::factory()->create(),
+                'patient_id' => Patient::factory()->create(),
                 'accident_type_id' => function () {
                     return !AccidentType::count()
-                        ? factory(AccidentType::class)->create()
+                        ? AccidentType::factory()->create()
                         : AccidentType::first();
                 },
-                'accident_status_id' =>medcenter24\mcCore\App\AccidentStatus::firstOrCreate(AccidentStatusesTableSeeder::ACCIDENT_STATUSES[0]), // new
+                'accident_status_id' => AccidentStatus::firstOrCreate(AccidentStatusesTableSeeder::ACCIDENT_STATUSES[0]), // new
                 'assistant_id' => function () {
-                    return factory(Assistant::class)->create();
+                    return Assistant::factory()->create();
                 },
                 'caseable_id' => function () {
-                    return factory(DoctorAccident::class)->create();
+                    return DoctorAccident::factory()->create();
                 },
                 'form_report_id' => function () {
-                    return factory(FormReport::class)->create([
-                        'form_id' => function () {
-                            return factory(Form::class)->create();
-                        }
+                    return FormReport::factory()->create([
+                        'form_id' => Form::factory()->create()
                     ]);
                 },
-                'city_id' => function () {
-                    return factory(\App\City::class)->create();
-                },
+                'city_id' => City::factory()->create(),
                 /*'assistant_invoice_id' => function () {
                     return factory(\App\Invoice::class)->create();
                 },
@@ -77,14 +78,14 @@ class AccidentsTableSeeder extends Seeder
                     return factory(\App\Invoice::class)->create();
                 }*/
             ])->each(function (Accident $accident) {
-                $accident->checkpoints()->save(factory(AccidentCheckpoint::class)->create());
+                $accident->checkpoints()->save(AccidentCheckpoint::factory()->create());
 
-                $accident->caseable->services()->attach(factory(Service::class)->create());
+                $accident->caseable->services()->attach(Service::factory()->create());
 
-                $accident->caseable->diagnostics()->attach(factory(Diagnostic::class)->create());
+                $accident->caseable->diagnostics()->attach(Diagnostic::factory()->create());
 
-                $accident->caseable->surveys()->attach(factory(Survey::class)->create());
-                $accident->caseable->surveys()->attach(factory(Survey::class)->create());
+                $accident->caseable->surveys()->attach(Survey::factory()->create());
+                $accident->caseable->surveys()->attach(Survey::factory()->create());
             });
         }
     }

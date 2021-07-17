@@ -11,10 +11,10 @@
   },
   "configurations": {
     "global": {
-      "config-path": "../config",
+      "config-path": "./DevEnvConfig/config",
       "config-filename": "generis.conf.php",
       "env-filename": ".env",
-      "data-path": "../data"
+      "data-path": "./DevEnvConfig/data"
     },
     "core": {
       "api_debug"                     : "true",
@@ -35,7 +35,7 @@
       "cors_allow_origin_doctor"      : "http://localhost:8080",
       "customer_name"                 : "MedCenter24",
       "db_connection"                 : "sqlite",
-      "db_database"                   : "../data/db.sqlite",
+      "db_database"                   : "./DevEnvConfig/data/db.sqlite",
       "db_host"                       : "",
       "db_port"                       : "",
       "db_username"                   : "",

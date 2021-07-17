@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -33,6 +34,7 @@ class Doctor extends Model implements HasMedia
 {
     use SoftDeletes;
     use InteractsWithMedia;
+    use HasFactory;
 
     protected $fillable = DoctorService::FILLABLE;
     protected $visible  = DoctorService::VISIBLE;

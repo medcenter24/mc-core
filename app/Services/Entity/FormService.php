@@ -313,7 +313,7 @@ class FormService extends AbstractModelService
                     $part = $bodyContent;
                     foreach ($val->getVisible() as $param) {
                         $part = str_replace(FormService::CONDITION_FOR_RESOURCE . '.' . $param,
-                            $val->getAttribute($param),
+                            (string)$val->getAttribute($param),
                             $part);
                     }
                     $newBody .= $part;

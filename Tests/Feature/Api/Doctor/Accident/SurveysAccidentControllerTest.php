@@ -77,12 +77,12 @@ class SurveysAccidentControllerTest extends TestCase
 
     public function testUpdateSurvey(): void
     {
-        $survey = factory(Survey::class)->create([
+        $survey = Survey::factory()->create([
             DiagnosticService::FIELD_CREATED_BY => $this->getLoggedUser()->getKey()
         ]);
 
         /** @var DoctorAccident $doctorAccident */
-        $doctorAccident = factory(DoctorAccident::class)->create([
+        $doctorAccident = DoctorAccident::factory()->create([
             DoctorAccidentService::FIELD_DOCTOR_ID => $this->getCurrentDoctor()->getKey(),
         ]);
         $doctorAccident->surveys()->attach($survey);

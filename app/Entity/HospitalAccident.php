@@ -21,11 +21,13 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use medcenter24\mcCore\App\Services\Entity\HospitalAccidentService;
 
 class HospitalAccident extends AccidentAbstract
 {
+    use HasFactory;
 
     protected $dates = HospitalAccidentService::DATE_FIELDS;
     protected $fillable = HospitalAccidentService::FILLABLE;

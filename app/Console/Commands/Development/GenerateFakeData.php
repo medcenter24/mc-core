@@ -51,16 +51,16 @@ class GenerateFakeData extends Command
     {
         $amount = 1000;
         if (!app()->environment('production')) {
-            factory(Assistant::class, $amount)->create();
-            factory(Doctor::class, $amount)->create();
-            factory(City::class, $amount)->create();
-            factory(Accident::class, $amount)->create();
-            factory(Patient::class, $amount)->create();
-            factory(Service::class, $amount)->create();
-            factory(Survey::class, $amount)->create();
-            factory(Diagnostic::class, $amount)->create();
-            factory(Form::class, $amount)->create();
-            factory(Invoice::class, $amount)->create();
+            Assistant::factory()->count($amount)->create();
+            Doctor::factory()->count($amount)->create();
+            City::factory()->count($amount)->create();
+            Accident::factory()->count($amount)->create();
+            Patient::factory()->count($amount)->create();
+            Service::factory()->count($amount)->create();
+            Survey::factory()->count($amount)->create();
+            Diagnostic::factory()->count($amount)->create();
+            Form::factory()->count($amount)->create();
+            Invoice::factory()->count($amount)->create();
         }
     }
 }

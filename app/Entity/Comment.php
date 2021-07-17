@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -29,6 +30,7 @@ use medcenter24\mcCore\App\Services\Entity\CommentService;
 class Comment extends Model
 {
     use SoftDeletes;
+    use HasFactory;
 
     /**
      * The attributes that should be mutated to dates.

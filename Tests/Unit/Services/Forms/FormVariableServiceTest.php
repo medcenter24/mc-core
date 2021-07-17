@@ -28,7 +28,7 @@ class FormVariableServiceTest extends TestCase
     {
         $service = new FormVariableService();
         foreach ($service->getAccidentVariables() as $variable) {
-            self::assertRegExp('/^'.FormVariableService::VAR_REG_EX.'$/', $variable, $variable . ' is correct');
+            self::assertMatchesRegularExpression('/^'.FormVariableService::VAR_REG_EX.'$/', $variable, $variable . ' is correct');
         }
     }
 }

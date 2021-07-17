@@ -15,6 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
+
+namespace Database\Seeders;
 
 use medcenter24\mcCore\App\Entity\Assistant;
 use Illuminate\Database\Seeder;
@@ -29,6 +32,6 @@ class AssistantTableSeeder extends Seeder
     public function run()
     {
         Assistant::truncate();
-        factory(Assistant::class, 10)->create();
+        Assistant::factory()->count(10)->create();
     }
 }

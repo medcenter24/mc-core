@@ -34,7 +34,7 @@ trait TestDoctorAccidentTrait
     protected function createAccidentForDoc(): Accident
     {
         /** @var DoctorAccident $doctorAccident */
-        $doctorAccident = factory(DoctorAccident::class)->create([
+        $doctorAccident = DoctorAccident::factory()->create([
             DoctorAccidentService::FIELD_DOCTOR_ID => $this->getCurrentDoctor()->getKey(),
         ]);
 
@@ -43,7 +43,7 @@ trait TestDoctorAccidentTrait
         $status = $accidentStatusService->getDoctorAssignedStatus();
 
         /** @var Accident $accident */
-        $accident = factory(Accident::class)->create([
+        $accident = Accident::factory()->create([
             AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
             AccidentService::FIELD_CASEABLE_ID => $doctorAccident->getKey(),
         ]);

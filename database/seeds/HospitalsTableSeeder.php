@@ -15,6 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
+
+namespace Database\Seeders;
 
 use medcenter24\mcCore\App\Entity\Hospital;
 use Illuminate\Database\Seeder;
@@ -29,6 +32,6 @@ class HospitalsTableSeeder extends Seeder
     public function run()
     {
         Hospital::truncate();
-        factory(Hospital::class, 10)->create();
+        Hospital::factory()->count(10)->create();
     }
 }

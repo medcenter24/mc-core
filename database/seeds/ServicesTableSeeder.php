@@ -15,7 +15,11 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
 
+namespace Database\Seeders;
+
+use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Entity\Service;
 use Illuminate\Database\Seeder;
 
@@ -32,7 +36,7 @@ class ServicesTableSeeder extends Seeder
             return;
         } elseif (!App::environment('production')) {
             Service::truncate();
-            factory(Service::class, 10)->create();
+            Service::factory()->count(10)->create();
         }
     }
 }

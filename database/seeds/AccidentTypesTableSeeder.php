@@ -15,7 +15,11 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
 
+namespace Database\Seeders;
+
+use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Entity\AccidentType;
 use medcenter24\mcCore\App\Services\Entity\AccidentTypeService;
 use Illuminate\Database\Seeder;

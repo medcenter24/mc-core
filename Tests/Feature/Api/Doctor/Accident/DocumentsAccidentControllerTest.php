@@ -31,7 +31,7 @@ class DocumentsAccidentControllerTest extends TestCase
     public function testDocuments(): void
     {
         $case = $this->createAccidentForDoc();
-        $docs = factory(Document::class, 5)->create();
+        $docs = Document::factory()->count(5)->create();
         $case->documents()->attach($docs);
         self::assertEquals(5, $case->documents()->count());
 
@@ -42,6 +42,9 @@ class DocumentsAccidentControllerTest extends TestCase
 
     public function testCreateDocument(): void
     {
+        if (!function_exists('imagejpeg')) {
+            $this->markTestSkipped('ImageJpeg not installed');
+        }
         $case = $this->createAccidentForDoc();
 
         // first file will be used only (loading by file)

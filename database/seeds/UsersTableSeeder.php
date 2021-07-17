@@ -15,11 +15,15 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
 
-use medcenter24\mcCore\App\Entity\City;
+namespace Database\Seeders;
+
+use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Entity\Role;
 use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Database\Seeder;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 class UsersTableSeeder extends Seeder
 {
@@ -31,17 +35,15 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment('production') &&medcenter24\mcCore\App\User::all()->count()) {
+        if (App::environment('production') && User::all()->count()) {
             return;
         } elseif (!App::environment('production')) {
             User::truncate();
-            // DB::table('role_user')->delete();
-            // $loginRoleId = Role::firstOrCreate(['title' => Role::ROLE_LOGIN])->id;
-            // $adminRoleId = Role::firstOrCreate(['title' => Role::ROLE_ADMIN])->id;
-            // $directorRoleId = Role::firstOrCreate(['title' => Role::ROLE_DIRECTOR])->id;
-            // factory(User::class, 10)->create();
+            $loginRoleId = Role::firstOrCreate(['title' => RoleService::LOGIN_ROLE])->id;
+            $adminRoleId = Role::firstOrCreate(['title' => RoleService::ADMIN_ROLE])->id;
+            $directorRoleId = Role::firstOrCreate(['title' => RoleService::DIRECTOR_ROLE])->id;
 
-            $director = factory(User::class)->create([
+            $director = User::factory()->create([
                 'email' => 'director@mail.com',
                 'name' => 'Samantha',
             ]);

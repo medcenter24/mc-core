@@ -15,7 +15,7 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
-
+declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
@@ -25,7 +25,7 @@ class DoctorFake implements Fake
 {
     public static function make(array $params = [], array $additionalParams = [])
     {
-        $doctor = factory(Doctor::class)->make($params);
+        $doctor = Doctor::factory()->make($params);
 
         $additionalParams = array_merge(['city' => []], $additionalParams);
         $doctor->city = CityFake::make($additionalParams['city']);

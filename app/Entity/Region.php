@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,6 +29,7 @@ use medcenter24\mcCore\App\Services\Entity\RegionService;
 class Region extends Model
 {
     use SoftDeletes;
+    use HasFactory;
 
     protected $fillable = RegionService::FILLABLE;
     protected $visible = RegionService::VISIBLE;

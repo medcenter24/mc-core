@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Integration\Services\Entity;
 
+use Database\Factories\Entity\ServiceFactory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Event;
 use medcenter24\mcCore\App\Entity\Accident;
@@ -70,16 +71,16 @@ class AccidentServiceTest extends TestCase
 
     public function testGetCountByReferralNum(): void
     {
-        factory(Accident::class)->create([AccidentService::FIELD_REF_NUM => 'refNum']);
-        factory(Accident::class)->create([AccidentService::FIELD_REF_NUM => 'refNum2']);
+        Accident::factory()->create([AccidentService::FIELD_REF_NUM => 'refNum']);
+        Accident::factory()->create([AccidentService::FIELD_REF_NUM => 'refNum2']);
 
         $this->assertSame(1, $this->accidentService->getCountByReferralNum('refNum'));
     }
 
     public function testGetByAssistantRefNum(): void
     {
-        $accident = factory(Accident::class)->create([AccidentService::FIELD_ASSISTANT_REF_NUM => 'refNum']);
-        factory(Accident::class)->create([AccidentService::FIELD_ASSISTANT_REF_NUM => 'refNum2']);
+        $accident = Accident::factory()->create([AccidentService::FIELD_ASSISTANT_REF_NUM => 'refNum']);
+        Accident::factory()->create([AccidentService::FIELD_ASSISTANT_REF_NUM => 'refNum2']);
 
         $this->assertSame($accident->id, $this->accidentService->getByAssistantRefNum('refNum')->id);
     }
@@ -87,21 +88,22 @@ class AccidentServiceTest extends TestCase
     public function testGetCountByAssistant(): void
     {
         $dateBefore = now();
-        factory(Accident::class)->create([AccidentService::FIELD_ASSISTANT_ID => 1]);
-        factory(Accident::class)->create([AccidentService::FIELD_ASSISTANT_ID => 1]);
-        factory(Accident::class)->create([AccidentService::FIELD_ASSISTANT_ID => 2]);
+        Accident::factory()->create([AccidentService::FIELD_ASSISTANT_ID => 1]);
+        Accident::factory()->create([AccidentService::FIELD_ASSISTANT_ID => 1]);
+        Accident::factory()->create([AccidentService::FIELD_ASSISTANT_ID => 2]);
 
         $this->assertSame(2, $this->accidentService->getCountByAssistance(1, $dateBefore));
     }
 
     public function testGetAccidentServices(): void
     {
-        $accident = factory(Accident::class)->create([
+        /** @var Accident $accident */
+        $accident = Accident::factory()->create([
             AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
-            AccidentService::FIELD_CASEABLE_ID => factory(DoctorAccident::class)->create()->getAttribute('id'),
+            AccidentService::FIELD_CASEABLE_ID => DoctorAccident::factory()->create()->getAttribute('id'),
         ]);
         $accident->caseable->services()->attach(
-            factory(Service::class, 3)->create()
+            Service::factory()->count(3)->create()
         );
         $this->assertCount(3, $this->accidentService->getAccidentServices($accident));
     }
@@ -109,11 +111,13 @@ class AccidentServiceTest extends TestCase
     public function testSetStatusOnCreate(): void
     {
         Event::fake();
-        $accident = factory(Accident::class)->create([
+        /** @var Accident $accident */
+        $accident = Accident::factory()->create([
             AccidentService::FIELD_ACCIDENT_STATUS_ID => 0
         ]);
 
-        $status = factory(AccidentStatus::class)->create();
+        /** @var AccidentStatus $status */
+        $status = AccidentStatus::factory()->create();
 
         $this->accidentService->setStatus($accident, $status, $commentary = 'PHPUnit');
 

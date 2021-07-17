@@ -280,7 +280,7 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
         $response = $this->sendPost($this->getUri(), [
             'title' => 'phpunit title',
             'description' => 'phpunit description',
-            'diseases' => factory(Disease::class, 3)->create()->toArray()
+            'diseases' => Disease::factory()->count(3)->create()->toArray()
         ]);
 
         $response->assertStatus(201)->assertJson([
@@ -299,19 +299,19 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
     
     public function testUpdateWithDiseases(): void
     {
-        $diagnostic = factory(Diagnostic::class)->create([
+        $diagnostic = Diagnostic::factory()->create([
             'title' => 'phpunit title',
             'description' => 'phpunit description',
-            'diagnostic_category_id' => $category = factory(DiagnosticCategory::class)->create()->getAttribute('id'),
+            'diagnostic_category_id' => $category = DiagnosticCategory::factory()->create()->getAttribute('id'),
         ]);
         $diagnostic->diseases()->attach(
-            factory(Disease::class, 4)->create()->get('id')
+            Disease::factory()->count(4)->create()->get('id')
         );
 
         $response = $this->sendPut($this->getUri() . '/' . $diagnostic->getAttribute('id'), [
             'id' => $diagnostic->getAttribute('id'),
             'diseases' => [
-                [ 'id' => $disease = factory(Disease::class)->create()->getAttribute('id') ]
+                [ 'id' => $disease = Disease::factory()->create()->getAttribute('id') ]
             ],
         ]);
         $response->assertStatus(202)->assertJson([

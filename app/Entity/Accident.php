@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,6 +39,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Accident extends AccidentAbstract
 {
+    use HasFactory;
+
     protected $fillable = AccidentService::FILLABLE;
     protected $dates = AccidentService::DATE_FIELDS;
     protected $visible = AccidentService::VISIBLE;

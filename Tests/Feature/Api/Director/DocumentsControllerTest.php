@@ -41,6 +41,9 @@ class DocumentsControllerTest extends TestCase
 
     public function testShow(): void
     {
+        if (!function_exists('imagejpeg')) {
+            $this->markTestSkipped('ImageJpeg not installed');
+        }
         Storage::fake('documents');
 
         /** @var Document $doc */
@@ -53,6 +56,9 @@ class DocumentsControllerTest extends TestCase
 
     public function testDelete(): void
     {
+        if (!function_exists('imagejpeg')) {
+            $this->markTestSkipped('ImageJpeg not installed');
+        }
         Storage::fake('documents');
 
         /** @var Document $doc */
@@ -70,6 +76,9 @@ class DocumentsControllerTest extends TestCase
      */
     public function testUpdate(): void
     {
+        if (!function_exists('imagejpeg')) {
+            $this->markTestSkipped('ImageJpeg not installed');
+        }
         Storage::fake('documents');
 
         /** @var Document $doc */

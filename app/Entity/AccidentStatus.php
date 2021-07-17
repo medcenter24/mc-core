@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -35,6 +36,7 @@ use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 class AccidentStatus extends Model
 {
     use SoftDeletes;
+    use HasFactory;
 
     protected $fillable = AccidentStatusService::FILLABLE;
     protected $visible  = AccidentStatusService::VISIBLE;

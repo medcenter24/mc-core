@@ -16,6 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use Spatie\MediaLibrary\Conversions\Jobs\PerformConversionsJob;
+use Spatie\MediaLibrary\ResponsiveImages\Jobs\GenerateResponsiveImagesJob;
+
 return [
 
     /*
@@ -39,7 +42,7 @@ return [
     /*
      * The class name of the media model to be used.
      */
-    'media_model' => Spatie\MediaLibrary\MediaCollections\Models\Media::class,// Media::class,
+    'media_model' => Spatie\MediaLibrary\MediaCollections\Models\Media::class,
 
     'remote' => [
         /*
@@ -93,7 +96,7 @@ return [
      * This is the class that is responsible for naming conversion files. By default,
      * it will use the filename of the original and concatenate the conversion name to it.
      */
-    'conversion_file_namer' => \Spatie\MediaLibrary\Conversions\DefaultConversionFileNamer::class,
+    'file_namer' => Spatie\MediaLibrary\Support\FileNamer\DefaultFileNamer::class,
 
     /*
      * The class that contains the strategy for determining a media file's path.
@@ -175,7 +178,7 @@ return [
      * your custom jobs extend the ones provided by the package.
      */
     'jobs' => [
-        'perform_conversions' => \Spatie\MediaLibrary\Conversions\Jobs\PerformConversionsJob::class,
-        'generate_responsive_images' => \Spatie\MediaLibrary\ResponsiveImages\Jobs\GenerateResponsiveImagesJob::class,
+        'perform_conversions' => PerformConversionsJob::class,
+        'generate_responsive_images' => GenerateResponsiveImagesJob::class,
     ],
 ];

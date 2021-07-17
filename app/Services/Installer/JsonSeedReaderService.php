@@ -20,6 +20,7 @@ namespace medcenter24\mcCore\App\Services\Installer;
 
 
 use Illuminate\Support\Str;
+use JetBrains\PhpStorm\Pure;
 use medcenter24\mcCore\App\Contract\Installer\InstallerParam;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\Arr;
@@ -164,17 +165,30 @@ class JsonSeedReaderService
         throw new InconsistentDataException('Parameter with name ' . $name . ' not found');
     }
 
-    private function fillPaths(array $data, $path): array
+    #[Pure] private function getRealPath(array $map, array $data, string $path): string
     {
-        if (Arr::keysExists($data, ['configurations', 'global', 'config-path']) && Str::startsWith($data['configurations']['global']['config-path'], '..')) {
-            $data['configurations']['global']['config-path'] = $path . '/' . $data['configurations']['global']['config-path'];
+        if (Arr::keysExists($data, $map)
+            && Str::startsWith($rawPath = $data[$map[0]][$map[1]][$map[2]], ['./', '../']))
+        {
+            if (Str::startsWith($rawPath, './')) {
+                $rawPath = ltrim($rawPath, './');
+            }
+            return $path . DIRECTORY_SEPARATOR . $rawPath;
         }
-        if (Arr::keysExists($data, ['configurations', 'global', 'data-path']) && Str::startsWith($data['configurations']['global']['data-path'], '..')) {
-            $data['configurations']['global']['data-path'] = $path . '/' . $data['configurations']['global']['data-path'];
-        }
-        // rewrite sqlite storage path
-        if (Arr::keysExists($data, ['configurations', 'core', 'db_database']) && Str::startsWith($data['configurations']['core']['db_database'], '..')) {
-            $data['configurations']['core']['db_database'] = $path . '/' . $data['configurations']['core']['db_database'];
+        return '';
+    }
+
+    #[Pure] private function fillPaths(array $data, $path): array
+    {
+        foreach ([
+                     ['configurations', 'global', 'config-path'],
+                     ['configurations', 'global', 'data-path'],
+                     ['configurations', 'core', 'db_database']
+                 ] as $map) {
+            $realPath = $this->getRealPath($map, $data, $path);
+            if (!empty($realPath)) {
+                $data[$map[0]][$map[1]][$map[2]] = $realPath;
+            }
         }
         return $data;
     }

@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use medcenter24\mcCore\App\Services\Entity\AssistantService;
@@ -38,6 +39,7 @@ class Assistant extends Model implements HasMedia
     use SoftDeletes;
     // logo
     use InteractsWithMedia;
+    use HasFactory;
 
     protected $fillable = AssistantService::FILLABLE;
     protected $visible = AssistantService::VISIBLE;

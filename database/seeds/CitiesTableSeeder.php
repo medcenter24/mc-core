@@ -15,6 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
+
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use medcenter24\mcCore\App\Entity\City;
@@ -29,6 +32,6 @@ class CitiesTableSeeder extends Seeder
     public function run()
     {
         City::truncate();
-        factory(City::class, 10)->create();
+        City::factory()->count(10)->create();
     }
 }

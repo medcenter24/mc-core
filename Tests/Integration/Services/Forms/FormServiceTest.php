@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\Tests\Integration\Services\Forms;
 
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use medcenter24\mcCore\App\Entity\Accident;
@@ -47,6 +48,7 @@ use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 class FormServiceTest extends TestCase
 {
     use DatabaseMigrations;
+    use RefreshDatabase;
 
     /**
      * @var FormService
@@ -77,7 +79,7 @@ class FormServiceTest extends TestCase
      */
     public function testVisitDate(): void
     {
-        $doctorAccident = factory(DoctorAccident::class)->create([
+        $doctorAccident = DoctorAccident::factory()->create([
             'visit_time' => Carbon::create('2019', '04', '03', '14', '59', '47'),
         ]);
         $accident = new Accident(['caseable_id' => $doctorAccident->id, 'caseable_type' => DoctorAccident::class]);
@@ -94,7 +96,7 @@ class FormServiceTest extends TestCase
      */
     public function testParentData(): void
     {
-        $parentAccident = factory(Accident::class)->create([
+        $parentAccident = Accident::factory()->create([
             'ref_num' => 'parent_ref_num'
         ]);
         $accident = new Accident(['parent_id' => $parentAccident->id]);
@@ -110,10 +112,10 @@ class FormServiceTest extends TestCase
      */
     public function testHospitalData(): void
     {
-        $hospital = factory(Hospital::class)->create([
+        $hospital = Hospital::factory()->create([
             'title' => 'Hospital Name'
         ]);
-        $hospitalAccident = factory(HospitalAccident::class)->create([
+        $hospitalAccident = HospitalAccident::factory()->create([
             'hospital_id' => $hospital->getAttribute('id'),
         ]);
         $accident = new Accident(['caseable_id' => $hospitalAccident->id, 'caseable_type' => HospitalAccident::class]);
@@ -129,11 +131,11 @@ class FormServiceTest extends TestCase
      */
     public function testIncomeCurrencyData(): void
     {
-        $currency = factory(FinanceCurrency::class)->create([
+        $currency = FinanceCurrency::factory()->create([
             'title' => 'CurrName',
             'ico' => 'CurrIco'
         ]);
-        $income = factory(Payment::class)->create([
+        $income = Payment::factory()->create([
             'currency_id' => $currency->getAttribute('id'),
             'value' => 10,
             'fixed' => true,
@@ -155,11 +157,11 @@ class FormServiceTest extends TestCase
      */
     public function testIncomeCurrencyZeroValueData(): void
     {
-        $currency = factory(FinanceCurrency::class)->create([
+        $currency = FinanceCurrency::factory()->create([
             'title' => 'CurrName',
             'ico' => 'CurrIco'
         ]);
-        $income = factory(Payment::class)->create([
+        $income = Payment::factory()->create([
             'currency_id' => $currency->getAttribute('id'),
             'value' => 0,
             'fixed' => true,
@@ -181,12 +183,12 @@ class FormServiceTest extends TestCase
      */
     public function testPatientData(): void
     {
-        $patient = factory(Patient::class)->create([
+        $patient = Patient::factory()->create([
             'name' => 'Patient Full Name',
             'birthday' => '2017-03-01',
         ]);
 
-        $accident = factory(Accident::class)->create([
+        $accident = Accident::factory()->create([
             'patient_id' => $patient->id,
         ]);
 
@@ -203,11 +205,11 @@ class FormServiceTest extends TestCase
      */
     public function testWithIfConditionTrue(): void
     {
-        $parent = factory(Accident::class)->create([
+        $parent = Accident::factory()->create([
             'ref_num' => '000-ref-num'
         ]);
 
-        $accident = factory(Accident::class)->create([
+        $accident = Accident::factory()->create([
             'parent_id' => $parent->id,
         ]);
 
@@ -228,11 +230,11 @@ class FormServiceTest extends TestCase
      */
     public function testWithIfRecursiveConditionTrue(): void
     {
-        $parent = factory(Accident::class)->create([
+        $parent = Accident::factory()->create([
             'ref_num' => '000-ref-num'
         ]);
 
-        $accident = factory(Accident::class)->create([
+        $accident = Accident::factory()->create([
             'parent_id' => $parent->id,
         ]);
 
@@ -261,7 +263,7 @@ class FormServiceTest extends TestCase
      */
     public function testWithIfConditionFalse(): void
     {
-        $accident = factory(Accident::class)->create([
+        $accident = Accident::factory()->create([
             'parent_id' => 0,
         ]);
 
@@ -280,7 +282,7 @@ class FormServiceTest extends TestCase
      */
     public function testWithIfRecursiveConditionFalse(): void
     {
-        $accident = factory(Accident::class)->create([
+        $accident = Accident::factory()->create([
             'parent_id' => 0,
         ]);
 
@@ -305,7 +307,7 @@ class FormServiceTest extends TestCase
      */
     public function testForConditionFalse(): void
     {
-        $accident = factory(Accident::class)->create([
+        $accident = Accident::factory()->create([
             'parent_id' => 0,
         ]);
 
@@ -327,16 +329,16 @@ class FormServiceTest extends TestCase
     public function testForConditionTrue(): void
     {
         /** @var Accident $accident */
-        $accident = factory(Accident::class)->create();
+        $accident = Accident::factory()->create();
         $accident->getAttribute('caseable')->services()->detach();
 
-        factory(Service::class)->create([
+        Service::factory()->create([
             'title' => 'service 1',
         ]);
-        factory(Service::class)->create([
+        Service::factory()->create([
             'title' => 'service 2',
         ]);
-        factory(Service::class)->create([
+        Service::factory()->create([
             'title' => 'service 3',
         ]);
         $accident->getAttribute('caseable')->services()->attach([1, 2, 3]);
@@ -408,12 +410,12 @@ class FormServiceTest extends TestCase
      */
     public function testParenData(): void
     {
-        $patient = factory(Patient::class)->create([
+        $patient = Patient::factory()->create([
             'name' => 'Patient Full Name',
             'birthday' => '2017-03-01',
         ]);
 
-        $accident = factory(Accident::class)->create([
+        $accident = Accident::factory()->create([
             'patient_id' => $patient->id,
         ]);
 
@@ -427,18 +429,18 @@ class FormServiceTest extends TestCase
 
     public function testHtmlDocCase(): void
     {
-        $doctorAccident = factory(Accident::class)->create([
+        $doctorAccident = Accident::factory()->create([
             'ref_num' => 'aaa-aaa-aaa',
             'caseable_type' => DoctorAccident::class,
-            'caseable_id' => factory(DoctorAccident::class)->create([
-                'doctor_id' => factory(Doctor::class)->create(['name' => 'Doctor Name'])->id,
+            'caseable_id' => DoctorAccident::factory()->create([
+                'doctor_id' => Doctor::factory()->create(['name' => 'Doctor Name'])->id,
             ])->id,
-            'patient_id' => factory(Patient::class)->create([
+            'patient_id' => Patient::factory()->create([
                 'name' => 'Patient Name'
             ])->id,
         ]);
 
-        $form = factory(Form::class)->create([
+        $form = Form::factory()->create([
             'title' => 'Form_1',
             'description' => 'Unit Test Form #1',
             'template' => '
@@ -459,18 +461,18 @@ class FormServiceTest extends TestCase
 
     public function testHtmlHospCase(): void
     {
-        $hospitalAccident = factory(Accident::class)->create([
+        $hospitalAccident = Accident::factory()->create([
             'ref_num' => 'aaa-aaa-aaa',
             'caseable_type' => HospitalAccident::class,
-            'caseable_id' => factory(HospitalAccident::class)->create([
-                'hospital_id' => factory(Hospital::class)->create(['title' => 'Hospital Title'])->id,
+            'caseable_id' => HospitalAccident::factory()->create([
+                'hospital_id' => Hospital::factory()->create(['title' => 'Hospital Title'])->id,
             ])->id,
-            'patient_id' => factory(Patient::class)->create([
+            'patient_id' => Patient::factory()->create([
                 'name' => 'Patient Name'
             ])->id,
         ]);
 
-        $form = factory(Form::class)->create([
+        $form = Form::factory()->create([
             'title' => 'Form_1',
             'description' => 'Unit Test Form #1',
             'template' => '
@@ -495,16 +497,16 @@ class FormServiceTest extends TestCase
     private function getAccidentWithDiagnostics(): Accident
     {
         /** @var Accident $accident */
-        $accident = factory(Accident::class)->create();
+        $accident = Accident::factory()->create();
         $accident->getAttribute('caseable')->diagnostics()->detach();
 
-        factory(Diagnostic::class)->create([
+        Diagnostic::factory()->create([
             'title' => 'd 1',
         ]);
-        factory(Diagnostic::class)->create([
+        Diagnostic::factory()->create([
             'title' => 'd 2',
         ]);
-        factory(Diagnostic::class)->create([
+        Diagnostic::factory()->create([
             'title' => 'd 3',
         ]);
         $accident->getAttribute('caseable')->diagnostics()->attach([1, 2, 3]);
@@ -521,17 +523,20 @@ class FormServiceTest extends TestCase
     {
         Storage::fake('documents');
 
+        if (!function_exists('imagejpeg')) {
+            $this->markTestSkipped('Image Jpeg function not installed');
+        }
         /** @var Accident $accident */
-        $accident = factory(Accident::class)->create();
+        $accident = Accident::factory()->create();
         $accident->getAttribute('caseable')->diagnostics()->detach();
 
         $documentService = new DocumentService();
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $docs = $documentService->createDocumentsFromFiles([
-            UploadedFile::fake()->image('fake1.jpg'),
-            UploadedFile::fake()->image('fake2.jpg'),
-            UploadedFile::fake()->image('fake3.jpg'),
+            UploadedFile::fake()->image('fake1.png'),
+            UploadedFile::fake()->image('fake2.png'),
+            UploadedFile::fake()->image('fake3.png'),
         ], $user);
 
         $ids = $docs->map(static function(Document $doc) {

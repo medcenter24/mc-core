@@ -20,6 +20,10 @@ use medcenter24\mcCore\App\Services\Core\VendorService;
 
 define('LARAVEL_START', microtime(true));
 
+if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
+    require __DIR__.'/../storage/framework/maintenance.php';
+}
+
 /*
 |--------------------------------------------------------------------------
 | Register The Composer Auto Loader
@@ -35,7 +39,7 @@ define('LARAVEL_START', microtime(true));
 $devPath = dirname(__DIR__).'/vendor/autoload.php';
 $appPath = dirname(__DIR__, 2).'/vendor/autoload.php';
 
-if (!file_exists($devPath)) {
+if (!is_readable($devPath) || !file_exists($devPath)) {
     // default place
     $path = $appPath;
 } else {

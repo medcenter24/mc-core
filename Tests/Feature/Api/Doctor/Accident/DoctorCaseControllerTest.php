@@ -37,11 +37,11 @@ class DoctorCaseControllerTest extends TestCase
     public function testIndex(): void
     {
         // not included - hospital
-        factory(Accident::class)->create([
+        Accident::factory()->create([
             AccidentService::FIELD_CASEABLE_TYPE => HospitalAccident::class,
         ]);
         // not included - wrong doctor
-        factory(Accident::class)->create([
+        Accident::factory()->create([
             AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
         ]);
 
@@ -89,7 +89,7 @@ class DoctorCaseControllerTest extends TestCase
     public function testShowNoDoctorAccident(): void
     {
         $this->getCurrentDoctor();
-        $accident = factory(Accident::class)->create([
+        $accident = Accident::factory()->create([
             AccidentService::FIELD_CASEABLE_TYPE => HospitalAccident::class,
         ]);
         $response = $this->sendGet('/api/doctor/accidents/' . $accident->getKey());
@@ -99,7 +99,7 @@ class DoctorCaseControllerTest extends TestCase
     public function testShowAnotherDoctorAccident(): void
     {
         $this->getCurrentDoctor();
-        $accident = factory(Accident::class)->create([
+        $accident = Accident::factory()->create([
             AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
         ]);
         $response = $this->sendGet('/api/doctor/accidents/' . $accident->getKey());

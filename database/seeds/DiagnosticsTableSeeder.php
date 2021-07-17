@@ -15,6 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
+
+namespace Database\Seeders;
 
 use medcenter24\mcCore\App\Entity\Diagnostic;
 use Illuminate\Database\Seeder;
@@ -29,6 +32,6 @@ class DiagnosticsTableSeeder extends Seeder
     public function run()
     {
         Diagnostic::truncate();
-        factory(Diagnostic::class, 3)->create();
+        Diagnostic::factory()->count(3)->create();
     }
 }

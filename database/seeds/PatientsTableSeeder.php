@@ -15,7 +15,11 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
 
+namespace Database\Seeders;
+
+use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\App\Entity\Patient;
 use Illuminate\Database\Seeder;
 
@@ -29,9 +33,9 @@ class PatientsTableSeeder extends Seeder
     public function run()
     {
         Patient::truncate();
-        factory(Patient::class, 10)->create()
+        Patient::factory()->count(10)->create()
             ->each(function ($patient) {
-                $patient->documents()->save(factory(\App\Document::class)->make());
+                $patient->documents()->save(Document::factory()->make());
             });
     }
 }

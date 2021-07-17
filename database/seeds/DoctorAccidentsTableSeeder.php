@@ -15,9 +15,15 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
 
+namespace Database\Seeders;
+
+use Illuminate\Support\Facades\DB;
+use medcenter24\mcCore\App\Entity\Diagnostic;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use Illuminate\Database\Seeder;
+use medcenter24\mcCore\App\Entity\Document;
 
 class DoctorAccidentsTableSeeder extends Seeder
 {
@@ -35,14 +41,14 @@ class DoctorAccidentsTableSeeder extends Seeder
             ->delete();
 
         // 10 doc accidents without docs
-        factory(DoctorAccident::class, 10)->create();
+        DoctorAccident::factory()->count(10)->create();
         // 10 doc accidents with docs
-        factory(DoctorAccident::class, 10)
+        DoctorAccident::factory()->count(10)
             ->create()
             ->each(function ($doctorAccident) {
                 for ($i=0; $i<2; $i++) {
-                    $doctorAccident->documents()->save(factory(\App\Document::class)->make());
-                    $doctorAccident->diagnostics()->save(factory(\App\Diagnostic::class)->make());
+                    $doctorAccident->documents()->save(Document::factory()->make());
+                    $doctorAccident->diagnostics()->save(Diagnostic::factory()->make());
                 }
             });
     }

@@ -92,13 +92,13 @@ class CaseHistoryControllerTest extends TestCase
             CaseAccidentService::PROPERTY_ACCIDENT => [
                 // invoice can't be paid on creation (it won't work with events when accident does not exists)
                 AccidentService::FIELD_ASSISTANT_INVOICE_ID => $invoice->id,
-                AccidentService::FIELD_ASSISTANT_GUARANTEE_ID => factory(Invoice::class)->create()->id,
+                AccidentService::FIELD_ASSISTANT_GUARANTEE_ID => Invoice::factory()->create()->id,
                 AccidentService::FIELD_CASEABLE_TYPE => HospitalAccident::class,
             ],
             CaseAccidentService::PROPERTY_HOSPITAL_ACCIDENT => [
-                HospitalAccidentService::FIELD_HOSPITAL_ID => factory(Hospital::class)->create()->id,
-                HospitalAccidentService::FIELD_HOSPITAL_GUARANTEE_ID => factory(Invoice::class)->create()->id,
-                HospitalAccidentService::FIELD_HOSPITAL_INVOICE_ID => factory(Invoice::class)->create()->id,
+                HospitalAccidentService::FIELD_HOSPITAL_ID => Hospital::factory()->create()->id,
+                HospitalAccidentService::FIELD_HOSPITAL_GUARANTEE_ID => Invoice::factory()->create()->id,
+                HospitalAccidentService::FIELD_HOSPITAL_INVOICE_ID => Invoice::factory()->create()->id,
             ]
         ]);
 
@@ -207,11 +207,11 @@ class CaseHistoryControllerTest extends TestCase
             CaseAccidentService::PROPERTY_ACCIDENT => [
                 // invoice can't be paid on creation (it won't work with events when accident does not exists)
                 AccidentService::FIELD_ASSISTANT_INVOICE_ID => $invoice->id,
-                AccidentService::FIELD_ASSISTANT_GUARANTEE_ID => factory(Invoice::class)->create()->id,
+                AccidentService::FIELD_ASSISTANT_GUARANTEE_ID => Invoice::factory()->create()->id,
                 AccidentService::FIELD_CASEABLE_TYPE => DoctorAccident::class,
             ],
             CaseAccidentService::PROPERTY_DOCTOR_ACCIDENT => [
-                DoctorAccidentService::FIELD_DOCTOR_ID => factory(Doctor::class)->create()->id,
+                DoctorAccidentService::FIELD_DOCTOR_ID => Doctor::factory()->create()->id,
             ]
         ]);
 

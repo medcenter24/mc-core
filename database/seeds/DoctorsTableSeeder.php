@@ -15,7 +15,11 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
 
+namespace Database\Seeders;
+
+use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Entity\City;
 use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\Role;
@@ -37,25 +41,25 @@ class DoctorsTableSeeder extends Seeder
         } elseif (App::environment('production')) {
             Doctor::truncate();
 
-            factory(Doctor::class, 10)->create([
+            Doctor::factory()->count(10)->create([
                 'city_id' => function() {
-                    return factory(City::class)->create()->id;
+                    return City::factory()->create()->id;
                 }
             ]);
 
             $loginRoleId = Role::firstOrCreate(['title' => RoleService::LOGIN_ROLE])->id;
             $doctorRoleId = Role::firstOrCreate(['title' => RoleService::DOCTOR_ROLE])->id;
 
-            $doctor = factory(\App\Doctor::class)->create([
+            $doctor = Doctor::factory()->create([
                 'name' => 'Doctor Aibolit',
                 'user_id' => function() {
-                    return factory(User::class)->create([
+                    return User::factory()->create([
                         'email' => 'doctor@mail.com',
                         'name' => 'Peter',
                     ]);
                 },
                 'city_id' => function() {
-                    return factory(City::class)->create()->id;
+                    return City::factory()->create()->id;
                 }
             ]);
             $doctor->user->roles()->attach([$loginRoleId, $doctorRoleId]);

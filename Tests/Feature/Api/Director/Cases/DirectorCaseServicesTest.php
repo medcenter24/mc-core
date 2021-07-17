@@ -30,7 +30,7 @@ class DirectorCaseServicesTest extends TestCase
 
     public function testGetNoServices(): void
     {
-        $case = factory(Accident::class)->create();
+        $case = Accident::factory()->create();
         $response = $this->sendGet('/api/director/cases/' . $case->id .'/services');
         $response->assertStatus(200);
         $response->assertJson(['data' => []]);
@@ -38,14 +38,14 @@ class DirectorCaseServicesTest extends TestCase
 
     public function testGetServices(): void
     {
-        $caseable = factory(DoctorAccident::class)->create();
+        $caseable = DoctorAccident::factory()->create();
 
-        $accident = factory(Accident::class)->create();
+        $accident = Accident::factory()->create();
         $accident->caseable_id = $caseable->id;
         $accident->caseable_type = DoctorAccident::class;
         $accident->save();
 
-        $services = factory(Service::class, 5)->create();
+        $services = Service::factory()->count(5)->create();
         $accident->caseable->services()->attach($services);
         self::assertEquals(5, $accident->caseable->services->count());
 

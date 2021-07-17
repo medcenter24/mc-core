@@ -54,10 +54,9 @@ require __DIR__.'/../bootstrap/autoload.php';
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
 if (EnvironmentService::hasErrors()) {
-    echo '<h1>Error</h1>';
-    $errors = implode('<br>', EnvironmentService::getErrors());
-    print_r($errors);
-    die();
+    $errorMessage = implode('<br>', EnvironmentService::getErrors());
+    require __DIR__ . '/static/error-not-configured.phtml';
+    exit(0);
 }
 
 /*

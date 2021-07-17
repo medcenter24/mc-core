@@ -27,9 +27,9 @@ use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use medcenter24\mcCore\App\Transformers\DocumentTransformer;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\DiskDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class DocumentsAccidentController extends ApiController
 {

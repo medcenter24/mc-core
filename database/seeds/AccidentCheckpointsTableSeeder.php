@@ -15,9 +15,13 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
 
-medcenter24\mcCore\App\Services\Entity\AccidentCheckpoint;
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use medcenter24\mcCore\App\Entity\AccidentCheckpoint;
 
 class AccidentCheckpointsTableSeeder extends Seeder
 {
@@ -30,6 +34,6 @@ class AccidentCheckpointsTableSeeder extends Seeder
     {
         DB::table('accident_accident_checkpoint')->delete();
         AccidentCheckpoint::truncate();
-        factory(AccidentCheckpoint::class, 10)->create();
+        AccidentCheckpoint::factory()->count(10)->create();
     }
 }

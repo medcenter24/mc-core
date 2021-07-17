@@ -21,8 +21,10 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as MediaAlias;
 
 class Media extends MediaAlias
 {
+    use HasFactory;
 }

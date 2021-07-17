@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  mc-core-build:
+    container_name: mc-core-build
+    build:
+      context: ./build
+    environment:
+      - APP_CONFIG_PATH=/var/www/html/DevEnvConfig/config/generis.conf.php
+    ports:
+      - 4043:4043
+    networks:
+      - traefik-public
+    volumes:
+      - ..:/var/www/html:cached
+    working_dir: /var/www/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mc-core.rule=Host(`core.mc.docker.localhost`)"
+      - "traefik.http.routers.mc-core.entrypoints=http"
+      - "traefik.http.routers.mc-core-secure.entrypoints=https"
+      - "traefik.http.routers.mc-core-secure.rule=Host(`core.mc.docker.localhost`)"
+      - "traefik.http.routers.mc-core-secure.tls=true"
+networks:
+  traefik-public:
+    external: true

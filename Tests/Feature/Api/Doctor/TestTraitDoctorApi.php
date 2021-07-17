@@ -38,7 +38,7 @@ trait TestTraitDoctorApi
     protected function getCurrentDoctor(): Doctor
     {
         if (!$this->doctor) {
-            $this->doctor = factory(Doctor::class)->create([
+            $this->doctor = Doctor::factory()->create([
                 DoctorService::FIELD_USER_ID => $this->getLoggedUser()->getKey(),
             ]);
         }

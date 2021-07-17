@@ -197,30 +197,30 @@ class CasesControllerCreateActionTest extends TestCase
      */
     public function testCreateWithAccidentDataOnly4(): void
     {
-        $patient = factory(Patient::class)->create();
-        $city = factory(City::class)->create();
-        $assistantPayment = factory(Payment::class)->create();
-        $caseablePayment = factory(Payment::class)->create();
-        $income = factory(Payment::class)->create();
+        $patient = Patient::factory()->create();
+        $city = City::factory()->create();
+        $assistantPayment = Payment::factory()->create();
+        $caseablePayment = Payment::factory()->create();
+        $income = Payment::factory()->create();
         $data = [
             'accident' => [
                 'accidentStatusId' => AccidentStatus::firstOrCreate([
                     'title' => AccidentStatusService::STATUS_NEW,
                     'type' => AccidentStatusService::TYPE_ACCIDENT,
                 ])->id,
-                'accidentTypeId' => factory(AccidentType::class)->create()->id,
+                'accidentTypeId' => AccidentType::factory()->create()->id,
                 'address' => 'any',
-                'assistantId' => factory(Assistant::class)->create()->id,
+                'assistantId' => Assistant::factory()->create()->id,
                 'assistantRefNum' => 'ref---',
-                'caseableId' => factory(DoctorAccident::class)->create()->id,
+                'caseableId' => DoctorAccident::factory()->create()->id,
                 'caseableType' => 'doctor',
                 'cityId' => $city->id,
                 'closedAt' => null,
                 'contacts' => 'anything',
                 'deletedAt' => null,
-                'formReportId' => factory(FormReport::class)->create()->id,
+                'formReportId' => FormReport::factory()->create()->id,
                 'handlingTime' => '2018-11-16 02:46:00',
-                'parentId' => factory(Accident::class)->create()->id,
+                'parentId' => Accident::factory()->create()->id,
                 'patientId' => $patient->id,
                 'refNum' => 'test',
                 'symptoms' => 'aaa',
@@ -253,30 +253,30 @@ class CasesControllerCreateActionTest extends TestCase
 
     public function testCreateWithAccidentDataOnly5(): void
     {
-        $patient = factory(Patient::class)->create();
+        $patient = Patient::factory()->create();
         $data = [
             'accident' => [
                 'accidentStatusId' => (new AccidentStatusService())->getNewStatus()->getAttribute('id'),
-                'accidentTypeId' => factory(AccidentType::class)->create()->id,
+                'accidentTypeId' => AccidentType::factory()->create()->id,
                 'address' => 'any',
-                'assistantId' => factory(Assistant::class)->create()->id,
+                'assistantId' => Assistant::factory()->create()->id,
                 'assistantRefNum' => 'ref---',
-                'caseableId' => factory(DoctorAccident::class)->create()->id,
+                'caseableId' => DoctorAccident::factory()->create()->id,
                 'caseableType' => 'doctor',
-                'cityId' => factory(City::class)->create()->id,
+                'cityId' => City::factory()->create()->id,
                 'closedAt' => null,
                 'contacts' => 'anything',
                 'deletedAt' => null,
-                'formReportId' => factory(FormReport::class)->create()->id,
+                'formReportId' => FormReport::factory()->create()->id,
                 'handlingTime' => '2018-11-16 02:46:00',
-                'parentId' => factory(Accident::class)->create()->id,
+                'parentId' => Accident::factory()->create()->id,
                 'patientId' => $patient->id,
                 'refNum' => 'test',
                 'symptoms' => 'aaa',
                 'title' => 'ccc',
-                'assistantPaymentId' => factory(Payment::class)->create()->id,
-                'incomePaymentId' => factory(Payment::class)->create()->id,
-                'caseablePaymentId' => factory(Payment::class)->create()->id,
+                'assistantPaymentId' => Payment::factory()->create()->id,
+                'incomePaymentId' => Payment::factory()->create()->id,
+                'caseablePaymentId' => Payment::factory()->create()->id,
             ]
         ];
         $response = $this->sendPost('/api/director/cases', $data);

@@ -15,16 +15,18 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
+
+namespace Database\Seeders;
 
 use medcenter24\mcCore\App\Entity\FinanceStorage;
 use Illuminate\Database\Seeder;
-
 
 class FinanceStorageTableSeeder extends Seeder
 {
     public function run()
     {
         FinanceStorage::truncate();
-        factory(FinanceStorage::class, 3)->create();
+        FinanceStorage::factory()->count(3)->create();
     }
 }

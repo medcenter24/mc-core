@@ -1,4 +1,6 @@
 <?php
+declare(strict_types = 1);
+namespace medcenter24\mcCore\Tests\Unit\Helpers;
 
 use medcenter24\mcCore\App\Helpers\FileHelper;
 use medcenter24\mcCore\Tests\TestCase;

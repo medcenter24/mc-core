@@ -24,6 +24,7 @@ namespace medcenter24\mcCore\Tests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Testing\TestResponse;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
+use PHPUnit\Framework\MockObject\MockObject;
 use Prophecy\Prophecy\ObjectProphecy;
 
 abstract class TestCase extends BaseTestCase
@@ -77,12 +78,14 @@ abstract class TestCase extends BaseTestCase
      */
     protected function mockServiceLocator(array $services): ServiceLocator
     {
-        /** @var ServiceLocator|ObjectProphecy $serviceLocator */
-        $serviceLocatorProphecy = $this->prophesize(ServiceLocator::class);
-        foreach ($services as $key => $service) {
-            $serviceLocatorProphecy->get($key)->willReturn($service);
-        }
+        /** @var ServiceLocator|MockObject $serviceLocator */
+        $serviceLocatorMock = $this->createMock(ServiceLocator::class);
+        $serviceLocatorMock->expects(self::any())->method('get')
+            ->willReturnCallback(function($serviceName) use ($services) {
+                return $services[$serviceName] ?? null;
+            });
 
-        return $serviceLocatorProphecy->reveal();
+
+        return $serviceLocatorMock;
     }
 }

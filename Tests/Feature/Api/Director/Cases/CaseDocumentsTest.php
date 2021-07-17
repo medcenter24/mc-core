@@ -32,7 +32,7 @@ class CaseDocumentsTest extends TestCase
 
     public function testGetNoDocuments(): void
     {
-        $case = factory(Accident::class)->create();
+        $case = Accident::factory()->create();
         $response = $this->sendGet('/api/director/cases/' . $case->id .'/documents');
         $response->assertStatus(200);
         $response->assertJson(['data' => []]);
@@ -40,8 +40,8 @@ class CaseDocumentsTest extends TestCase
 
     public function testGetDocuments(): void
     {
-        $case = factory(Accident::class)->create();
-        $docs = factory(Document::class, 5)->create();
+        $case = Accident::factory()->create();
+        $docs = Document::factory()->count(5)->create();
         $case->documents()->attach($docs);
         self::assertEquals(5, $case->documents()->count());
 
@@ -52,12 +52,12 @@ class CaseDocumentsTest extends TestCase
 
     public function testGetWithoutUsersDocuments(): void
     {
-        $case = factory(Accident::class)->create();
-        $docs = factory(Document::class, 5)->create();
+        $case = Accident::factory()->create();
+        $docs = Document::factory()->count(5)->create();
         $case->documents()->attach($docs);
         self::assertEquals(5, $case->documents()->count());
         $user = $this->getUser();
-        $docs = factory(Document::class, 2)->create();
+        $docs = Document::factory()->count(2)->create();
         $user->documents()->attach($docs);
         self::assertEquals(2, $user->documents()->count());
 

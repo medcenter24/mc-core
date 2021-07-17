@@ -32,7 +32,7 @@ trait LoggedUser
     public function getUser(array $roles = []): User
     {
         /** @var User $user */
-        $user = factory(User::class)->create([
+        $user = User::factory()->create([
             'name' => 'PHPUnit',
             'password' => bcrypt('foo'),
         ]);

@@ -53,7 +53,7 @@ class TrafficController extends ApiController
             })
             ->join('doctors', 'doctors.id', '=', 'doctor_accidents.doctor_id')
             ->select('doctors.id as id', 'doctors.name as name', DB::raw('count(accidents.id) as cases_count'))
-            ->whereBetween('accidents.created_at', [$year.'-01-01 00:00:00', $year.'-12-31 23:59:59'])
+            ->whereBetween('accidents.handling_time', [$year.'-01-01 00:00:00', $year.'-12-31 23:59:59'])
             ->groupBy('doctors.id')
             ->orderBy('cases_count', 'desc')
             ->get();
@@ -76,28 +76,28 @@ class TrafficController extends ApiController
         $statistic = DB::table('accidents')
             ->join('assistants', 'assistants.id', '=', 'accidents.assistant_id')
             ->select('assistants.id as id', 'assistants.title as name', DB::raw('count(accidents.id) as cases_count'))
-            ->whereBetween('accidents.created_at', [$year.'-01-01 00:00:00', $year.'-12-31 23:59:59'])
+            ->whereBetween('accidents.handling_time', [$year.'-01-01 00:00:00', $year.'-12-31 23:59:59'])
             ->groupBy('assistants.id')
             ->orderBy('cases_count', 'desc')
             ->get();
 
         return $this->response->collection($statistic, new TrafficTransformer());
     }
-    
+
     public function years(): Response
     {
         if (Str::startsWith(env('DB_CONNECTION'), 'sqlite')) {
             $years = DB::table('accidents')
                 ->distinct()
-                ->select(DB::raw('strftime(\'%Y\', accidents.created_at) as year'))
-                ->groupBy(DB::raw('strftime(\'%Y\', accidents.created_at)'))
+                ->select(DB::raw('strftime(\'%Y\', accidents.handling_time) as year'))
+                ->groupBy(DB::raw('strftime(\'%Y\', accidents.handling_time)'))
                 ->get();
         } else {
             $years = DB::table('accidents')
                 ->distinct()
-                ->select(DB::raw('EXTRACT(YEAR FROM accidents.created_at) as year'))
-                ->whereNotNull('accidents.created_at')
-                ->groupBy(DB::raw('EXTRACT(YEAR FROM accidents.created_at)'))
+                ->select(DB::raw('EXTRACT(YEAR FROM accidents.handling_time) as year'))
+                ->whereNotNull('accidents.handling_time')
+                ->groupBy(DB::raw('EXTRACT(YEAR FROM accidents.handling_time)'))
                 ->get();
         }
         $years = $years->filter(static function($y) {

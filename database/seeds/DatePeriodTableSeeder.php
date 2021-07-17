@@ -15,6 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
+
+namespace Database\Seeders;
 
 use medcenter24\mcCore\App\Entity\DatePeriod;
 use Illuminate\Database\Seeder;
@@ -29,6 +32,6 @@ class DatePeriodTableSeeder extends Seeder
     public function run()
     {
         DatePeriod::truncate();
-        factory(DatePeriod::class, 3)->create();
+        DatePeriod::factory()->count(3)->create();
     }
 }

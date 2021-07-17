@@ -37,7 +37,7 @@ class NotAssignedDoctorTest extends TestCase
 
     public function testAccess(): void
     {
-        $accident = factory(Accident::class)->create();
+        $accident = Accident::factory()->create();
         $response = $this->sendGet('/api/doctor/accidents/'.$accident->id.'/diagnostics');
         $response->assertStatus(403);
         $response->assertJson([

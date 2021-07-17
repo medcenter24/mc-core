@@ -15,6 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
+
+namespace Database\Seeders;
 
 use medcenter24\mcCore\App\Entity\FinanceCurrency;
 use Illuminate\Database\Seeder;
@@ -31,7 +34,7 @@ class FinanceCurrenciesTableSeeder extends Seeder
         FinanceCurrency::truncate();
         FinanceCurrency::firstOrCreate([
             'title' => 'Euro',
-            'code' => 'eur',
+            'code' => 'eu',
             'ico' => 'fa fa-euro',
         ]);
     }

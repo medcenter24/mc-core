@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use medcenter24\mcCore\App\Helpers\DoctorTrait;
@@ -41,6 +42,7 @@ class Service extends Model
     use SoftDeletes;
     use DoctorTrait;
     use ServiceLocatorTrait;
+    use HasFactory;
 
     protected $fillable = ServiceService::FILLABLE;
     protected $visible = ServiceService::VISIBLE;

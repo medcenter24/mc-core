@@ -15,6 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
+
+namespace Database\Seeders;
 
 use medcenter24\mcCore\App\Entity\Form;
 use Illuminate\Database\Seeder;
@@ -29,6 +32,6 @@ class FormsTableSeeder extends Seeder
     public function run()
     {
         Form::truncate();
-        factory(Form::class, 2)->create();
+        Form::factory()->count(2)->create();
     }
 }

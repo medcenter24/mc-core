@@ -150,8 +150,8 @@ class DoctorCaseTest extends TestCase
      */
     public function testCases(array $accidentData, array $currencyData, array $conditionsData, array $results): void
     {
-        $doctor = factory(Doctor::class)->create($accidentData['caseable']['doctor']);
-        $caseable = factory(DoctorAccident::class)->create(
+        $doctor = Doctor::factory()->create($accidentData['caseable']['doctor']);
+        $caseable = DoctorAccident::factory()->create(
             array_merge($accidentData['caseable']['caseableData'], [
                 'doctor_id' => $doctor->id,
             ])
@@ -160,22 +160,22 @@ class DoctorCaseTest extends TestCase
         $services = [];
         if (count($accidentData['caseable']['services'])) {
             foreach ($accidentData['caseable']['services'] as $serviceData) {
-                $services[] = factory(Service::class)->create($serviceData)->id;
+                $services[] = Service::factory()->create($serviceData)->id;
             }
 
             $caseable->services()->attach($services);
         }
 
-        $accident = factory(Accident::class)->create(
+        $accident = Accident::factory()->create(
             array_merge($accidentData['accidentData'], [
                 'caseable_type' => DoctorAccident::class,
                 'caseable_id' => $caseable->id,
             ])
         );
-        $currency = factory(FinanceCurrency::class)->create($currencyData);
+        $currency = FinanceCurrency::factory()->create($currencyData);
 
         foreach ($conditionsData as $conditionData) {
-            $condition = factory(FinanceCondition::class)->create(
+            $condition = FinanceCondition::factory()->create(
                 array_merge($conditionData['conditionData'], ['currency_id' => $currency->id])
             );
 
@@ -191,7 +191,7 @@ class DoctorCaseTest extends TestCase
                         unset($buff['setExistingService']);
                         $buff['model_id'] = current($services);
                     }
-                    factory(FinanceStorage::class)->create($storedRule);
+                    FinanceStorage::factory()->create($storedRule);
                 }
             }
         }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Application does not configured</title>
+    <style nonce>
+        body, html {
+            height: 100%;
+        }
+        html {
+            background: rgb(247, 244, 238);
+            overflow: hidden;
+        }
+        body {
+            min-height: 100%;
+            font:81.25% Arial,Helvetica,'Helvetica Neue',sans-serif;
+            color:#000;
+            background:0 0;
+            -webkit-text-size-adjust:100%;
+        }
+        .content {
+            margin: auto;
+            padding-top: 100px;
+            max-width: 700px;
+        }
+        .title, .item {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1 class="title">Configuration error.</h1>
+        <p class="item"><?=$errorMessage ?? 'Undefined error'?></p>
+    </div>
+</body>
+</html>

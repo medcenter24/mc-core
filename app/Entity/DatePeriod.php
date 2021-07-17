@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,6 +30,7 @@ use medcenter24\mcCore\App\Services\Entity\DatePeriodService;
 class DatePeriod extends Model
 {
     use SoftDeletes;
+    use HasFactory;
 
     protected $fillable = DatePeriodService::FILLABLE;
     protected $visible = DatePeriodService::VISIBLE;

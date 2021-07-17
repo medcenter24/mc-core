@@ -42,11 +42,11 @@ class FinancesTest extends TestCase
     {
         parent::setUp();
 
-        $assistants = factory(Assistant::class, 2)->create();
-        $cities = factory(City::class, 2)->create();
-        $doctors = factory(Doctor::class, 2)->create();
-        $services = factory(Service::class, 2)->create();
-        $datePeriods = factory(DatePeriod::class, 2)->create();
+        $assistants = Assistant::factory()->count(2)->create();
+        $cities = City::factory()->count(2)->create();
+        $doctors = Doctor::factory()->count(2)->create();
+        $services = Service::factory()->count(2)->create();
+        $datePeriods = DatePeriod::factory()->count(2)->create();
 
         $this->financeData = [
             'title' => 'Unit test rule',

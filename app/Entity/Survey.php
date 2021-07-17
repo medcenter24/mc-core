@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -35,6 +36,7 @@ class Survey extends Model
     use SoftDeletes;
     use DoctorTrait;
     use ServiceLocatorTrait;
+    use HasFactory;
 
     protected $fillable = SurveyService::FILLABLE;
     protected $visible = SurveyService::VISIBLE;

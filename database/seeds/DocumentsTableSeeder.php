@@ -15,7 +15,11 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types = 1);
 
+namespace Database\Seeders;
+
+use Illuminate\Support\Facades\DB;
 use medcenter24\mcCore\App\Entity\Document;
 use Illuminate\Database\Seeder;
 
@@ -30,6 +34,6 @@ class DocumentsTableSeeder extends Seeder
     {
         Document::truncate();
         DB::table('documentables')->delete();
-        factory(Document::class, 10)->create();
+        Document::factory()->count(10)->create();
     }
 }

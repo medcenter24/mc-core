@@ -273,7 +273,7 @@ class ServicesControllerTest extends DirectorApiModelTest
         $response = $this->sendPost($this->getUri(), [
             'title' => 'phpunit title',
             'description' => 'phpunit description',
-            'diseases' => factory(Disease::class, 3)->create()->toArray()
+            'diseases' => Disease::factory()->count(3)->create()->toArray()
         ]);
 
         $response->assertStatus(201)->assertJson([
@@ -291,18 +291,18 @@ class ServicesControllerTest extends DirectorApiModelTest
 
     public function testUpdateWithDiseases(): void
     {
-        $service = factory(Service::class)->create([
+        $service = Service::factory()->create([
             'title' => 'phpunit title',
             'description' => 'phpunit description',
         ]);
         $service->diseases()->attach(
-            factory(Disease::class, 4)->create()->get('id')
+            Disease::factory()->count(4)->create()->get('id')
         );
 
         $response = $this->sendPut($this->getUri() . '/' . $service->getAttribute('id'), [
             'id' => $service->getAttribute('id'),
             'diseases' => [
-                [ 'id' => $disease = factory(Disease::class)->create()->getAttribute('id') ]
+                [ 'id' => $disease = Disease::factory()->create()->getAttribute('id') ]
             ],
         ]);
         $response->assertStatus(202)->assertJson([
@@ -322,37 +322,37 @@ class ServicesControllerTest extends DirectorApiModelTest
     public function testSearchFiltered(): void
     {
         // 1
-        factory(Service::class)->create([
+        Service::factory()->create([
             ServiceService::FIELD_TITLE => '3 service 1 phpunit',
             ServiceService::FIELD_STATUS => ServiceService::STATUS_ACTIVE,
         ]);
         // 2
-        factory(Service::class)->create([
+        Service::factory()->create([
             ServiceService::FIELD_TITLE => '1 service 2 phpunit',
             ServiceService::FIELD_STATUS => ServiceService::STATUS_DISABLED
         ]);
         // 3
-        factory(Service::class)->create([
+        Service::factory()->create([
             ServiceService::FIELD_TITLE => '2 service 3 phpunit',
             ServiceService::FIELD_STATUS => ServiceService::STATUS_HIDDEN,
         ]);
         // 4
-        factory(Service::class)->create([
+        Service::factory()->create([
             ServiceService::FIELD_TITLE => '3 service 1 phpunit',
             ServiceService::FIELD_STATUS => ServiceService::STATUS_ACTIVE,
         ]);
         // 5
-        factory(Service::class)->create([
+        Service::factory()->create([
             ServiceService::FIELD_TITLE => '5 service 1 phpunit',
             ServiceService::FIELD_STATUS => ServiceService::STATUS_ACTIVE,
         ]);
         // 6
-        factory(Service::class)->create([
+        Service::factory()->create([
             ServiceService::FIELD_TITLE => '8 service 1 phpunit',
             ServiceService::FIELD_STATUS => ServiceService::STATUS_ACTIVE,
         ]);
         // 7
-        factory(Service::class)->create([
+        Service::factory()->create([
             ServiceService::FIELD_TITLE => '9 service 1 phpunit',
             ServiceService::FIELD_STATUS => ServiceService::STATUS_ACTIVE,
         ]);

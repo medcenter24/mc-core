@@ -34,7 +34,7 @@ class FormsControllerTest extends DirectorApiModelTest
 {
     public function testStoreError(): void
     {
-        $form = factory(Form::class)->create([
+        $form = Form::factory()->create([
             'title' => 'Form_1',
             'description' => 'Unit Test Form #1',
             'template' => '<p>Doctor: <b>'.FormVariableService::VAR_ACCIDENT_CASEABLE_DOCTOR_NAME.'</b></p>
@@ -44,13 +44,13 @@ class FormsControllerTest extends DirectorApiModelTest
                 <p>Ref number №'.FormVariableService::VAR_ACCIDENT_REF_NUM.'</p>',
         ]);
 
-        $doctorAccident = factory(Accident::class)->create([
+        $doctorAccident = Accident::factory()->create([
             'ref_num' => 'aaa-aaa-aaa',
             'caseable_type' => DoctorAccident::class,
-            'caseable_id' => factory(DoctorAccident::class)->create([
-                'doctor_id' => factory(Doctor::class)->create(['name' => 'Doctor Name'])->id,
+            'caseable_id' => DoctorAccident::factory()->create([
+                'doctor_id' => Doctor::factory()->create(['name' => 'Doctor Name'])->id,
             ])->id,
-            'patient_id' => factory(Patient::class)->create([
+            'patient_id' => Patient::factory()->create([
                 'name' => 'Patient Name'
             ])->id,
         ]);

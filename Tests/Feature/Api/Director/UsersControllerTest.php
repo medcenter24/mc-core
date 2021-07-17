@@ -38,7 +38,7 @@ class UsersControllerTest extends DirectorApiModelTest
 
     public function testOptions(): void
     {
-        $user = factory(User::class)->create(['password' => bcrypt('foo')]);
+        $user = User::factory()->create(['password' => bcrypt('foo')]);
 
         $response = $this->sendOptions(self::URI . '/' . $user->id . '/photo');
         $response->assertStatus(200)
@@ -47,9 +47,12 @@ class UsersControllerTest extends DirectorApiModelTest
 
     public function testUpdatePhoto(): void
     {
+        if (!function_exists('imagejpeg')) {
+            $this->markTestSkipped('ImageJpeg not installed');
+        }
         Storage::fake(LogoService::DISC);
 
-        $user = factory(User::class)->create(['password' => bcrypt('foo')]);
+        $user = User::factory()->create(['password' => bcrypt('foo')]);
         $response = $this->sendPost(self::URI . '/' . $user->id . '/photo',
             ['file' => UploadedFile::fake()->image('photo.jpg', 100, 100)]
         );
@@ -274,7 +277,7 @@ class UsersControllerTest extends DirectorApiModelTest
     public function testDelete(array $data): void
     {
         $user = $this->getUser([RoleService::DOCTOR_ROLE]);
-        factory(Doctor::class)->create([
+        Doctor::factory()->create([
             DoctorService::FIELD_USER_ID => $user->getKey(),
         ]);
         $response = $this->sendDelete($this->getUri() . '/' . $user->getKey());
@@ -294,7 +297,7 @@ class UsersControllerTest extends DirectorApiModelTest
 
     public function testSearchUserById(): void
     {
-        factory(User::class, 7)->create();
+        User::factory()->count(7)->create();
 
         $response = $this->sendPost(self::URI.'/search', [
             'filter' => [
@@ -325,12 +328,12 @@ class UsersControllerTest extends DirectorApiModelTest
 
     public function testSearchDoctorUserById(): void
     {
-        $roleDoctor = factory(Role::class)->create([
+        $roleDoctor = Role::factory()->create([
             RoleService::FIELD_TITLE => RoleService::DOCTOR_ROLE,
         ]);
-        factory(Doctor::class, 7)->create([
+        Doctor::factory()->count(7)->create([
             DoctorService::FIELD_USER_ID => static function() use ($roleDoctor) {
-                    $user = factory(User::class)->create();
+                    $user = User::factory()->create();
                     $user->roles()->attach($roleDoctor);
                     return $user->id;
                 },
@@ -368,10 +371,10 @@ class UsersControllerTest extends DirectorApiModelTest
 
     public function testCheckCreatedUser(): void
     {
-        factory(Role::class)->create([
+        Role::factory()->create([
             RoleService::FIELD_TITLE => RoleService::DOCTOR_ROLE,
         ]);
-        factory(Role::class)->create([
+        Role::factory()->create([
             RoleService::FIELD_TITLE => RoleService::LOGIN_ROLE,
         ]);
         $response = $this->sendPost(self::URI, [

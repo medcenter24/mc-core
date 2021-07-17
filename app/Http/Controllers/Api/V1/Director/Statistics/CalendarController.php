@@ -34,7 +34,7 @@ class CalendarController extends ApiController
         $start = $request->input('start');
         $end = $request->input('end');
 
-        $cases = Accident::whereBetween('created_at', [$start.' 00:00:00', $end.' 23:59:59'])->get();
+        $cases = Accident::whereBetween('handling_time', [$start.' 00:00:00', $end.' 23:59:59'])->get();
         return $this->response->collection($cases, new CalendarEventTransformer());
     }
 }

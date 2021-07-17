@@ -34,6 +34,7 @@ use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\App\Entity\FinanceStorage;
 use medcenter24\mcCore\App\Entity\Hospital;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
+use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Http\Requests\Api\FinanceConditionRequest;
 use medcenter24\mcCore\App\Models\Cases\Finance\CaseFinanceCondition;
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
@@ -138,7 +139,7 @@ class CaseFinanceService
      * @param string $model
      * @param $conditionProps
      * @return FormulaBuilderContract
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     private function generateFormula(string $model, $conditionProps): FormulaBuilderContract {
         /** @var FormulaBuilder $formula */

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use medcenter24\mcCore\App\Services\Entity\CompanyService;
 use medcenter24\mcCore\App\Services\LogoService;
 use Illuminate\Database\Eloquent\Model;
@@ -35,6 +36,7 @@ class Company extends Model implements HasMedia
 {
     use SoftDeletes;
     use InteractsWithMedia;
+    use HasFactory;
 
     public const THUMB_250 = 'thumb_250';
 

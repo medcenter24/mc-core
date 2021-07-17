@@ -15,7 +15,7 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
-
+declare(strict_types = 1);
 namespace medcenter24\mcCore\Tests\Unit\fakes;
 
 
@@ -25,6 +25,6 @@ class DoctorServiceFake implements Fake
 {
     public static function make(array $params = [], array $additionalParams = [])
     {
-        return factory(Service::class)->create();
+        return Service::factory()->create();
     }
 }

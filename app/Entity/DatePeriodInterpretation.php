@@ -21,11 +21,13 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Services\Entity\DatePeriodInterpretationService;
 
 class DatePeriodInterpretation extends Model
 {
+    use HasFactory;
     protected $fillable = DatePeriodInterpretationService::FILLABLE;
     protected $visible = DatePeriodInterpretationService::VISIBLE;
 }

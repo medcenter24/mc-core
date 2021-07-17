@@ -23,6 +23,7 @@ namespace medcenter24\mcCore\Tests\Feature\Api;
 
 use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use medcenter24\mcCore\App\Support\Facades\Roles;
 use medcenter24\mcCore\Tests\TestCase;
 
 class AuthorizationTest extends TestCase
@@ -48,13 +49,13 @@ class AuthorizationTest extends TestCase
 
     public function testAuthorization(): void
     {
-        \Roles::shouldReceive('hasRole')
+        Roles::shouldReceive('hasRole')
             ->andReturnUsing(function () {
                 return true;
             });
         $mail = 'mail@example.com';
         $passwd = 'secure';
-        $this->user = factory(User::class)->create([
+        $this->user = User::factory()->create([
             'email' => $mail,
             'password' => bcrypt($passwd),
         ]);

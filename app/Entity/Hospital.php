@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use medcenter24\mcCore\App\Services\Entity\HospitalService;
@@ -28,6 +29,7 @@ use medcenter24\mcCore\App\Services\Entity\HospitalService;
 class Hospital extends Model
 {
     use SoftDeletes;
+    use HasFactory;
 
     protected $fillable = HospitalService::FILLABLE;
     protected $visible = HospitalService::VISIBLE;

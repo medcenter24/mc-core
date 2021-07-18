@@ -34,7 +34,7 @@
         "mpdf/mpdf": "~8.0.6",
         "nwidart/laravel-modules": "^8.2",
         "spatie/laravel-medialibrary": "^9.6",
-        "srmklive/flysystem-dropbox-v2": "1.0.7",
+        "srmklive/flysystem-dropbox-v2": "^v1.0.8",
         "tymon/jwt-auth": "^1.0.2"
     },
     "require-dev": {

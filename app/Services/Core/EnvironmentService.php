@@ -168,7 +168,20 @@ class EnvironmentService extends Configurable implements Environment
         } else {
             // When file is not found that means we don't have an access or file not exists
             // trying to allow to install it from artisan
-            $msg = 'Configuration file not found [use setup:seed] or CHECK Access ['.$path.']';
+            $reason = '';
+            if (!file_exists($path)) {
+                $reason .= 'File not found;';
+            }
+            if (empty($reason) && !is_readable($path)) {
+                $reason .= 'Permission to read;';
+            }
+            if (is_dir($path)) {
+                $reason .= 'File expected, directory provided;';
+            }
+
+            $msg = 'Configuration file not found [use setup:seed] or CHECK Access [file: '
+                .$path
+                .($reason ? '; reason: '.$reason : '').']';
             self::addError($msg);
             throw new NotImplementedException($msg);
             // I can't use it because installation process will be failed

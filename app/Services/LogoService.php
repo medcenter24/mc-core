@@ -22,13 +22,23 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Services;
 
 use medcenter24\mcCore\App\Entity\User;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class LogoService
 {
-    const DISC = 'logo';
-    const FOLDER = 'logo';
+    public const DISC = 'logo';
+    public const FOLDER = 'logo';
 
-    public function setLogo(User $user, $file)
+    /**
+     * @param User $user
+     * @param $file
+     * @return bool
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
+     */
+    public function setLogo(User $user, $file): bool
     {
         $user->addMedia($file)
             ->toMediaCollection(self::FOLDER, self::DISC);
@@ -41,10 +51,12 @@ class LogoService
      * @param RoleService $roleService
      * @return bool
      */
-    public function checkAccess(User $user, User $changeableUser, RoleService $roleService)
+    public function checkAccess(User $user, User $changeableUser, RoleService $roleService): bool
     {
-        return $roleService->hasRole($user, 'director')
-            || ( $roleService->hasRole($user, 'doctor')
-                && $changeableUser->id == $user->id );
+        return $roleService->hasRole($user, RoleService::DIRECTOR_ROLE)
+            || (
+                $roleService->hasRole($user, RoleService::DOCTOR_ROLE)
+                && $changeableUser->getAttribute('id') === $user->getAttribute('id')
+            );
     }
 }

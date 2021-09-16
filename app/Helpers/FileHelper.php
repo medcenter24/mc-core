@@ -15,11 +15,12 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Helpers;
 
-
 use FilesystemIterator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
@@ -47,7 +48,7 @@ class FileHelper
      */
     public static function createDir(string $path): bool
     {
-        return self::isDirExists($path) ? true : mkdir($path, 0764, true);
+        return self::isDirExists($path) || mkdir($path, 0764, true);
     }
 
     /**
@@ -127,6 +128,22 @@ class FileHelper
         return file_put_contents($path, $content);
     }
 
+    public static function deleteDir($dir): bool {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir.'/'.$object))
+                        self::deleteDir($dir. DIRECTORY_SEPARATOR .$object);
+                    else
+                        unlink($dir. DIRECTORY_SEPARATOR . $object);
+                }
+            }
+            rmdir($dir);
+        }
+        return true;
+    }
+
     /**
      * php delete function that deals with directories recursively
      * @param $target
@@ -136,17 +153,9 @@ class FileHelper
     {
         if (file_exists($target)) {
             if (is_dir($target)) {
-                $di = new RecursiveDirectoryIterator($target, FilesystemIterator::SKIP_DOTS);
-                $ri = new RecursiveIteratorIterator($di, RecursiveIteratorIterator::CHILD_FIRST);
+                self::deleteDir($target);
             } else {
-                $di = false;
-                $ri = [new SplFileInfo($target)];
-            }
-            foreach ( $ri as $file ) {
-                $file->isDir() ?  rmdir($file) : unlink($file);
-            }
-            if ($di) {
-                $di->isDir() ? rmdir($target) : unlink($target);
+                unlink($target);
             }
         }
         return true;
@@ -326,5 +335,13 @@ class FileHelper
         $name = preg_replace('/[^a-zA-Z0-9 -]/', ' ', $tmp);
         $name = ucwords($name);
         return str_replace(' ', '', $name);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getTmpFilePath(): string
+    {
+        return tempnam(sys_get_temp_dir(), 'mc24_tmp_');
     }
 }

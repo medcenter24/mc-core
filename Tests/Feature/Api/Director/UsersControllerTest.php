@@ -31,6 +31,7 @@ use medcenter24\mcCore\App\Entity\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorApiModelTest;
+use medcenter24\mcCore\Tests\Helper\FakeImage;
 
 class UsersControllerTest extends DirectorApiModelTest
 {
@@ -47,14 +48,11 @@ class UsersControllerTest extends DirectorApiModelTest
 
     public function testUpdatePhoto(): void
     {
-        if (!function_exists('imagejpeg')) {
-            $this->markTestSkipped('ImageJpeg not installed');
-        }
         Storage::fake(LogoService::DISC);
 
         $user = User::factory()->create(['password' => bcrypt('foo')]);
         $response = $this->sendPost(self::URI . '/' . $user->id . '/photo',
-            ['file' => UploadedFile::fake()->image('photo.jpg', 100, 100)]
+            ['file' => FakeImage::getImage('fake.jpg')]
         );
         $response->assertStatus(200);
         $response->assertJson([

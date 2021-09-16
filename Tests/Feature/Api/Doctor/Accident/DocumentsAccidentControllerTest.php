@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Doctor\Accident;
 
 use Illuminate\Http\UploadedFile;
 use medcenter24\mcCore\App\Entity\Document;
+use medcenter24\mcCore\Tests\Helper\FakeImage;
 use medcenter24\mcCore\Tests\TestCase;
 
 class DocumentsAccidentControllerTest extends TestCase
@@ -42,16 +43,13 @@ class DocumentsAccidentControllerTest extends TestCase
 
     public function testCreateDocument(): void
     {
-        if (!function_exists('imagejpeg')) {
-            $this->markTestSkipped('ImageJpeg not installed');
-        }
         $case = $this->createAccidentForDoc();
 
         // first file will be used only (loading by file)
         $response = $this->sendPost('/api/doctor/accidents/' . $case->id . '/documents', [
-            UploadedFile::fake()->image('fake.jpg'),
-            UploadedFile::fake()->image('fake.jpg'),
-            UploadedFile::fake()->image('fake.jpg'),
+            FakeImage::getImage('fake.jpg'),
+            FakeImage::getImage('fake.jpg'),
+            FakeImage::getImage('fake.jpg'),
         ]);
 
         $response->assertStatus(200);

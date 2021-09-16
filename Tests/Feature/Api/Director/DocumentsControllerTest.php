@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Storage;
 use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\Helper\FakeImage;
 use medcenter24\mcCore\Tests\TestCase;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\DiskDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
@@ -39,51 +40,55 @@ class DocumentsControllerTest extends TestCase
         return $this->getServiceLocator()->get(DocumentService::class);
     }
 
+    /**
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
+     */
     public function testShow(): void
     {
-        if (!function_exists('imagejpeg')) {
-            $this->markTestSkipped('ImageJpeg not installed');
-        }
         Storage::fake('documents');
 
-        /** @var Document $doc */
         $doc = $this->getDocumentService()
-            ->createDocumentFromFile(UploadedFile::fake()->image('fake.jpg'), $this->getUser());
+            ->createDocumentFromFile(
+                FakeImage::getImage('fake.jpg'),
+                $this->getUser()
+            );
 
         $response = $this->sendGet('/api/director/documents/' . $doc->id);
         $response->assertOk();
     }
 
+    /**
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
+     */
     public function testDelete(): void
     {
-        if (!function_exists('imagejpeg')) {
-            $this->markTestSkipped('ImageJpeg not installed');
-        }
         Storage::fake('documents');
 
-        /** @var Document $doc */
         $doc = $this->getDocumentService()
-            ->createDocumentFromFile(UploadedFile::fake()->image('fake.jpg'), $this->getUser());
+            ->createDocumentFromFile(
+                FakeImage::getImage('fake.jpg'),
+                $this->getUser()
+            );
 
         $response = $this->sendDelete('/api/director/documents/' . $doc->id);
         $response->assertStatus(204);
     }
 
     /**
-     * @throws DiskDoesNotExist
      * @throws FileDoesNotExist
      * @throws FileIsTooBig
      */
     public function testUpdate(): void
     {
-        if (!function_exists('imagejpeg')) {
-            $this->markTestSkipped('ImageJpeg not installed');
-        }
         Storage::fake('documents');
 
-        /** @var Document $doc */
         $doc = $this->getDocumentService()
-            ->createDocumentFromFile(UploadedFile::fake()->image('fake.jpg'), $this->getUser());
+            ->createDocumentFromFile(
+                FakeImage::getImage('fake.jpg'),
+                $this->getUser()
+            );
 
         $response = $this->sendPut('/api/director/documents/' . $doc->id, [
             'type' => DocumentService::TYPE_INSURANCE,

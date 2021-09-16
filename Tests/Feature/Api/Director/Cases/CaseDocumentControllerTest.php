@@ -22,8 +22,10 @@ namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
+use medcenter24\mcCore\Tests\Helper\FakeImage;
 use medcenter24\mcCore\Tests\TestCase;
 
 class CaseDocumentControllerTest extends TestCase
@@ -38,11 +40,11 @@ class CaseDocumentControllerTest extends TestCase
         $this->caseAccidentService = new CaseAccidentService();
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testDocuments(): void
     {
-        if(!function_exists('imagejpeg')) {
-            $this->markTestSkipped('ImageJpeg not installed');
-        }
         Storage::fake('documents');
 
         $accident = $this->caseAccidentService->create();
@@ -55,8 +57,8 @@ class CaseDocumentControllerTest extends TestCase
         $addResponse = $this->sendPost('/api/director/cases/' . $accident->id . '/documents',
             [
                 'files' => [
-                    'image' => UploadedFile::fake()->image('fake.jpg'),
-                    'image2' => UploadedFile::fake()->image('fake2.jpg'),
+                    'image' => FakeImage::getImage('fake.jpg'),
+                    'image2' => FakeImage::getImage('fake2.jpg'),
                 ]
             ]);
 

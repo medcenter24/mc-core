@@ -23,6 +23,7 @@ namespace medcenter24\mcCore\App\Services\CaseServices;
 
 use medcenter24\mcCore\App\Entity\Accident;
 use Illuminate\Support\Collection;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 
 class CaseHistoryService
 {
@@ -30,7 +31,9 @@ class CaseHistoryService
 
     public function generate(Accident $accident): self
     {
-        $this->history = $accident->history()->orderBy('created_at')->get();
+        $this->history = $accident->history()
+            ->orderBy(AbstractModelService::FIELD_CREATED_AT)
+            ->get();
         return $this;
     }
 

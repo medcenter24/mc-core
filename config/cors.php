@@ -35,6 +35,8 @@ return [
         env('APP_URL'),
         env('CORS_ALLOW_ORIGIN_DIRECTOR'),
         env('CORS_ALLOW_ORIGIN_DOCTOR'),
+        env('CORS_ALLOW_ORIGIN_DIRECTOR_DEV', 'none'),
+        env('CORS_ALLOW_ORIGIN_DOCTOR_DEV', 'none'),
     ],
 
     /*

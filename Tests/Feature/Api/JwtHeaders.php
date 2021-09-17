@@ -35,7 +35,7 @@ trait JwtHeaders
             'Accept' => 'application/x.' . env('API_SUBTYPE') . '.' . env('API_VERSION') .'+json',
             'Access-Control-Allow-Credentials' => 'true',
             'Access-Control-Allow-Origin' => env('CORS_ALLOW_ORIGIN_DIRECTOR', 'http://localhost:4200'),
-            // laravel provide Origin header, don't know why...
+            // laravel provides Origin header, don't know why...
             'Origin' => env('CORS_ALLOW_ORIGIN_DIRECTOR', 'http://localhost:4200'),
         ];
 

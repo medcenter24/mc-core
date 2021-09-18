@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Foundation;
 
-
 use Illuminate\Foundation\PackageManifest as BasePackageManifest;
 
 /**
@@ -19,7 +18,7 @@ class PackageManifest extends BasePackageManifest
 {
     private const EXCLUDED_SERVICES = [];
 
-    public function providers()
+    public function providers(): array
     {
         $providers = parent::providers();
 

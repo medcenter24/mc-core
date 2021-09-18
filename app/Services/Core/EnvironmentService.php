@@ -190,24 +190,40 @@ class EnvironmentService extends Configurable implements Environment
         return $config;
     }
 
+    /**
+     * @return string
+     * @throws NotImplementedException
+     */
     public function getEnvironmentPath(): string
     {
-        return realpath($this->getOption(self::ENV_FILE));
+        return FileHelper::getRealPath($this->getOption(self::ENV_FILE));
     }
 
+    /**
+     * @return string
+     * @throws NotImplementedException
+     */
     public function getEnvironmentDir(): string
     {
         return dirname($this->getEnvironmentPath());
     }
 
+    /**
+     * @return string
+     * @throws NotImplementedException
+     */
     public function getEnvironmentFileName(): string
     {
         return str_replace($this->getEnvironmentDir(), '', $this->getEnvironmentPath());
     }
 
+    /**
+     * @return string
+     * @throws NotImplementedException
+     */
     public function getStoragePath(): string
     {
-        return realpath($this->getOption(self::DATA_DIR));
+        return FileHelper::getRealPath($this->getOption(self::DATA_DIR));
     }
 
     /**

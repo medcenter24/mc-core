@@ -114,7 +114,7 @@ class FileHelper
     public static function writeConfig(string $path, array $params=[]): bool
     {
         $config = var_export($params, true);
-        return file_put_contents($path, "<?php return $config ;");
+        return file_put_contents($path, "<?php return $config ;") !== false;
     }
 
     /**
@@ -125,7 +125,7 @@ class FileHelper
      */
     public static function writeFile(string $path, string $content): bool
     {
-        return file_put_contents($path, $content);
+        return file_put_contents($path, $content) !== false;
     }
 
     public static function deleteDir($dir): bool {
@@ -343,5 +343,19 @@ class FileHelper
     public static function getTmpFilePath(): string
     {
         return tempnam(sys_get_temp_dir(), 'mc24_tmp_');
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     * @throws InconsistentDataException
+     */
+    public static function getRealPath(string $path): string
+    {
+        $path = realpath($path);
+        if (empty($path)) {
+            throw new InconsistentDataException(sprintf('File not found: %s', $path));
+        }
+        return $path;
     }
 }

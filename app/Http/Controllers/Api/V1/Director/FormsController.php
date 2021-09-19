@@ -22,12 +22,14 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Illuminate\Http\JsonResponse;
+use JetBrains\PhpStorm\Pure;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Entity\Form;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\FormRequest;
 use medcenter24\mcCore\App\Http\Requests\Api\FormUpdateRequest;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\FormService;
 use medcenter24\mcCore\App\Transformers\FormTransformer;
 use League\Fractal\TransformerAbstract;
@@ -35,7 +37,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class FormsController extends ModelApiController
 {
-    protected function getDataTransformer(): TransformerAbstract
+    #[Pure] protected function getDataTransformer(): TransformerAbstract
     {
         return new FormTransformer();
     }
@@ -66,7 +68,7 @@ class FormsController extends ModelApiController
     public function pdf($formId, $srcId): BinaryFileResponse
     {
         /** @var Form $form */
-        $form = $this->getModelService()->first([FormService::FIELD_ID => $formId]);
+        $form = $this->getModelService()->first([AbstractModelService::FIELD_ID => $formId]);
         if (!$form) {
             $this->response->errorNotFound();
         }
@@ -84,7 +86,7 @@ class FormsController extends ModelApiController
     public function html($formId, $srcId, FormService $formService): JsonResponse
     {
         /** @var Form $form */
-        $form = $this->getModelService()->first([FormService::FIELD_ID => $formId]);
+        $form = $this->getModelService()->first([AbstractModelService::FIELD_ID => $formId]);
         if (!$form) {
             $this->response->errorNotFound('Form not found');
         }

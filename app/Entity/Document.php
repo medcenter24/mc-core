@@ -88,7 +88,7 @@ class Document extends Model implements HasMedia
     }
 
     public function b64(): string {
-        return MediaHelper::b64($this, DocumentService::CASES_FOLDERS);
+        return MediaHelper::b64($this, DocumentService::CASES_FOLDERS, DocumentService::PIC);
     }
 
     public function getAttribute($key)

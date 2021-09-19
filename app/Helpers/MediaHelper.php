@@ -35,7 +35,6 @@ class MediaHelper
         if (!$model->hasMedia($collectionName)) {
             throw new InconsistentDataException('Model does not have medias');
         }
-
         $path = $model->getFirstMediaPath($collectionName, $thumbName);
         return file_exists($path) ? base64_encode(file_get_contents($path)) : 'noContent';
     }

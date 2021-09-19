@@ -22,7 +22,6 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Forms;
 
 use Dingo\Api\Http\Response;
-use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Models\Form\FormVariable;
 use medcenter24\mcCore\App\Services\Form\FormVariableService;

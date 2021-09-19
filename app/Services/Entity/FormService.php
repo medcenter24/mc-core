@@ -130,7 +130,7 @@ class FormService extends AbstractModelService
      * @param string $path
      * @throws InconsistentDataException
      */
-    public function toPdf(Form $form, Model $source, $path = 'file.pdf'): void
+    public function toPdf(Form $form, Model $source, string $path = 'file.pdf'): void
     {
         /** @var TmpFileService $tmpFileService */
         $tmpFileService = $this->getServiceLocator()->get(TmpFileService::class);

@@ -253,6 +253,20 @@ class FileHelper
     }
 
     /**
+     * @param string $path
+     * @return string|null
+     */
+    public static function getExtension(string $path): ?string
+    {
+        $ext = null;
+        if (static::isReadable($path)) {
+            $object = new SplFileInfo($path);
+            $ext = $object->getExtension();
+        }
+        return $ext;
+    }
+
+    /**
      * Check that extension is in expected list
      * @param SplFileInfo $fileInfo
      * @param array $extensions

@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\Upload;
 
 class UploadService extends AbstractModelService
@@ -50,7 +51,10 @@ class UploadService extends AbstractModelService
     /**
      * @inheritDoc
      */
-    protected function getFillableFieldDefaults(): array
+    #[ArrayShape([self::FIELD_PATH      => "string",
+                  self::FIELD_FILE_NAME => "string",
+                  self::FIELD_STORAGE   => "string"
+    ])] protected function getFillableFieldDefaults(): array
     {
         return [
             self::FIELD_PATH => '',

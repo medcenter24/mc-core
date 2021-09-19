@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\TelegramUser;
 
 class TelegramUserService extends AbstractModelService
@@ -71,7 +72,14 @@ class TelegramUserService extends AbstractModelService
     /**
      * @inheritDoc
      */
-    protected function getFillableFieldDefaults(): array
+    #[ArrayShape([
+        self::FIELD_TELEGRAM_ID => "int",
+        self::FIELD_USER_ID     => "int",
+        self::FIELD_USERNAME    => "string",
+        self::FIELD_LAST_VISIT  => "string",
+        self::FIELD_FIRST_NAME  => "string",
+        self::FIELD_LAST_NAME   => "string"
+    ])] protected function getFillableFieldDefaults(): array
     {
         return [
             self::FIELD_TELEGRAM_ID => 0,

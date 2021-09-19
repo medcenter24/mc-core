@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\Company;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\CompanyService;
 use medcenter24\mcCore\App\Services\LogoService;
 
@@ -47,7 +48,7 @@ class CompanyTransformer extends AbstractTransformer
     protected function getMap(): array
     {
         return [
-            CompanyService::FIELD_ID,
+            AbstractModelService::FIELD_ID,
             CompanyService::FIELD_TITLE,
         ];
     }

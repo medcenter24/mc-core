@@ -23,6 +23,10 @@ use Spatie\MediaLibrary\HasMedia;
 
 class MediaHelper
 {
+    public const PNG_B64_PREFIX = 'data:image/png;base64,';
+    public const JPG_B64_PREFIX = 'data:image/jpg;base64,';
+    public const JPEG_B64_PREFIX = 'data:image/jpeg;base64,';
+
     /**
      * @param HasMedia $model
      * @param string $collectionName
@@ -30,13 +34,27 @@ class MediaHelper
      * @return string
      * @throws InconsistentDataException
      */
-    public static function b64(HasMedia $model, $collectionName = '', $thumbName = 'thumb'): string
+    public static function b64(HasMedia $model, string $collectionName = '', string $thumbName = 'thumb'): string
     {
         if (!$model->hasMedia($collectionName)) {
             throw new InconsistentDataException('Model does not have medias');
         }
         $path = $model->getFirstMediaPath($collectionName, $thumbName);
-        return file_exists($path) ? base64_encode(file_get_contents($path)) : 'noContent';
+        $b64 = file_exists($path) ? base64_encode(file_get_contents($path)) : 'noContent';
+        return self::detectB64Prefix($path) . $b64;
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    public static function detectB64Prefix(string $path): string
+    {
+        return match (FileHelper::getExtension($path)) {
+            'jpeg' => self::JPEG_B64_PREFIX,
+            'png' => self::PNG_B64_PREFIX,
+            default => self::JPG_B64_PREFIX,
+        };
     }
 
     /**

@@ -23,10 +23,10 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1;
 
 use Dingo\Api\Http\Response;
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\CompanyService;
 use medcenter24\mcCore\App\Services\Entity\UserService;
 use medcenter24\mcCore\App\Services\LogoService;
@@ -67,7 +67,7 @@ class AuthenticateController extends ApiController
             /** @var CompanyService $companyService */
             $companyService = $this->getServiceLocator()->get(CompanyService::class);
             $company = $companyService->create();
-            $this->user()->company_id = $company->getAttribute(CompanyService::FIELD_ID);
+            $this->user()->company_id = $company->getAttribute(AbstractModelService::FIELD_ID);
             $this->user()->save();
         }
         return $this->response->item($company, new CompanyTransformer());

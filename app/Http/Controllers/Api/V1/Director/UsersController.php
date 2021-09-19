@@ -25,6 +25,7 @@ use Dingo\Api\Exception\ValidationHttpException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use Dingo\Api\Http\Response;
+use JetBrains\PhpStorm\Pure;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
@@ -45,7 +46,7 @@ use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 
 class UsersController extends ModelApiController
 {
-    protected function getDataTransformer(): TransformerAbstract
+    #[Pure] protected function getDataTransformer(): TransformerAbstract
     {
         return new UserTransformer();
     }
@@ -79,7 +80,7 @@ class UsersController extends ModelApiController
      * @return Response
      * @throws NotImplementedException
      */
-    public function show($id): Response
+    public function show(int $id): Response
     {
         $user = $this->getModelService()->first(['users.id' => $id]);
         if (!$user) {

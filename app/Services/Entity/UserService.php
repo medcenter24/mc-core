@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\User;
 
 class UserService extends AbstractModelService
@@ -116,7 +117,12 @@ class UserService extends AbstractModelService
      * (different storage have different rules, so it is correct to set defaults instead of nothing)
      * @return array
      */
-    protected function getFillableFieldDefaults(): array
+    #[ArrayShape([self::FIELD_NAME     => "string",
+                  self::FIELD_EMAIL    => "string",
+                  self::FIELD_PHONE    => "string",
+                  self::FIELD_LANG     => "string",
+                  self::FIELD_TIMEZONE => "string"
+    ])] protected function getFillableFieldDefaults(): array
     {
         return [
             self::FIELD_NAME => '',

@@ -24,9 +24,14 @@ namespace medcenter24\mcCore\App\Transformers;
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Services\Entity\DoctorService;
+use medcenter24\mcCore\App\Services\Entity\UserService;
 
 class DoctorProfileTransformer extends AbstractTransformer
 {
+    /**
+     * @param Model $model
+     * @return array
+     */
     public function transform (Model $model): array
     {
         $fields = parent::transform($model);
@@ -36,7 +41,7 @@ class DoctorProfileTransformer extends AbstractTransformer
             ? $model->getAttribute('city')->getAttribute('title')
             : '';
         $fields['phones'] = $model->getAttribute('user')
-            ? $model->getAttribute('user')->getAttribute('title')
+            ? $model->getAttribute('user')->getAttribute(UserService::FIELD_PHONE)
             : '';
         $fields['lang'] = $model->getAttribute('user')
             ? $model->getAttribute('user')->getAttribute('lang')
@@ -44,6 +49,9 @@ class DoctorProfileTransformer extends AbstractTransformer
         return $fields;
     }
 
+    /**
+     * @return array
+     */
     protected function getMap(): array
     {
         return [

@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\LogoService;
 use Cmgmyr\Messenger\Traits\Messagable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -53,7 +54,7 @@ class User extends Authenticable implements JWTSubject, HasMedia
      *
      * @var array
      */
-    protected $dates = UserService::DATE_FIELDS;
+    protected $dates = AbstractModelService::DATE_FIELDS;
 
     /**
      * The attributes that are mass assignable.

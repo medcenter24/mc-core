@@ -22,15 +22,17 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusHistoryService;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Entity\UserService;
 use medcenter24\mcCore\App\Services\LogoService;
-use medcenter24\mcCore\App\Entity\User;
 
 class AccidentStatusHistoryTransformer extends AbstractTransformer
 {
@@ -42,29 +44,43 @@ class AccidentStatusHistoryTransformer extends AbstractTransformer
         HospitalAccident::class => 'hospitalAccident',
     ];
 
-    protected function getMap(): array
+    #[ArrayShape([0                  => "string",
+                  'userId'           => "string",
+                  'accidentStatusId' => "string",
+                  'historyableId'    => "string",
+                  'historyableType'  => "string",
+                  5                  => "string",
+                  'createdAt'        => "string",
+                  'updatedAt'        => "string"
+    ])] protected function getMap(): array
     {
         return [
-            AccidentStatusHistoryService::FIELD_ID,
+            AbstractModelService::FIELD_ID,
             'userId' => AccidentStatusHistoryService::FIELD_USER_ID,
             'accidentStatusId' => AccidentStatusHistoryService::FIELD_ACCIDENT_STATUS_ID,
             'historyableId' => AccidentStatusHistoryService::FIELD_HISTORYABLE_ID,
             'historyableType' => AccidentStatusHistoryService::FIELD_HISTORYABLE_TYPE,
             AccidentStatusHistoryService::FIELD_COMMENTARY,
-            'createdAt' => AccidentStatusHistoryService::FIELD_CREATED_AT,
-            'updatedAt' => AccidentStatusHistoryService::FIELD_UPDATED_AT,
+            'createdAt' => AbstractModelService::FIELD_CREATED_AT,
+            'updatedAt' => AbstractModelService::FIELD_UPDATED_AT,
         ];
     }
 
-    protected function getMappedTypes(): array
+    #[ArrayShape([AbstractModelService::FIELD_ID                         => "string",
+                  AccidentStatusHistoryService::FIELD_USER_ID            => "string",
+                  AccidentStatusHistoryService::FIELD_ACCIDENT_STATUS_ID => "string",
+                  AccidentStatusHistoryService::FIELD_HISTORYABLE_ID     => "string",
+                  AbstractModelService::FIELD_CREATED_AT                 => "string",
+                  AbstractModelService::FIELD_UPDATED_AT                 => "string"
+    ])] protected function getMappedTypes(): array
     {
         return [
-            AccidentStatusHistoryService::FIELD_ID => self::VAR_INT,
-            AccidentStatusHistoryService::FIELD_USER_ID => self::VAR_INT,
+            AbstractModelService::FIELD_ID                         => self::VAR_INT,
+            AccidentStatusHistoryService::FIELD_USER_ID            => self::VAR_INT,
             AccidentStatusHistoryService::FIELD_ACCIDENT_STATUS_ID => self::VAR_INT,
-            AccidentStatusHistoryService::FIELD_HISTORYABLE_ID => self::VAR_INT,
-            AccidentStatusHistoryService::FIELD_CREATED_AT => self::VAR_DATETIME,
-            AccidentStatusHistoryService::FIELD_UPDATED_AT => self::VAR_DATETIME,
+            AccidentStatusHistoryService::FIELD_HISTORYABLE_ID     => self::VAR_INT,
+            AbstractModelService::FIELD_CREATED_AT                 => self::VAR_DATETIME,
+            AbstractModelService::FIELD_UPDATED_AT                 => self::VAR_DATETIME,
         ];
     }
 
@@ -81,7 +97,7 @@ class AccidentStatusHistoryTransformer extends AbstractTransformer
             : '';
         $fields['userThumb'] = $model->getAttribute('user')
             && $model->getAttribute('user')->hasMedia(LogoService::FOLDER)
-            ? MediaHelper::b64($model->getAttribute('user'), LogoService::FOLDER, User::THUMB_45)
+            ? MediaHelper::b64($model->getAttribute('user'), LogoService::FOLDER, UserService::THUMB_45)
             : '';
         $fields['statusTitle'] = $model->getAttribute('accidentStatus')
             ? $model->getAttribute('accidentStatus')->getAttribute('title')
@@ -90,6 +106,10 @@ class AccidentStatusHistoryTransformer extends AbstractTransformer
         return $fields;
     }
 
+    /**
+     * @param string $fieldName
+     * @return string
+     */
     private function getTransformedHistoryableType(string $fieldName): string
     {
         return array_key_exists($fieldName, self::HISTORYABLE_TYPE_MAP)

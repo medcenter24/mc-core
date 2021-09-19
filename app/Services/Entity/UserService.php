@@ -25,7 +25,6 @@ use medcenter24\mcCore\App\Entity\User;
 
 class UserService extends AbstractModelService
 {
-
     public const THUMB_200 = 'thumb_200';
     public const THUMB_45 = 'thumb_45';
 

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services;
 
+use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Support\Core\Configurable;
 use medcenter24\mcCore\App\Entity\Upload;
 use Illuminate\Http\UploadedFile;
@@ -38,7 +39,7 @@ class UploaderService extends Configurable
 
     public const CONF_DEFAULT = 'uploads';
 
-    private $_defaults = [
+    private array $_defaults = [
         self::CONF_DISK => self::CONF_DEFAULT,
         self::CONF_FOLDER => self::CONF_DEFAULT,
     ];
@@ -47,13 +48,18 @@ class UploaderService extends Configurable
      * public constructor to allow the object to be recreated from php code
      *
      * @param array $options
+     * @throws CommonException
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $options = array_merge($this->_defaults, $options);
         parent::__construct($options);
     }
 
+    /**
+     * @param UploadedFile $file
+     * @return Upload
+     */
     public function upload(UploadedFile $file): Upload
     {
         return new Upload([
@@ -64,12 +70,19 @@ class UploaderService extends Configurable
         ]);
     }
 
+    /**
+     * @param int $uploadId
+     * @return string
+     */
     public function getPathById($uploadId = 0): string
     {
         $upload = Upload::findOrFail($uploadId);
         return storage_path($this->getOption(self::CONF_DISK) . DIRECTORY_SEPARATOR . $upload->path);
     }
 
+    /**
+     * @param $uploadId
+     */
     public function delete($uploadId): void
     {
         $upload = Upload::findOrFail($uploadId);

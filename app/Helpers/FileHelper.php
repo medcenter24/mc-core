@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Helpers;
 
 use FilesystemIterator;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;

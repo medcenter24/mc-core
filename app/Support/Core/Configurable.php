@@ -15,6 +15,7 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Support\Core;
 
@@ -28,14 +29,15 @@ use medcenter24\mcCore\App\Exceptions\CommonException;
  */
 abstract class Configurable implements ConfigurableInterface
 {
-    private $options = [];
+    private array $options = [];
 
     /**
      * public constructor to allow the object to be recreated from php code
      *
      * @param array $options
+     * @throws CommonException
      */
-    public function __construct($options = []) {
+    public function __construct(array $options = []) {
         $this->setOptions($options);
     }
 
@@ -53,9 +55,10 @@ abstract class Configurable implements ConfigurableInterface
     /**
      * Set options
      *
-     * @param array $options
+     * @param mixed $options
      * @param bool $overwrite
      * @return void
+     * @throws CommonException
      */
     public function setOptions($options, $overwrite = false): void
     {
@@ -63,7 +66,7 @@ abstract class Configurable implements ConfigurableInterface
             if (is_object($options) && method_exists($options, 'toArray')) {
                 $options = $options->toArray();
             } else {
-                new CommonException('Options submitted to '.static::class.' must be an array or implement toArray');
+                throw new CommonException('Options submitted to '.static::class.' must be an array or implement toArray');
             }
         }
 

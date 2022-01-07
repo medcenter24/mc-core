@@ -27,9 +27,9 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
      * @return Response
      * @throws Throwable
      */
-    public function render($request, Throwable $e): Response
+    public function render($request, Throwable $e)
     {
         return parent::render($request, $e);
     }

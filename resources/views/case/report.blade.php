@@ -327,7 +327,7 @@
         @foreach($report->b64Docs() as $doc)
             <tr>
                 <td>
-                    <img src="data:image/jpg;base64, {{ $doc['b64'] }}" alt="{{ $doc['title'] }}">
+                    <img src="{{ $doc['b64'] }}" alt="{{ $doc['title'] }}">
                 </td>
             </tr>
         @endforeach

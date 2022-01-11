@@ -55,12 +55,14 @@ class CasesController extends AdminController
 
     public function report(Request $request, FormService $service)
     {
+        /** @var Accident $accident */
         $accident = Accident::where('ref_num', $request->input('ref', false))->first();
         if (!$accident) {
             abort(404);
         }
 
-        return $service->generate($accident)->toHtml();
+        // todo fix admin form reviewer
+        return $service->getHtml($accident->formReport, $accident);
     }
 
     public function downloadPdf(Request $request, CaseReportService $service)

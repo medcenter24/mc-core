@@ -16,8 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Helpers;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Helpers;
 
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 
@@ -26,7 +27,7 @@ class Arr
     /**
      * Glue all data from array to string
      *
-     * @param $arr
+     * @param array $arr
      * @return string
      */
     public static function multiArrayToString (array $arr): string
@@ -40,8 +41,9 @@ class Arr
 
     /**
      * Create new array, where 'key' from first row and 'values' all other rows
-     * @param $arr
+     * @param array $arr
      * @return array
+     * @throws InconsistentDataException
      */
     public static function convertTableToKeyValue (array $arr): array
     {
@@ -59,6 +61,7 @@ class Arr
     /**
      * @param array $arr
      * @return array
+     * @throws InconsistentDataException
      */
     public static function collectTableRows (array $arr): array
     {
@@ -81,7 +84,7 @@ class Arr
      * @param string $key
      * @param string $defaultEmpty
      */
-    public static function setDefault(array &$arr, string $key, $defaultEmpty = ''): void
+    public static function setDefault(array &$arr, string $key, string $defaultEmpty = ''): void
     {
         if (!isset($arr[$key]) || !$arr[$key]) {
             $arr[$key] = $defaultEmpty;

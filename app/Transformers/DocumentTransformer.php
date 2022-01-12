@@ -24,18 +24,22 @@ namespace medcenter24\mcCore\App\Transformers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Document;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\FileHelper;
+use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\Entity\DocumentService;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class DocumentTransformer extends AbstractTransformer
 {
     /**
-     * @param Model|Media $model
+     * @param Model $model
      * @return array
+     * @throws InconsistentDataException
      */
     public function transform (Model $model): array
     {
+        /** @var Document $media */
         $media = $this->getMedia($model);
         if (!$media) {
             // document it is a media
@@ -49,7 +53,7 @@ class DocumentTransformer extends AbstractTransformer
         $fields['fileName'] = $media->getAttribute('fileName');
         $thumbPath = $media->getPath('thumb');
         $fields['b64thumb'] = $thumbPath && FileHelper::isReadable($thumbPath)
-            ? base64_encode(file_get_contents($thumbPath))
+            ? MediaHelper::b64($model, DocumentService::CASES_FOLDERS)
             : ''; // in case of wrong settings or phpunit test
         return $fields;
     }

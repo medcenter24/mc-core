@@ -16,58 +16,69 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types=1);
+
 namespace medcenter24\mcCore\Tests\Unit\Support\Core;
 
-use medcenter24\mcCore\App\Support\Core\Configurable;
+use medcenter24\mcCore\App\Exceptions\CommonException;
 use medcenter24\mcCore\Tests\TestCase;
 
 class ConfigurableTest extends TestCase
 {
     public function testConstructorNoConfig(): void
     {
-        $configTest = new ConfigTest;
-        $this->assertEquals($configTest->getOptions(), []);
+        $configTest = new ConfigTest();
+        $this->assertEquals([], $configTest->getOptions());
     }
 
+    /**
+     * @throws CommonException
+     */
     public function testConstructorWithObject(): void
     {
-        $configTest = new ConfigTest(new MyConfigObject);
+        $configTest = new ConfigTest(new MyConfigObject());
         // the default options should be merged with the constructor values,
         // overwriting any default values.
         $expectedOptions = array(
-            'option2' => 'newvalue2',
+            'option2' => 'newValue2',
             'option3' => 3,
         );
         $this->assertEquals($expectedOptions, $configTest->getOptions());
     }
 
+    /**
+     * @throws CommonException
+     */
     public function testConstructorWithArrayConfig(): void
     {
-        $configTest = new ConfigTest(
-            array('option2' => 'newvalue2', 'option3' => 3)
-        );
+        $configTest = new ConfigTest(['option2' => 'newValue2', 'option3' => 3]);
         // the default options should be merged with the constructor values,
         // overwriting any default values.
         $expectedOptions = array(
-            'option2' => 'newvalue2',
+            'option2' => 'newValue2',
             'option3' => 3,
         );
         $this->assertEquals($expectedOptions, $configTest->getOptions());
     }
-}
 
-class ConfigTest extends Configurable
-{
-    protected $options = array(
-        'option1' => 1,
-        'option2' => 'value 2',
-    );
-}
-
-class MyConfigObject
-{
-    public function toArray(): array
+    public function testSetOptionsException(): void
     {
-        return array('option2' => 'newvalue2', 'option3' => 3);
+        $this->expectException(CommonException::class);
+        $this->expectExceptionMessage('Options submitted to medcenter24\mcCore\Tests\Unit\Support\Core\ConfigTest must be an array or implement toArray');
+        $configTest = new ConfigTest();
+        $configTest->setOptions('');
+    }
+
+    /**
+     * @throws CommonException
+     */
+    public function testOverwriteOptions(): void
+    {
+        $configTest = new ConfigTest(['a']);
+        $this->assertSame(['a'], $configTest->getOptions());
+        $configTest->setOptions(['b']);
+        $this->assertSame(['a', 'b'], $configTest->getOptions());
+        $configTest->setOptions(['c'], true);
+        $this->assertSame(['c'], $configTest->getOptions());
     }
 }

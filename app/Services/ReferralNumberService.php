@@ -25,7 +25,6 @@ use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use Carbon\Carbon;
-use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\UserService;
@@ -41,10 +40,7 @@ class ReferralNumberService
 
     private const SEPARATOR = '-';
 
-    /**
-     * @var AccidentService
-     */
-    private $accidentService;
+    private AccidentService $accidentService;
 
     /**
      * ReferralNumberService constructor.
@@ -60,7 +56,7 @@ class ReferralNumberService
      * @param string $ref
      * @return bool
      */
-    public function exists($ref = ''): bool
+    public function exists(string $ref = ''): bool
     {
         return $this->accidentService->getCountByReferralNum($ref) > 0;
     }

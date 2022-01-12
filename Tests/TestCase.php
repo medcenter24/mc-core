@@ -25,7 +25,6 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Testing\TestResponse;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocator;
 use PHPUnit\Framework\MockObject\MockObject;
-use Prophecy\Prophecy\ObjectProphecy;
 
 abstract class TestCase extends BaseTestCase
 {

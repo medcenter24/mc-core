@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Support\Collection;
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\Survey;
 use medcenter24\mcCore\App\Helpers\StrHelper;
 use medcenter24\mcCore\App\Services\Core\Cache\ArrayCacheTrait;
@@ -48,7 +49,7 @@ class SurveyService extends AbstractModelService implements StatusableService, C
     public const FILLABLE = [
         SurveyService::FIELD_TITLE,
         SurveyService::FIELD_DESCRIPTION,
-        SurveyService::FIELD_CREATED_BY,
+        CreatedByField::FIELD_CREATED_BY,
         SurveyService::FIELD_STATUS,
     ];
 
@@ -68,7 +69,7 @@ class SurveyService extends AbstractModelService implements StatusableService, C
         SurveyService::FIELD_ID,
         SurveyService::FIELD_TITLE,
         SurveyService::FIELD_DESCRIPTION,
-        SurveyService::FIELD_CREATED_BY,
+        CreatedByField::FIELD_CREATED_BY,
         SurveyService::FIELD_STATUS,
     ];
 
@@ -83,7 +84,11 @@ class SurveyService extends AbstractModelService implements StatusableService, C
     /**
      * @return array
      */
-    protected function getFillableFieldDefaults(): array
+    #[ArrayShape([self::FIELD_TITLE       => "string",
+                  self::FIELD_DESCRIPTION => "string",
+                  self::FIELD_CREATED_BY  => "int",
+                  self::FIELD_STATUS      => "string"
+    ])] protected function getFillableFieldDefaults(): array
     {
         return [
             self::FIELD_TITLE => '',
@@ -137,7 +142,7 @@ class SurveyService extends AbstractModelService implements StatusableService, C
      * @param array $data
      * @return Model|Survey
      */
-    public function create(array $data = []): Model
+    public function create(array $data = []): Model|Survey
     {
         $data[self::FIELD_CREATED_BY] = auth()->user() ? auth()->user()->getAuthIdentifier() : 0;
         /** @var Survey $survey */

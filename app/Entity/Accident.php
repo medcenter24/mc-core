@@ -41,6 +41,7 @@ class Accident extends AccidentAbstract
 {
     use HasFactory;
 
+    public const MORPH_MANY_HISTORYABLE = 'historyable';
     protected $fillable = AccidentService::FILLABLE;
     protected $dates = AccidentService::DATE_FIELDS;
     protected $visible = AccidentService::VISIBLE;
@@ -97,7 +98,7 @@ class Accident extends AccidentAbstract
      */
     public function history(): MorphMany
     {
-        return $this->morphMany(AccidentStatusHistory::class, 'historyable');
+        return $this->morphMany(AccidentStatusHistory::class, self::MORPH_MANY_HISTORYABLE);
     }
 
     /**

@@ -15,9 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Helpers;
-
 
 use FilesystemIterator;
 use Illuminate\Support\Str;
@@ -47,7 +47,7 @@ class FileHelper
      */
     public static function createDir(string $path): bool
     {
-        return self::isDirExists($path) ? true : mkdir($path, 0764, true);
+        return self::isDirExists($path) || mkdir($path, 0764, true);
     }
 
     /**
@@ -113,7 +113,7 @@ class FileHelper
     public static function writeConfig(string $path, array $params=[]): bool
     {
         $config = var_export($params, true);
-        return file_put_contents($path, "<?php return $config ;");
+        return file_put_contents($path, "<?php return $config ;") !== false;
     }
 
     /**
@@ -124,7 +124,23 @@ class FileHelper
      */
     public static function writeFile(string $path, string $content): bool
     {
-        return file_put_contents($path, $content);
+        return file_put_contents($path, $content) !== false;
+    }
+
+    public static function deleteDir($dir): bool {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir.'/'.$object))
+                        self::deleteDir($dir. DIRECTORY_SEPARATOR .$object);
+                    else
+                        unlink($dir. DIRECTORY_SEPARATOR . $object);
+                }
+            }
+            rmdir($dir);
+        }
+        return true;
     }
 
     /**
@@ -136,17 +152,9 @@ class FileHelper
     {
         if (file_exists($target)) {
             if (is_dir($target)) {
-                $di = new RecursiveDirectoryIterator($target, FilesystemIterator::SKIP_DOTS);
-                $ri = new RecursiveIteratorIterator($di, RecursiveIteratorIterator::CHILD_FIRST);
+                self::deleteDir($target);
             } else {
-                $di = false;
-                $ri = [new SplFileInfo($target)];
-            }
-            foreach ( $ri as $file ) {
-                $file->isDir() ?  rmdir($file) : unlink($file);
-            }
-            if ($di) {
-                $di->isDir() ? rmdir($target) : unlink($target);
+                unlink($target);
             }
         }
         return true;
@@ -244,6 +252,20 @@ class FileHelper
     }
 
     /**
+     * @param string $path
+     * @return string|null
+     */
+    public static function getExtension(string $path): ?string
+    {
+        $ext = null;
+        if (static::isReadable($path)) {
+            $object = new SplFileInfo($path);
+            $ext = $object->getExtension();
+        }
+        return $ext;
+    }
+
+    /**
      * Check that extension is in expected list
      * @param SplFileInfo $fileInfo
      * @param array $extensions
@@ -326,5 +348,27 @@ class FileHelper
         $name = preg_replace('/[^a-zA-Z0-9 -]/', ' ', $tmp);
         $name = ucwords($name);
         return str_replace(' ', '', $name);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getTmpFilePath(): string
+    {
+        return tempnam(sys_get_temp_dir(), 'mc24_tmp_');
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     * @throws InconsistentDataException
+     */
+    public static function getRealPath(string $path): string
+    {
+        $path = realpath($path);
+        if (empty($path)) {
+            throw new InconsistentDataException(sprintf('File not found: %s', $path));
+        }
+        return $path;
     }
 }

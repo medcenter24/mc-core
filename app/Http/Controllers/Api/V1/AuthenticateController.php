@@ -26,6 +26,7 @@ use Illuminate\Contracts\Auth\Guard;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\CompanyService;
 use medcenter24\mcCore\App\Services\Entity\UserService;
 use medcenter24\mcCore\App\Services\LogoService;
@@ -66,7 +67,7 @@ class AuthenticateController extends ApiController
             /** @var CompanyService $companyService */
             $companyService = $this->getServiceLocator()->get(CompanyService::class);
             $company = $companyService->create();
-            $this->user()->company_id = $company->getAttribute(CompanyService::FIELD_ID);
+            $this->user()->company_id = $company->getAttribute(AbstractModelService::FIELD_ID);
             $this->user()->save();
         }
         return $this->response->item($company, new CompanyTransformer());
@@ -90,13 +91,24 @@ class AuthenticateController extends ApiController
 
             // check roles for the allowed origin
             $hasAccess = false;
-            switch ($request->header('Origin')) {
-                case env('CORS_ALLOW_ORIGIN_DIRECTOR'):
-                    $hasAccess = Roles::hasRole($this->guard()->user(), RoleService::DIRECTOR_ROLE);
-                    break;
-                case env('CORS_ALLOW_ORIGIN_DOCTOR'):
-                    $hasAccess = Roles::hasRole($this->guard()->user(), RoleService::DOCTOR_ROLE);
-                    break;
+            if (
+                $request->header('Origin') === env('CORS_ALLOW_ORIGIN_DIRECTOR')
+                || (
+                        env('APP_DEBUG', false) === true
+                        && $request->header('Origin') === env('CORS_ALLOW_ORIGIN_DIRECTOR_DEV')
+                )
+            ) {
+                $hasAccess = Roles::hasRole($this->guard()->user(), RoleService::DIRECTOR_ROLE);
+            }
+
+            if (
+                $request->header('Origin') === env('CORS_ALLOW_ORIGIN_DOCTOR')
+                || (
+                    env('APP_DEBUG', false) === true
+                    && $request->header('Origin') === env('CORS_ALLOW_ORIGIN_DOCTOR_DEV')
+                )
+            ) {
+                $hasAccess = Roles::hasRole($this->guard()->user(), RoleService::DOCTOR_ROLE);
             }
 
             if ($hasAccess && Roles::hasRole($this->guard()->user(), RoleService::LOGIN_ROLE)) {

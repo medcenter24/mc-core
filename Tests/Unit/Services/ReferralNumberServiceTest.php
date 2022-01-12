@@ -15,9 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Unit\Services;
-
 
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\Assistant;
@@ -30,22 +30,18 @@ use medcenter24\mcCore\App\Services\ReferralNumberService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\Tests\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class ReferralNumberServiceTest extends TestCase
 {
     use DatabaseMigrations;
-    /**
-     * @var ReferralNumberService
-     */
-    private $service;
 
-    /**
-     * @throws \ReflectionException
-     */
+    private ReferralNumberService $service;
+
     protected function setUp(): void
     {
         parent::setUp();
-        /** @var AccidentService $accidentService */
+        /** @var AccidentService|MockObject $accidentService */
         $accidentService = $this->createMock(AccidentService::class);
         $accidentService->method('getCountByAssistance')
             ->willReturn(3);
@@ -121,6 +117,7 @@ class ReferralNumberServiceTest extends TestCase
             ],
         ];
 
+        /** @var Accident $accident */
         $accident = Accident::factory()->create($params + [
             'assistant_id' => Assistant::factory()->create($additionalParams['assistant']),
             'caseable_type' => HospitalAccident::class,

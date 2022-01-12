@@ -15,9 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Console;
-
 
 use medcenter24\mcCore\App\Services\Core\EnvironmentService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -49,12 +49,6 @@ class SetupEnvironmentCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /**
-     * @throwsmedcenter24\mcCore\App\Exceptions\InconsistentDataException
-     * @throwsmedcenter24\mcCore\App\Exceptions\NotImplementedException
-     *
-     * @expectedExceptionMessage Class path.storage does not exist
-     */
     public function test_exception_on_the_wrong_config(): void
     {
         EnvironmentService::terminate();

@@ -38,3 +38,8 @@ php artisan setup:environment \
     --DB_DATABASE=/private/var/www/sandbox/projects/medcenter24/develop/mcCore/database/db.sqlite \
     --DEBUGBAR_ENABLED=true
 ```
+
+## Modules
+1. Add module to composer.json
+2. Check modules with command `docker-compose -f ./dhvDocker/docker-compose.yaml exec mc-dhv-phpfpm php /var/www/html/mcCore/artisan module:list`
+3. Activate module with command `docker-compose -f ./dhvDocker/docker-compose.yaml exec mc-dhv-phpfpm php /var/www/html/mcCore/artisan module:enable <MODULE NAME>`

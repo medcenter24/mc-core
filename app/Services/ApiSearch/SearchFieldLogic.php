@@ -22,15 +22,26 @@ namespace medcenter24\mcCore\App\Services\ApiSearch;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
+use medcenter24\mcCore\App\Services\Core\Http\Builders\RequestBuilder;
 
 class SearchFieldLogic
 {
+    private Collection $relations;
+    private Collection $filters;
+
+    /**
+     * @param string $field
+     * @return string
+     */
     public function getInternalFieldName(string $field): string
     {
         return Str::snake($field);
     }
 
+    /**
+     * @param string $field
+     * @return string
+     */
     public function getExternalFieldName(string $field): string
     {
         return Str::camel($field);
@@ -42,7 +53,7 @@ class SearchFieldLogic
      */
     public function transformFieldToInternalFormat(array $field): array
     {
-        $field[Filter::FIELD_NAME] = $this->getInternalFieldName($field[Filter::FIELD_NAME]);
+        $field[RequestBuilder::FIELD_NAME] = $this->getInternalFieldName($field[RequestBuilder::FIELD_NAME]);
         return $field;
     }
 
@@ -53,7 +64,7 @@ class SearchFieldLogic
     public function transformFieldsToExternalFormat(array $filters): array
     {
         foreach ($filters as $key => $filter) {
-            $filter[Filter::FIELD_NAME] = $this->getExternalFieldName($filter[Filter::FIELD_NAME]);
+            $filter[RequestBuilder::FIELD_NAME] = $this->getExternalFieldName($filter[RequestBuilder::FIELD_NAME]);
             $filters[$key] = $filter;
         }
         return $filters;
@@ -64,7 +75,10 @@ class SearchFieldLogic
      */
     public function getRelations(): Collection
     {
-        return collect();
+        if (!isset($this->relations)) {
+            $this->relations = new Collection();
+        }
+        return $this->relations;
     }
 
     /**
@@ -74,6 +88,9 @@ class SearchFieldLogic
      */
     public function getFilters(): Collection
     {
-        return collect();
+        if (!isset($this->filters)) {
+            $this->filters = new Collection();
+        }
+        return $this->filters;
     }
 }

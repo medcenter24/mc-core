@@ -15,9 +15,9 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Console\Commands;
-
 
 use Illuminate\Console\Command;
 use medcenter24\mcCore\App\Contract\Installer\InstallerParam;
@@ -39,7 +39,6 @@ use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
  */
 class SeedInstallerCommand extends Command
 {
-
     use ServiceLocatorTrait;
 
     private const SEED_JSON_ARGUMENT = 'seedJson';
@@ -60,10 +59,7 @@ class SeedInstallerCommand extends Command
      */
     protected $description = 'Install application with a seed file.';
 
-    /**
-     * @var JsonSeedReaderService
-     */
-    private $jsonSeedReaderService;
+    private JsonSeedReaderService $jsonSeedReaderService;
 
     /**
      * Execute the console command.
@@ -77,7 +73,7 @@ class SeedInstallerCommand extends Command
             $seedParams = $this->readSeedParams();
             // make auto installation without questions
             $autoMode = new AutoModeParam();
-            $autoMode->setValue(true);
+            $autoMode->setValue('true');
             $seedParams[] = $autoMode;
 
             $this->call('setup:environment', $this->listParams($seedParams));
@@ -133,7 +129,7 @@ class SeedInstallerCommand extends Command
 
     private function getJsonSeedReaderService(): JsonSeedReaderService
     {
-        if (!$this->jsonSeedReaderService) {
+        if (!isset($this->jsonSeedReaderService)) {
             $this->jsonSeedReaderService = $this->getServiceLocator()->get(JsonSeedReaderService::class);
         }
         return $this->jsonSeedReaderService;

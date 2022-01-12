@@ -24,6 +24,8 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics;
 use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Transformers\statistics\CalendarEventTransformer;
 use Illuminate\Http\Request;
 
@@ -34,7 +36,12 @@ class CalendarController extends ApiController
         $start = $request->input('start');
         $end = $request->input('end');
 
-        $cases = Accident::whereBetween('handling_time', [$start.' 00:00:00', $end.' 23:59:59'])->get();
+        $cases = Accident::whereBetween(
+            AccidentService::FIELD_HANDLING_TIME,
+            [$start.' 00:00:00', $end.' 23:59:59']
+        )
+            ->whereNull(AbstractModelService::FIELD_DELETED_AT)
+            ->get();
         return $this->response->collection($cases, new CalendarEventTransformer());
     }
 }

@@ -90,17 +90,18 @@ class UsersControllerTest extends DirectorApiModelTest
             [
                 'data' => [],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' => [
                         'email' => ['The email field is required.'],
                         'password' => ['The password field is required.'],
                     ],
+                    'status_code' => 422,
                 ],
             ],
             [
                 'data' => ['email' => '', 'password' => ''],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
                             'email' => ['The email field is required.'],
@@ -112,7 +113,7 @@ class UsersControllerTest extends DirectorApiModelTest
             [
                 'data' => ['email' => 'a', 'password' => 'a'],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
                             'email' => ['The email must be a valid email address.'],

@@ -53,22 +53,20 @@ class PatientsControllerTest extends DirectorApiModelTest
             [
                 'data' => [],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' => [
                         'name' => ['The name field is required.']
                     ],
+                    'status_code' => 422,
                 ],
             ],
             [
                 'data' => ['name' => ''],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
-                            'name' =>
-                                [
-                                    0 => 'The name field is required.',
-                                ],
+                            'name' => ['The name field is required.'],
                         ],
                     'status_code' => 422,
                 ],
@@ -76,13 +74,11 @@ class PatientsControllerTest extends DirectorApiModelTest
             [
                 'data' => ['name' => '', 'birthday' => 'bbb'],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
-                            'birthday' =>
-                                [
-                                    0 => 'The birthday is not a valid date.',
-                                ],
+                            'name' => ['The name field is required.'],
+                            'birthday' => ['The birthday is not a valid date.'],
                         ],
                     'status_code' => 422,
                 ],

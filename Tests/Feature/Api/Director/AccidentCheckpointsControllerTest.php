@@ -52,16 +52,17 @@ class AccidentCheckpointsControllerTest extends DirectorApiModelTest
             [
                 'data' => [],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' => [
                         'title' => ['The title field is required.']
                     ],
+                    'status_code' => 422,
                 ],
             ],
             [
                 'data' => ['title' => ''],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
                             'title' =>

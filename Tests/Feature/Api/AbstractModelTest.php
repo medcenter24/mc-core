@@ -113,7 +113,9 @@ abstract class AbstractModelTest extends TestCase
 
         $response->assertStatus(self::STATUS_UNPROCESSABLE_ENTITY);
         // transformed requested data
-        $response->assertJson($expectedResponse);
+        $decodeResponse = $response->json();
+        unset($decodeResponse['debug']);
+        $this->assertSame($expectedResponse, $decodeResponse);
     }
 
     /**

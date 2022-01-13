@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -53,22 +53,22 @@ class CitiesControllerTest extends DirectorApiModelTest
             [
                 'data' => [],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' => [
-                        'title' => ['The title field is required.']
+                        'title'     => ['The title field is required.'],
+                        'regionId'  => ['The region id field is required.']
                     ],
+                    'status_code' => 422,
                 ],
             ],
             [
                 'data' => ['title' => ''],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
-                            'title' =>
-                                [
-                                    0 => 'The title field is required.',
-                                ],
+                            'title' => ['The title field is required.'],
+                            'regionId'  => ['The region id field is required.']
                         ],
                     'status_code' => 422,
                 ],

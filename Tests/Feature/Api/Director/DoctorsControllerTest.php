@@ -55,22 +55,21 @@ class DoctorsControllerTest extends DirectorApiModelTest
             [
                 'data' => [],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' => [
-                        'name' => ['The name field is required.']
+                        'name'      => ['The name field is required.'],
+                        'refKey'    => ['The ref key field is required.']
                     ],
+                    'status_code' => 422,
                 ],
             ],
             [
                 'data' => ['name' => ''],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
-                    'errors' =>
-                        [
-                            'name' =>
-                                [
-                                    0 => 'The name field is required.',
-                                ],
+                    'message' => '422 Unprocessable Content',
+                    'errors' => [
+                            'name'      => ['The name field is required.'],
+                            'refKey'    => ['The ref key field is required.']
                         ],
                     'status_code' => 422,
                 ],
@@ -78,7 +77,7 @@ class DoctorsControllerTest extends DirectorApiModelTest
             [
                 'data' => ['name' => '123'],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
                             'refKey' =>

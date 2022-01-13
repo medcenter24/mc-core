@@ -53,22 +53,22 @@ class DiseasesControllerTest extends DirectorApiModelTest
             [
                 'data' => [],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' => [
-                        'title' => ['The title field is required.']
+                        'title' => ['The title field is required.'],
+                        'code'  => ['The code field is required.']
                     ],
+                    'status_code' => 422,
                 ],
             ],
             [
                 'data' => ['title' => ''],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
-                            'title' =>
-                                [
-                                    0 => 'The title field is required.',
-                                ],
+                            'title' => ['The title field is required.'],
+                            'code'  => ['The code field is required.']
                         ],
                     'status_code' => 422,
                 ],
@@ -76,13 +76,10 @@ class DiseasesControllerTest extends DirectorApiModelTest
             [
                 'data' => ['title' => '1234'],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
-                            'code' =>
-                                [
-                                    'The code field is required.',
-                                ],
+                            'code' => ['The code field is required.'],
                         ],
                     'status_code' => 422,
                 ],

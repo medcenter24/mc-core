@@ -82,9 +82,9 @@ class Arr
      * Checks if an array has value and set default empty value if not
      * @param array $arr
      * @param string $key
-     * @param string $defaultEmpty
+     * @param mixed $defaultEmpty
      */
-    public static function setDefault(array &$arr, string $key, string $defaultEmpty = ''): void
+    public static function setDefault(array &$arr, string $key, mixed $defaultEmpty): void
     {
         if (!isset($arr[$key]) || !$arr[$key]) {
             $arr[$key] = $defaultEmpty;

@@ -34,10 +34,10 @@ abstract class Configurable implements ConfigurableInterface
     /**
      * public constructor to allow the object to be recreated from php code
      *
-     * @param array $options
+     * @param mixed $options
      * @throws CommonException
      */
-    public function __construct(array $options = []) {
+    public function __construct(mixed $options = []) {
         $this->setOptions($options);
     }
 

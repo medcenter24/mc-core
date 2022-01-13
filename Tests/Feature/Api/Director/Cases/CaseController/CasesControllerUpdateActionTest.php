@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
+use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Entity\Doctor;
@@ -178,6 +179,7 @@ class CasesControllerUpdateActionTest extends TestCase
      */
     public function testClosedAccident(): void
     {
+        /** @var Accident|Model $accident */
         $accident = Accident::factory()->create(['accident_status_id' => 0]);
         $data = [
             'accident' => [
@@ -194,10 +196,11 @@ class CasesControllerUpdateActionTest extends TestCase
         $this->doNotPrintErrResponse();
 
         $response->assertStatus(422)->assertJson([
-            'message' => '422 Unprocessable Entity',
+            'message' => '422 Unprocessable Content',
             'errors' => [
                 ['Accident closed and can not be changed']
             ],
+            'status_code' => 422,
         ]);
     }
 
@@ -221,10 +224,11 @@ class CasesControllerUpdateActionTest extends TestCase
         $this->doNotPrintErrResponse();
 
         $response->assertStatus(422)->assertJson([
-            'message' => '422 Unprocessable Entity',
+            'message' => '422 Unprocessable Content',
             'errors' => [
                 ['Accident not found']
             ],
+            'status_code' => 422,
         ]);
     }
 
@@ -239,7 +243,7 @@ class CasesControllerUpdateActionTest extends TestCase
                 'doctor_id' => $doc1 = Doctor::factory()->create()->id
             ])->id,
         ]);
-        
+
         $data = [
             'accident' => [
                 'id' => $accident->id,
@@ -251,7 +255,7 @@ class CasesControllerUpdateActionTest extends TestCase
         ];
 
         $this->assertNotSame($doc1, $doc2);
-        
+
         $response = $this->sendPut(self::API_URL.$accident->id, $data);
 
         $response->assertStatus(202);

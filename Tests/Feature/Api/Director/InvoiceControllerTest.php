@@ -64,10 +64,11 @@ class InvoiceControllerTest extends DirectorApiModelTest
             [
                 'data' => [],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' => [
                         'type' => ['The type field is required.']
                     ],
+                    'status_code' => 422,
                 ],
             ],
         ];

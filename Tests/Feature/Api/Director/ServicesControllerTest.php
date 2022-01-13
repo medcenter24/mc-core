@@ -58,16 +58,17 @@ class ServicesControllerTest extends DirectorApiModelTest
             [
                 'data' => [],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' => [
                         'title' => ['The title field is required.']
                     ],
+                    'status_code' => 422,
                 ],
             ],
             [
                 'data' => [ServiceService::FIELD_TITLE => ''],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
                             'title' =>
@@ -81,7 +82,7 @@ class ServicesControllerTest extends DirectorApiModelTest
             [
                 'data' => [ServiceService::FIELD_TITLE => '1'],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
                             'title' =>

@@ -53,16 +53,17 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
             [
                 'data' => [],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' => [
                         'title' => ['The title field is required.']
                     ],
+                    'status_code' => 422,
                 ],
             ],
             [
                 'data' => [DiagnosticService::FIELD_TITLE => ''],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
                             'title' =>
@@ -76,7 +77,7 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
             [
                 'data' => [DiagnosticService::FIELD_TITLE => '1'],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
                             'title' =>
@@ -274,7 +275,7 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
             ],
         ];
     }
-    
+
     public function testCreateWithDiseases(): void
     {
         $response = $this->sendPost($this->getUri(), [
@@ -296,7 +297,7 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
             ]
         ]);
     }
-    
+
     public function testUpdateWithDiseases(): void
     {
         $diagnostic = Diagnostic::factory()->create([

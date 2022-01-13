@@ -58,7 +58,7 @@ class CaseAccidentControllerTest extends DirectorApiModelTest
                     'accident' => false,
                 ],
                 'expectedResponse' => [
-                    'message' => '422 Unprocessable Entity',
+                    'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
                             'accident' => [

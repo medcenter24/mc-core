@@ -64,6 +64,7 @@ class CaseDocumentControllerTest extends TestCase
         $addResponse->assertStatus(200);
         $dataResponse = $addResponse->json('data');
         $this->assertCount(2, $dataResponse);
+
         $row1 = $dataResponse[0];
         $this->assertArrayHasKey('b64thumb', $row1);
         unset($row1['b64thumb']);
@@ -89,6 +90,7 @@ class CaseDocumentControllerTest extends TestCase
         $response = $this->get('/api/director/cases/' . $accident->id . '/documents', $this->headers($this->getUser()));
         $response->assertStatus(200);
         $dataResponse = $addResponse->json('data');
+
         $row1 = $dataResponse[0];
         $this->assertArrayHasKey('b64thumb', $row1);
         unset($row1['b64thumb']);

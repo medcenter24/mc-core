@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
@@ -66,7 +65,6 @@ class CaseDocumentControllerTest extends TestCase
         $addResponse->assertJson([
             'data' => [
                 [
-                    // 'b64thumb' => '',
                     'id' => 1,
                     'fileName' => null,
                     'owner' => 'accident',
@@ -82,7 +80,7 @@ class CaseDocumentControllerTest extends TestCase
                     'type' => '',
                 ],
             ]
-        ]);
+        ], false);
 
         $response = $this->get('/api/director/cases/' . $accident->id . '/documents', $this->headers($this->getUser()));
         $response->assertStatus(200);
@@ -95,7 +93,6 @@ class CaseDocumentControllerTest extends TestCase
                         'type' => 'passport',
                         'owner' => 'accident',
                         'fileName' => NULL,
-                        // 'b64thumb' => '',
                     ],
                     [
                         'id' => 2,
@@ -103,9 +100,8 @@ class CaseDocumentControllerTest extends TestCase
                         'type' => 'passport',
                         'owner' => 'accident',
                         'fileName' => NULL,
-                        // 'b64thumb' => '',
                     ],
                 ],
-        ]);
+        ], false);
     }
 }

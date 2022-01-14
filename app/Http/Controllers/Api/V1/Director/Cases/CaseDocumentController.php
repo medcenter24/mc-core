@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases;
 
 use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Entity\Accident;
+use medcenter24\mcCore\App\Entity\Document;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
@@ -74,11 +75,11 @@ class CaseDocumentController extends ApiController
         $created = collect([]);
         foreach ($request->allFiles() as $file) {
             $document = $documentService->createDocumentsFromFiles($file, $this->user());
+            /** @var Document $doc */
             foreach ($document as $doc) {
+                $documentService->changeDocType($doc, DocumentService::TYPE_PASSPORT);
                 $accident->documents()->attach($doc);
-                if ($accident->patient) {
-                    $accident->patient->documents()->attach($doc);
-                }
+                $accident->patient?->documents()->attach($doc);
                 $created->push($doc);
             }
         }

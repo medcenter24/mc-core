@@ -62,46 +62,53 @@ class CaseDocumentControllerTest extends TestCase
             ]);
 
         $addResponse->assertStatus(200);
-        $addResponse->assertJson([
-            'data' => [
-                [
-                    'id' => 1,
-                    'fileName' => null,
-                    'owner' => 'accident',
-                    'title' => 'fake.jpg',
-                    'type' => '',
-                ],
-                [
-                    // 'b64thumb' => '',
-                    'id' => 2,
-                    'fileName' => null,
-                    'owner' => 'accident',
-                    'title' => 'fake2.jpg',
-                    'type' => '',
-                ],
-            ]
-        ], false);
+        $dataResponse = $addResponse->json('data');
+        $this->assertCount(2, $dataResponse);
+        $row1 = $dataResponse[0];
+        $this->assertArrayHasKey('b64thumb', $row1);
+        unset($row1['b64thumb']);
+        $this->assertSame([
+            'id' => 1,
+            'title' => 'fake.jpg',
+            'type' => 'passport',
+            'owner' => 'accident',
+            'fileName' => null,
+        ], $row1);
+
+        $row2 = $dataResponse[1];
+        $this->assertArrayHasKey('b64thumb', $row2);
+        unset($row2['b64thumb']);
+        $this->assertSame([
+            'id' => 2,
+            'title' => 'fake2.jpg',
+            'type' => 'passport',
+            'owner' => 'accident',
+            'fileName' => null,
+        ], $row2);
 
         $response = $this->get('/api/director/cases/' . $accident->id . '/documents', $this->headers($this->getUser()));
         $response->assertStatus(200);
-        $response->assertJson([
-            'data' =>
-                [
-                    [
-                        'id' => 1,
-                        'title' => 'fake.jpg',
-                        'type' => 'passport',
-                        'owner' => 'accident',
-                        'fileName' => NULL,
-                    ],
-                    [
-                        'id' => 2,
-                        'title' => 'fake2.jpg',
-                        'type' => 'passport',
-                        'owner' => 'accident',
-                        'fileName' => NULL,
-                    ],
-                ],
-        ], false);
+        $dataResponse = $addResponse->json('data');
+        $row1 = $dataResponse[0];
+        $this->assertArrayHasKey('b64thumb', $row1);
+        unset($row1['b64thumb']);
+        $this->assertSame([
+            'id' => 1,
+            'title' => 'fake.jpg',
+            'type' => 'passport',
+            'owner' => 'accident',
+            'fileName' => NULL,
+        ], $row1);
+
+        $row2 = $dataResponse[1];
+        $this->assertArrayHasKey('b64thumb', $row2);
+        unset($row2['b64thumb']);
+        $this->assertSame([
+            'id' => 2,
+            'title' => 'fake2.jpg',
+            'type' => 'passport',
+            'owner' => 'accident',
+            'fileName' => NULL,
+        ], $row2);
     }
 }

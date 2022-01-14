@@ -28,7 +28,7 @@ class FakeImage
             $src = fopen($path, 'r');
             return new File($fileName, $src);
         } else {
-            return UploadedFile::fake()->image('fake.jpg');
+            return UploadedFile::fake()->image($fileName);
         }
     }
 }

@@ -26,6 +26,7 @@ use Dingo\Api\Http\Response;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
+use JetBrains\PhpStorm\Pure;
 use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
@@ -43,7 +44,7 @@ abstract class ModelApiController extends ApiController
 {
     /**
      * Complex search with relations
-     * @return SearchFieldLogic
+     * @return SearchFieldLogic|null
      */
     protected function searchFieldLogic(): ?SearchFieldLogic
     {
@@ -74,7 +75,7 @@ abstract class ModelApiController extends ApiController
     /**
      * @return string
      */
-    protected function getUpdateRequestClass(): string
+    #[Pure] protected function getUpdateRequestClass(): string
     {
         return $this->getRequestClass();
     }
@@ -120,7 +121,7 @@ abstract class ModelApiController extends ApiController
     /**
      * Create
      * @param JsonRequest $request
-     * @return Response|void
+     * @return Response
      */
     public function store(JsonRequest $request): Response
     {
@@ -138,10 +139,7 @@ abstract class ModelApiController extends ApiController
             );
         } catch(InconsistentDataException $e) {
             throw new ValidationHttpException([$e->getMessage()]);
-        } catch (NotImplementedException $e) {
-            Log::error($e->getMessage(), [$e]);
-            $this->response->errorInternal();
-        } catch (QueryException $e) {
+        } catch (NotImplementedException | QueryException $e) {
             Log::error($e->getMessage(), [$e]);
             $this->response->errorInternal();
         }
@@ -166,7 +164,7 @@ abstract class ModelApiController extends ApiController
             $model = $this->getModelService()->findAndUpdate(['id'], $data);
             return $this->response->accepted(
                 $this->urlToTheSource($id),
-                $this->getDataTransformer()->transform($model));
+                ['data' => $this->getDataTransformer()->transform($model)]);
         } catch (NotImplementedException $e) {
             Log::error($e->getMessage(), [$e]);
             throw new ValidationHttpException([$e->getMessage()]);

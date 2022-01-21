@@ -43,7 +43,7 @@ abstract class ApiController extends Controller
     /**
      * @param string $method
      * @param array $parameters
-     * @return Response
+     * @return Response|null
      */
     public function callAction($method, $parameters): ?Response
     {

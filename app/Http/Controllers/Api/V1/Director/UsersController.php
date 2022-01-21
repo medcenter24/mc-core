@@ -142,14 +142,11 @@ class UsersController extends ModelApiController
 
             return $this->response->created(
                 $this->urlToTheSource($user->getAttribute('id')),
-                $this->getDataTransformer()->transform($user)
+                ['data' => $this->getDataTransformer()->transform($user)]
             );
         } catch(InconsistentDataException $e) {
             throw new ValidationHttpException([$e->getMessage()]);
-        } catch (NotImplementedException $e) {
-            Log::error($e->getMessage(), [$e]);
-            $this->response->errorInternal();
-        } catch (QueryException $e) {
+        } catch (NotImplementedException | QueryException $e) {
             Log::error($e->getMessage(), [$e]);
             $this->response->errorInternal();
         }

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Transformers;
 
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Services\Entity\PatientService;
 
 class PatientTransformer extends AbstractTransformer
@@ -37,6 +38,10 @@ class PatientTransformer extends AbstractTransformer
         ];
     }
 
+    #[ArrayShape([
+        PatientService::FIELD_ID => "string",
+        PatientService::FIELD_BIRTHDAY => "string"]
+    )]
     protected function getMappedTypes(): array
     {
         return [

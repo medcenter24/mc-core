@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\Patient;
 
 class PatientService extends AbstractModelService
 {
-
     public const FIELD_ID = 'id';
     public const FIELD_NAME = 'name';
     public const FIELD_ADDRESS = 'address';
@@ -69,7 +69,13 @@ class PatientService extends AbstractModelService
         return Patient::class;
     }
 
-    protected function getFillableFieldDefaults(): array
+    #[ArrayShape([
+        self::FIELD_NAME => "string",
+        self::FIELD_ADDRESS => "string",
+        self::FIELD_PHONES => "string",
+        self::FIELD_COMMENT => "string",
+        self::FIELD_BIRTHDAY => "null"
+    ])] protected function getFillableFieldDefaults(): array
     {
         return [
             self::FIELD_NAME => '',
@@ -78,5 +84,12 @@ class PatientService extends AbstractModelService
             self::FIELD_COMMENT => '',
             self::FIELD_BIRTHDAY => null,
         ];
+    }
+
+    protected function prepareDataForUpdate(array $data = []): array
+    {
+        parent::prepareDataForUpdate($data);
+        $data[self::FIELD_BIRTHDAY] = empty($data[self::FIELD_BIRTHDAY]) ? null : $data[self::FIELD_BIRTHDAY];
+        return $data;
     }
 }

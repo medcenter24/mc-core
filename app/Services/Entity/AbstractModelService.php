@@ -133,6 +133,8 @@ abstract class AbstractModelService implements ModelService
             throw new InconsistentDataException('Object not found');
         }
 
+        $data = $this->prepareDataForUpdate($data);
+
         if (!$this->updateModel($obj, $data)) {
             throw new InconsistentDataException('Model can not be updated');
         }
@@ -258,5 +260,10 @@ abstract class AbstractModelService implements ModelService
         } catch (Exception $e) {
             throw new InconsistentDataException($e->getMessage());
         }
+    }
+
+    protected function prepareDataForUpdate(array $data): array
+    {
+        return $data;
     }
 }

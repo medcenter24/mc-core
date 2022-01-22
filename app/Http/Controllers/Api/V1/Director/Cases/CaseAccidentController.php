@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases;
 
+use JetBrains\PhpStorm\Pure;
 use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
@@ -34,7 +35,7 @@ class CaseAccidentController extends ModelApiController
     /**
      * @inheritDoc
      */
-    protected function getDataTransformer(): TransformerAbstract
+    #[Pure] protected function getDataTransformer(): TransformerAbstract
     {
         return new CaseAccidentTransformer();
     }

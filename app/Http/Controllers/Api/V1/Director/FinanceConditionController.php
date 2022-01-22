@@ -54,7 +54,7 @@ class FinanceConditionController extends ModelApiController
 
     /**
      * Add new rule
-     * @param JsonRequest|FinanceConditionRequest $request
+     * @param JsonRequest $request
      * @return Response
      * @throws NotImplementedException
      */
@@ -69,7 +69,7 @@ class FinanceConditionController extends ModelApiController
         $financeCondition = $caseFinanceService->updateFinanceConditionByRequest($request);
         return $this->response->created(
             url("pages/settings/finance/{$financeCondition->id}"),
-            $this->getDataTransformer()->transform($financeCondition)
+            [self::API_DATA_PARAM => $this->getDataTransformer()->transform($financeCondition)]
         );
     }
 

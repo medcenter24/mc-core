@@ -142,7 +142,7 @@ class UsersController extends ModelApiController
 
             return $this->response->created(
                 $this->urlToTheSource($user->getAttribute('id')),
-                ['data' => $this->getDataTransformer()->transform($user)]
+                [self::API_DATA_PARAM => $this->getDataTransformer()->transform($user)]
             );
         } catch(InconsistentDataException $e) {
             throw new ValidationHttpException([$e->getMessage()]);

@@ -42,6 +42,8 @@ use medcenter24\mcCore\App\Services\ApiSearch\SearchFieldLogic;
  */
 abstract class ModelApiController extends ApiController
 {
+    protected const API_DATA_PARAM = 'data';
+
     /**
      * Complex search with relations
      * @return SearchFieldLogic|null
@@ -135,7 +137,7 @@ abstract class ModelApiController extends ApiController
 
             return $this->response->created(
                 $this->urlToTheSource($model->getAttribute('id')),
-                $this->getDataTransformer()->transform($model)
+                [self::API_DATA_PARAM => $this->getDataTransformer()->transform($model)]
             );
         } catch(InconsistentDataException $e) {
             throw new ValidationHttpException([$e->getMessage()]);

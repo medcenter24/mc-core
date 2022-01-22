@@ -180,7 +180,10 @@ class InvoiceController extends ModelApiController
             $this->response->errorInternal();
         }
 
-        return $this->response->created(null, $this->getDataTransformer()->transform($invoice));
+        return $this->response->created(
+            null,
+            [self::API_DATA_PARAM => $this->getDataTransformer()->transform($invoice)]
+        );
     }
 
     /**

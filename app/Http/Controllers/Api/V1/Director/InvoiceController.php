@@ -30,6 +30,7 @@ use medcenter24\mcCore\App\Http\Requests\Api\InvoiceRequest;
 use medcenter24\mcCore\App\Entity\Invoice;
 use medcenter24\mcCore\App\Http\Requests\Api\InvoiceUpdateRequest;
 use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\CurrencyService;
 use medcenter24\mcCore\App\Services\Entity\FormService;
 use medcenter24\mcCore\App\Services\Entity\InvoiceService;
@@ -91,7 +92,7 @@ class InvoiceController extends ModelApiController
     public function update(int $id, JsonRequest $request): Response
     {
         /** @var Invoice $invoice */
-        $invoice = $this->getInvoiceService()->first([InvoiceService::FIELD_ID => $id]);
+        $invoice = $this->getInvoiceService()->first([AbstractModelService::FIELD_ID => $id]);
         if (!$invoice) {
             $this->response->errorNotFound();
         }
@@ -119,14 +120,14 @@ class InvoiceController extends ModelApiController
         $this->assignInvoiceTypeResource($invoice, $request);
 
         $transformer = $this->getDataTransformer();
-        return $this->response->accepted(null, $transformer->transform($invoice));
+        return $this->response->accepted(null, [self::API_DATA_PARAM => $transformer->transform($invoice)]);
     }
 
     private function assignInvoiceTypeResource(Invoice $invoice, JsonRequest $request): void
     {
         if ($invoice->type === 'form' && $request->json('formId', false)) {
 
-            $form = $this->getFormService()->first([FormService::FIELD_ID => $request->json('formId', 0)]);
+            $form = $this->getFormService()->first([AbstractModelService::FIELD_ID => $request->json('formId', 0)]);
 
             if (!$form) {
                 $this->response->errorNotFound();
@@ -188,7 +189,7 @@ class InvoiceController extends ModelApiController
 
     /**
      * Getting form of the invoice
-     * @param $id
+     * @param int $id
      * @return Response
      */
     public function form(int $id): Response

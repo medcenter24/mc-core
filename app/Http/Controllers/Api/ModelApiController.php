@@ -166,7 +166,7 @@ abstract class ModelApiController extends ApiController
             $model = $this->getModelService()->findAndUpdate(['id'], $data);
             return $this->response->accepted(
                 $this->urlToTheSource($id),
-                ['data' => $this->getDataTransformer()->transform($model)]);
+                [self::API_DATA_PARAM => $this->getDataTransformer()->transform($model)]);
         } catch (NotImplementedException $e) {
             Log::error($e->getMessage(), [$e]);
             throw new ValidationHttpException([$e->getMessage()]);

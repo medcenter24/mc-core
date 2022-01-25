@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -97,8 +97,10 @@ class PatientsControllerTest extends DirectorApiModelTest
                     'name' => '123',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'name' => '123',
+                    'data' => [
+                        'id' => 1,
+                        'name' => '123',
+                    ],
                 ],
             ],
             [
@@ -110,12 +112,14 @@ class PatientsControllerTest extends DirectorApiModelTest
                     'comment' => 'bbb',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'name' => 'Php Unit test',
-                    'address' => 'addr',
-                    'phones' => 'phone',
-                    'birthday' => '2020-01-02',
-                    'comment' => 'bbb',
+                    'data' => [
+                        'id' => 1,
+                        'name' => 'Php Unit test',
+                        'address' => 'addr',
+                        'phones' => 'phone',
+                        'birthday' => '2020-01-02',
+                        'comment' => 'bbb',
+                    ],
                 ],
             ],
         ];
@@ -138,12 +142,14 @@ class PatientsControllerTest extends DirectorApiModelTest
                     'comment' => 'bbb',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'name' => 'Php Unit test',
-                    'address' => 'addr',
-                    'phones' => 'phone',
-                    'birthday' => '2020-01-02',
-                    'comment' => 'bbb',
+                    'data' => [
+                        'id' => 1,
+                        'name' => 'Php Unit test',
+                        'address' => 'addr',
+                        'phones' => 'phone',
+                        'birthday' => '2020-01-02',
+                        'comment' => 'bbb',
+                    ],
                 ],
             ],
         ];
@@ -166,11 +172,11 @@ class PatientsControllerTest extends DirectorApiModelTest
                     'filters' => [],
                 ],
                 // response
-                'expectedResponse' => array (
+                'expectedResponse' => array(
                     'data' =>
-                        array (
+                        array(
                             0 =>
-                                array (
+                                array(
                                     'id' => 1,
                                     'name' => '',
                                     'address' => '',
@@ -179,7 +185,7 @@ class PatientsControllerTest extends DirectorApiModelTest
                                     'comment' => '',
                                 ),
                             1 =>
-                                array (
+                                array(
                                     'id' => 2,
                                     'name' => '',
                                     'address' => '',
@@ -188,7 +194,7 @@ class PatientsControllerTest extends DirectorApiModelTest
                                     'comment' => '',
                                 ),
                             2 =>
-                                array (
+                                array(
                                     'id' => 3,
                                     'name' => '',
                                     'address' => '',
@@ -198,17 +204,16 @@ class PatientsControllerTest extends DirectorApiModelTest
                                 ),
                         ),
                     'meta' =>
-                        array (
+                        array(
                             'pagination' =>
-                                array (
+                                array(
                                     'total' => 3,
                                     'count' => 3,
                                     'per_page' => 25,
                                     'current_page' => 1,
                                     'total_pages' => 1,
                                     'links' =>
-                                        array (
-                                        ),
+                                        array(),
                                 ),
                         ),
                 ),

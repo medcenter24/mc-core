@@ -17,7 +17,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -57,9 +57,11 @@ class FinanceConditionControllerTest extends TestCase
         ];
         $response = $this->sendPost('/api/director/finance', $newFinanceCondition);
         $response->assertJson([
-            'title' => 'feature_test',
-            'value' => 50,
-            'currencyMode' => 'percent'
+            'data' => [
+                'title' => 'feature_test',
+                'value' => 50,
+                'currencyMode' => 'percent'
+            ],
         ]);
         $response->assertStatus(201);
     }
@@ -116,11 +118,12 @@ class FinanceConditionControllerTest extends TestCase
             ],
         ];
         $response = $this->sendPost('/api/director/finance', $newFinanceCondition);
-        $response->assertJson(['title' => 'precisionRuleUnitTest', 'value' => 30]);
+        $response->assertJson(['data' => ['title' => 'precisionRuleUnitTest', 'value' => 30]]);
         $response->assertStatus(201);
     }
 
-    public function testShow(): void {
+    public function testShow(): void
+    {
         $financeCondition = $this->getServiceLocator()->get(FinanceCondition::class);
         $condition = $financeCondition->create([
             'title' => 'feature_test',
@@ -138,20 +141,15 @@ class FinanceConditionControllerTest extends TestCase
                 'title' => 'feature_test',
                 'value' => '50',
                 'assistants' =>
-                    array (
-                    ),
+                    array(),
                 'cities' =>
-                    array (
-                    ),
+                    array(),
                 'doctors' =>
-                    array (
-                    ),
+                    array(),
                 'services' =>
-                    array (
-                    ),
+                    array(),
                 'datePeriods' =>
-                    array (
-                    ),
+                    array(),
                 'type' => 'add',
                 'model' => 'assistant',
                 'currencyId' => 0,
@@ -160,7 +158,8 @@ class FinanceConditionControllerTest extends TestCase
         ]);
     }
 
-    public function testDelete(): void {
+    public function testDelete(): void
+    {
         $financeCondition = $this->getServiceLocator()->get(FinanceCondition::class);
         $condition = $financeCondition->create([
             'title' => 'feature_test',

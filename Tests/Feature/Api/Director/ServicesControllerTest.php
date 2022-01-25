@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -105,11 +105,13 @@ class ServicesControllerTest extends DirectorApiModelTest
             [
                 'data' => ['title' => '123'],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'description' => '',
-                    'type' => 'director',
-                    'status' => 'active',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                        'description' => '',
+                        'type' => 'director',
+                        'status' => 'active',
+                    ],
                 ],
             ],
             [
@@ -119,11 +121,13 @@ class ServicesControllerTest extends DirectorApiModelTest
                     'status' => 'disabled'
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'description' => 'Desc',
-                    'type' => 'director',
-                    'status' => 'disabled',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'description' => 'Desc',
+                        'type' => 'director',
+                        'status' => 'disabled',
+                    ],
                 ],
             ],
         ];
@@ -145,11 +149,13 @@ class ServicesControllerTest extends DirectorApiModelTest
                     'status' => 'disabled'
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'description' => 'Desc',
-                    'type' => 'system',
-                    'status' => 'disabled',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'description' => 'Desc',
+                        'type' => 'system',
+                        'status' => 'disabled',
+                    ],
                 ],
             ],
         ];
@@ -278,15 +284,17 @@ class ServicesControllerTest extends DirectorApiModelTest
         ]);
 
         $response->assertStatus(201)->assertJson([
-            'id' => 1,
-            'title' => 'phpunit title',
-            'description' => 'phpunit description',
-            'status' => 'active',
-            'diseases' => [
-                [ 'id' => 1 ],
-                [ 'id' => 2 ],
-                [ 'id' => 3 ],
-            ]
+            'data' => [
+                'id' => 1,
+                'title' => 'phpunit title',
+                'description' => 'phpunit description',
+                'status' => 'active',
+                'diseases' => [
+                    ['id' => 1],
+                    ['id' => 2],
+                    ['id' => 3],
+                ]
+            ],
         ]);
     }
 
@@ -303,20 +311,22 @@ class ServicesControllerTest extends DirectorApiModelTest
         $response = $this->sendPut($this->getUri() . '/' . $service->getAttribute('id'), [
             'id' => $service->getAttribute('id'),
             'diseases' => [
-                [ 'id' => $disease = Disease::factory()->create()->getAttribute('id') ]
+                ['id' => $disease = Disease::factory()->create()->getAttribute('id')]
             ],
         ]);
         $response->assertStatus(202)->assertJson([
-            'id' => $service->getAttribute('id'),
-            'title' => 'phpunit title',
-            'description' => 'phpunit description',
-            'diseases' => [
-                [
-                    'id' => $disease
+            'data' => [
+                'id' => $service->getAttribute('id'),
+                'title' => 'phpunit title',
+                'description' => 'phpunit description',
+                'diseases' => [
+                    [
+                        'id' => $disease
+                    ],
                 ],
+                'status' => 'active',
+                'type' => 'system',
             ],
-            'status' => 'active',
-            'type' => 'system',
         ]);
     }
 
@@ -425,12 +435,12 @@ class ServicesControllerTest extends DirectorApiModelTest
             ],
             'meta' => [
                 'pagination' => [
-                        'total' => 5,
-                        'count' => 2,
-                        'per_page' => 3,
-                        'current_page' => 2,
-                        'total_pages' => 2,
-                        'links' => [
+                    'total' => 5,
+                    'count' => 2,
+                    'per_page' => 3,
+                    'current_page' => 2,
+                    'total_pages' => 2,
+                    'links' => [
                     ],
                 ],
             ],

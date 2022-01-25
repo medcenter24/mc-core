@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -55,7 +55,7 @@ class RegionsControllerTest extends DirectorApiModelTest
                 'expectedResponse' => [
                     'message' => '422 Unprocessable Content',
                     'errors' => [
-                        'title'     => ['The title field is required.'],
+                        'title' => ['The title field is required.'],
                         'countryId' => ['The country id field is required.']
                     ],
                     'status_code' => 422,
@@ -102,10 +102,12 @@ class RegionsControllerTest extends DirectorApiModelTest
                     'countryId' => 0,
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'countryTitle' => '',
-                    'countryId' => 0,
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                        'countryTitle' => '',
+                        'countryId' => 0,
+                    ],
                 ],
             ],
             [
@@ -114,10 +116,12 @@ class RegionsControllerTest extends DirectorApiModelTest
                     'countryId' => 1,
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'countryId' => 1,
-                    'countryTitle' => '',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'countryId' => 1,
+                        'countryTitle' => '',
+                    ],
                 ],
             ],
         ];
@@ -140,10 +144,12 @@ class RegionsControllerTest extends DirectorApiModelTest
                     'countryId' => 1,
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'countryId' => 1,
-                    'countryTitle' => '',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'countryId' => 1,
+                        'countryTitle' => '',
+                    ],
                 ],
             ],
         ];

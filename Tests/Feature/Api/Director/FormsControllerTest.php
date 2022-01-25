@@ -17,7 +17,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -37,11 +37,11 @@ class FormsControllerTest extends DirectorApiModelTest
         $form = Form::factory()->create([
             'title' => 'Form_1',
             'description' => 'Unit Test Form #1',
-            'template' => '<p>Doctor: <b>'.FormVariableService::VAR_ACCIDENT_CASEABLE_DOCTOR_NAME.'</b></p>
-                <p>Patient "'.FormVariableService::VAR_ACCIDENT_PATIENT_NAME
-                . '" Doctor one more time '.FormVariableService::VAR_ACCIDENT_CASEABLE_DOCTOR_NAME
+            'template' => '<p>Doctor: <b>' . FormVariableService::VAR_ACCIDENT_CASEABLE_DOCTOR_NAME . '</b></p>
+                <p>Patient "' . FormVariableService::VAR_ACCIDENT_PATIENT_NAME
+                . '" Doctor one more time ' . FormVariableService::VAR_ACCIDENT_CASEABLE_DOCTOR_NAME
                 . '. Current company is Medical Company.</p>
-                <p>Ref number №'.FormVariableService::VAR_ACCIDENT_REF_NUM.'</p>',
+                <p>Ref number №' . FormVariableService::VAR_ACCIDENT_REF_NUM . '</p>',
         ]);
 
         $doctorAccident = Accident::factory()->create([
@@ -55,7 +55,7 @@ class FormsControllerTest extends DirectorApiModelTest
             ])->id,
         ]);
 
-        $response = $this->sendGet('/api/director/forms/'.$form->id.'/'.$doctorAccident->id.'/html');
+        $response = $this->sendGet('/api/director/forms/' . $form->id . '/' . $doctorAccident->id . '/html');
         $response->assertStatus(200)->assertJson([
             'data' => '<p>Doctor: <b>Doctor Name</b></p>
     <p>Patient "Patient Name" Doctor one more time Doctor Name. Current company is Medical Company.</p>
@@ -123,11 +123,13 @@ class FormsControllerTest extends DirectorApiModelTest
                     'formableType' => 'aaa',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'description' => '',
-                    'formableType' => 'accident',
-                    'template' => '',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                        'description' => '',
+                        'formableType' => 'accident',
+                        'template' => '',
+                    ]
                 ],
             ],
             [
@@ -138,10 +140,12 @@ class FormsControllerTest extends DirectorApiModelTest
                     'template' => 'ccc',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'formableType' => 'accident',
-                    'template' => 'ccc',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'formableType' => 'accident',
+                        'template' => 'ccc',
+                    ],
                 ],
             ],
         ];
@@ -168,11 +172,13 @@ class FormsControllerTest extends DirectorApiModelTest
                     'template' => '4444',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '111',
-                    'description' => '222',
-                    'formableType' => 'accident',
-                    'template' => '4444',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '111',
+                        'description' => '222',
+                        'formableType' => 'accident',
+                        'template' => '4444',
+                    ],
                 ],
             ],
         ];

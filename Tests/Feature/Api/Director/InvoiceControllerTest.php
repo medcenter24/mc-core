@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -85,8 +85,10 @@ class InvoiceControllerTest extends DirectorApiModelTest
                     'type' => 'form',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'type' => 'form',
+                    'data' => [
+                        'id' => 1,
+                        'type' => 'form',
+                    ],
                 ],
             ],
             [
@@ -96,10 +98,12 @@ class InvoiceControllerTest extends DirectorApiModelTest
                     'status' => 'new',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'type' => 'Php Unit test',
-                    'title' => 'aaa',
-                    'status' => 'new',
+                    'data' => [
+                        'id' => 1,
+                        'type' => 'Php Unit test',
+                        'title' => 'aaa',
+                        'status' => 'new',
+                    ],
                 ],
             ],
         ];
@@ -125,11 +129,13 @@ class InvoiceControllerTest extends DirectorApiModelTest
                     'status' => 'paid',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'type' => 'Php Unit test',
-                    'title' => 'aaa',
-                    'status' => 'paid',
-                    'price' => 0,
+                    'data' => [
+                        'id' => 1,
+                        'type' => 'Php Unit test',
+                        'title' => 'aaa',
+                        'status' => 'paid',
+                        'price' => 0,
+                    ],
                 ],
             ],
         ];
@@ -238,7 +244,7 @@ class InvoiceControllerTest extends DirectorApiModelTest
             ])->id,
         ]);
 
-        $response = $this->sendPost(self::URI .'/search', [
+        $response = $this->sendPost(self::URI . '/search', [
             'filter' => [
                 'fields' => [
                     [

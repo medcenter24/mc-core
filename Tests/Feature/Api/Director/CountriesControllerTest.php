@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -88,8 +88,11 @@ class CountriesControllerTest extends DirectorApiModelTest
                     'title' => '123',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
+                    'data' => [
+
+                        'id' => 1,
+                        'title' => '123',
+                    ],
                 ],
             ],
             [
@@ -97,8 +100,11 @@ class CountriesControllerTest extends DirectorApiModelTest
                     'title' => 'Php Unit test',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
+                    'data' => [
+
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                    ],
                 ],
             ],
         ];
@@ -117,8 +123,10 @@ class CountriesControllerTest extends DirectorApiModelTest
                     'title' => 'Php Unit test',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                    ],
                 ],
             ],
         ];

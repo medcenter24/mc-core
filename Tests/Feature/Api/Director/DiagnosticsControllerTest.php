@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -97,13 +97,15 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
             [
                 'data' => ['title' => '123'],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'description' => '',
-                    'diagnosticCategoryId' => 0,
-                    'diseases' => [],
-                    'type' => 'director',
-                    'status' => 'active',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                        'description' => '',
+                        'diagnosticCategoryId' => 0,
+                        'diseases' => [],
+                        'type' => 'director',
+                        'status' => 'active',
+                    ],
                 ],
             ],
             [
@@ -115,13 +117,15 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
                     'status' => 'disabled'
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test diagnostic',
-                    'description' => 'Desc',
-                    'diagnosticCategoryId' => 1,
-                    'diseases' => [],
-                    'type' => 'director',
-                    'status' => 'disabled',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test diagnostic',
+                        'description' => 'Desc',
+                        'diagnosticCategoryId' => 1,
+                        'diseases' => [],
+                        'type' => 'director',
+                        'status' => 'disabled',
+                    ],
                 ],
             ],
         ];
@@ -183,13 +187,15 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
 
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test diagnostic',
-                    'description' => 'Desc',
-                    'diagnosticCategoryId' => 1,
-                    'diseases' => [],
-                    'type' => 'system',
-                    'status' => 'disabled',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test diagnostic',
+                        'description' => 'Desc',
+                        'diagnosticCategoryId' => 1,
+                        'diseases' => [],
+                        'type' => 'system',
+                        'status' => 'disabled',
+                    ],
                 ],
             ],
         ];
@@ -285,16 +291,17 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
         ]);
 
         $response->assertStatus(201)->assertJson([
-            'id' => 1,
-            'title' => 'phpunit title',
-            'description' => 'phpunit description',
-            'diagnosticCategoryId' => 0,
-            'status' => 'active',
-            'diseases' => [
-                [ 'id' => 1 ],
-                [ 'id' => 2 ],
-                [ 'id' => 3 ],
-            ]
+            'data' => [
+                'id' => 1,
+                'title' => 'phpunit title',
+                'description' => 'phpunit description',
+                'diagnosticCategoryId' => 0,
+                'status' => 'active',
+                'diseases' => [
+                    ['id' => 1],
+                    ['id' => 2],
+                    ['id' => 3],
+                ]],
         ]);
     }
 
@@ -312,21 +319,23 @@ class DiagnosticsControllerTest extends DirectorApiModelTest
         $response = $this->sendPut($this->getUri() . '/' . $diagnostic->getAttribute('id'), [
             'id' => $diagnostic->getAttribute('id'),
             'diseases' => [
-                [ 'id' => $disease = Disease::factory()->create()->getAttribute('id') ]
+                ['id' => $disease = Disease::factory()->create()->getAttribute('id')]
             ],
         ]);
         $response->assertStatus(202)->assertJson([
-            'id' => $diagnostic->getAttribute('id'),
-            'title' => 'phpunit title',
-            'description' => 'phpunit description',
-            'diagnosticCategoryId' => $category,
-            'diseases' => [
-                [
-                    'id' => $disease
+            'data' => [
+                'id' => $diagnostic->getAttribute('id'),
+                'title' => 'phpunit title',
+                'description' => 'phpunit description',
+                'diagnosticCategoryId' => $category,
+                'diseases' => [
+                    [
+                        'id' => $disease
+                    ],
                 ],
-            ],
-            'status' => 'active',
-            'type' => 'system',
-        ]);
+                'status' => 'active',
+                'type' => 'system',
+                ],
+            ]);
     }
 }

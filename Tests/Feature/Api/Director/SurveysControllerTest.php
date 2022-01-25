@@ -16,7 +16,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -99,11 +99,13 @@ class SurveysControllerTest extends DirectorApiModelTest
             [
                 'data' => ['title' => '123'],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'description' => '',
-                    'type' => 'director',
-                    'status' => 'active',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                        'description' => '',
+                        'type' => 'director',
+                        'status' => 'active',
+                    ],
                 ],
             ],
             [
@@ -113,11 +115,13 @@ class SurveysControllerTest extends DirectorApiModelTest
                     'status' => 'disabled'
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'description' => 'Desc',
-                    'type' => 'director',
-                    'status' => 'disabled',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'description' => 'Desc',
+                        'type' => 'director',
+                        'status' => 'disabled',
+                    ],
                 ],
             ],
         ];
@@ -139,11 +143,13 @@ class SurveysControllerTest extends DirectorApiModelTest
                     'status' => 'disabled'
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'description' => 'Desc',
-                    'type' => 'system',
-                    'status' => 'disabled',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'description' => 'Desc',
+                        'type' => 'system',
+                        'status' => 'disabled',
+                    ],
                 ],
             ],
         ];

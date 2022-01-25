@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -56,7 +56,7 @@ class DiseasesControllerTest extends DirectorApiModelTest
                     'message' => '422 Unprocessable Content',
                     'errors' => [
                         'title' => ['The title field is required.'],
-                        'code'  => ['The code field is required.']
+                        'code' => ['The code field is required.']
                     ],
                     'status_code' => 422,
                 ],
@@ -68,7 +68,7 @@ class DiseasesControllerTest extends DirectorApiModelTest
                     'errors' =>
                         [
                             'title' => ['The title field is required.'],
-                            'code'  => ['The code field is required.']
+                            'code' => ['The code field is required.']
                         ],
                     'status_code' => 422,
                 ],
@@ -99,8 +99,10 @@ class DiseasesControllerTest extends DirectorApiModelTest
                     'code' => 'a',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                    ],
                 ],
             ],
             [
@@ -109,9 +111,11 @@ class DiseasesControllerTest extends DirectorApiModelTest
                     'code' => 'a',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'code' => 'a',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'code' => 'a',
+                    ],
                 ],
             ],
         ];
@@ -134,9 +138,11 @@ class DiseasesControllerTest extends DirectorApiModelTest
                     'code' => 'b',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'code' => 'b',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'code' => 'b',
+                    ],
                 ],
             ],
         ];

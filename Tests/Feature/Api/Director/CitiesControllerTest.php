@@ -55,8 +55,8 @@ class CitiesControllerTest extends DirectorApiModelTest
                 'expectedResponse' => [
                     'message' => '422 Unprocessable Content',
                     'errors' => [
-                        'title'     => ['The title field is required.'],
-                        'regionId'  => ['The region id field is required.']
+                        'title' => ['The title field is required.'],
+                        'regionId' => ['The region id field is required.']
                     ],
                     'status_code' => 422,
                 ],
@@ -68,7 +68,7 @@ class CitiesControllerTest extends DirectorApiModelTest
                     'errors' =>
                         [
                             'title' => ['The title field is required.'],
-                            'regionId'  => ['The region id field is required.']
+                            'regionId' => ['The region id field is required.']
                         ],
                     'status_code' => 422,
                 ],
@@ -88,11 +88,13 @@ class CitiesControllerTest extends DirectorApiModelTest
                     'regionId' => 0,
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'regionId' => 0,
-                    'regionTitle' => '',
-                    'countryTitle' => '',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                        'regionId' => 0,
+                        'regionTitle' => '',
+                        'countryTitle' => '',
+                    ],
                 ],
             ],
             [
@@ -101,11 +103,14 @@ class CitiesControllerTest extends DirectorApiModelTest
                     'regionId' => 1,
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'regionId' => 1,
-                    'regionTitle' => '',
-                    'countryTitle' => '',
+                    'data' => [
+
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'regionId' => 1,
+                        'regionTitle' => '',
+                        'countryTitle' => '',
+                    ],
                 ],
             ],
         ];
@@ -125,11 +130,14 @@ class CitiesControllerTest extends DirectorApiModelTest
                     'regionId' => 1,
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'regionId' => 1,
-                    'regionTitle' => '',
-                    'countryTitle' => '',
+                    'data' => [
+
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'regionId' => 1,
+                        'regionTitle' => '',
+                        'countryTitle' => '',
+                    ],
                 ],
             ],
         ];

@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -88,10 +88,12 @@ class FinanceCurrencyControllerTest extends DirectorApiModelTest
                     'code' => '123',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '',
-                    'code' => '123',
-                    'ico' => '',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '',
+                        'code' => '123',
+                        'ico' => '',
+                    ],
                 ],
             ],
             [
@@ -102,10 +104,12 @@ class FinanceCurrencyControllerTest extends DirectorApiModelTest
                     'id' => 0,
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'code' => 'a',
-                    'ico' => 'i',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'code' => 'a',
+                        'ico' => 'i',
+                    ],
                 ],
             ],
         ];
@@ -130,10 +134,12 @@ class FinanceCurrencyControllerTest extends DirectorApiModelTest
                     'ico' => 'b',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'code' => 'Php Unit test',
-                    'title' => '1',
-                    'ico' => 'b',
+                    'data' => [
+                        'id' => 1,
+                        'code' => 'Php Unit test',
+                        'title' => '1',
+                        'ico' => 'b',
+                    ],
                 ],
             ],
         ];

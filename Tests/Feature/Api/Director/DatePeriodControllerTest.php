@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -55,9 +55,9 @@ class DatePeriodControllerTest extends DirectorApiModelTest
                 'expectedResponse' => [
                     'message' => '422 Unprocessable Content',
                     'errors' => [
-                        'title'     => ['The title field is required.'],
-                        'from'      => ['The from field is required.'],
-                        'to'        => ['The to field is required.']
+                        'title' => ['The title field is required.'],
+                        'from' => ['The from field is required.'],
+                        'to' => ['The to field is required.']
                     ],
                     'status_code' => 422,
                 ],
@@ -68,9 +68,9 @@ class DatePeriodControllerTest extends DirectorApiModelTest
                     'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
-                            'title'     => ['The title field is required.'],
-                            'from'      => ['The from field is required.'],
-                            'to'        => ['The to field is required.']
+                            'title' => ['The title field is required.'],
+                            'from' => ['The from field is required.'],
+                            'to' => ['The to field is required.']
                         ],
                     'status_code' => 422,
                 ],
@@ -115,10 +115,13 @@ class DatePeriodControllerTest extends DirectorApiModelTest
                     'to' => '22:12',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'from' => '11:22',
-                    'to' => '22:12',
+                    'data' => [
+
+                        'id' => 1,
+                        'title' => '123',
+                        'from' => '11:22',
+                        'to' => '22:12',
+                    ],
                 ],
             ],
         ];
@@ -143,10 +146,12 @@ class DatePeriodControllerTest extends DirectorApiModelTest
                     'to' => '11:12',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'from' => '12:22',
-                    'to' => '11:12',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'from' => '12:22',
+                        'to' => '11:12',
+                    ]
                 ],
             ],
         ];

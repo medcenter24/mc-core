@@ -17,7 +17,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\CaseController;
 
@@ -43,21 +43,23 @@ class CasesControllerCreateActionTest extends TestCase
     {
         $response = $this->sendPost('/api/director/cases', []);
         $response->assertStatus(201)->assertJson([
-            'id' => 1,
-            'assistantId' => 0,
-            'repeated' => 0,
-            'assistantRefNum' => '',
-            'symptoms' => '',
-            'handlingTime' => '',
-            'patientName' => '',
-            'checkpoints' => '',
-            'status' => 'new',
-            'cityTitle' => '',
-            'price' => 0,
-            'doctorsFee' => 0,
-            'caseType' => 'doctor',
+            'data' => [
+                'id' => 1,
+                'assistantId' => 0,
+                'repeated' => 0,
+                'assistantRefNum' => '',
+                'symptoms' => '',
+                'handlingTime' => '',
+                'patientName' => '',
+                'checkpoints' => '',
+                'status' => 'new',
+                'cityTitle' => '',
+                'price' => 0,
+                'doctorsFee' => 0,
+                'caseType' => 'doctor',
+            ],
         ]);
-        $refNum = $response->json('refNum');
+        $refNum = $response->json('data')['refNum'];
         $this->assertStringStartsWith('NA0001-', $refNum);
     }
 
@@ -99,19 +101,21 @@ class CasesControllerCreateActionTest extends TestCase
         $response = $this->sendPost('/api/director/cases', $data);
 
         $response->assertStatus(201)->assertJson([
-            'id' => 1,
-            'assistantId' => 0,
-            'repeated' => 0,
-            'assistantRefNum' => '',
-            'symptoms' => '',
-            'handlingTime' => '',
-            'patientName' => '',
-            'checkpoints' => '',
-            'status' => 'new',
-            'cityTitle' => '',
-            'price' => 0,
-            'doctorsFee' => 0,
-            'caseType' => 'doctor',
+            'data' => [
+                'id' => 1,
+                'assistantId' => 0,
+                'repeated' => 0,
+                'assistantRefNum' => '',
+                'symptoms' => '',
+                'handlingTime' => '',
+                'patientName' => '',
+                'checkpoints' => '',
+                'status' => 'new',
+                'cityTitle' => '',
+                'price' => 0,
+                'doctorsFee' => 0,
+                'caseType' => 'doctor',
+            ],
         ]);
     }
 
@@ -235,20 +239,22 @@ class CasesControllerCreateActionTest extends TestCase
 
         $response->assertStatus(201)
             ->assertJson([
-            'id' => 2,
-            'assistantId' => 1,
-            'repeated' => 1,
-            'assistantRefNum' => 'ref---',
-            'symptoms' => 'aaa',
-            'handlingTime' => '2018-11-16 02:46:00',
-            'patientName' => $patient->name,
-            'checkpoints' => '',
-            'status' => 'new',
-            'cityTitle' => $city->title,
-            'price' => $income->value,
-            'doctorsFee' => $caseablePayment->value,
-            'caseType' => 'doctor',
-        ]);
+                'data' => [
+                    'id' => 2,
+                    'assistantId' => 1,
+                    'repeated' => 1,
+                    'assistantRefNum' => 'ref---',
+                    'symptoms' => 'aaa',
+                    'handlingTime' => '2018-11-16 02:46:00',
+                    'patientName' => $patient->name,
+                    'checkpoints' => '',
+                    'status' => 'new',
+                    'cityTitle' => $city->title,
+                    'price' => $income->value,
+                    'doctorsFee' => $caseablePayment->value,
+                    'caseType' => 'doctor',
+                ],
+            ]);
     }
 
     public function testCreateWithAccidentDataOnly5(): void
@@ -282,17 +288,19 @@ class CasesControllerCreateActionTest extends TestCase
         $response = $this->sendPost('/api/director/cases', $data);
 
         $response->assertStatus(201)->assertJson([
-            'id' => 2,
-            'assistantId' => 1,
-            'repeated' => 1,
-            'refNum' => 'test',
-            'assistantRefNum' => 'ref---',
-            'symptoms' => 'aaa',
-            'handlingTime' => '2018-11-16 02:46:00',
-            'patientName' => $patient->name,
-            'checkpoints' => '',
-            'status' => 'new',
-            'caseType' => 'doctor',
+            'data' => [
+                'id' => 2,
+                'assistantId' => 1,
+                'repeated' => 1,
+                'refNum' => 'test',
+                'assistantRefNum' => 'ref---',
+                'symptoms' => 'aaa',
+                'handlingTime' => '2018-11-16 02:46:00',
+                'patientName' => $patient->name,
+                'checkpoints' => '',
+                'status' => 'new',
+                'caseType' => 'doctor',
+            ],
         ]);
     }
 }

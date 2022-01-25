@@ -85,9 +85,11 @@ class AccidentCheckpointsControllerTest extends DirectorApiModelTest
             [
                 'data' => ['title' => '123'],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'description' => '',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                        'description' => '',
+                    ],
                 ],
             ],
             [
@@ -96,9 +98,11 @@ class AccidentCheckpointsControllerTest extends DirectorApiModelTest
                     'description' => 'Desc',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'description' => 'Desc',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'description' => 'Desc',
+                    ],
                 ],
             ],
         ];
@@ -118,9 +122,11 @@ class AccidentCheckpointsControllerTest extends DirectorApiModelTest
                     'description' => 'Desc',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'description' => 'Desc',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'description' => 'Desc',
+                    ],
                 ],
             ],
         ];

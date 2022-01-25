@@ -67,8 +67,10 @@ class FinancesTest extends TestCase
     {
         $response = $this->sendPost('/api/director/finance', $this->financeData);
         $response->assertJson([
+            'data' => [
             'title' => 'Unit test rule',
             'value' => 11,
+                ],
         ]);
         $response->assertStatus(201);
     }
@@ -77,10 +79,10 @@ class FinancesTest extends TestCase
     {
         $response = $this->sendPost('/api/director/finance', $this->financeData);
         $response->assertStatus(201);
-        $data = $response->json();
+        $data = $response->json()['data'];
         $data['title'] = 'newTitle';
         $data['value'] = '9';
-        $updateResponse = $this->sendPut("/api/director/finance/{$response->json('id')}", $data);
+        $updateResponse = $this->sendPut('/api/director/finance/' . $data['id'], $data);
         $updateResponse->assertJson(['data' => ['title' => 'newTitle', 'value' => 9]]);
         $updateResponse->assertStatus(200);
     }
@@ -89,7 +91,7 @@ class FinancesTest extends TestCase
     {
         $response = $this->sendPost('/api/director/finance', $this->financeData);
         $response->assertStatus(201);
-        $getResponse = $this->sendGet("/api/director/finance/{$response->json('id')}");
+        $getResponse = $this->sendGet('/api/director/finance/' . $response->json('data')['id']);
         $getResponse->assertJson(['data' => []]);
         $getResponse->assertStatus(200);
     }

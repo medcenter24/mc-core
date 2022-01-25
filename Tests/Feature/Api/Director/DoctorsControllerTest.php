@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -57,8 +57,8 @@ class DoctorsControllerTest extends DirectorApiModelTest
                 'expectedResponse' => [
                     'message' => '422 Unprocessable Content',
                     'errors' => [
-                        'name'      => ['The name field is required.'],
-                        'refKey'    => ['The ref key field is required.']
+                        'name' => ['The name field is required.'],
+                        'refKey' => ['The ref key field is required.']
                     ],
                     'status_code' => 422,
                 ],
@@ -68,9 +68,9 @@ class DoctorsControllerTest extends DirectorApiModelTest
                 'expectedResponse' => [
                     'message' => '422 Unprocessable Content',
                     'errors' => [
-                            'name'      => ['The name field is required.'],
-                            'refKey'    => ['The ref key field is required.']
-                        ],
+                        'name' => ['The name field is required.'],
+                        'refKey' => ['The ref key field is required.']
+                    ],
                     'status_code' => 422,
                 ],
             ],
@@ -103,12 +103,14 @@ class DoctorsControllerTest extends DirectorApiModelTest
                     'refKey' => 'ref',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'name' => '123',
-                    'description' => '',
-                    'refKey' => 'ref',
-                    'userId' => '0',
-                    'medicalBoardNumber' => '',
+                    'data' => [
+                        'id' => 1,
+                        'name' => '123',
+                        'description' => '',
+                        'refKey' => 'ref',
+                        'userId' => '0',
+                        'medicalBoardNumber' => '',
+                    ],
                 ],
             ],
             [
@@ -120,12 +122,14 @@ class DoctorsControllerTest extends DirectorApiModelTest
                     'medicalBoardNumber' => 'aaa',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'name' => 'Php Unit test',
-                    'description' => '1234',
-                    'refKey' => 'ref',
-                    'userId' => 2,
-                    'medicalBoardNumber' => 'aaa',
+                    'data' => [
+                        'id' => 1,
+                        'name' => 'Php Unit test',
+                        'description' => '1234',
+                        'refKey' => 'ref',
+                        'userId' => 2,
+                        'medicalBoardNumber' => 'aaa',
+                    ]
                 ],
             ],
         ];
@@ -151,12 +155,14 @@ class DoctorsControllerTest extends DirectorApiModelTest
                     'medicalBoardNumber' => 'aaa',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'name' => 'Php Unit test',
-                    'refKey' => 'ref1',
-                    'description' => '1234',
-                    'userId' => 2,
-                    'medicalBoardNumber' => 'aaa',
+                    'data' => [
+                        'id' => 1,
+                        'name' => 'Php Unit test',
+                        'refKey' => 'ref1',
+                        'description' => '1234',
+                        'userId' => 2,
+                        'medicalBoardNumber' => 'aaa',
+                    ]
                 ],
             ],
         ];
@@ -261,7 +267,7 @@ class DoctorsControllerTest extends DirectorApiModelTest
     {
         /** @var Doctor $doctor */
         $doctor = $this->getServiceLocator()->get(DoctorService::class)->create();
-        $response = $this->json('GET', $this->getUri() .'/' . $doctor->id . '/cities', [], $this->headers($this->getUser()));
+        $response = $this->json('GET', $this->getUri() . '/' . $doctor->id . '/cities', [], $this->headers($this->getUser()));
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [],
@@ -274,7 +280,7 @@ class DoctorsControllerTest extends DirectorApiModelTest
 
         /** @var Doctor $doctor */
         $doctor = $this->getServiceLocator()->get(DoctorService::class)->create();
-        $response = $this->json('PUT', $this->getUri() .'/' . $doctor->id . '/cities', [
+        $response = $this->json('PUT', $this->getUri() . '/' . $doctor->id . '/cities', [
             'cities' => [
                 $cityService->create()->id,
                 $cityService->create()->id,
@@ -291,7 +297,7 @@ class DoctorsControllerTest extends DirectorApiModelTest
     {
         $cityService = $this->getServiceLocator()->get(CityService::class);
         $id = $cityService->create()->id;
-        $response = $this->json('GET', $this->getUri() .'/cities/'.$id, [], $this->headers($this->getUser()));
+        $response = $this->json('GET', $this->getUri() . '/cities/' . $id, [], $this->headers($this->getUser()));
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [],

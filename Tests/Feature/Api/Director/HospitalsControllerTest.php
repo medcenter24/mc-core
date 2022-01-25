@@ -16,7 +16,7 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -55,8 +55,8 @@ class HospitalsControllerTest extends DirectorApiModelTest
                 'expectedResponse' => [
                     'message' => '422 Unprocessable Content',
                     'errors' => [
-                        'title'     => ['The title field is required.'],
-                        'refKey'    => ['The ref key field is required.'],
+                        'title' => ['The title field is required.'],
+                        'refKey' => ['The ref key field is required.'],
                     ],
                     'status_code' => 422,
                 ],
@@ -67,8 +67,8 @@ class HospitalsControllerTest extends DirectorApiModelTest
                     'message' => '422 Unprocessable Content',
                     'errors' =>
                         [
-                            'title'     => ['The title field is required.'],
-                            'refKey'    => ['The ref key field is required.'],
+                            'title' => ['The title field is required.'],
+                            'refKey' => ['The ref key field is required.'],
                         ],
                     'status_code' => 422,
                 ],
@@ -102,12 +102,14 @@ class HospitalsControllerTest extends DirectorApiModelTest
                     'refKey' => 'ref',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'description' => '',
-                    'refKey' => 'ref',
-                    'phones' => '',
-                    'address' => '',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                        'description' => '',
+                        'refKey' => 'ref',
+                        'phones' => '',
+                        'address' => '',
+                    ],
                 ],
             ],
             [
@@ -119,12 +121,14 @@ class HospitalsControllerTest extends DirectorApiModelTest
                     'address' => 'ddd',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'description' => '111',
-                    'refKey' => 'ref',
-                    'phones' => 'ccc',
-                    'address' => 'ddd',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'description' => '111',
+                        'refKey' => 'ref',
+                        'phones' => 'ccc',
+                        'address' => 'ddd',
+                    ],
                 ],
             ],
         ];
@@ -150,12 +154,14 @@ class HospitalsControllerTest extends DirectorApiModelTest
                     'address' => 'ddd',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'description' => '111',
-                    'refKey' => 'ref',
-                    'phones' => 'ccc',
-                    'address' => 'ddd',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'description' => '111',
+                        'refKey' => 'ref',
+                        'phones' => 'ccc',
+                        'address' => 'ddd',
+                    ],
                 ],
             ],
         ];

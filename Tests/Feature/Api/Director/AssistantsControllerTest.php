@@ -92,10 +92,12 @@ class AssistantsControllerTest extends DirectorApiModelTest
                     'email' => 'unit@test.php',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => '123',
-                    'refKey' => 'ref',
-                    'email' => 'unit@test.php',
+                    'data' => [
+                        'id' => 1,
+                        'title' => '123',
+                        'refKey' => 'ref',
+                        'email' => 'unit@test.php',
+                    ],
                 ],
             ],
             [
@@ -105,10 +107,12 @@ class AssistantsControllerTest extends DirectorApiModelTest
                     'email' => 'unit@test.php',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'refKey' => 'ref',
-                    'email' => 'unit@test.php',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'refKey' => 'ref',
+                        'email' => 'unit@test.php',
+                    ],
                 ],
             ],
         ];
@@ -129,10 +133,12 @@ class AssistantsControllerTest extends DirectorApiModelTest
                     'email' => 'unit@test.php',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'title' => 'Php Unit test',
-                    'refKey' => 'ref',
-                    'email' => 'unit@test.php',
+                    'data' => [
+                        'id' => 1,
+                        'title' => 'Php Unit test',
+                        'refKey' => 'ref',
+                        'email' => 'unit@test.php',
+                    ]
                 ],
             ],
         ];

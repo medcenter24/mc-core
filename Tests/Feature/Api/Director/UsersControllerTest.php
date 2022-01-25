@@ -17,7 +17,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director;
 
@@ -136,14 +136,16 @@ class UsersControllerTest extends DirectorApiModelTest
                     'password' => 'a',
                 ],
                 'expectedResponse' => [
-                    'id' => 2,
-                    'name' => '',
-                    'email' => '123@mc24.test',
-                    'phone' => '',
-                    'lang' => 'en',
-                    'timezone' => 'UTC',
-                    'thumb200' => '',
-                    'thumb45' => '',
+                    'data' => [
+                        'id' => 2,
+                        'name' => '',
+                        'email' => '123@mc24.test',
+                        'phone' => '',
+                        'lang' => 'en',
+                        'timezone' => 'UTC',
+                        'thumb200' => '',
+                        'thumb45' => '',
+                    ],
                 ],
             ],
             [
@@ -156,14 +158,16 @@ class UsersControllerTest extends DirectorApiModelTest
                     'timezone' => 'Europe/Spain',
                 ],
                 'expectedResponse' => [
-                    'id' => 2,
-                    'email' => '123@mc24.test',
-                    'name' => 'User Name',
-                    'phone' => '1234',
-                    'lang' => 'es',
-                    'timezone' => 'Europe/Spain',
-                    'thumb200' => '',
-                    'thumb45' => '',
+                    'data' => [
+                        'id' => 2,
+                        'email' => '123@mc24.test',
+                        'name' => 'User Name',
+                        'phone' => '1234',
+                        'lang' => 'es',
+                        'timezone' => 'Europe/Spain',
+                        'thumb200' => '',
+                        'thumb45' => '',
+                    ],
                 ],
             ],
         ];
@@ -190,12 +194,14 @@ class UsersControllerTest extends DirectorApiModelTest
                     'timezone' => 'Europe/Spain',
                 ],
                 'expectedResponse' => [
-                    'id' => 1,
-                    'email' => '123@mc24.test',
-                    'name' => 'User Name',
-                    'phone' => '1234',
-                    'lang' => 'es',
-                    'timezone' => 'Europe/Spain',
+                    'data' => [
+                        'id' => 1,
+                        'email' => '123@mc24.test',
+                        'name' => 'User Name',
+                        'phone' => '1234',
+                        'lang' => 'es',
+                        'timezone' => 'Europe/Spain',
+                    ],
                 ],
             ],
         ];
@@ -219,9 +225,9 @@ class UsersControllerTest extends DirectorApiModelTest
                 ],
                 // response
                 // only doctors should be here
-                'expectedResponse' => array (
+                'expectedResponse' => array(
                     'data' =>
-                        array (
+                        array(
                             // no users with doctors assigned
                             // check only the controllers workflow
                         ),
@@ -242,12 +248,12 @@ class UsersControllerTest extends DirectorApiModelTest
             'password' => 'a',
         ], $this->headers($this->getUser()));
 
-        $response = $this->get($this->getUri().'/2', $this->headers($this->getUser()));
+        $response = $this->get($this->getUri() . '/2', $this->headers($this->getUser()));
         $response->assertStatus(200);
         $response->assertJson(
-            array (
+            array(
                 'data' =>
-                    array (
+                    array(
                         'id' => 2,
                         'name' => '',
                         'email' => '123@mc24.test',
@@ -282,7 +288,7 @@ class UsersControllerTest extends DirectorApiModelTest
         $response = $this->sendDelete($this->getUri() . '/' . $user->getKey());
         $response->assertStatus(204);
 
-        $response = $this->sendGet($this->getUri().'/'.$user->getKey());
+        $response = $this->sendGet($this->getUri() . '/' . $user->getKey());
         $response->assertStatus(404);
     }
 
@@ -291,14 +297,14 @@ class UsersControllerTest extends DirectorApiModelTest
      */
     public function showDataProvider(): array
     {
-        return [[['a'],['b']]];
+        return [[['a'], ['b']]];
     }
 
     public function testSearchUserById(): void
     {
         User::factory()->count(7)->create();
 
-        $response = $this->sendPost(self::URI.'/search', [
+        $response = $this->sendPost(self::URI . '/search', [
             'filter' => [
                 'fields' => [
                     'elType' => 'text',
@@ -331,14 +337,14 @@ class UsersControllerTest extends DirectorApiModelTest
             RoleService::FIELD_TITLE => RoleService::DOCTOR_ROLE,
         ]);
         Doctor::factory()->count(7)->create([
-            DoctorService::FIELD_USER_ID => static function() use ($roleDoctor) {
-                    $user = User::factory()->create();
-                    $user->roles()->attach($roleDoctor);
-                    return $user->id;
-                },
+            DoctorService::FIELD_USER_ID => static function () use ($roleDoctor) {
+                $user = User::factory()->create();
+                $user->roles()->attach($roleDoctor);
+                return $user->id;
+            },
         ]);
 
-        $response = $this->sendPost(self::URI.'/search', [
+        $response = $this->sendPost(self::URI . '/search', [
             'filter' => [
                 'fields' => [
                     [
@@ -383,14 +389,16 @@ class UsersControllerTest extends DirectorApiModelTest
         ]);
 
         $response->assertStatus(201)->assertJson([
-            'id' => 2,
-            'name' => 'user name',
-            'email' => 'test@a.c',
-            'phone' => '',
-            'lang' => 'en',
-            'timezone' => 'UTC',
-            'thumb200' => '',
-            'thumb45' => '',
+            'data' => [
+                'id' => 2,
+                'name' => 'user name',
+                'email' => 'test@a.c',
+                'phone' => '',
+                'lang' => 'en',
+                'timezone' => 'UTC',
+                'thumb200' => '',
+                'thumb45' => '',
+            ],
         ]);
     }
 }

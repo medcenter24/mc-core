@@ -214,7 +214,7 @@ class EnvironmentService extends Configurable implements Environment
      */
     public function getEnvironmentFileName(): string
     {
-        return str_replace($this->getEnvironmentDir(), '', $this->getEnvironmentPath());
+        return ltrim('/', str_replace($this->getEnvironmentDir(), '', $this->getEnvironmentPath()));
     }
 
     /**

@@ -41,12 +41,12 @@ class SlackController extends AdminController
      */
     private function getConfiguredWebhook(): string
     {
-        return env('LOG_SLACK_WEBHOOK_URL', '');
+        return config('slack.webhook');
     }
 
     private function getLevel(): string
     {
-        return env('LOG_SLACK_LEVEL', 'critical');
+        return config('slack.logLevel');
     }
 
     public function log(Request $request): JsonResponse

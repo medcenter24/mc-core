@@ -164,7 +164,7 @@ class ApiSearchService
                 $eloquent->whereIn($filter[Filter::FIELD_NAME], $filter[Filter::FIELD_VALUE]);
                 break;
             case 'ilike':
-                if (env('DB_CONNECTION', '') === 'pgsql') {
+                if (config('database.default') === 'pgsql') {
                     $eloquent->where($filter[Filter::FIELD_NAME], $filter[Filter::FIELD_MATCH],
                         $filter[Filter::FIELD_VALUE]);
                 } else {

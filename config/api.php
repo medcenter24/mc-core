@@ -232,4 +232,9 @@ return [
     'formats' => [
         'json' => Dingo\Api\Http\Response\Format\Jsonp::class,
     ],
+
+    'originDirector' => env('CORS_ALLOW_ORIGIN_DIRECTOR'),
+    'originDirectorDev' => env('CORS_ALLOW_ORIGIN_DIRECTOR_DEV'),
+    'originDoctor' => env('CORS_ALLOW_ORIGIN_DOCTOR'),
+    'originDoctorDev' => env('CORS_ALLOW_ORIGIN_DOCTOR_DEV')
 ];

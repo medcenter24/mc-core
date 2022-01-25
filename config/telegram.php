@@ -220,4 +220,7 @@ return [
         // 'stop' => Acme\Project\Commands\StopCommand::class,
         // 'status' => Acme\Project\Commands\StatusCommand::class,
     ],
+
+    'webhookPrefix' => env('TELEGRAM_WEBHOOK_PREFIX', 'tlg'),
+    'certificate'   => env('TELEGRAM_CERTIFICATE_PATH', false),
 ];

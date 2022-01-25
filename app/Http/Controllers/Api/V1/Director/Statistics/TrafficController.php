@@ -86,7 +86,7 @@ class TrafficController extends ApiController
 
     public function years(): Response
     {
-        if (Str::startsWith(env('DB_CONNECTION'), 'sqlite')) {
+        if (Str::startsWith(config('database.default'), 'sqlite')) {
             $years = DB::table('accidents')
                 ->distinct()
                 ->select(DB::raw('strftime(\'%Y\', accidents.handling_time) as year'))

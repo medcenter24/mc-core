@@ -11,7 +11,7 @@
 @endif
 @lang('content.address'): <code>{{ $doctorAccident->accident->city ? $doctorAccident->accident->city->title : __('content.city_not_provided') }}, {{ $doctorAccident->accident->contacts ?? __('content.contacts_not_provided') }}</code>
 @lang('content.symptoms'): <pre>{{ $doctorAccident->accident->symptoms ?? __('content.symptoms_not_provided') }}</pre>
-<a href="{{ env('CORS_ALLOW_ORIGIN_DOCTOR') }}/accidents/{{ $doctorAccident->accident->id }}">@lang('content.go_to_accident_page')</a>
+<a href="{{ config('api.originDoctor') }}/accidents/{{ $doctorAccident->accident->id }}">@lang('content.go_to_accident_page')</a>
 @else
 <b>@lang('content.accident_not_provided')</b>
 @endif

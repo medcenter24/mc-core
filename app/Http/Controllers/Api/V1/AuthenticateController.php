@@ -92,20 +92,20 @@ class AuthenticateController extends ApiController
             // check roles for the allowed origin
             $hasAccess = false;
             if (
-                $request->header('Origin') === env('CORS_ALLOW_ORIGIN_DIRECTOR')
+                $request->header('Origin') === config('api.originDirector')
                 || (
-                        env('APP_DEBUG', false) === true
-                        && $request->header('Origin') === env('CORS_ALLOW_ORIGIN_DIRECTOR_DEV')
+                        config('app.debug') === true
+                        && $request->header('Origin') === config('api.originDirectorDev')
                 )
             ) {
                 $hasAccess = Roles::hasRole($this->guard()->user(), RoleService::DIRECTOR_ROLE);
             }
 
             if (
-                $request->header('Origin') === env('CORS_ALLOW_ORIGIN_DOCTOR')
+                $request->header('Origin') === config('api.originDoctor')
                 || (
-                    env('APP_DEBUG', false) === true
-                    && $request->header('Origin') === env('CORS_ALLOW_ORIGIN_DOCTOR_DEV')
+                    config('app.debug') === true
+                    && $request->header('Origin') === config('api.originDoctorDev')
                 )
             ) {
                 $hasAccess = Roles::hasRole($this->guard()->user(), RoleService::DOCTOR_ROLE);

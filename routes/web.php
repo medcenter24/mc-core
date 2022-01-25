@@ -42,7 +42,7 @@ Route::get('/home', static function () {
 
 // if it needed I could check that server is telegram
 Route::group(['prefix' => 'telegram'], static function () {
-    Route::post(env('TELEGRAM_WEBHOOK_PREFIX'), 'Telegram\TelegramApiController@index');
+    Route::post(config('telegram.webhookPrefix'), 'Telegram\TelegramApiController@index');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], static function () {

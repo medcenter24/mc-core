@@ -43,7 +43,7 @@ class WebhookController extends AdminController
         $telegram = $botInstance->getBot('telegram');
         $info = $telegram->getWebhookInformation();
         if (App::environment('production')) {
-            $response['webhookUrl'] = 'hidden';
+            $info['webhookUrl'] = 'hidden';
         }
         return response()->json($info);
     }
@@ -58,9 +58,9 @@ class WebhookController extends AdminController
     {
         $url = $request->input('webhook');
         $conf = [
-            'url' => $url . '/' . env('TELEGRAM_WEBHOOK_PREFIX')
+            'url' => $url . '/' . config('telegram.webhookPrefix')
         ];
-        $cert = env('TELEGRAM_CERTIFICATE_PATH', false);
+        $cert = config('telegram.certificate');
         if ($cert) {
             $conf['certificate'] = $cert;
         }

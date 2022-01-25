@@ -169,9 +169,9 @@ class SetupEnvironmentCommand extends Command
     {
         if ($this->all() || $this->confirm('Do you want to migrate DB?')) {
 
-            if (env('DB_CONNECTION') === 'sqlite') {
+            if (config('database.default') === 'sqlite') {
                 // create new file for the DB
-                $file = env('DB_DATABASE');
+                $file = config('database.default');
                 $path = mb_substr($file, 0, mb_strrpos($file, DIRECTORY_SEPARATOR));
                 $dirs = explode(DIRECTORY_SEPARATOR, $path);
                 FileHelper::createDirRecursive($dirs);

@@ -34,7 +34,7 @@ trait SamplePath
      * @return string
      * @throws ReflectionException
      */
-    protected function getSamplePath(): string
+    public function getSamplePath(): string
     {
         if (!$this->samplePath) {
             $reflector = new ReflectionClass(get_class($this));
@@ -57,7 +57,7 @@ trait SamplePath
      * @return string
      * @throws ReflectionException
      */
-    protected function getSampleFile($file=''): string
+    public function getSampleFile(string $file=''): string
     {
         return $this->getSamplePath() . $file;
     }

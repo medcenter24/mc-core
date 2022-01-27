@@ -168,7 +168,6 @@ abstract class AbstractModelTest extends TestCase
      */
     public function testDelete(array $data): void
     {
-        /** @var Model $model */
         $model = $this->createModel($data);
         $response = $this->delete($this->getUri().'/'.$model->getAttribute('id'), [], $this->headers($this->getUser()));
         $response->assertStatus(self::STATUS_DELETED);
@@ -182,7 +181,6 @@ abstract class AbstractModelTest extends TestCase
      */
     public function testShow(array $data, array $expectedResponse): void
     {
-        /** @var Model $model */
         $model = $this->createModel($data);
         $response = $this->get($this->getUri().'/'.$model->getAttribute('id'), $this->headers($this->getUser()));
         $response->assertStatus(self::STATUS_OK);

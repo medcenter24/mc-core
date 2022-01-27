@@ -17,6 +17,8 @@
  */
 
 return [
+    'entities' => 'Entities',
+    'doctor_service' => 'Doctor Service',
     'hospital' => 'Hospital',
     'caseable_title' => 'Executor',
     'caseable_type' => 'Caseable Type',

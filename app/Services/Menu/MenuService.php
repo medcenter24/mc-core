@@ -18,38 +18,34 @@
 
 namespace medcenter24\mcCore\App\Services\Menu;
 
-
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
-use medcenter24\mcCore\App\Helpers\Arr;
+use medcenter24\mcCore\App\Services\Entity\RoleService;
 
 class MenuService
 {
     /**
      * Pages without menu highlighting
-     * @var array
      */
-    protected $excluded = [];
+    protected array $excluded = [];
 
     /**
      * Mapping
-     * @var array
      */
-    protected $menuMap = [];
+    protected array $menuMap = [];
 
     /**
      * Mapping of the menu to show
-     * @var array
      */
-    protected $filteredMenu = [];
+    protected array $filteredMenu = [];
+
+    private string $title = '';
+
+    public function __construct(private RoleService $roleService)
+    {
+    }
 
     /**
-     * @var string
-     */
-    private $title = '';
-
-    /**
-     * Returns meny which is ready to be shown
-     * @return array
+     * Returns menu which is ready to be shown
      */
     public function asArray(): array {
         return $this->filteredMenu();
@@ -57,7 +53,6 @@ class MenuService
 
     /**
      * Some kind of the menu cache
-     * @return array
      */
     private function filteredMenu(): array
     {
@@ -74,12 +69,11 @@ class MenuService
      */
     private function getMappedMenu(array $menu): array
     {
-
         foreach ($menu as $key => $item) {
 
             // use only menu with access
             if (array_key_exists('role', $item)) {
-                if (!\Roles::hasRole(auth()->user(), $item['role'])) {
+                if (!$this->roleService->hasRole(auth()->user(), $item['role'])) {
                     unset($menu[$key]);
                     continue;
                 }

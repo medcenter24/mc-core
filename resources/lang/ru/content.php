@@ -17,6 +17,8 @@
  */
 
 return [
+    'entities' => 'Сущности',
+    'doctor_service' => 'Сервисы врачей',
     'hospital' => 'Госпиталь',
     'caseable_title' => 'Исполнитель',
     'caseable_type' => 'Тип случая',

@@ -21,13 +21,10 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
-use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\Doctor;
-use medcenter24\mcCore\App\Entity\DoctorAccident;
 
 class DoctorService extends AbstractModelService
 {
-
     public const FIELD_ID = 'id';
     public const FIELD_NAME = 'name';
     public const FIELD_DESCRIPTION = 'description';

@@ -51,6 +51,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], stat
     Route::resource('roles', 'Admin\RolesController');
     Route::resource('invites', 'Admin\InvitesController');
 
+    Route::group(['prefix' => 'entity'], static function() {
+        Route::get('doctor-service', 'Admin\Entity\DoctorServiceController@index');
+    });
+
     Route::group(['prefix' => 'preview'], static function() {
         Route::get('caseReport', 'Admin\PreviewController@caseReport');
         Route::get('caseHistory', 'Admin\PreviewController@caseHistory');

@@ -48,16 +48,22 @@ class RoleService extends AbstractModelService
     public const FILLABLE = [self::FIELD_TITLE];
     public const UPDATABLE = [self::FIELD_TITLE];
 
+    private array $grantedRoles = [];
+
     /**
      * Check that user has role permissions
      *
-     * @param User $user
+     * @param User|null $user
      * @param string $role
      * @return mixed
      */
     public function hasRole(User $user = null, string $role = ''): bool
     {
-        return $user ? $user->roles()->where(self::FIELD_TITLE, $role)->count() > 0 : false;
+        if (!array_key_exists($role, $this->grantedRoles)) {
+            $this->grantedRoles[$role] = $user
+                && $user->roles()->where(self::FIELD_TITLE, $role)->count() > 0;
+        }
+        return $this->grantedRoles[$role];
     }
 
     public function isValidRoles(array $roles): bool

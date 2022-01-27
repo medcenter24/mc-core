@@ -19,24 +19,27 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Http\Requests\UserRequest;
 use medcenter24\mcCore\App\Entity\User;
 
 class UsersController extends AdminController
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    public function index()
+    /**
+     * @return Factory|View|Application
+     * @throws InconsistentDataException
+     */
+    public function index(): Factory|View|Application
     {
         $this->getMenuService()->markCurrentMenu('1.10');
         $users = User::orderBy('name')->get();
         return view('admin.users.index', compact('users'));
     }
-    
+
     public function show($id)
     {
         $this->getMenuService()->markCurrentMenu('1.10');
@@ -70,7 +73,7 @@ class UsersController extends AdminController
 
         return redirect('admin/users/' . $user->id);
     }
-    
+
     public function update(UserRequest $request, $id)
     {
 
@@ -95,7 +98,7 @@ class UsersController extends AdminController
         $user->roles()->detach();
         $user->roles()->attach($request->input('roles'));
     }
-    
+
     public function destroy($id)
     {
         $user = User::findOrFail($id);

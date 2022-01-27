@@ -15,6 +15,7 @@
  *
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Http\Controllers;
 
@@ -32,14 +33,11 @@ class AdminController extends Controller
 {
     use ServiceLocatorTrait;
 
-    /**
-     * @var AdminMenuService
-     */
-    private $menuService;
+    private AdminMenuService $menuService;
 
     protected function getMenuService(): AdminMenuService
     {
-        if (!$this->menuService) {
+        if (!isset($this->menuService)) {
             $this->menuService = $this->getServiceLocator()->get(AdminMenuService::class);
             view()->share('menuService', $this->menuService);
             $this->menuService->asArray();

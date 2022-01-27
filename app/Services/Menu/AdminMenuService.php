@@ -24,7 +24,7 @@ class AdminMenuService extends MenuService
     /**
      * @var array Menu Map
      */
-    protected $menuMap = [
+    protected array $menuMap = [
         1 => [
             'name' => 'content.users',
             'role' => 'admin',
@@ -89,6 +89,16 @@ class AdminMenuService extends MenuService
                     'slug' => 'admin/system/models',
                 ],
             ],
+        ],
+        7 => [
+            'role' => 'admin',
+            'name' => 'content.entities',
+            'submenu' => [
+                '10' => [
+                    'name' => 'content.doctor_service',
+                    'slug' => 'admin/entity/doctor-service',
+                ]
+            ]
         ],
     ];
 }

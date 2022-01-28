@@ -40,6 +40,7 @@ class FinanceConditionService extends AbstractModelService
     public const FIELD_CURRENCY_ID = 'currency_id';
     public const FIELD_CURRENCY_MODE = 'currency_mode';
     public const FIELD_MODEL = 'model';
+    public const FIELD_ORDER = 'order';
 
     public const FILLABLE = [
         self::FIELD_CREATED_BY,
@@ -49,6 +50,7 @@ class FinanceConditionService extends AbstractModelService
         self::FIELD_CURRENCY_ID,
         self::FIELD_CURRENCY_MODE,
         self::FIELD_MODEL,
+        self::FIELD_ORDER,
     ];
 
     public const VISIBLE = [
@@ -60,6 +62,7 @@ class FinanceConditionService extends AbstractModelService
         self::FIELD_CURRENCY_ID,
         self::FIELD_CURRENCY_MODE,
         self::FIELD_MODEL,
+        self::FIELD_ORDER,
     ];
 
     public const UPDATABLE = [
@@ -70,6 +73,7 @@ class FinanceConditionService extends AbstractModelService
         self::FIELD_CURRENCY_ID,
         self::FIELD_CURRENCY_MODE,
         self::FIELD_MODEL,
+        self::FIELD_ORDER,
     ];
 
     /** @var string Types */
@@ -101,6 +105,7 @@ class FinanceConditionService extends AbstractModelService
             self::FIELD_CURRENCY_ID => 0,
             self::FIELD_CURRENCY_MODE => '',
             self::FIELD_MODEL => '',
+            self::FIELD_ORDER => 0,
         ];
     }
 
@@ -160,13 +165,13 @@ class FinanceConditionService extends AbstractModelService
      *
      * @return Collection
      */
-    public function findConditions($model, $filters = []): Collection
+    public function findConditions(string $model, array $filters = []): Collection
     {
         $transformedFilters = $this->getFilters($filters);
         return $this->find($model, $transformedFilters);
     }
 
-    /**\
+    /**
      * @param array $models
      * @return Collection
      */
@@ -250,8 +255,22 @@ class FinanceConditionService extends AbstractModelService
                 $q->where('model', $model)->doesntHave('conditions');
             })
             ->withCount('conditions')
+            ->orderByDesc('order')
+            ->orderBy('id')
             ->get();
 
         return $conditions;
+    }
+
+    /**
+     * Searching by model with a filters
+     * @param array $filters
+     * @return Collection
+     */
+    public function search(array $filters = []): Collection
+    {
+        return $this->getQuery($filters)
+            ->orderByDesc(self::FIELD_ORDER)
+            ->get();
     }
 }

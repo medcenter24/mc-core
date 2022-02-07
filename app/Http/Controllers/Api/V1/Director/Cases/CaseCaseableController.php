@@ -60,7 +60,7 @@ class CaseCaseableController extends ApiController
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return Response
      */
     public function getHospitalCase(int $id): Response

@@ -23,6 +23,7 @@ use Dingo\Api\Routing\Router;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\AuthenticateController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentsController as DirectorAccidentsController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentsRefNumController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentStatusesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentTypesController as DirectorAccidentTypesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AssistantsController;
@@ -234,6 +235,8 @@ $api->group([
                $api->post('search', DirectorAccidentsController::class . '@search');
                // selected case
                $api->get('{id}', DirectorAccidentsController::class . '@show');
+               // searching by ref-num
+                $api->post('ref-num/search', AccidentsRefNumController::class . '@search');
             });
 
             $api->resource('types', DirectorAccidentTypesController::class);

@@ -136,8 +136,7 @@ class CaseAccidentTransformer extends AbstractTransformer
         }
 
         // transform case type if provided
-        $data = $this->inverseTransformCaseType($data);
-        return $data;
+        return $this->inverseTransformCaseType($data);
     }
 
     /**

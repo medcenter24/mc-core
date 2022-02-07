@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
-use Doctrine\DBAL\Driver\PDOException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +35,7 @@ use medcenter24\mcCore\App\Events\Accident\Caseable\HospitalAccidentUpdatedEvent
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\ReferralNumberService;
+use PDOException;
 
 /**
  * To control case pages with aggregated cases data
@@ -163,7 +163,7 @@ class CaseAccidentService implements ModelService
         if ($accidentData[AccidentService::FIELD_ID] !== $accident->getKey()) {
             throw new InconsistentDataException('There are 2 different accidents in the request');
         }
-        return $this->getAccidentService()->findAndUpdate(['id'], $this->getAccidentData($data));
+        return $this->getAccidentService()->findAndUpdate(['id'], $accidentData);
     }
 
     /**
@@ -398,7 +398,7 @@ class CaseAccidentService implements ModelService
      * @param AbstractModelService $service
      * @param int $id
      * @param array $caseableData
-     * @return Model
+     * @return Model|null
      * @throws InconsistentDataException
      */
     private function updateTypedCaseable(AbstractModelService $service, int $id, array $caseableData): ?Model

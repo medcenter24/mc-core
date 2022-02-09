@@ -40,10 +40,7 @@ class FinanceConditionController extends ModelApiController
         return new FinanceConditionTransformer();
     }
 
-    /**
-     * @return ModelService|FinanceConditionService
-     */
-    protected function getModelService(): ModelService
+    protected function getModelService(): ModelService|FinanceConditionService
     {
         return $this->getServiceLocator()->get(FinanceConditionService::class);
     }

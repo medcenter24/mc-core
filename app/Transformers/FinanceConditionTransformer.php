@@ -30,7 +30,6 @@ use medcenter24\mcCore\App\Entity\DatePeriod;
 use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\App\Entity\Service;
-use medcenter24\mcCore\App\Services\Entity\FinanceConditionService;
 
 class FinanceConditionTransformer extends TransformerAbstract
 {
@@ -47,7 +46,7 @@ class FinanceConditionTransformer extends TransformerAbstract
      * @param Model|FinanceCondition $financeCondition
      * @return array
      */
-    public function transform(FinanceCondition $financeCondition): array
+    public function transform(FinanceCondition|Model $financeCondition): array
     {
         $assistantTransformer = new AssistantTransformer();
         $assistants = Assistant::whereIn('id', $financeCondition->conditions()

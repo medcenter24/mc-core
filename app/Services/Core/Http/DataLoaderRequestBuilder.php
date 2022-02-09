@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Core\Http;
 
+use JetBrains\PhpStorm\Pure;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Filter;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Paginator;
 use medcenter24\mcCore\App\Services\Core\Http\Builders\Sorter;
@@ -80,8 +81,11 @@ class DataLoaderRequestBuilder
         return $this->filter;
     }
 
-    public function getPage(): int
+    #[Pure] public function getPage(): int
     {
-        return (int) floor($this->getPaginator()->getOffset() / $this->getPaginator()->getLimit()) + 1;
+        $limit = $this->getPaginator()->getLimit();
+        return $limit
+            ? (int) floor($this->getPaginator()->getOffset() / $limit) + 1
+            : 1;
     }
 }

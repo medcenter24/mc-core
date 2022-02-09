@@ -151,7 +151,7 @@ class CaseFinanceService
         $conditions = $this->getFinanceConditionService()->findConditions($model, $conditionProps);
 
         // calculate formula by conditions
-        if ($conditions && $conditions->count()) {
+        if ($conditions->count()) {
             $formula = $this->getFormulaService()->createFormulaFromConditions($conditions);
         } else {
             $formula->addFloat(); // to have 0 instead of ''
@@ -218,7 +218,7 @@ class CaseFinanceService
      * Payment from the assistant to the company
      * @param Accident $accident
      * @return FormulaBuilderContract
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     public function getFromAssistantFormula(Accident $accident): FormulaBuilderContract
     {

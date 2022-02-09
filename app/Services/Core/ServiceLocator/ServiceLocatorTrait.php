@@ -15,23 +15,24 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\Core\ServiceLocator;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Services\Core\ServiceLocator;
 
 trait ServiceLocatorTrait
 {
-    private $serviceLocator;
+    private ?ServiceLocator $serviceLocator;
 
     public function getServiceLocator(): ServiceLocator
     {
-        if (!$this->serviceLocator) {
+        if (!isset($this->serviceLocator)) {
             $this->serviceLocator = ServiceLocator::instance();
         }
         return $this->serviceLocator;
     }
 
     /**
-     * Allow to rewrite
+     * Allow rewriting
      * @param ServiceLocator $serviceLocator
      */
     public function setServiceLocator(ServiceLocator $serviceLocator): void

@@ -21,6 +21,7 @@
         "ext-libxml": "*",
         "cmgmyr/messenger": "^2.16.2",
         "dingo/api": "~3.0",
+        "doctrine/dbal": "^3.3.2",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.3.0",

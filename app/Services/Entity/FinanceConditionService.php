@@ -16,13 +16,14 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\Assistant;
 use medcenter24\mcCore\App\Entity\DatePeriod;
 use medcenter24\mcCore\App\Entity\DatePeriodInterpretation;
@@ -30,6 +31,7 @@ use medcenter24\mcCore\App\Entity\Doctor;
 use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\App\Entity\FinanceCondition;
 use medcenter24\mcCore\App\Entity\FinanceStorage;
+use medcenter24\mcCore\App\Services\Finance\FinanceBaseConditionService;
 
 class FinanceConditionService extends AbstractModelService
 {
@@ -79,6 +81,7 @@ class FinanceConditionService extends AbstractModelService
     /** @var string Types */
     public const PARAM_TYPE_ADD = 'add';
     public const PARAM_TYPE_SUBTRACT = 'sub';
+    public const PARAM_TYPE_BASE = 'base';
 
     /** @var string Currency modes */
     public const PARAM_CURRENCY_MODE_PERCENT = 'percent';
@@ -95,6 +98,15 @@ class FinanceConditionService extends AbstractModelService
     /**
      * @inheritDoc
      */
+    #[ArrayShape([
+        self::FIELD_CREATED_BY => "int",
+        self::FIELD_TITLE => "string",
+        self::FIELD_VALUE => "int",
+        self::FIELD_TYPE => "string",
+        self::FIELD_CURRENCY_ID => "int",
+        self::FIELD_CURRENCY_MODE => "string",
+        self::FIELD_MODEL => "string",
+        self::FIELD_ORDER => "int"])]
     protected function getFillableFieldDefaults(): array
     {
         return [
@@ -109,7 +121,6 @@ class FinanceConditionService extends AbstractModelService
         ];
     }
 
-
     /**
      * Types
      * @return array
@@ -119,6 +130,7 @@ class FinanceConditionService extends AbstractModelService
         return [
             self::PARAM_TYPE_ADD,
             self::PARAM_TYPE_SUBTRACT,
+            self::PARAM_TYPE_BASE,
         ];
     }
 
@@ -161,7 +173,7 @@ class FinanceConditionService extends AbstractModelService
      *      Assistant::class => 1,
      *      City::class => 1,
      *      DoctorService::class => [1, 2, 3, 4], // id's
-     * ]]
+     * ]
      *
      * @return Collection
      */
@@ -202,7 +214,7 @@ class FinanceConditionService extends AbstractModelService
 
                 case Service::class :
                     // only arrays allowed
-                    if ($val && is_array($val) && count($val)) {
+                    if (is_array($val) && !empty($val)) {
                         $filters->put($model, $val);
                     }
 
@@ -224,33 +236,15 @@ class FinanceConditionService extends AbstractModelService
     {
         // \Illuminate\Support\Facades\DB::enableQueryLog();
 
-        $storedConditions = [];
-        if ($filters->count()) {
-            /** @var Builder $storageQuery */
-            $storageQuery = FinanceStorage::query();
-            $filters->each(static function ($val, $key) use ($storageQuery) {
-                $storageQuery->orWhere(static function (Builder $query) use ($val, $key) {
-                    $query->where('model', $key);
-                    if (is_array($val)) {
-                        $query->whereIn('model_id', $val);
-                    } else {
-                        $query->where('model_id', $val);
-                    }
-                });
-            });
-
-            $storedConditions = $storageQuery
-                ->groupBy('finance_condition_id')
-                ->get(['finance_condition_id']);
-        }
+        $storedConditions = $this->getStoredConditions($filters);
 
         // $query = \Illuminate\Support\Facades\DB::getQueryLog();
         $conditions = FinanceCondition::query()
             ->where(static function (Builder $q) use ($model, $storedConditions) {
                 // founded by stored conditions
                 $q->where('model', $model)
-                    ->whereIn('id', $storedConditions);
-            })->orWhere( static function (Builder $q) use ($model) {
+                    ->whereIn('id', array_keys($storedConditions));
+            })->orWhere(static function (Builder $q) use ($model) {
                 // general conditions for the $model (without stored conditions)
                 $q->where('model', $model)->doesntHave('conditions');
             })
@@ -259,7 +253,7 @@ class FinanceConditionService extends AbstractModelService
             ->orderBy('id')
             ->get();
 
-        return $conditions;
+        return $this->filterConditions($conditions, $storedConditions);
     }
 
     /**
@@ -272,5 +266,49 @@ class FinanceConditionService extends AbstractModelService
         return $this->getQuery($filters)
             ->orderByDesc(self::FIELD_ORDER)
             ->get();
+    }
+
+    /**
+     * Returns array of conditions with count of matches (array(1 => 10))
+     * @param Collection $filters
+     * @return array
+     */
+    private function getStoredConditions(Collection $filters): array
+    {
+        $storedConditions = [];
+        if ($filters->count()) {
+            $storageQuery = FinanceStorage::query();
+            $filters->each(static function ($val, $key) use ($storageQuery) {
+                $storageQuery->orWhere(static function (Builder $query) use ($val, $key) {
+                    $query->where('model', $key);
+                    if (is_array($val)) {
+                        $query->whereIn('model_id', $val);
+                    } else {
+                        $query->where('model_id', $val);
+                    }
+                });
+            });
+
+            $storedConditionsData = $storageQuery
+                ->get(['finance_condition_id'])
+                ->toArray();
+
+            foreach ($storedConditionsData as $storedCondition) {
+                $id = (int)$storedCondition['finance_condition_id'];
+                if (!array_key_exists($id, $storedConditions)) {
+                    $storedConditions[$id] = 1;
+                } else {
+                    $storedConditions[$id]++;
+                }
+            }
+        }
+        return $storedConditions;
+    }
+
+    private function filterConditions(Collection $conditions, array $matches): Collection
+    {
+        return $this->getServiceLocator()
+            ->get(FinanceBaseConditionService::class)
+            ->filterBaseCondition($conditions, $matches);
     }
 }

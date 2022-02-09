@@ -320,9 +320,9 @@ class AccidentService extends AbstractModelService
 
     /**
      * @param array $data
-     * @return Model
+     * @return Model|Accident
      */
-    public function create(array $data = []): Model
+    public function create(array $data = []): Model|Accident
     {
         /** @var Accident $accident */
         $accident = parent::create($data);

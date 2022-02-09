@@ -185,8 +185,10 @@ class CaseAccidentService implements ModelService
      * @return AccidentAbstract|HospitalAccident|DoctorAccident
      * @throws InconsistentDataException
      */
-    private function flushCaseable(Accident $accident, array $data): AccidentAbstract
-    {
+    private function flushCaseable(
+        Accident $accident,
+        array $data
+    ): AccidentAbstract|HospitalAccident|DoctorAccident {
         if (!$accident->getAttribute(AccidentService::FIELD_CASEABLE_ID)) {
             $caseable = $this->createCaseable($data);
             $accident->caseable()->associate($caseable)->save();
@@ -566,7 +568,7 @@ class CaseAccidentService implements ModelService
      */
     public function search(array $filters = []): Collection
     {
-        // TODO: Implement search() method.
+        return new Collection(); // doesn't search
     }
 
     /**
@@ -574,7 +576,7 @@ class CaseAccidentService implements ModelService
      */
     public function count(array $filters = []): int
     {
-        // TODO: Implement count() method.
+        return 0; // doesn't count
     }
 
     /**

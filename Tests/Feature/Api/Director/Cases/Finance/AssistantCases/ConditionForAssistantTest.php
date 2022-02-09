@@ -136,13 +136,4 @@ class ConditionForAssistantTest extends TestCase
             ],
         ]);
     }
-
-    /**
-     * Base price should be defined only once, other prices will be added or substituted to it
-     * @return void
-     */
-    public function testBasePrice(): void
-    {
-
-    }
 }

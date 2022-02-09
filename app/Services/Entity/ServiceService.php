@@ -88,15 +88,15 @@ class ServiceService extends AbstractModelService implements StatusableService, 
     public function create(array $data = []): Model
     {
         $data[self::FIELD_CREATED_BY] = auth()->user() ? auth()->user()->getAuthIdentifier() : 0;
-        $diagnostic = parent::create($data);
-        $this->assignDiseases($diagnostic, $data);
-        return $diagnostic;
+        $service = parent::create($data);
+        $this->assignDiseases($service, $data);
+        return $service;
     }
 
     public function findAndUpdate(array $filterByFields, array $data): Model
     {
-        $diagnostic = parent::findAndUpdate($filterByFields, $data);
-        $this->assignDiseases($diagnostic, $data);
-        return $diagnostic;
+        $service = parent::findAndUpdate($filterByFields, $data);
+        $this->assignDiseases($service, $data);
+        return $service;
     }
 }

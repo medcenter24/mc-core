@@ -16,12 +16,14 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\Formula;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Services\Formula;
 
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder as FormulaBuilderInterface;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Entity\FinanceCondition;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Models\Formula\FormulaBuilder;
 use Illuminate\Support\Collection;
 
@@ -38,7 +40,9 @@ class FormulaService
 
     /**
      * @param Collection $conditions
-     * @return FormulaBuilder
+     * @return FormulaBuilderInterface
+     * @throws NotImplementedException
+     * @throws FormulaException
      */
     public function createFormulaFromConditions(Collection $conditions): FormulaBuilderInterface
     {
@@ -62,7 +66,7 @@ class FormulaService
      * @param FinanceCondition $condition
      * @param FormulaBuilderInterface $builder
      * @throws NotImplementedException
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
     private function currencyOp(FinanceCondition $condition, FormulaBuilderInterface $builder): void
     {
@@ -71,6 +75,7 @@ class FormulaService
                 $builder->subFloat($condition->value);
                 break;
             case 'add':
+            case 'base':
                 $builder->addFloat($condition->value);
                 break;
             case 'mul':

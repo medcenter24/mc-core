@@ -20,7 +20,7 @@ class AddBaseTypeToFinanceConditionsTable extends Migration
         Schema::table( 'finance_conditions', function ( Blueprint $table ) {
 
             // create new col
-            $table->string( 'type2', 10 )
+            $table->string( 'typen', 10 )
                 ->default(FinanceConditionService::PARAM_TYPE_BASE)
                 ->index();
         });
@@ -37,7 +37,7 @@ class AddBaseTypeToFinanceConditionsTable extends Migration
     public function down()
     {
         Schema::table( 'finance_conditions', function ( Blueprint $table ) {
-            $table->enum('type2', [
+            $table->enum('typen', [
                 FinanceConditionService::PARAM_TYPE_SUBTRACT,
                 FinanceConditionService::PARAM_TYPE_ADD,
                 FinanceConditionService::PARAM_TYPE_BASE,
@@ -55,7 +55,7 @@ class AddBaseTypeToFinanceConditionsTable extends Migration
             DB::table('finance_conditions')
                 ->where('id', $row->id)
                 ->update([
-                    'type2' => $row->type,
+                    'typen' => $row->type,
                 ]);
         }
 
@@ -66,7 +66,7 @@ class AddBaseTypeToFinanceConditionsTable extends Migration
 
         Schema::table( 'finance_conditions', function ( Blueprint $table ) {
             // rename
-            $table->renameColumn('type2', 'type');
+            $table->renameColumn('typen', 'type');
         });
     }
 }

@@ -37,6 +37,7 @@ class AccidentStatusesTableSeeder extends Seeder
      * // Accident
      * 8. accident rejected
      * 9. accident closed
+     * 10. accident reopened
      */
     public const ACCIDENT_STATUSES = [
         [
@@ -70,6 +71,10 @@ class AccidentStatusesTableSeeder extends Seeder
         ],
         [
             'title' => AccidentStatusService::STATUS_CLOSED,
+            'type' => AccidentStatusService::TYPE_ACCIDENT,
+        ],
+        [
+            'title' => AccidentStatusService::STATUS_REOPENED,
             'type' => AccidentStatusService::TYPE_ACCIDENT,
         ]
     ];

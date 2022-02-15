@@ -313,9 +313,19 @@ class AccidentService extends AbstractModelService
      * @param string $comment
      * @throws InconsistentDataException
      */
-    public function closeAccident(Accident $accident, $comment = 'closed'): void
+    public function closeAccident(Accident $accident, string $comment = 'closed'): void
     {
         $this->setStatus($accident, $this->getAccidentStatusesService()->getClosedStatus(), $comment);
+    }
+
+    /**
+     * @param Accident $accident
+     * @param string $comment
+     * @throws InconsistentDataException
+     */
+    public function reopenAccident(Accident $accident, string $comment = 'reopened'): void
+    {
+        $this->setStatus($accident, $this->getAccidentStatusesService()->getReopenedStatus(), $comment);
     }
 
     /**
@@ -344,7 +354,7 @@ class AccidentService extends AbstractModelService
             $this->convertToFilter($filterByFields, $data)
         );
 
-        if ($this->isClosed($previousAccident)) {
+        if ($this->isClosed($previousAccident) && !$this->isReopening($data)) {
             throw new InconsistentDataException('Accident closed and can not be changed', 422);
         }
 
@@ -362,5 +372,12 @@ class AccidentService extends AbstractModelService
     public function isHospitalAccident(Accident $accident): bool
     {
         return $accident->getAttribute(self::FIELD_CASEABLE_TYPE) === HospitalAccident::class;
+    }
+
+    private function isReopening(array $data): bool
+    {
+        $reopenedStatus = $this->getAccidentStatusesService()->getReopenedStatus();
+        return !empty($data)
+            && $data[self::FIELD_ACCIDENT_STATUS_ID] === $reopenedStatus->getAttribute(self::FIELD_ID);
     }
 }

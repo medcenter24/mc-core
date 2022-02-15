@@ -218,8 +218,9 @@ $api->group([
                 $api->post('{id}/documents', CaseDocumentController::class . '@createDocuments');
                 $api->get('{id}/documents', CaseDocumentController::class . '@documents');
 
-                /** Case statuses */
+                /** Close the case */
                 $api->put('{id}/close', CaseStatusController::class . '@close');
+                $api->put('{id}/reopen', CaseStatusController::class . '@reopen');
 
                 /** History */
                 $api->get('{id}/history', CaseHistoryController::class . '@history');

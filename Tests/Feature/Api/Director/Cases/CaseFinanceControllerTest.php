@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases;
 
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\CaseAccidentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
@@ -28,10 +29,7 @@ class CaseFinanceControllerTest extends TestCase
 {
     use DirectorTestTraitApi;
 
-    /**
-     * @var CaseAccidentService
-     */
-    private $caseAccidentService;
+    private CaseAccidentService $caseAccidentService;
 
     protected function setUp(): void
     {
@@ -39,6 +37,9 @@ class CaseFinanceControllerTest extends TestCase
         $this->caseAccidentService = new CaseAccidentService();
     }
 
+    /**
+     * @throws InconsistentDataException
+     */
     public function testCaseFinances(): void
     {
         $accident = $this->caseAccidentService->create();

@@ -97,6 +97,6 @@ class CaseCommentController extends ApiController
         ]);
 
         $transform = new MessageTransformer();
-        return $this->response->created(null, $transform->transform($message));
+        return $this->response->created(null, ['data' => $transform->transform($message)]);
     }
 }

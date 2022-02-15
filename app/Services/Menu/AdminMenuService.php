@@ -97,7 +97,11 @@ class AdminMenuService extends MenuService
                 '10' => [
                     'name' => 'content.doctor_service',
                     'slug' => 'admin/entity/doctor-service',
-                ]
+                ],
+                '20' => [
+                    'name' => 'content.accident_status',
+                    'slug' => 'admin/entity/accident-status',
+                ],
             ]
         ],
     ];

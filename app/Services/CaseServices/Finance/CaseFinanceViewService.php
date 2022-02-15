@@ -17,7 +17,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\CaseServices\Finance;
 
@@ -33,6 +33,7 @@ use medcenter24\mcCore\App\Services\Formula\FormulaResultService;
 use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
 use Illuminate\Support\Collection;
 use Throwable;
+use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class CaseFinanceViewService
 {
@@ -44,11 +45,12 @@ class CaseFinanceViewService
     private FormulaViewService $formulaViewService;
 
     public function __construct(
-        CaseFinanceService $caseFinanceService,
+        CaseFinanceService   $caseFinanceService,
         FormulaResultService $formulaResultService,
-        FormulaViewService $formulaViewService,
-        CurrencyService $currencyService
-    ) {
+        FormulaViewService   $formulaViewService,
+        CurrencyService      $currencyService
+    )
+    {
         $this->caseFinanceService = $caseFinanceService;
         $this->formulaResultService = $formulaResultService;
         $this->formulaViewService = $formulaViewService;
@@ -69,33 +71,26 @@ class CaseFinanceViewService
 
         $types = array_intersect($types, self::FINANCE_TYPES);
         foreach ($types as $type) {
-            switch ($type) {
-                case 'income':
-                    $data = $this->getIncomeData($accident);
-                    break;
-                case 'assistant':
-                    $data = $this->getAssistantData($accident);
-                    break;
-                case 'caseable':
-                    $data = $this->getCaseableData($accident);
-                    break;
-                default:
-                    throw new InconsistentDataException('Undefined finance type');
-            }
+            $data = match ($type) {
+                'income' => $this->getIncomeData($accident),
+                'assistant' => $this->getAssistantData($accident),
+                'caseable' => $this->getCaseableData($accident),
+                default => throw new InconsistentDataException('Undefined finance type'),
+            };
 
             $currency = $this->hasPayment($data)
                 ? $this->getPayment($data)->currency
                 : $this->currencyService->getDefaultCurrency();
 
             $typeResult = collect([
-                'type' => $type,
-                'loading' => false,
-                'payment' => $data['payment'],
-                'currency' => $currency,
-                'calculatedValue' => $this->getCalculatedValue($data),
-                'formulaView' => array_key_exists('formula', $data) && $data['formula'] instanceof FormulaBuilder
+                'type'             => $type,
+                'loading'          => false,
+                'payment'          => $data['payment'],
+                'currency'         => $currency,
+                'calculatedValue'  => $this->getCalculatedValue($data),
+                'formulaView'      => array_key_exists('formula', $data) && $data['formula'] instanceof FormulaBuilder
                     ? $this->formulaViewService->render($data['formula']) : $data['formula'],
-                'view' => $this->getFinalActiveValue($data) . ' ' . $currency->code,
+                'view'             => $this->getFinalActiveValue($data) . ' ' . $currency->code,
                 'finalActiveValue' => $this->getFinalActiveValue($data),
             ]);
             $financeDataCollection->push($typeResult);
@@ -119,7 +114,7 @@ class CaseFinanceViewService
             }
         }
 
-        return (string) $val;
+        return (string)$val;
     }
 
     /**
@@ -137,7 +132,7 @@ class CaseFinanceViewService
                 $value = $this->getPayment($data)->getAttribute(PaymentService::FIELD_VALUE);
             }
         }
-        return (float) $value;
+        return (float)$value;
     }
 
     private function hasPayment(array $data): bool
@@ -202,7 +197,7 @@ class CaseFinanceViewService
             $res = $this->formulaResultService->calculate($data['formula']);
         }
 
-        return (float) $res;
+        return (float)$res;
     }
 
     /**
@@ -224,7 +219,8 @@ class CaseFinanceViewService
         return compact('payment', 'formula');
     }
 
-    private function getAssistantInvoice(Accident $accident) {
+    private function getAssistantInvoice(Accident $accident)
+    {
         $invoice = null;
         if ($accident->assistantInvoice
             && $accident->assistantInvoice->payment) {
@@ -242,45 +238,55 @@ class CaseFinanceViewService
      */
     private function getCaseableData(Accident $accident): array
     {
-        // invoice has the major priority
-        $payment = $this->getCaseableInvoice($accident);
-        $formula = 'invoice';
-        if (!$payment) {
-            // fixed payment has the minor priority
-            $payment = $accident->getAttribute('paymentToCaseable');
-            $formula = 'fixed';
-            // formula doesn't have any priority
-            if (!$payment || !$payment->fixed) {
-                // it's possible that accident doesn't have caseable (new one)
-                if ($accident->getAttribute('caseable')) {
-                    $formula = $accident->isDoctorCaseable()
-                        ? $this->caseFinanceService->getToDoctorFormula($accident)
-                        : $this->caseFinanceService->getToHospitalFormula($accident);
-                } else {
-                    $formula = 0.00;
-                    $payment = null;
-                }
+        $invoicePayment = null;
+
+        // 1. If saved fixed payment to caseable
+        $formula = 'fixed';
+        /** @var Payment $paymentToCaseable */
+        $paymentToCaseable = $accident->getAttribute('paymentToCaseable');
+        $payment = $paymentToCaseable;
+        $hasFixedPayment = $paymentToCaseable && $paymentToCaseable->getAttribute(PaymentService::FIELD_FIXED);
+
+        // 2. Or If case has Invoice payment
+        if (!$hasFixedPayment) {
+            $formula = 'invoice';
+            // invoice has minor priority
+            $invoicePayment = $this->getCaseableInvoice($accident);
+            $payment = $invoicePayment;
+        }
+
+        // 3. Get formula if not fixed and no invoice payment
+        if(!$hasFixedPayment && !$invoicePayment) {
+            // it's possible that accident doesn't have caseable (new one)
+            if ($accident->getAttribute('caseable')) {
+                $formula = $accident->isDoctorCaseable()
+                    ? $this->caseFinanceService->getToDoctorFormula($accident)
+                    : $this->caseFinanceService->getToHospitalFormula($accident);
+            } else {
+                $formula = 0.00;
+                $payment = null;
             }
         }
 
         return compact('payment', 'formula');
     }
 
-    private function getCaseableInvoice(Accident $accident) {
+    private function getCaseableInvoice(Accident $accident)
+    {
         $invoice = null;
         if ($accident->isDoctorCaseable()
             && $accident->caseable
             && $accident->caseable->doctorInvoice
             && $accident->caseable->doctorInvoice->payment) {
 
-                $invoice = $accident->caseable->doctorInvoice->payment;
+            $invoice = $accident->caseable->doctorInvoice->payment;
         }
         if ($accident->isHospitalCaseable()
             && $accident->caseable
             && $accident->caseable->hospitalInvoice
             && $accident->caseable->hospitalInvoice->payment) {
 
-                $invoice = $accident->caseable->hospitalInvoice->payment;
+            $invoice = $accident->caseable->hospitalInvoice->payment;
         }
         return $invoice;
     }

@@ -775,9 +775,7 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'payment' => [
-                        'id' => $caseablePayment->id,
-                    ],
+                    'payment' => null,
                     'formula' => '0.00',
                     'calculatedValue' => 0,
                 ],

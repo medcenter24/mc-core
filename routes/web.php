@@ -28,12 +28,13 @@
 */
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Ui\AuthRouteMethods;
 
 Route::get('/', static function () {
     return redirect('admin');
 });
 
-Route::mixin(new \Laravel\Ui\AuthRouteMethods());
+Route::mixin(new AuthRouteMethods());
 Route::auth(['verify' => true]);
 
 Route::get('/home', static function () {
@@ -53,6 +54,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], stat
 
     Route::group(['prefix' => 'entity'], static function() {
         Route::get('doctor-service', 'Admin\Entity\DoctorServiceController@index');
+        Route::get('accident-status', 'Admin\Entity\AccidentStatusController@index');
+        Route::post('accident-status', 'Admin\Entity\AccidentStatusController@store');
     });
 
     Route::group(['prefix' => 'preview'], static function() {

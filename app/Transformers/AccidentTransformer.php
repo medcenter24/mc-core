@@ -22,7 +22,9 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
 class AccidentTransformer extends AbstractTransformer
@@ -36,6 +38,11 @@ class AccidentTransformer extends AbstractTransformer
     {
         $fields = parent::transform($model);
         $fields['caseableType'] = $this->getTransformedCaseType($model);
+        // new field to detect state
+        $fields['isClosed'] = $model->getAttribute('accidentStatus')
+            && $model
+                ->getAttribute('accidentStatus')
+                ->getAttribute('title') === AccidentStatusService::STATUS_CLOSED;
         return $fields;
     }
 
@@ -65,11 +72,11 @@ class AccidentTransformer extends AbstractTransformer
             'address' => AccidentService::FIELD_ADDRESS,
             'contacts' => AccidentService::FIELD_CONTACTS,
             'symptoms' => AccidentService::FIELD_SYMPTOMS,
-            'createdAt' => AccidentService::FIELD_CREATED_AT,
+            'createdAt' => AbstractModelService::FIELD_CREATED_AT,
             'closedAt' => AccidentService::FIELD_CLOSED_AT,
             'handlingTime' => AccidentService::FIELD_HANDLING_TIME,
-            'updatedAt' => AccidentService::FIELD_UPDATED_AT,
-            'deletedAt' => AccidentService::FIELD_DELETED_AT,
+            'updatedAt' => AbstractModelService::FIELD_UPDATED_AT,
+            'deletedAt' => AbstractModelService::FIELD_DELETED_AT,
         ];
     }
 

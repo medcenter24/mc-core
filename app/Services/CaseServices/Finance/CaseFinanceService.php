@@ -309,16 +309,16 @@ class CaseFinanceService
     /**
      * @param Accident $accident
      * @param array $data
-     * @param $relationName
+     * @param string $relationName
      */
-    private function savePayment(Accident $accident, array $data, $relationName): void
+    private function savePayment(Accident $accident, array $data, string $relationName): void
     {
         /** @var Payment $payment */
         $payment = $accident->$relationName;
         if ($payment) {
             $oldPayment = clone $payment;
             $payment->value = $data['price'];
-            $payment->fixed = (int) $data['fixed'] ? true : false;
+            $payment->fixed = (bool)((int)$data['fixed']);
             $payment->save();
         } else {
             $oldPayment = null;
@@ -326,7 +326,7 @@ class CaseFinanceService
                 'created_by' => auth()->user()->id,
                 'value' => $data['price'],
                 'currency_id' => $this->getCurrencyService()->getDefaultCurrency()->getAttribute('id'),
-                'fixed' => (int)$data['fixed'] ? true : false,
+                'fixed' => (bool)((int)$data['fixed']),
                 'description' => 'Created from CaseFinanceService',
             ]);
             $accident->$relationName()->associate($payment->id);

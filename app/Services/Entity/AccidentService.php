@@ -378,6 +378,7 @@ class AccidentService extends AbstractModelService
     {
         $reopenedStatus = $this->getAccidentStatusesService()->getReopenedStatus();
         return !empty($data)
-            && $data[self::FIELD_ACCIDENT_STATUS_ID] === $reopenedStatus->getAttribute(self::FIELD_ID);
+            && ($data[self::FIELD_ACCIDENT_STATUS_ID] ?? null)
+            === $reopenedStatus->getAttribute(self::FIELD_ID);
     }
 }

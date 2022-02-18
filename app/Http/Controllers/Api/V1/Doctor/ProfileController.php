@@ -25,8 +25,12 @@ use Dingo\Api\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\User;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\LogoService;
 use medcenter24\mcCore\App\Transformers\DoctorProfileTransformer;
+use medcenter24\mcCore\App\Transformers\UserTransformer;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 
 class ProfileController extends ApiController
 {
@@ -86,5 +90,27 @@ class ProfileController extends ApiController
         $user->lang = $lang;
         $user->save();
         return $this->response->noContent();
+    }
+
+    /**
+     * Load photo
+     * @return Response
+     */
+    public function photo(): Response
+    {
+        /** @var User $user */
+        $user = $this->user();
+
+        $user->clearMediaCollection(LogoService::FOLDER);
+        try {
+            $user->addMediaFromRequest('files')
+                ->toMediaCollection(LogoService::FOLDER, LogoService::DISC);
+        } catch (FileCannotBeAdded $e) {
+            if (stripos($e->getMessage(), 'unlink(') === false) {
+                $this->response->error($e->getMessage(), 500);
+            }
+        }
+
+        return $this->response->item($user->doctor, new DoctorProfileTransformer());
     }
 }

@@ -23,20 +23,29 @@ namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
 use medcenter24\mcCore\App\Entity\Doctor;
+use medcenter24\mcCore\App\Entity\User;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Helpers\MediaHelper;
 use medcenter24\mcCore\App\Services\Entity\DoctorService;
 use medcenter24\mcCore\App\Services\Entity\UserService;
+use medcenter24\mcCore\App\Services\LogoService;
 
 class DoctorProfileTransformer extends AbstractTransformer
 {
     /**
-     * @param Model $model
+     * @param Model|Doctor $model
      * @return array
+     * @throws InconsistentDataException
      */
-    public function transform (Model $model): array
+    public function transform (Model|Doctor $model): array
     {
         $fields = parent::transform($model);
-        $fields['pictureUrl'] = $model instanceof Doctor && $model->hasMedia()
-            ? $model->getMedia('photo')->first()->getUrl('thumb') : '';
+        $fields['thumb200'] = $this->hasMedia($model->user) ?
+            MediaHelper::b64($model->user, LogoService::FOLDER, UserService::THUMB_200)
+            : '';
+        $fields['thumb45'] = $this->hasMedia($model->user)
+            ? MediaHelper::b64($model->user, LogoService::FOLDER, UserService::THUMB_45)
+            : '';
         $fields['city'] = $model->getAttribute('city')
             ? $model->getAttribute('city')->getAttribute('title')
             : '';
@@ -47,6 +56,11 @@ class DoctorProfileTransformer extends AbstractTransformer
             ? $model->getAttribute('user')->getAttribute('lang')
             : '';
         return $fields;
+    }
+
+    private function hasMedia(Model $model): bool
+    {
+        return $model instanceof User && $model->hasMedia(LogoService::FOLDER);
     }
 
     /**

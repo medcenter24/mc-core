@@ -99,7 +99,7 @@ $api->group([
 
             $api->group(['prefix' => 'accidents'], static function (Router $api) {
                 $api->get('{id}/patient', PatientAccidentController::class . '@patient');
-                $api->put('{id}/patient', PatientAccidentController::class . '@updatePatient');
+                $api->patch('{id}/patient', PatientAccidentController::class . '@updatePatient');
 
                 $api->get('{id}/status', StatusAccidentController::class . '@status');
                 $api->post('{id}/reject', StatusAccidentController::class . '@reject');
@@ -125,6 +125,7 @@ $api->group([
 
             $api->get('me', ProfileController::class . '@me');
             $api->put('me', ProfileController::class . '@update');
+            $api->post('me/photo', ProfileController::class . '@photo');
 
             $api->get('lang/{lang}', ProfileController::class . '@lang');
 

@@ -16,9 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types=1);
+
 namespace medcenter24\mcCore\App\Services\Bot\Drivers;
 
-
+use JetBrains\PhpStorm\ArrayShape;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
@@ -28,16 +30,18 @@ class TelegramBot extends AbstractBotDriver
      * @return Api
      * @throws TelegramSDKException
      */
-    protected function getTelegram()
+    protected function getTelegram(): Api
     {
-        return new Api($this->getConfiguration()->get('bots.' . $this->getConfiguration()->get('default').'.token'));
+        $token = config('telegram')['bots'][config('telegram.default')]['token'] ?? '';
+        return new Api($token);
     }
 
     /**
      * @return array
      * @throws TelegramSDKException
      */
-    public function getBotInformation()
+    #[ArrayShape(['id' => "mixed", 'isBot' => "mixed", 'firstName' => "mixed", 'lastName' => "mixed", 'username' => "mixed"])]
+    public function getBotInformation(): array
     {
         $response = $this->getTelegram()->getMe();
         return [

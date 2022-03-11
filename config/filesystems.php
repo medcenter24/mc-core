@@ -35,7 +35,7 @@ return [
     |
     */
 
-    'default' => 'local',
+    'default' => env('FILESYSTEM_DISK', 'local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -68,6 +68,7 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
+            'throw' => false,
         ],
 
         'public' => [
@@ -75,6 +76,7 @@ return [
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
+            'throw' => false,
         ],
 
         's3' => [
@@ -84,6 +86,7 @@ return [
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
+            'throw' => false,
         ],
 
         // @todo hack
@@ -91,31 +94,37 @@ return [
         'imports' => [
             'driver' => 'local',
             'root' => storage_path( 'imports'),
+            'throw' => false,
         ],
 
         DocumentService::DISC_IMPORTS => [
             'driver' => 'local',
             'root' => storage_path(DocumentService::DISC_IMPORTS),
+            'throw' => false,
         ],
 
         LogoService::DISC => [
             'driver' => 'local',
-            'root' => storage_path(LogoService::FOLDER)
+            'root' => storage_path(LogoService::FOLDER),
+            'throw' => false,
         ],
 
         FormService::PDF_DISK => [
             'driver' => 'local',
             'root' => storage_path(FormService::PDF_FOLDER),
+            'throw' => false,
         ],
 
         UploaderService::CONF_DEFAULT => [
             'driver' => 'local',
             'root' => storage_path(UploaderService::CONF_DEFAULT),
+            'throw' => false,
         ],
 
         TmpFileService::DISC => [
             'driver' => 'local',
             'root' => storage_path(TmpFileService::FOLDER),
+            'throw' => false,
         ]
 
         /*

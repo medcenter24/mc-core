@@ -140,7 +140,7 @@ return [
         |
         */
 
-        'user' => 'Tymon\JWTAuth\Providers\User\EloquentUserAdapter',
+        'user' => 'PHPOpenSourceSaver\JWTAuth\Providers\User\EloquentUserAdapter',
 
         /*
         |--------------------------------------------------------------------------
@@ -151,7 +151,7 @@ return [
         |
         */
 
-        'jwt' => 'Tymon\JWTAuth\Providers\JWT\Namshi',
+        'jwt' => 'PHPOpenSourceSaver\JWTAuth\Providers\JWT\Namshi',
 
         /*
         |--------------------------------------------------------------------------
@@ -162,7 +162,7 @@ return [
         |
         */
 
-        'auth' => 'Tymon\JWTAuth\Providers\Auth\Illuminate',
+        'auth' => 'PHPOpenSourceSaver\JWTAuth\Providers\Auth\Illuminate',
 
         /*
         |--------------------------------------------------------------------------
@@ -173,7 +173,7 @@ return [
         |
         */
 
-        'storage' => 'Tymon\JWTAuth\Providers\Storage\Illuminate',
+        'storage' => 'PHPOpenSourceSaver\JWTAuth\Providers\Storage\Illuminate',
     ],
 
 ];

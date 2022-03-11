@@ -16,24 +16,25 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Http;
 
-use Fideloper\Proxy\TrustProxies;
+use App\Http\Middleware\PreventRequestsDuringMaintenance;
+use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use medcenter24\mcCore\App\Http\Middleware\Authenticate;
 use medcenter24\mcCore\App\Http\Middleware\DoctorMiddleware;
 use medcenter24\mcCore\App\Http\Middleware\EncryptCookies;
 use medcenter24\mcCore\App\Http\Middleware\RedirectIfAuthenticated;
 use medcenter24\mcCore\App\Http\Middleware\RoleMiddleware;
 use medcenter24\mcCore\App\Http\Middleware\TrimStrings;
+use medcenter24\mcCore\App\Http\Middleware\TrustProxies;
 use medcenter24\mcCore\App\Http\Middleware\VerifyCsrfToken;
-use Fruitcake\Cors\HandleCors;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Http\Middleware\SetCacheHeaders;
@@ -54,7 +55,7 @@ class Kernel extends HttpKernel
     protected $middleware = [
         TrustProxies::class,
         HandleCors::class,
-        CheckForMaintenanceMode::class,
+        PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
@@ -79,7 +80,7 @@ class Kernel extends HttpKernel
         'api' => [
             // fixed 429 too many requests (disabled throttle)
             // 'throttle:800,1',
-            'bindings',
+            SubstituteBindings::class,
         ],
     ];
 
@@ -91,15 +92,15 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'cors' => HandleCors::class,
-        'auth' => Authenticate::class,
-        'auth.basic' => AuthenticateWithBasicAuth::class,
-        'bindings' => SubstituteBindings::class,
+        'cors'          => HandleCors::class,
+        'auth'          => Authenticate::class,
+        'auth.basic'    => AuthenticateWithBasicAuth::class,
         'cache.headers' => SetCacheHeaders::class,
-        'can' => Authorize::class,
-        'guest' => RedirectIfAuthenticated::class,
-        'throttle' => ThrottleRequests::class,
-        'role' => RoleMiddleware::class,
-        'doctor' => DoctorMiddleware::class,
+        'can'           => Authorize::class,
+        'guest'         => RedirectIfAuthenticated::class,
+        'throttle'      => ThrottleRequests::class,
+        'role'          => RoleMiddleware::class,
+        'doctor'        => DoctorMiddleware::class,
+        'verified'      => EnsureEmailIsVerified::class,
     ];
 }

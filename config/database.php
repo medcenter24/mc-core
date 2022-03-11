@@ -16,6 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use Illuminate\Support\Str;
+use PDO;
+
 return [
 
     /*

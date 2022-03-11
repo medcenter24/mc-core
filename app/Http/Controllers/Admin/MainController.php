@@ -18,19 +18,21 @@
 
 namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 
 class MainController extends AdminController
 {
-
-    public function __construct()
+    /**
+     * @throws InconsistentDataException
+     */
+    public function index(): Factory|View|Application
     {
-        parent::__construct();
         $this->getMenuService()->setTitle(trans('content.admin_panel'));
-    }
-
-    public function index()
-    {
+        $this->getMenuService()->markCurrentMenu('1.10');
         return view('admin.main.index');
     }
 }

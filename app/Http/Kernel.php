@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Http;
 
-use App\Http\Middleware\PreventRequestsDuringMaintenance;
+use medcenter24\mcCore\App\Http\Middleware\PreventRequestsDuringMaintenance;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use medcenter24\mcCore\App\Http\Middleware\Authenticate;
 use medcenter24\mcCore\App\Http\Middleware\DoctorMiddleware;

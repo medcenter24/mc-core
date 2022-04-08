@@ -193,7 +193,7 @@ class DoctorCaseControllerTest extends TestCase
                 'visitTime' => '2017-01-20 01:30:54',
             ]
         ]);
-        
+
         $accident->refresh();
 
         /** @var AccidentService $accidentService */
@@ -216,14 +216,14 @@ class DoctorCaseControllerTest extends TestCase
         $this->assertSame([
             [
                 'id' => 1,
-                'created_by' => '0',
+                'created_by' => 0,
                 'title' => '',
                 'description' => '',
                 'status' => 'active',
             ],
             [
                 'id' => 2,
-                'created_by' => '0',
+                'created_by' => 0,
                 'title' => '',
                 'description' => '',
                 'status' => 'active',
@@ -233,16 +233,16 @@ class DoctorCaseControllerTest extends TestCase
         $this->assertSame([
             [
                 'id' => 1,
-                'created_by' => '0',
-                'diagnostic_category_id' => '0',
+                'created_by' => 0,
+                'diagnostic_category_id' => 0,
                 'title' => '',
                 'status' => 'active',
                 'description' => '',
             ],
             [
                 'id' => 2,
-                'created_by' => '0',
-                'diagnostic_category_id' => '0',
+                'created_by' => 0,
+                'diagnostic_category_id' => 0,
                 'title' => '',
                 'status' => 'active',
                 'description' => '',

@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
-use JetBrains\PhpStorm\ArrayShape;
 use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Helpers\Date;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
@@ -49,7 +48,6 @@ abstract class AbstractTransformer extends TransformerAbstract
      * To convert types : we need to define expected var types
      * @return array
      */
-    #[ArrayShape(['id' => "string"])]
     protected function getMappedTypes(): array
     {
         return [

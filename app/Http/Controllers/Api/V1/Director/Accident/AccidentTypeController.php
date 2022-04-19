@@ -14,44 +14,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2022 (original work) MedCenter24.com;
  */
 
 declare(strict_types = 1);
 
-namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
+namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Accident;
 
 use JetBrains\PhpStorm\Pure;
+use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
-use medcenter24\mcCore\App\Http\Requests\Api\AccidentCheckpointRequest;
-use medcenter24\mcCore\App\Http\Requests\Api\AccidentCheckpointUpdateRequest;
-use medcenter24\mcCore\App\Services\Entity\AccidentCheckpointService;
-use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
-use League\Fractal\TransformerAbstract;
+use medcenter24\mcCore\App\Services\Entity\AccidentTypeService;
+use medcenter24\mcCore\App\Transformers\AccidentTypeTransformer;
 
-class AccidentCheckpointsController extends ModelApiController
+class AccidentTypeController extends ModelApiController
 {
     #[Pure] protected function getDataTransformer(): TransformerAbstract
     {
-        return new AccidentCheckpointTransformer();
+        return new AccidentTypeTransformer();
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getModelService(): ModelService
     {
-        return $this->getServiceLocator()->get(AccidentCheckpointService::class);
-    }
-
-    protected function getRequestClass(): string
-    {
-        return AccidentCheckpointRequest::class;
-    }
-
-    protected function getUpdateRequestClass(): string
-    {
-        return AccidentCheckpointUpdateRequest::class;
+        return $this->getServiceLocator()->get(AccidentTypeService::class);
     }
 }

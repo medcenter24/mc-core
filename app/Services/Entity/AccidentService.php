@@ -135,9 +135,9 @@ class AccidentService extends AbstractModelService
     ];
 
     public const DATE_FIELDS = [
-        AccidentService::FIELD_CREATED_AT,
-        AccidentService::FIELD_DELETED_AT,
-        AccidentService::FIELD_UPDATED_AT,
+        AbstractModelService::FIELD_CREATED_AT,
+        AbstractModelService::FIELD_DELETED_AT,
+        AbstractModelService::FIELD_UPDATED_AT,
         AccidentService::FIELD_HANDLING_TIME,
     ];
 
@@ -302,7 +302,7 @@ class AccidentService extends AbstractModelService
      * @param string $comment
      * @throws InconsistentDataException
      */
-    public function rejectDoctorAccident($accident, $comment = 'rejected'): void
+    public function rejectDoctorAccident($accident, string $comment = 'rejected'): void
     {
         $status = $this->getAccidentStatusesService()->getDoctorRejectedStatus();
         $this->setStatus($accident, $status, $comment);

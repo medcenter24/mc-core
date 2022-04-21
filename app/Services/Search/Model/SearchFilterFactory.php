@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
@@ -12,27 +12,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2022 (original work) MedCenter24.com;
  */
+
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Core\ServiceLocator;
+namespace medcenter24\mcCore\App\Services\Search\Model;
 
-
-class ServiceLocator
+class SearchFilterFactory
 {
-    private static self $instance;
-
-    public static function instance(): self
+    public function create(string $model, array $ids = []): SearchFilter
     {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
-    public function get(string $name, array $parameters = [])
-    {
-        return resolve($name, ['options' => $parameters]);
+        return new SearchFilter($model, $ids);
     }
 }

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
@@ -12,27 +12,37 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2022 (original work) MedCenter24.com;
  */
+
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Core\ServiceLocator;
+namespace medcenter24\mcCore\App\Services\Search\Model;
 
+use Illuminate\Support\Collection;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
-class ServiceLocator
+class SearchFieldsCollection
 {
-    private static self $instance;
+    use ServiceLocatorTrait;
 
-    public static function instance(): self
+    private Collection $fields;
+
+    public function load(array $fields): void
     {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
+        $this->fields = collect();
+        foreach ($fields as $field) {
+            $this->fields->push($this->getSearchFieldFactory()->create($field));
         }
-        return self::$instance;
     }
 
-    public function get(string $name, array $parameters = [])
+    public function getFields(): Collection
     {
-        return resolve($name, ['options' => $parameters]);
+        return $this->fields;
+    }
+
+    private function getSearchFieldFactory(): SearchFieldFactory
+    {
+        return $this->getServiceLocator()->get(SearchFieldFactory::class);
     }
 }

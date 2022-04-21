@@ -22,13 +22,18 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Search;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
-use medcenter24\mcCore\App\Transformers\SearcherTransformer;
+use medcenter24\mcCore\App\Services\Search\SearchRequest;
+use medcenter24\mcCore\App\Services\Search\SearchService;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class SearchController extends ApiController
 {
-    public function search(Request $request): Response
+    public function search(Request $request, SearchRequest $searchRequest, SearchService $searchService): Response
     {
-        $data = [];
-        return $this->response();
+        /** @var ParameterBag $searchRequestParameterBag */
+        $searchRequestParameterBag = $request->json();
+        $searchRequest->load($searchRequestParameterBag);
+        $data = $searchService->search($searchRequest);
+        return $this->response()->array($data);
     }
 }

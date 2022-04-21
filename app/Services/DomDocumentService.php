@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services;
 
+use DOMAttr;
 use DOMNode;
 use DOMText;
 use medcenter24\mcCore\App\Support\Core\Configurable;
@@ -36,13 +37,13 @@ class DomDocumentService extends Configurable
      * @param DOMNode $root
      * @return array|bool|string
      */
-    public function toArray(DOMNode $root)
+    public function toArray(DOMNode $root): bool|array|string
     {
         $result = [];
         if (!$this->getOption(self::CONFIG_WITHOUT_ATTRIBUTES) && $root->hasAttributes())
         {
             foreach ($root->attributes as $attr) {
-                if ($attr && $attr instanceof \DOMAttr) {
+                if ($attr instanceof DOMAttr) {
                     $result[$attr->nodeName] = $attr->nodeValue;
                 }
             }

@@ -81,7 +81,7 @@ abstract class Configurable implements ConfigurableInterface
      * Returns whenever or not the option is defined
      *
      * @param  string $name
-     * @return boolean
+     * @return bool
      */
     public function hasOption($name): bool
     {

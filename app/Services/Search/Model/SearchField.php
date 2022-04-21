@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
@@ -12,27 +12,42 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2022 (original work) MedCenter24.com;
  */
+
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Core\ServiceLocator;
+namespace medcenter24\mcCore\App\Services\Search\Model;
 
-
-class ServiceLocator
+class SearchField
 {
-    private static self $instance;
-
-    public static function instance(): self
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
+    public function __construct(
+        private readonly string $id,
+        private readonly string $order,
+        private readonly int $sort,
+    ) {
     }
 
-    public function get(string $name, array $parameters = [])
+    public function getId(): string
     {
-        return resolve($name, ['options' => $parameters]);
+        return $this->id;
     }
+
+    /**
+     * @return string
+     */
+    public function getOrder(): string
+    {
+        return $this->order;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSort(): int
+    {
+        return $this->sort;
+    }
+
+
 }

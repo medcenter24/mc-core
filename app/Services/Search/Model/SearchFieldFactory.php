@@ -17,13 +17,17 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Transformers;
+namespace medcenter24\mcCore\App\Services\Search\Model;
 
-class SearcherTransformer extends AbstractTransformer
+class SearchFieldFactory
 {
 
-    protected function getMap(): array
+    public function create(mixed $field): SearchField
     {
-        // TODO: Implement getMap() method.
+        return new SearchField(
+            $field['id'],
+            $field['order'] ?? '',
+            $field['sort'],
+        );
     }
 }

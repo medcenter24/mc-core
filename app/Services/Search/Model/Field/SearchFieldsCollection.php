@@ -17,48 +17,32 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model;
+namespace medcenter24\mcCore\App\Services\Search\Model\Field;
 
 use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
-class SearchFiltersCollection
+class SearchFieldsCollection
 {
     use ServiceLocatorTrait;
 
-    private Collection $filters;
+    private Collection $fields;
 
-    public function load(array $filters): void
+    public function load(array $fields): void
     {
-        $this->filters = collect();
-        foreach ($filters as $model => $values) {
-
-            $ids = [];
-            foreach ($values as $value) {
-                if (!empty($value['id'])) {
-                    $ids[] = $value['id'];
-                }
-            }
-
-            if (!empty($ids)) {
-                $this
-                    ->filters
-                    ->push(
-                        $this
-                            ->getSearchFilterFactory()
-                            ->create($model, $ids)
-                    );
-            }
+        $this->fields = collect();
+        foreach ($fields as $field) {
+            $this->fields->push($this->getSearchFieldFactory()->create($field));
         }
     }
 
-    public function getFilters(): Collection
+    public function getFields(): Collection
     {
-        return $this->filters;
+        return $this->fields;
     }
 
-    private function getSearchFilterFactory()
+    private function getSearchFieldFactory(): SearchFieldFactory
     {
-        return $this->getServiceLocator()->get(SearchFilterFactory::class);
+        return $this->getServiceLocator()->get(SearchFieldFactory::class);
     }
 }

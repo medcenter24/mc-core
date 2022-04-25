@@ -30,18 +30,26 @@ class SearcherTest extends TestCase
     {
         $response = $this->sendPost('/api/director/search/search', json_decode($this->getPayload(), true));
         $response->assertStatus(200);
-        $response->assertExactJson('{}');
+        $response->assertExactJson([]);
     }
 
     public function getPayload(): string
     {
         return '{
-  "id": 19,
-  "title": "active",
+  "id": 20,
+  "title": "2022-04-22 00:08:22",
   "type": "searcher",
   "result": "json",
   "filters": {
-    "cities": [],
+    "cities": [
+      {
+        "id": 1,
+        "title": "City",
+        "regionId": 1,
+        "regionTitle": "Region",
+        "countryTitle": "Country"
+      }
+    ],
     "assistants": [
       {
         "id": 1,
@@ -72,33 +80,123 @@ class SearcherTest extends TestCase
       "doctor",
       "hospital"
     ],
-    "patients": [],
-    "handlingTimeRanges": [],
-    "accidentStatuses": [],
-    "accidentTypes": [],
-    "visitTimeRanges": [],
-    "doctorServices": [],
-    "doctorSurveys": [],
-    "doctorDiagnostics": []
+    "patients": [
+      {
+        "id": 1,
+        "name": "TEST-TESTOV",
+        "address": "asdf",
+        "phones": "123",
+        "birthday": "1212-12-12",
+        "comment": "asdf"
+      }
+    ],
+    "handlingTimeRanges": [
+      "2022-04-19>2022-04-24"
+    ],
+    "accidentStatuses": [
+      {
+        "id": 1,
+        "title": "new",
+        "type": "accident"
+      },
+      {
+        "id": 2,
+        "title": "assigned",
+        "type": "doctor"
+      },
+      {
+        "id": 3,
+        "title": "in_progress",
+        "type": "doctor"
+      },
+      {
+        "id": 4,
+        "title": "sent",
+        "type": "doctor"
+      },
+      {
+        "id": 5,
+        "title": "paid",
+        "type": "doctor"
+      }
+    ],
+    "accidentTypes": [
+      {
+        "id": 1,
+        "title": "insurance",
+        "description": ""
+      },
+      {
+        "id": 2,
+        "title": "non-insurance",
+        "description": ""
+      }
+    ],
+    "visitTimeRanges": [
+      "2022-04-18>2022-04-22"
+    ],
+    "doctorServices": [
+      {
+        "id": 1,
+        "title": "service1",
+        "description": "",
+        "status": "active",
+        "diseases": [],
+        "type": "director"
+      }
+    ],
+    "doctorSurveys": [
+      {
+        "id": 1,
+        "title": "Survey1",
+        "description": "",
+        "status": "active",
+        "diseases": [],
+        "type": "director"
+      }
+    ],
+    "doctorDiagnostics": [
+      {
+        "id": 1,
+        "title": "diagnostic 1",
+        "description": "",
+        "diagnosticCategoryId": 0,
+        "status": "active",
+        "diseases": [],
+        "type": "director"
+      }
+    ]
   },
   "fields": [
     {
+      "id": "npp",
+      "title": "Npp",
+      "order": "desc",
+      "sort": 1
+    },
+    {
       "id": "patient",
       "title": "Patient",
-      "order": "",
-      "sort": 1
+      "order": "asc",
+      "sort": 2
     },
     {
       "id": "city",
       "title": "City",
+      "order": "asc",
+      "sort": 3
+    },
+    {
+      "id": "doctor-income",
+      "title": "Doctor\'s fees",
       "order": "",
-      "sort": 2
+      "sort": 4
     },
     {
       "id": "assist-ref-num",
       "title": "Assistant Ref. Number",
-      "order": "",
-      "sort": 3
+      "order": "asc",
+      "sort": 5
     }
   ]
 }';

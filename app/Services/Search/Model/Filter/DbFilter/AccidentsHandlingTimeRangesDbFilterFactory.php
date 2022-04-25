@@ -17,17 +17,36 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
-class SearchFieldFactory
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+
+class AccidentsHandlingTimeRangesDbFilterFactory extends AbstractDbFilterFactory
 {
+    use FilterTraitDateRange;
 
-    public function create(mixed $field): SearchField
+    protected function isJoin(): bool
     {
-        return new SearchField(
-            $field['id'],
-            $field['order'] ?? '',
-            $field['sort'],
-        );
+        return false;
+    }
+
+    protected function getJoinTable(): string
+    {
+        return '';
+    }
+
+    protected function getJoinFirst(): string
+    {
+        return '';
+    }
+
+    protected function getJoinSecond(): string
+    {
+        return '';
+    }
+
+    protected function getWhereField(): string
+    {
+        return AccidentService::FIELD_HANDLING_TIME;
     }
 }

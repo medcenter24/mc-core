@@ -17,37 +17,46 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model;
+namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField;
 
-class SearchField
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+
+class AccidentsAssistRefNumDbFieldFactory extends AbstractDbFieldFactory
 {
-    public function __construct(
-        private readonly string $id,
-        private readonly string $order,
-        private readonly int $sort,
-    ) {
-    }
-
-    public function getId(): string
+    /**
+     * @return bool
+     */
+    protected function isJoin(): bool
     {
-        return $this->id;
+        return false;
     }
 
     /**
      * @return string
      */
-    public function getOrder(): string
+    protected function getJoinTable(): string
     {
-        return $this->order;
+        return 'accidents';
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getSort(): int
+    protected function getJoinFirst(): string
     {
-        return $this->sort;
+        return '';
     }
 
+    protected function getJoinSecond(): string
+    {
+        return '';
+    }
 
+    /**
+     * @return string
+     */
+    protected function getSelectField(): string
+    {
+        return AccidentService::FIELD_ASSISTANT_REF_NUM;
+    }
 }

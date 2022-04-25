@@ -20,8 +20,8 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Search;
 
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-use medcenter24\mcCore\App\Services\Search\Model\SearchFieldsCollection;
-use medcenter24\mcCore\App\Services\Search\Model\SearchFiltersCollection;
+use medcenter24\mcCore\App\Services\Search\Model\Field\SearchFieldsCollection;
+use medcenter24\mcCore\App\Services\Search\Model\Filter\SearchFiltersCollection;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class SearchRequest
@@ -33,6 +33,7 @@ class SearchRequest
     private const PARAM_FIELDS = 'fields';
 
     private const RESULT_DATATABLE = 'datatable';
+    private const RESULT_XLS = 'xls';
 
     private ParameterBag $parameterBag;
     private SearchFieldsCollection $searchFieldsCollection;

@@ -34,6 +34,6 @@ class SearchController extends ApiController
         $searchRequestParameterBag = $request->json();
         $searchRequest->load($searchRequestParameterBag);
         $data = $searchService->search($searchRequest);
-        return $this->response()->array($data);
+        return $this->response()->array($data->toArray());
     }
 }

@@ -17,29 +17,37 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
-class SearchFilter
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\PatientService;
+
+class AccidentsPatientsDbFilterFactory extends AbstractDbFilterFactory
 {
-    public function __construct(
-        private readonly string $model = '',
-        private readonly array $ids = [],
-    ) {
+    use FilterTraitInId;
+
+    protected function isJoin(): bool
+    {
+        return true;
     }
 
-    /**
-     * @return string
-     */
-    public function getModel(): string
+    protected function getJoinTable(): string
     {
-        return $this->model;
+        return 'patients';
     }
 
-    /**
-     * @return array
-     */
-    public function getIds(): array
+    protected function getJoinFirst(): string
     {
-        return $this->ids;
+        return AccidentService::FIELD_PATIENT_ID;
+    }
+
+    protected function getJoinSecond(): string
+    {
+        return PatientService::FIELD_ID;
+    }
+
+    protected function getWhereField(): string
+    {
+        return PatientService::FIELD_NAME;
     }
 }

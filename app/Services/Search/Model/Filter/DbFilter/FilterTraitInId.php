@@ -17,12 +17,25 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
-class SearchFilterFactory
+trait FilterTraitInId
 {
-    public function create(string $model, array $ids = []): SearchFilter
+    protected function getWhereOperation(): string
     {
-        return new SearchFilter($model, $ids);
+        return 'IN';
+    }
+
+    protected function getValues(mixed $values): array
+    {
+        $ids = [];
+        if (is_array($values)) {
+            foreach ($values as $value) {
+                if (!empty($value['id'])) {
+                    $ids[] = $value['id'];
+                }
+            }
+        }
+        return $ids;
     }
 }

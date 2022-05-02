@@ -23,9 +23,10 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
-class SearchResultExporter implements FromCollection, ShouldAutoSize
+class SearchResultExporter implements FromCollection, ShouldAutoSize, WithHeadings
 {
     use Exportable;
     use ServiceLocatorTrait;
@@ -40,5 +41,17 @@ class SearchResultExporter implements FromCollection, ShouldAutoSize
     public function collection(): Collection
     {
         return $this->data;
+    }
+
+    public function headings(): array
+    {
+        $heads = [];
+        if (!empty($this->data)) {
+            $row = $this->data->first();
+            foreach ($row as $key => $val) {
+                $heads[] = $key;
+            }
+        }
+        return $heads;
     }
 }

@@ -49,7 +49,7 @@ class SearchResultExporter implements FromCollection, ShouldAutoSize, WithHeadin
         if (!empty($this->data)) {
             $row = $this->data->first();
             foreach ($row as $key => $val) {
-                $heads[] = $key;
+                $heads[] = trans('content.'.$key);
             }
         }
         return $heads;

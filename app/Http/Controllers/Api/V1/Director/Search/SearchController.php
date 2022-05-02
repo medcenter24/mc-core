@@ -21,6 +21,7 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Search;
 
 use Dingo\Api\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\App;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Services\Search\SearchRequest;
 use medcenter24\mcCore\App\Services\Search\SearchResultExporter;
@@ -36,6 +37,10 @@ class SearchController extends ApiController
         SearchService $searchService,
     ): Response|BinaryFileResponse
     {
+        // change lang for exported data (as export builds on the back end only)
+        $lang = $request->json('lang', 'en');
+        App::setLocale($lang);
+
         /** @var ParameterBag $searchRequestParameterBag */
         $searchRequestParameterBag = $request->json();
         $searchRequest->load($searchRequestParameterBag);

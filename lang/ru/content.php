@@ -17,6 +17,9 @@
  */
 
 return [
+    'patient'                        => 'Пациент',
+    'assist-ref-num'                 => 'Реф. № ассистантса',
+    'doctor-income'                  => 'Доход врача',
     'regenerate'                     => 'Перегенерировать',
     'accident_status'                => 'Статус дела',
     'entities'                       => 'Сущности',

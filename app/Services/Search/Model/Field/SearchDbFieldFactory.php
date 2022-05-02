@@ -26,17 +26,15 @@ class SearchDbFieldFactory
 {
     use ServiceLocatorTrait;
 
-    public function create(SearchField $field, string $srcTable): SearchDbField
-    {
-        return $this->getDbField($srcTable, $field);
-    }
-
-    private function getDbField(string $srcTable, SearchField $field): SearchDbField
+    public function create(string $srcTable, SearchField $field): ?SearchDbField
     {
         $table = Str::ucfirst($srcTable);
         $model = Str::ucfirst(Str::camel($field->getId()));
         $namespace = 'medcenter24\\mcCore\\App\\Services\\Search\\Model\\Field\\DbField\\';
         $class = $namespace.$table.$model.'DbFieldFactory';
-        return $this->getServiceLocator()->get($class)->create($field->getOrder());
+        if (class_exists($class)) {
+            return $this->getServiceLocator()->get($class)->create($field);
+        }
+        return null;
     }
 }

@@ -19,6 +19,8 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+
 trait FilterTraitInId
 {
     protected function getWhereOperation(): string
@@ -37,5 +39,15 @@ trait FilterTraitInId
             }
         }
         return $ids;
+    }
+
+    /**
+     * @param mixed $whereValue
+     * @return bool
+     * @throws InconsistentDataException
+     */
+    protected function getLoaded(mixed $whereValue): bool
+    {
+        return !empty($this->getValues($whereValue));
     }
 }

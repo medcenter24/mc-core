@@ -21,15 +21,13 @@ namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField;
 
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\PatientService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 
 class AccidentsPatientDbFieldFactory extends AbstractDbFieldFactory
 {
-    /**
-     * @return bool
-     */
-    protected function isJoin(): bool
+    protected function getTableName(): string
     {
-        return true;
+        return 'accidents';
     }
 
     /**
@@ -40,24 +38,20 @@ class AccidentsPatientDbFieldFactory extends AbstractDbFieldFactory
         return 'patients';
     }
 
-    /**
-     * @return string
-     */
-    protected function getJoinFirst(): string
+    protected function getJoins(): array
     {
-        return AccidentService::FIELD_PATIENT_ID;
+        return [
+            new SearchJoin(
+                $this->getTableName(),
+                $this->getJoinTable(),
+                AccidentService::FIELD_PATIENT_ID,
+                PatientService::FIELD_ID,
+            ),
+        ];
     }
 
-    protected function getJoinSecond(): string
+    protected function getSelectFieldParts(): array
     {
-        return PatientService::FIELD_ID;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getSelectField(): string
-    {
-        return PatientService::FIELD_NAME;
+        return [$this->getJoinTable(), PatientService::FIELD_NAME];
     }
 }

@@ -19,6 +19,16 @@ declare(strict_types=1);
 
 namespace Api\Director\Search;
 
+use medcenter24\mcCore\App\Entity\DoctorAccident;
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
+use medcenter24\mcCore\App\Services\Entity\AccidentTypeService;
+use medcenter24\mcCore\App\Services\Entity\AssistantService;
+use medcenter24\mcCore\App\Services\Entity\CityService;
+use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
+use medcenter24\mcCore\App\Services\Entity\DoctorService;
+use medcenter24\mcCore\App\Services\Entity\PatientService;
+use medcenter24\mcCore\App\Services\Entity\PaymentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
 
@@ -28,9 +38,10 @@ class SearcherTest extends TestCase
 
     public function testSearch(): void
     {
+        $this->createMockedSearchableModels();
         $response = $this->sendPost('/api/director/search/search', json_decode($this->getPayload(), true));
         $response->assertStatus(200);
-        $response->assertExactJson([]);
+        $response->assertExactJson(['a']);
     }
 
     public function getPayload(): string
@@ -200,5 +211,72 @@ class SearcherTest extends TestCase
     }
   ]
 }';
+    }
+
+    private function createMockedSearchableModels(): void
+    {
+        /** @var CityService $cityService */
+        $cityService = $this->getServiceLocator()->get(CityService::class);
+        $city = $cityService->create([
+            CityService::FIELD_TITLE => 'City',
+        ]);
+
+        /** @var AssistantService $assistanceService */
+        $assistanceService = $this->getServiceLocator()->get(AssistantService::class);
+        $assistant = $assistanceService->create([
+            AssistantService::FIELD_TITLE => 'Assistant1',
+        ]);
+
+        /** @var DoctorService $doctorService */
+        $doctorService = $this->getServiceLocator()->get(DoctorService::class);
+        $doctor = $doctorService->create([
+            'name' => 'a',
+        ]);
+
+        /** @var PatientService $patientService */
+        $patientService = $this->getServiceLocator()->get(PatientService::class);
+        $patient = $patientService->create([
+            'name' => 'TEST-TESTOV',
+        ]);
+
+        /** @var AccidentStatusService $accidentStatusService */
+        $accidentStatusService = $this->getServiceLocator()->get(AccidentStatusService::class);
+        $accidentStatus = $accidentStatusService->create([
+            'title' => 'new',
+        ]);
+
+        /** @var AccidentTypeService $accidentTypeService */
+        $accidentTypeService = $this->getServiceLocator()->get(AccidentTypeService::class);
+        $accidentType = $accidentTypeService->create([
+            'title' => 'insurance',
+        ]);
+
+        /** @var DoctorAccidentService $doctorAccidentService */
+        $doctorAccidentService = $this->getServiceLocator()->get(DoctorAccidentService::class);
+        $doctorAccident = $doctorAccidentService->create([
+            'visit_time' => '2022-04-19 13:04:05',
+            'doctor_id'  => $doctor->getAttribute('id'),
+        ]);
+
+        /** @var PaymentService $paymentService */
+        $paymentService = $this->getServiceLocator()->get(PaymentService::class);
+        $payment = $paymentService->create([
+            'value' => 5.11,
+        ]);
+
+        /** @var AccidentService $accidentService */
+        $accidentService = $this->getServiceLocator()->get(AccidentService::class);
+        $accidentService->create([
+            'caseable_type' => DoctorAccident::class,
+            'handling_time' => '2022-04-21 17:18:10',
+            'city_id' => $city->getAttribute('id'),
+            'patient_id' => $patient->getAttribute('id'),
+            'caseable_payment_id' => $payment->getAttribute('id'),
+            'assistant_id' => $assistant->getAttribute('id'),
+            'caseable_id' => $doctorAccident->getAttribute('id'),
+            'accident_status_id' => $accidentStatus->getAttribute('id'),
+            'accident_type_id' => $accidentType->getAttribute('id'),
+            'assistant_ref_num' => 'PhpUnitRefNumAssistant',
+        ]);
     }
 }

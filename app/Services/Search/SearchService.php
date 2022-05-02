@@ -19,24 +19,17 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Search;
 
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-use medcenter24\mcCore\App\Services\Search\Model\Field\SearchDbField;
-use medcenter24\mcCore\App\Services\Search\Model\Field\SearchDbFieldFactory;
-use medcenter24\mcCore\App\Services\Search\Model\Field\SearchField;
-use medcenter24\mcCore\App\Services\Search\Model\Field\SearchFieldsCollection;
-use medcenter24\mcCore\App\Services\Search\Model\Filter\SearchDbFilter;
-use medcenter24\mcCore\App\Services\Search\Model\Filter\SearchDbFilterFactory;
-use medcenter24\mcCore\App\Services\Search\Model\Filter\SearchFilter;
-use medcenter24\mcCore\App\Services\Search\Model\Filter\SearchFiltersCollection;
+use medcenter24\mcCore\App\Services\Search\Model\Query\Loader\SearchQueryFieldLoader;
+use medcenter24\mcCore\App\Services\Search\Model\Query\Loader\SearchQueryFilterLoader;
+use medcenter24\mcCore\App\Services\Search\Model\Query\SearchQueryBuilder;
+use medcenter24\mcCore\App\Services\Search\Model\Query\SearchQueryFactory;
 
 class SearchService
 {
     use ServiceLocatorTrait;
-
-    public const SOURCE_TABLE_ACCIDENT = 'accidents';
 
     public const FIELD_NPP = 'npp'; // todo add this field after the result responsed
     public const FIELD_PATIENT = 'patient';
@@ -54,106 +47,42 @@ class SearchService
 
     public function search(SearchRequest $searchRequest): Collection
     {
-        $srcTable = self::SOURCE_TABLE_ACCIDENT;
-        $query = $this->createQuery($srcTable);
+        $searchQuery = $this->getSearchQueryFactory()->create('accidents');
 
-        $fields = $searchRequest->getFields();
-        $this->addColumns($query, $fields);
+        $this->getSearchQueryFieldLoader()->load(
+            $searchQuery,
+            $searchRequest->getFields()->getFields(),
+        );
+        $this->getSearchQueryFilterLoader()->load(
+            $searchQuery,
+            $searchRequest->getFilters()->getFilters(),
+        );
 
-        $filters = $searchRequest->getFilters();
-        $this->addFilters($query, $filters);
+        $query = $this->getSearchQueryBuilder()->build($searchQuery);
 
-        var_dump($query->toSql());die;
+        Log::error('search query', [$query->toSql()]);
+//        var_dump($query->toSql());die;
 
         return $query->get();
     }
 
-    private function createQuery(string $srcTable): Builder
+    private function getSearchQueryFactory(): SearchQueryFactory
     {
-        return DB::table($srcTable);
+        return $this->getServiceLocator()->get(SearchQueryFactory::class);
     }
 
-    private function addColumns(Builder $query, SearchFieldsCollection $fields): void
+    private function getSearchQueryFieldLoader(): SearchQueryFieldLoader
     {
-        /** @var SearchField $field */
-        foreach ($fields->getFields() as $field) {
-            $this->addField($query, $field);
-        }
+        return $this->getServiceLocator()->get(SearchQueryFieldLoader::class);
     }
 
-    private function addField(Builder $query, SearchField $field): void
+    private function getSearchQueryFilterLoader(): SearchQueryFilterLoader
     {
-        if (in_array($field->getId(), self::FIELDS_DB)) {
-            $dbField = $this->getDbField($field, $query->from);
-
-            $this->attachJoin($query, $dbField);
-
-            $query->addSelect(DB::raw(sprintf(
-                '`%s` as `%s`',
-                $dbField->getJoinTable().'.'.$dbField->getSelectField(),
-                $field->getId(),
-            )));
-
-            if ($dbField->hasOrder()) {
-                $query->orderBy($dbField->getJoinTable().'.'.$dbField->getSelectField(), $dbField->getOrder());
-            }
-        }
+        return $this->getServiceLocator()->get(SearchQueryFilterLoader::class);
     }
 
-    private function attachJoin(Builder $query, SearchDbField|SearchDbFilter $rule): void
+    private function getSearchQueryBuilder(): SearchQueryBuilder
     {
-        if($rule->hasJoin()) {
-            $query->join(
-                $rule->getJoinTable(),
-                $query->from.'.'.$rule->getJoinFirst(),
-                '=',
-                $rule->getJoinTable().'.'.$rule->getJoinSecond(),
-            );
-        }
-    }
-
-    private function addFilters(Builder $query, SearchFiltersCollection $filters): void
-    {
-        /** @var SearchFilter $filter */
-        foreach ($filters->getFilters() as $filter) {
-            $this->addCondition($filter, $query);
-        }
-    }
-
-    private function addCondition(SearchFilter $filter, Builder $query): void
-    {
-        $dbFilter = $this->getDbFilter($filter, $query->from);
-        $query->where(
-            $dbFilter->getWhereField(),
-            $dbFilter->getWhereOperation(),
-            $dbFilter->getWhereValue(),
-        );
-        $this->attachJoin($query, $dbFilter);
-
-        if (!empty($dbFilter->getAndWhere())) {
-            foreach ($dbFilter->getAndWhere() as $field => $where) {
-                $query->where($field, '=', $where);
-            }
-        }
-    }
-
-    private function getDbFilter(SearchFilter $filter, string $fromTable): SearchDbFilter
-    {
-        return $this->getDbFilterFactory()->create($filter, $fromTable);
-    }
-
-    private function getDbFilterFactory(): SearchDbFilterFactory
-    {
-        return $this->getServiceLocator()->get(SearchDbFilterFactory::class);
-    }
-
-    private function getDbField(SearchField $field, string $fromTable): SearchDbField
-    {
-        return $this->getDbFieldFactory()->create($field, $fromTable);
-    }
-
-    private function getDbFieldFactory(): SearchDbFieldFactory
-    {
-        return $this->getServiceLocator()->get(SearchDbFieldFactory::class);
+        return $this->getServiceLocator()->get(SearchQueryBuilder::class);
     }
 }

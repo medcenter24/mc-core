@@ -21,44 +21,14 @@ namespace medcenter24\mcCore\App\Services\Search\Model\Field;
 
 class SearchDbField
 {
-    /**
-     * @param bool $hasJoin
-     * @param string $joinTable
-     * @param string $joinFirst
-     * @param string $joinSecond
-     * @param string $selectField
-     * @param bool $hasOrder
-     * @param string $order
-     */
     public function __construct(
-        private readonly bool $hasJoin,
-        private readonly string $joinTable,
-        private readonly string $joinFirst,
-        private readonly string $joinSecond,
+        private readonly string $tableName,
         private readonly string $selectField,
+        private readonly string $alias,
         private readonly bool $hasOrder,
         private readonly string $order,
+        private readonly array $joins,
     ) {
-    }
-
-    public function hasJoin(): bool
-    {
-        return $this->hasJoin;
-    }
-
-    public function getJoinTable(): string
-    {
-        return $this->joinTable;
-    }
-
-    public function getJoinFirst(): string
-    {
-        return $this->joinFirst;
-    }
-
-    public function getSelectField(): string
-    {
-        return $this->selectField;
     }
 
     public function hasOrder(): bool
@@ -71,11 +41,29 @@ class SearchDbField
         return $this->order;
     }
 
+    public function getSelectField(): string
+    {
+        return $this->selectField;
+    }
+
+    /**
+     * @return array of SearchJoin
+     */
+    public function getJoins(): array
+    {
+        return $this->joins;
+    }
+
+    public function getTableName(): string
+    {
+        return $this->tableName;
+    }
+
     /**
      * @return string
      */
-    public function getJoinSecond(): string
+    public function getAlias(): string
     {
-        return $this->joinSecond;
+        return $this->alias;
     }
 }

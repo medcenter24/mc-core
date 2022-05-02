@@ -29,9 +29,21 @@ trait FilterTraitDateRange
     protected function getValues(mixed $values): array
     {
         $dates = [];
-        [$from, $to] = explode('>', current($values));
-        $dates[] = $from . ' 00:00:00';
-        $dates[] = $to . ' 23:59:59';
+        $value = current($values);
+        if (is_string($value) && mb_strpos('>', $value)) {
+            [$from, $to] = explode('>', $value);
+            $dates[] = $from . ' 00:00:00';
+            $dates[] = $to . ' 23:59:59';
+        }
         return $dates;
+    }
+
+    /**
+     * @param mixed $whereValue
+     * @return bool
+     */
+    protected function getLoaded(mixed $whereValue): bool
+    {
+        return !empty($this->getValues($whereValue));
     }
 }

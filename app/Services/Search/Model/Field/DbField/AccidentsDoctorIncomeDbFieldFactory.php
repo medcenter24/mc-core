@@ -19,45 +19,40 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField;
 
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\PaymentService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 
 class AccidentsDoctorIncomeDbFieldFactory extends AbstractDbFieldFactory
 {
-    /**
-     * @return bool
-     */
-    protected function isJoin(): bool
+    protected function getTableName(): string
     {
-        return true;
+        return 'accidents';
     }
 
     /**
      * @return string
      */
-    protected function getJoinTable(): string
+    private function getJoinTable(): string
     {
         return 'payments';
     }
 
-    /**
-     * @return string
-     */
-    protected function getJoinFirst(): string
+    protected function getJoins(): array
     {
-        return AccidentService::FIELD_CASEABLE_PAYMENT_ID;
+        return [
+            new SearchJoin(
+                $this->getTableName(),
+                $this->getJoinTable(),
+                AccidentService::FIELD_CASEABLE_PAYMENT_ID,
+                AbstractModelService::FIELD_ID,
+            ),
+        ];
     }
 
-    protected function getJoinSecond(): string
+    protected function getSelectFieldParts(): array
     {
-        return PaymentService::FIELD_ID;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getSelectField(): string
-    {
-        return PaymentService::FIELD_VALUE;
+        return [$this->getJoinTable(), PaymentService::FIELD_VALUE];
     }
 }

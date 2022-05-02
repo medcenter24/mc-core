@@ -20,33 +20,26 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
 class AccidentsHandlingTimeRangesDbFilterFactory extends AbstractDbFilterFactory
 {
     use FilterTraitDateRange;
 
-    protected function isJoin(): bool
+    protected function getTableName(): string
     {
-        return false;
+        return 'accidents';
     }
 
-    protected function getJoinTable(): string
+    protected function getWheres($whereValue): array
     {
-        return '';
-    }
-
-    protected function getJoinFirst(): string
-    {
-        return '';
-    }
-
-    protected function getJoinSecond(): string
-    {
-        return '';
-    }
-
-    protected function getWhereField(): string
-    {
-        return AccidentService::FIELD_HANDLING_TIME;
+        return [
+            new SearchWhere(
+                $this->getTableName(),
+                AccidentService::FIELD_HANDLING_TIME,
+                $this->getValues($whereValue),
+                $this->getWhereOperation(),
+            ),
+        ];
     }
 }

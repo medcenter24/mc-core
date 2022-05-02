@@ -21,6 +21,7 @@ namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
 class AccidentsCaseableTypesDbFilterFactory extends AbstractDbFilterFactory
@@ -28,29 +29,25 @@ class AccidentsCaseableTypesDbFilterFactory extends AbstractDbFilterFactory
     use FilterTraitInId;
     use CaseTypeTransformer;
 
-    protected function isJoin(): bool
+    protected function getTableName(): string
     {
-        return false;
+        return 'accidents';
     }
 
-    protected function getJoinTable(): string
+    /**
+     * @param $whereValue
+     * @return SearchWhere[]
+     * @throws InconsistentDataException
+     */
+    protected function getWheres($whereValue): array
     {
-        return '';
-    }
-
-    protected function getJoinFirst(): string
-    {
-        return '';
-    }
-
-    protected function getJoinSecond(): string
-    {
-        return '';
-    }
-
-    protected function getWhereField(): string
-    {
-        return AccidentService::FIELD_CASEABLE_TYPE;
+        return [
+            new SearchWhere(
+                $this->getTableName(),
+                AccidentService::FIELD_CASEABLE_TYPE,
+                $this->getValues($whereValue),
+            )
+        ];
     }
 
     /**

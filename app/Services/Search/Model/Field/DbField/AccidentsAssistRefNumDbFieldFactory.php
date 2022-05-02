@@ -23,40 +23,16 @@ use medcenter24\mcCore\App\Services\Entity\AccidentService;
 
 class AccidentsAssistRefNumDbFieldFactory extends AbstractDbFieldFactory
 {
-    /**
-     * @return bool
-     */
-    protected function isJoin(): bool
-    {
-        return false;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getJoinTable(): string
+    protected function getTableName(): string
     {
         return 'accidents';
     }
 
     /**
-     * @return string
+     * @return array
      */
-    protected function getJoinFirst(): string
+    protected function getSelectFieldParts(): array
     {
-        return '';
-    }
-
-    protected function getJoinSecond(): string
-    {
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    protected function getSelectField(): string
-    {
-        return AccidentService::FIELD_ASSISTANT_REF_NUM;
+        return [$this->getTableName(), AccidentService::FIELD_ASSISTANT_REF_NUM];
     }
 }

@@ -22,78 +22,39 @@ namespace medcenter24\mcCore\App\Services\Search\Model\Filter;
 class SearchDbFilter
 {
     public function __construct(
-        private readonly bool $hasJoin,
-        private readonly string $joinTable,
-        private readonly string $joinFirst,
-        private readonly string $joinSecond,
-        private readonly string $whereField,
-        private readonly string $whereOperation,
-        private readonly mixed $whereValue,
-        private readonly array $andWhere = [],
+        private readonly string $tableName,
+        private readonly array $wheres,
+        private readonly array $joins,
+        private readonly bool $loaded,
     ) {
     }
 
     /**
-     * @return bool
-     */
-    public function hasJoin(): bool
-    {
-        return $this->hasJoin;
-    }
-
-    /**
      * @return string
      */
-    public function getJoinTable(): string
+    public function getTableName(): string
     {
-        return $this->joinTable;
-    }
-
-    /**
-     * @return string
-     */
-    public function getJoinFirst(): string
-    {
-        return $this->joinFirst;
-    }
-
-    /**
-     * @return string
-     */
-    public function getJoinSecond(): string
-    {
-        return $this->joinSecond;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWhereField(): string
-    {
-        return $this->whereField;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWhereOperation(): string
-    {
-        return $this->whereOperation;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getWhereValue(): mixed
-    {
-        return $this->whereValue;
+        return $this->tableName;
     }
 
     /**
      * @return array
      */
-    public function getAndWhere(): array
+    public function getJoins(): array
     {
-        return $this->andWhere;
+        return $this->joins;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWheres(): array
+    {
+        return $this->wheres;
+    }
+
+    public function loaded(): bool
+    {
+        return $this->loaded;
     }
 }

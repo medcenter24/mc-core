@@ -17,24 +17,12 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Query;
 
-use Illuminate\Support\Str;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-
-class SearchDbFilterFactory
+class SearchQueryFactory
 {
-    use ServiceLocatorTrait;
-
-    public function create(string $srcTable, SearchFilter $filter): ?SearchDbFilter
+    public function create(string $srcTable): SearchQuery
     {
-        $table = Str::ucfirst($srcTable);
-        $model = Str::ucfirst(Str::camel($filter->getModel()));
-        $namespace = 'medcenter24\\mcCore\\App\\Services\\Search\\Model\\Filter\\DbFilter\\';
-        $class = $namespace.$table.$model.'DbFilterFactory';
-        if (class_exists($class)) {
-            return $this->getServiceLocator()->get($class)->create($filter->getValues());
-        }
-        return null;
+        return new SearchQuery($srcTable);
     }
 }

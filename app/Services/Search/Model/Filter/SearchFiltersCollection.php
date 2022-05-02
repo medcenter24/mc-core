@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Search\Model\Filter;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
 class SearchFiltersCollection

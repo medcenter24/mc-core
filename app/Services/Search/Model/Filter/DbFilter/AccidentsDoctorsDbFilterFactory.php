@@ -19,43 +19,54 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
-use JetBrains\PhpStorm\ArrayShape;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 use medcenter24\mcCore\App\Services\Entity\DoctorService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
+use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
 class AccidentsDoctorsDbFilterFactory extends AbstractDbFilterFactory
 {
     use FilterTraitInId;
 
-    protected function isJoin(): bool
+    protected function getTableName(): string
     {
-        return true;
+        return 'doctors';
     }
 
-    protected function getJoinTable(): string
+    protected function getJoins(): array
     {
-        return 'doctor_accidents';
+        return [
+            new SearchJoin(
+                'accidents',
+                'doctor_accidents',
+                AccidentService::FIELD_CASEABLE_ID,
+                AbstractModelService::FIELD_ID,
+            ),
+            new SearchJoin(
+                'doctor_accidents',
+                $this->getTableName(),
+                DoctorAccidentService::FIELD_DOCTOR_ID,
+                DoctorService::FIELD_ID,
+            ),
+        ];
     }
 
-    protected function getJoinFirst(): string
+    protected function getWheres(mixed $whereValue): array
     {
-        return AccidentService::FIELD_CASEABLE_ID;
-    }
-
-    protected function getJoinSecond(): string
-    {
-        return DoctorAccidentService::FIELD_ID;
-    }
-
-    protected function getWhereField(): string
-    {
-        return DoctorService::FIELD_NAME;
-    }
-
-    #[ArrayShape([AccidentService::FIELD_CASEABLE_TYPE => "string"])]
-    protected function andWhere(): array
-    {
-        return [AccidentService::FIELD_CASEABLE_TYPE => AccidentService::CASEABLE_TYPE_DOCTOR];
+        return [
+            new SearchWhere(
+                'accidents',
+                AccidentService::FIELD_CASEABLE_TYPE,
+                AccidentService::CASEABLE_TYPE_DOCTOR,
+            ),
+            new SearchWhere(
+                $this->getTableName(),
+                DoctorService::FIELD_ID,
+                $this->getValues($whereValue),
+                $this->getWhereOperation(),
+            )
+        ];
     }
 }

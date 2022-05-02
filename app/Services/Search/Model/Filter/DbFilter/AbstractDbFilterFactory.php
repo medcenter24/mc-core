@@ -19,7 +19,6 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
-use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Search\Model\Filter\SearchDbFilter;
 
 abstract class AbstractDbFilterFactory
@@ -27,36 +26,32 @@ abstract class AbstractDbFilterFactory
     public function create($whereValue): SearchDbFilter
     {
         return new SearchDbFilter(
-            $this->isJoin(),
-            $this->getJoinTable(),
-            $this->getJoinFirst(),
-            $this->getJoinSecond(),
-            $this->getWhereField(),
-            $this->getWhereOperation(),
-            $this->getValues($whereValue),
-            $this->andWhere(),
+            $this->getTableName(),
+            $this->getWheres($whereValue),
+            $this->getJoins(),
+            $this->getLoaded($whereValue),
         );
     }
+
+    /**
+     * @return string
+     */
+    abstract protected function getTableName(): string;
 
     protected function getValues(mixed $values): mixed
     {
         return $values;
     }
 
-    abstract protected function isJoin(): bool;
-
-    abstract protected function getJoinTable(): string;
-
-    abstract protected function getJoinFirst(): string;
-
-    abstract protected function getJoinSecond(): string;
-
-    abstract protected function getWhereField(): string;
-
-    abstract protected function getWhereOperation(): string;
-
-    protected function andWhere(): array
+    protected function getJoins(): array
     {
         return [];
+    }
+
+    abstract protected function getWheres($whereValue): array;
+
+    protected function getLoaded(mixed $whereValue): bool
+    {
+        return false;
     }
 }

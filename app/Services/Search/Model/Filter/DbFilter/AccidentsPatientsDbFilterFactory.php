@@ -21,33 +21,39 @@ namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\PatientService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
+use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
 class AccidentsPatientsDbFilterFactory extends AbstractDbFilterFactory
 {
     use FilterTraitInId;
 
-    protected function isJoin(): bool
-    {
-        return true;
-    }
-
-    protected function getJoinTable(): string
+    protected function getTableName(): string
     {
         return 'patients';
     }
 
-    protected function getJoinFirst(): string
+    protected function getJoins(): array
     {
-        return AccidentService::FIELD_PATIENT_ID;
+        return [
+            new SearchJoin(
+                'accidents',
+                $this->getTableName(),
+                AccidentService::FIELD_PATIENT_ID,
+                PatientService::FIELD_ID,
+            ),
+        ];
     }
 
-    protected function getJoinSecond(): string
+    protected function getWheres($whereValue): array
     {
-        return PatientService::FIELD_ID;
-    }
-
-    protected function getWhereField(): string
-    {
-        return PatientService::FIELD_NAME;
+        return [
+            new SearchWhere(
+                $this->getTableName(),
+                PatientService::FIELD_ID,
+                $this->getValues($whereValue),
+                $this->getWhereOperation(),
+            ),
+        ];
     }
 }

@@ -20,44 +20,39 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField;
 
 use medcenter24\mcCore\App\Services\Search\Model\Field\SearchDbField;
+use medcenter24\mcCore\App\Services\Search\Model\Field\SearchField;
 
 abstract class AbstractDbFieldFactory
 {
-    public function create(string $order): SearchDbField
+    public function create(SearchField $searchField): SearchDbField
     {
         return new SearchDbField(
-            $this->isJoin(),
-            $this->getJoinTable(),
-            $this->getJoinFirst(),
-            $this->getJoinSecond(),
+            $this->getTableName(),
             $this->getSelectField(),
-            in_array($order, ['asc', 'desc']),
-            $order,
+            $searchField->getId(),
+            in_array($searchField->getOrder(), ['asc', 'desc']),
+            $searchField->getOrder(),
+            $this->getJoins(),
         );
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    abstract protected function isJoin(): bool;
+    abstract protected function getTableName(): string;
 
     /**
      * @return string
      */
-    abstract protected function getJoinTable(): string;
+    protected function getSelectField(): string {
+        $fields = $this->getSelectFieldParts();
+        return sprintf('%s.%s', $fields[0], $fields[1]);
+    }
 
-    /**
-     * @return string
-     */
-    abstract protected function getJoinFirst(): string;
+    abstract protected function getSelectFieldParts();
 
-    /**
-     * @return string
-     */
-    abstract protected function getJoinSecond(): string;
-
-    /**
-     * @return string
-     */
-    abstract protected function getSelectField(): string;
+    protected function getJoins(): array
+    {
+        return [];
+    }
 }

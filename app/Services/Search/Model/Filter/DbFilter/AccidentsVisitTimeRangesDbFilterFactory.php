@@ -19,35 +19,42 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
+use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
 class AccidentsVisitTimeRangesDbFilterFactory extends AbstractDbFilterFactory
 {
     use FilterTraitDateRange;
 
-    protected function isJoin(): bool
-    {
-        return true;
-    }
-
-    protected function getJoinTable(): string
+    protected function getTableName(): string
     {
         return 'doctor_accidents';
     }
 
-    protected function getJoinFirst(): string
+    protected function getJoins(): array
     {
-        return AccidentService::FIELD_CASEABLE_ID;
+        return [
+            new SearchJoin(
+                'accidents',
+                $this->getTableName(),
+                AccidentService::FIELD_CASEABLE_ID,
+                AbstractModelService::FIELD_ID,
+            ),
+        ];
     }
 
-    protected function getJoinSecond(): string
+    protected function getWheres($whereValue): array
     {
-        return DoctorAccidentService::FIELD_ID;
-    }
-
-    protected function getWhereField(): string
-    {
-        return DoctorAccidentService::FIELD_VISIT_TIME;
+        return [
+            new SearchWhere(
+                $this->getTableName(),
+                DoctorAccidentService::FIELD_VISIT_TIME,
+                $this->getValues($whereValue),
+                $this->getWhereOperation(),
+            )
+        ];
     }
 }

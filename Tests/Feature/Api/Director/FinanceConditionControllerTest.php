@@ -36,11 +36,13 @@ class FinanceConditionControllerTest extends TestCase
 {
     use DirectorTestTraitApi;
 
+    private const URI = '/api/director/finance';
+
     public function testStoreError(): void
     {
         $newFinanceCondition = [];
         $this->doNotPrintErrResponse([422]);
-        $response = $this->sendPost('/api/director/finance', $newFinanceCondition);
+        $response = $this->sendPost(self::URI, $newFinanceCondition);
         $this->doNotPrintErrResponse();
         $response->assertStatus(422);
         self::assertArrayHasKey('title', $response->json('errors'), 'Error with `title` message exists');
@@ -48,19 +50,190 @@ class FinanceConditionControllerTest extends TestCase
         self::assertArrayHasKey('currencyMode', $response->json('errors'), 'Error with `currencyMode` message exists');
     }
 
+    public function testIndex(): void
+    {
+        $newFinanceCondition = [
+            'title' => 'feature_test',
+            'value' => 50,
+            'currencyMode' => 'percent',
+            'order' => 7,
+        ];
+        $this->sendPost(self::URI, $newFinanceCondition);
+        $newFinanceCondition = [
+            'title' => 'feature_test',
+            'value' => 50,
+            'currencyMode' => 'percent',
+            'order' => 17,
+        ];
+        $this->sendPost(self::URI, $newFinanceCondition);
+        $newFinanceCondition = [
+            'title' => 'feature_test',
+            'value' => 50,
+            'currencyMode' => 'percent',
+            'order' => 27,
+        ];
+        $this->sendPost(self::URI, $newFinanceCondition);
+        $newFinanceCondition = [
+            'title' => 'feature_test',
+            'value' => 50,
+            'currencyMode' => 'percent',
+            'order' => 7,
+        ];
+        $this->sendPost(self::URI, $newFinanceCondition);
+
+        $server = $this->transformHeadersToServerVars($this->headers($this->getUser()));
+        $cookies = $this->prepareCookiesForRequest();
+        $response = $this->call(
+            'POST',
+            self::URI . '/search',
+            [],
+            $cookies,
+            [],
+            $server,
+            json_encode(['sorter' => ['fields' => [['field' => 'order', 'value' => 'desc'], ['field' => 'id', 'value' => 'asc']]]]),
+        );
+
+        $response->assertStatus(200);
+        $response->assertJson(array (
+            'data' =>
+                array (
+                    0 =>
+                        array (
+                            'id' => 3,
+                            'title' => 'feature_test',
+                            'value' => '50',
+                            'assistants' =>
+                                array (
+                                ),
+                            'cities' =>
+                                array (
+                                ),
+                            'doctors' =>
+                                array (
+                                ),
+                            'services' =>
+                                array (
+                                ),
+                            'datePeriods' =>
+                                array (
+                                ),
+                            'type' => 'add',
+                            'model' => 'undefined',
+                            'currencyId' => 0,
+                            'currencyMode' => 'percent',
+                            'order' => '27',
+                        ),
+                    1 =>
+                        array (
+                            'id' => 2,
+                            'title' => 'feature_test',
+                            'value' => '50',
+                            'assistants' =>
+                                array (
+                                ),
+                            'cities' =>
+                                array (
+                                ),
+                            'doctors' =>
+                                array (
+                                ),
+                            'services' =>
+                                array (
+                                ),
+                            'datePeriods' =>
+                                array (
+                                ),
+                            'type' => 'add',
+                            'model' => 'undefined',
+                            'currencyId' => 0,
+                            'currencyMode' => 'percent',
+                            'order' => '17',
+                        ),
+                    2 =>
+                        array (
+                            'id' => 1,
+                            'title' => 'feature_test',
+                            'value' => '50',
+                            'assistants' =>
+                                array (
+                                ),
+                            'cities' =>
+                                array (
+                                ),
+                            'doctors' =>
+                                array (
+                                ),
+                            'services' =>
+                                array (
+                                ),
+                            'datePeriods' =>
+                                array (
+                                ),
+                            'type' => 'add',
+                            'model' => 'undefined',
+                            'currencyId' => 0,
+                            'currencyMode' => 'percent',
+                            'order' => '7',
+                        ),
+                    3 =>
+                        array (
+                            'id' => 4,
+                            'title' => 'feature_test',
+                            'value' => '50',
+                            'assistants' =>
+                                array (
+                                ),
+                            'cities' =>
+                                array (
+                                ),
+                            'doctors' =>
+                                array (
+                                ),
+                            'services' =>
+                                array (
+                                ),
+                            'datePeriods' =>
+                                array (
+                                ),
+                            'type' => 'add',
+                            'model' => 'undefined',
+                            'currencyId' => 0,
+                            'currencyMode' => 'percent',
+                            'order' => '7',
+                        ),
+                ),
+            'meta' =>
+                array (
+                    'pagination' =>
+                        array (
+                            'total' => 4,
+                            'count' => 4,
+                            'per_page' => 25,
+                            'current_page' => 1,
+                            'total_pages' => 1,
+                            'links' =>
+                                array (
+                                ),
+                        ),
+                ),
+        ));
+    }
+
     public function testStoreGlobalRule(): void
     {
         $newFinanceCondition = [
             'title' => 'feature_test',
             'value' => 50,
-            'currencyMode' => 'percent'
+            'currencyMode' => 'percent',
+            'order' => 7,
         ];
-        $response = $this->sendPost('/api/director/finance', $newFinanceCondition);
+        $response = $this->sendPost(self::URI, $newFinanceCondition);
         $response->assertJson([
             'data' => [
                 'title' => 'feature_test',
                 'value' => 50,
-                'currencyMode' => 'percent'
+                'currencyMode' => 'percent',
+                'order' => 7,
             ],
         ]);
         $response->assertStatus(201);
@@ -117,7 +290,7 @@ class FinanceConditionControllerTest extends TestCase
                 DoctorServiceFake::make()->toArray(),
             ],
         ];
-        $response = $this->sendPost('/api/director/finance', $newFinanceCondition);
+        $response = $this->sendPost(self::URI, $newFinanceCondition);
         $response->assertJson(['data' => ['title' => 'precisionRuleUnitTest', 'value' => 30]]);
         $response->assertStatus(201);
     }

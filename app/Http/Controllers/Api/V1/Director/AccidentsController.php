@@ -21,13 +21,11 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use JetBrains\PhpStorm\Pure;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Entity\Accident;
-use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
-use medcenter24\mcCore\App\Http\Requests\StoreAccident;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Transformers\AccidentTransformer;
 use Dingo\Api\Http\Response;
 use League\Fractal\TransformerAbstract;
@@ -40,7 +38,7 @@ use League\Fractal\TransformerAbstract;
  */
 class AccidentsController extends ModelApiController
 {
-    protected function getDataTransformer(): TransformerAbstract
+    #[Pure] protected function getDataTransformer(): TransformerAbstract
     {
         return new AccidentTransformer();
     }

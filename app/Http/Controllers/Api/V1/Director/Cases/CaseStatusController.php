@@ -53,4 +53,22 @@ class CaseStatusController extends ApiController
         $accidentService->closeAccident($accident, 'Closed by director');
         return $this->response->noContent();
     }
+
+    /**
+     * Set status reopened
+     * @param int $id
+     * @param AccidentService $accidentService
+     * @return Response
+     * @throws InconsistentDataException
+     */
+    public function reopen(int $id, AccidentService $accidentService): Response
+    {
+        /** @var Accident $accident */
+        $accident = $this->getAccidentService()->first([AccidentService::FIELD_ID => $id]);
+        if (!$accident) {
+            $this->response->errorNotFound();
+        }
+        $accidentService->reopenAccident($accident, 'Reopened by director');
+        return $this->response->noContent();
+    }
 }

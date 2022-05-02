@@ -21,6 +21,7 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use JetBrains\PhpStorm\Pure;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\CityRequest;
@@ -31,7 +32,7 @@ use League\Fractal\TransformerAbstract;
 
 class CitiesController extends ModelApiController
 {
-    protected function getDataTransformer(): TransformerAbstract
+    #[Pure] protected function getDataTransformer(): TransformerAbstract
     {
         return new CityTransformer();
     }

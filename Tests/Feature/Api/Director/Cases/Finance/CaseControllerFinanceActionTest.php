@@ -30,8 +30,6 @@ use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\FinanceCurrency;
 use medcenter24\mcCore\App\Entity\Hospital;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
-use medcenter24\mcCore\App\Entity\Invoice;
-use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
@@ -66,7 +64,6 @@ class CaseControllerFinanceActionTest extends TestCase
     {
         parent::setUp();
 
-        $this->caseAccidentService = new CaseAccidentService();
         $this->accidentService = new AccidentService();
         $this->accidentStatusService = new AccidentStatusService();
         $this->caseAccidentService = new CaseAccidentService();
@@ -135,147 +132,6 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'currency' => [],
-                    'formula' => '0.00',
-                ],
-            ],
-        ]);
-    }
-
-    /**
-     * Global condition for each accident price
-     * Assistant should pay, because someone have to
-     */
-    public function testAssistantCondition(): void
-    {
-        $accident = $this->accidentService->create();
-
-        // condition
-        // each accident has price 10
-
-        $this->financeConditionService->create([
-            'type' => 'add',
-            'value' => '10',
-            'currency_id' => 1,
-            'currency_mode' => 'currency',
-            'model' => Assistant::class,
-        ]);
-
-        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
-        $response->assertStatus(200);
-        $response->assertJson([
-            'data' => [
-                [
-                    'type'  => 'income',
-                    'loading' => false,
-                    'calculatedValue' => 10,
-                    'currency' => [],
-                    'formula' => '10.00 - 0.00',
-                ],
-                [
-                    'type' => 'assistant',
-                    'loading' => false,
-                    'calculatedValue' => 10,
-                    'currency' => [],
-                    'formula' => '10.00',
-                ],
-                [
-                    'type' => 'caseable',
-                    'loading' => false,
-                    'calculatedValue' => 0,
-                    'currency' => [],
-                    'formula' => '0.00',
-                ],
-            ],
-        ]);
-    }
-
-    /**
-     * Global condition for each accident price
-     * Assistant should pay, because someone have to
-     */
-    public function testStoredAssistantCondition(): void
-    {
-        $city = $this->cityService->create();
-        $city2 = $this->cityService->create();
-        $accident = $this->accidentService->create(['city_id' => $city->id]);
-        $currency = $this->currencyService->create();
-
-        // condition
-        // each accident has price 10
-        $this->financeConditionService->create([
-            'title' => 'test',
-            'type' => 'add',
-            'value' => '10',
-            'currency_id' => $currency->id,
-            'currency_mode' => 'currency',
-            'model' => Assistant::class,
-        ]);
-
-        // condition for the city
-        $this->financeStorageService->create([
-            'finance_condition_id' => $this->financeConditionService->create([
-                'title' => 'test',
-                'type' => 'sub',
-                'value' => '1',
-                'currency_id' => $currency->id,
-                'currency_mode' => 'percent',
-                'model' => Assistant::class,
-            ])->id,
-            'model' => City::class,
-            'model_id' => $city->id,
-        ]);
-
-        // condition for the city2
-        $this->financeStorageService->create([
-            'finance_condition_id' => $this->financeConditionService->create([
-                'title' => 'test',
-                'type' => 'add',
-                'value' => '500',
-                'currency_id' => $currency->id,
-                'currency_mode' => 'currency',
-                'model' => Assistant::class,
-            ])->id,
-            'model' => City::class,
-            'model_id' => $city2->id,
-        ]);
-
-        // second condition for the city
-        $this->financeStorageService->create([
-            'finance_condition_id' => $this->financeConditionService->create([
-                'title' => 'test',
-                'type' => 'add',
-                'value' => '7',
-                'currency_id' => $currency->id,
-                'currency_mode' => 'currency',
-                'model' => Assistant::class,
-            ]),
-            'model' => City::class,
-            'model_id' => $city->id,
-        ]);
-
-        $response = $this->sendGet('/api/director/cases/'.$accident->id.'/finance');
-        $response->assertStatus(200);
-        $response->assertJson([
-            'data' => [
-                [
-                    'type'  => 'income',
-                    'loading' => false,
-                    'calculatedValue' => 16.83,
-                    'currency' => [],
-                    'formula' => '16.83 - 0.00',
-                ],
-                [
-                    'type' => 'assistant',
-                    'loading' => false,
-                    'calculatedValue' => 16.83,
-                    'currency' => [],
-                    'formula' => '( 10.00 + 7.00 ) * 99%',
-                ],
-                [
-                    'type' => 'caseable',
-                    'loading' => false,
-                    'calculatedValue' => 0,
                     'currency' => [],
                     'formula' => '0.00',
                 ],
@@ -919,9 +775,7 @@ class CaseControllerFinanceActionTest extends TestCase
                 [
                     'type' => 'caseable',
                     'loading' => false,
-                    'payment' => [
-                        'id' => $caseablePayment->id,
-                    ],
+                    'payment' => null,
                     'formula' => '0.00',
                     'calculatedValue' => 0,
                 ],

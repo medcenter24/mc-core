@@ -16,8 +16,10 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+use Illuminate\Support\Facades\Facade;
 use Laravel\Ui\UiServiceProvider;
 use medcenter24\mcCore\App\Services\Messenger\LocMessengerServiceProvider;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 $app = [
 
@@ -31,7 +33,7 @@ $app = [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'Medical Company',
+    'name' => env('CUSTOMER_NAME', 'Medical Company'),
 
     /*
     |--------------------------------------------------------------------------
@@ -71,6 +73,8 @@ $app = [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+
+    'asset_url' => env('ASSET_URL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -185,7 +189,7 @@ $app = [
         medcenter24\mcCore\App\Providers\RoleServiceProvider::class,
         Fruitcake\Cors\CorsServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        \PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         // I need this to have possibility to use vendor path in the other direction than default
         LocMessengerServiceProvider::class,
@@ -209,8 +213,7 @@ $app = [
     |
     */
 
-    'aliases' => [
-
+    'aliases' => Facade::defaultAliases()->merge([
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -247,11 +250,10 @@ $app = [
 
         // extend
         'Roles' => medcenter24\mcCore\App\Support\Facades\Roles::class,
-        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'JWTAuth' => JWTAuth::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Telegram'  => Telegram\Bot\Laravel\Facades\Telegram::class,
-    ],
-
+    ])->toArray(),
 ];
 
 return $app;

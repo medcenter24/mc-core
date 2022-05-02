@@ -22,7 +22,6 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases;
 
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use medcenter24\mcCore\App\Exports\CasesExport;
 use medcenter24\mcCore\App\Services\ApiSearch\ApiSearchService;

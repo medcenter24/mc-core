@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Database\Eloquent\Model;
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\App\Services\DoctorLayer\FiltersTrait;
 use medcenter24\mcCore\App\Services\Entity\Contracts\CreatedByField;
@@ -71,6 +72,7 @@ class ServiceService extends AbstractModelService implements StatusableService, 
         return Service::class;
     }
 
+    #[ArrayShape([self::FIELD_TITLE => "string", self::FIELD_DESCRIPTION => "string", self::FIELD_CREATED_BY => "int", self::FIELD_STATUS => "string"])]
     protected function getFillableFieldDefaults(): array
     {
         return [
@@ -88,15 +90,15 @@ class ServiceService extends AbstractModelService implements StatusableService, 
     public function create(array $data = []): Model
     {
         $data[self::FIELD_CREATED_BY] = auth()->user() ? auth()->user()->getAuthIdentifier() : 0;
-        $diagnostic = parent::create($data);
-        $this->assignDiseases($diagnostic, $data);
-        return $diagnostic;
+        $service = parent::create($data);
+        $this->assignDiseases($service, $data);
+        return $service;
     }
 
     public function findAndUpdate(array $filterByFields, array $data): Model
     {
-        $diagnostic = parent::findAndUpdate($filterByFields, $data);
-        $this->assignDiseases($diagnostic, $data);
-        return $diagnostic;
+        $service = parent::findAndUpdate($filterByFields, $data);
+        $this->assignDiseases($service, $data);
+        return $service;
     }
 }

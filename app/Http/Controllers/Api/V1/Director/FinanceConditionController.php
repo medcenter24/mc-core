@@ -22,6 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
 use Dingo\Api\Http\Response;
+use JetBrains\PhpStorm\Pure;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
 use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
@@ -34,15 +35,12 @@ use League\Fractal\TransformerAbstract;
 
 class FinanceConditionController extends ModelApiController
 {
-    protected function getDataTransformer(): TransformerAbstract
+    #[Pure] protected function getDataTransformer(): TransformerAbstract
     {
         return new FinanceConditionTransformer();
     }
 
-    /**
-     * @return ModelService|FinanceConditionService
-     */
-    protected function getModelService(): ModelService
+    protected function getModelService(): ModelService|FinanceConditionService
     {
         return $this->getServiceLocator()->get(FinanceConditionService::class);
     }

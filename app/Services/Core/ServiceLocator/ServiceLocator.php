@@ -21,14 +21,14 @@ namespace medcenter24\mcCore\App\Services\Core\ServiceLocator;
 
 class ServiceLocator
 {
-    private static $inst;
+    private static self $instance;
 
     public static function instance(): self
     {
-        if (!self::$inst) {
-            self::$inst = new self();
+        if (!isset(self::$instance)) {
+            self::$instance = new self();
         }
-        return self::$inst;
+        return self::$instance;
     }
 
     public function get(string $name, array $parameters = [])

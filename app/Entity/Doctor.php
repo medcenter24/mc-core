@@ -27,8 +27,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use medcenter24\mcCore\App\Services\Entity\DoctorService;
+use medcenter24\mcCore\App\Services\Entity\UserService;
+use medcenter24\mcCore\App\Services\LogoService;
+use Spatie\Image\Exceptions\InvalidManipulation;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Doctor extends Model implements HasMedia
 {
@@ -39,7 +44,26 @@ class Doctor extends Model implements HasMedia
     protected $fillable = DoctorService::FILLABLE;
     protected $visible  = DoctorService::VISIBLE;
 
-    public function user()
+    /**
+     * @param Media|null $media
+     * @throws InvalidManipulation
+     */
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion(UserService::THUMB_45)
+            ->sharpen(10)
+            ->quality(50)
+            ->fit(Manipulations::FIT_CROP, 45, 45)
+            ->performOnCollections(LogoService::FOLDER);
+
+        $this->addMediaConversion(UserService::THUMB_200)
+            ->sharpen(10)
+            ->quality(60)
+            ->fit(Manipulations::FIT_CROP, 200, 200)
+            ->performOnCollections(LogoService::FOLDER);
+    }
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

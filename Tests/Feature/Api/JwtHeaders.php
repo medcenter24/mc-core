@@ -20,7 +20,7 @@
 namespace medcenter24\mcCore\Tests\Feature\Api;
 
 use medcenter24\mcCore\App\Entity\User;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 trait JwtHeaders
 {

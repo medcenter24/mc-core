@@ -69,13 +69,13 @@ class CaseCommentControllerTest extends TestCase
             'text' => 'PHPUnit test',
         ]);
         $addResponse->assertStatus(201);
-        $addResponse->assertJson([
+        $addResponse->assertJson(['data' => [
             'userName' => 'PHPUnit',
             'userThumb' => '',
             'userId' => 1,
             'id' => 1,
             'body' => 'PHPUnit test',
-        ]);
+        ]]);
 
         $response = $this->sendGet('/api/director/cases/' . $accident->id . '/comments');
         $response->assertStatus(200);

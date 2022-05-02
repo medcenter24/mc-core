@@ -78,6 +78,8 @@ class CaseFinanceCondition
      */
     private $model;
 
+    private int $order;
+
     /**
      * CaseFinanceCondition constructor.
      */
@@ -218,5 +220,16 @@ class CaseFinanceCondition
     public function getModel(): string
     {
         return $this->model;
+    }
+
+    public function setOrder(int $order = 0): self
+    {
+        $this->order = $order;
+        return $this;
+    }
+
+    public function getOrder(): int
+    {
+        return $this->order;
     }
 }

@@ -20,13 +20,9 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
-use Dingo\Api\Http\Response;
-use Illuminate\Support\Facades\Log;
+use JetBrains\PhpStorm\Pure;
 use medcenter24\mcCore\App\Contract\General\Service\ModelService;
-use medcenter24\mcCore\App\Entity\AccidentStatus;
 use medcenter24\mcCore\App\Http\Controllers\Api\ModelApiController;
-use medcenter24\mcCore\App\Http\Requests\Api\AccidentStatusRequest;
-use medcenter24\mcCore\App\Http\Requests\Api\JsonRequest;
 use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Transformers\AccidentStatusTransformer;
 use League\Fractal\TransformerAbstract;
@@ -38,7 +34,7 @@ use League\Fractal\TransformerAbstract;
  */
 class AccidentStatusesController extends ModelApiController
 {
-    protected function getDataTransformer(): TransformerAbstract
+    #[Pure] protected function getDataTransformer(): TransformerAbstract
     {
         return new AccidentStatusTransformer();
     }

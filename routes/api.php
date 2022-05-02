@@ -21,8 +21,10 @@ declare(strict_types = 1);
 
 use Dingo\Api\Routing\Router;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\AuthenticateController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Accident\AccidentTypeController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentCheckpointsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentsController as DirectorAccidentsController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentsRefNumController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentStatusesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AccidentTypesController as DirectorAccidentTypesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\AssistantsController;
@@ -52,6 +54,8 @@ use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\InvoiceController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\MediaController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\PatientsController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\RegionsController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Search\SearchController;
+use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Search\SmartSearchController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\ServicesController as DirectorServicesController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics\CalendarController;
 use medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Statistics\TrafficController;
@@ -98,7 +102,7 @@ $api->group([
 
             $api->group(['prefix' => 'accidents'], static function (Router $api) {
                 $api->get('{id}/patient', PatientAccidentController::class . '@patient');
-                $api->put('{id}/patient', PatientAccidentController::class . '@updatePatient');
+                $api->patch('{id}/patient', PatientAccidentController::class . '@updatePatient');
 
                 $api->get('{id}/status', StatusAccidentController::class . '@status');
                 $api->post('{id}/reject', StatusAccidentController::class . '@reject');
@@ -124,6 +128,7 @@ $api->group([
 
             $api->get('me', ProfileController::class . '@me');
             $api->put('me', ProfileController::class . '@update');
+            $api->post('me/photo', ProfileController::class . '@photo');
 
             $api->get('lang/{lang}', ProfileController::class . '@lang');
 
@@ -141,6 +146,20 @@ $api->group([
         });
 
         $api->group(['prefix' => 'director', 'middleware' => ['role:director', 'role:login']], static function (Router $api) {
+
+            // Smart search
+            $api->group(['prefix' => 'smart-search'], static function (Router $api) {
+                $api->post('search', SmartSearchController::class . '@search');
+                $api->post('', SmartSearchController::class . '@store');
+                $api->get('{id}', SmartSearchController::class . '@show');
+                $api->put('{id}', SmartSearchController::class . '@update');
+                $api->delete('{id}', SmartSearchController::class . '@destroy');
+            });
+
+            // Global search
+            $api->group(['prefix' => 'search'], static function (Router $api) {
+                $api->post('search', SearchController::class . '@search');
+            });
 
             // Secure file uploader
             # uses for invoices, forms, etc.
@@ -217,8 +236,9 @@ $api->group([
                 $api->post('{id}/documents', CaseDocumentController::class . '@createDocuments');
                 $api->get('{id}/documents', CaseDocumentController::class . '@documents');
 
-                /** Case statuses */
+                /** Close the case */
                 $api->put('{id}/close', CaseStatusController::class . '@close');
+                $api->put('{id}/reopen', CaseStatusController::class . '@reopen');
 
                 /** History */
                 $api->get('{id}/history', CaseHistoryController::class . '@history');
@@ -234,8 +254,11 @@ $api->group([
                $api->post('search', DirectorAccidentsController::class . '@search');
                // selected case
                $api->get('{id}', DirectorAccidentsController::class . '@show');
+               // searching by ref-num
+                $api->post('ref-num/search', AccidentsRefNumController::class . '@search');
             });
 
+            $api->post('types/search', AccidentTypeController::class . '@search');
             $api->resource('types', DirectorAccidentTypesController::class);
 
             $api->group(['prefix' => 'services'], static function (Router $api) {

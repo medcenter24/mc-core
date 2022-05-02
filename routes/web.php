@@ -28,12 +28,17 @@
 */
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Ui\AuthRouteMethods;
+use medcenter24\mcCore\App\Http\Controllers\Admin\MainController;
+use medcenter24\mcCore\App\Http\Controllers\Admin\RolesController;
+use medcenter24\mcCore\App\Http\Controllers\Admin\UsersController;
+use medcenter24\mcCore\App\Http\Controllers\Telegram\TelegramApiController;
 
 Route::get('/', static function () {
     return redirect('admin');
 });
 
-Route::mixin(new \Laravel\Ui\AuthRouteMethods());
+Route::mixin(new AuthRouteMethods());
 Route::auth(['verify' => true]);
 
 Route::get('/home', static function () {
@@ -42,17 +47,22 @@ Route::get('/home', static function () {
 
 // if it needed I could check that server is telegram
 Route::group(['prefix' => 'telegram'], static function () {
-    Route::post(config('telegram.webhookPrefix'), 'Telegram\TelegramApiController@index');
+    Route::post(config('telegram.webhookPrefix'), TelegramApiController::class . '@index');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], static function () {
-    Route::get('/', 'Admin\MainController@index');
-    Route::resource('users', 'Admin\UsersController');
-    Route::resource('roles', 'Admin\RolesController');
+    # Route::get('/', MainController::class . '@index'); // todo add statistic or graph on how the site is filled with data
+    Route::get('/', static function () {
+        return redirect('admin/users');
+    });
+    Route::resource('users', UsersController::class);
+    Route::resource('roles', RolesController::class);
     Route::resource('invites', 'Admin\InvitesController');
 
     Route::group(['prefix' => 'entity'], static function() {
         Route::get('doctor-service', 'Admin\Entity\DoctorServiceController@index');
+        Route::get('accident-status', 'Admin\Entity\AccidentStatusController@index');
+        Route::post('accident-status', 'Admin\Entity\AccidentStatusController@store');
     });
 
     Route::group(['prefix' => 'preview'], static function() {

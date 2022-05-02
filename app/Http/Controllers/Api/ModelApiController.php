@@ -101,6 +101,7 @@ abstract class ModelApiController extends ApiController
         $searchService->setFieldLogic($this->searchFieldLogic());
 
         $data = $searchService->search($request, $this->getModelService()->getModel());
+
         // fix it and add sort filtering and other if needed, for now it []
         $data->withPath($request->path());
         return $this->response->paginator($data, $this->getDataTransformer());

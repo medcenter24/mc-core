@@ -27,6 +27,7 @@ use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Entity\Invoice;
+use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
@@ -169,7 +170,7 @@ class CaseFinanceServiceTest extends TestCase
     /**
      * Case without anything should return 0 for all valuable variables
      * @throws InconsistentDataException
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     public function testEmptyDoctorCase(): void
     {
@@ -193,7 +194,7 @@ class CaseFinanceServiceTest extends TestCase
     /**
      * Case without anything should return 0 for all valuable variables
      * @throws InconsistentDataException
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     public function testEmptyHospitalCase(): void
     {
@@ -241,7 +242,7 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * When the payment already stored (when we had static digit in the DB) - Doesn't need to calculate again
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     public function testStoredFromAssistantPayment(): void
     {
@@ -266,7 +267,7 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * This is payment that needs to be calculated according to the conditions
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     public function testCalculateFromAssistantEmptyPayment(): void
     {
@@ -281,7 +282,7 @@ class CaseFinanceServiceTest extends TestCase
 
     /**
      * This is payment that needs to be calculated according to the conditions
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     public function testCalculateFromAssistantPaymentWithCondition(): void
     {

@@ -28,7 +28,6 @@ use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Http\Requests\Telegram\SetWebhook;
 use medcenter24\mcCore\App\Services\Bot\BotInstance;
 use Telegram;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class WebhookController extends AdminController
 {
@@ -52,7 +51,6 @@ class WebhookController extends AdminController
      * @param SetWebhook $request
      * @param BotInstance $botInstance
      * @return JsonResponse
-     * @throws ErrorException
      */
     public function update (SetWebhook $request, BotInstance $botInstance): JsonResponse
     {
@@ -68,7 +66,7 @@ class WebhookController extends AdminController
         try {
             $telegram = $botInstance->getBot('telegram');
             $response = $telegram->setWebhook($conf);
-        } catch (TelegramSDKException $e) {
+        } catch (ErrorException $e) {
             return response()->json(['message' => $e->getMessage() . '('.$conf['url'].')'], 500);
         }
         return response()->json(['status' => $response]);

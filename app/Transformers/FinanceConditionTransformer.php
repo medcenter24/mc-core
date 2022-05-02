@@ -17,7 +17,7 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Transformers;
 
@@ -46,20 +46,24 @@ class FinanceConditionTransformer extends TransformerAbstract
      * @param Model|FinanceCondition $financeCondition
      * @return array
      */
-    public function transform(FinanceCondition $financeCondition): array
+    public function transform(FinanceCondition|Model $financeCondition): array
     {
         $assistantTransformer = new AssistantTransformer();
         $assistants = Assistant::whereIn('id', $financeCondition->conditions()
             ->where('model', Assistant::class)->get(['model_id'])
-            ->map(static function($v) { return $v['model_id']; }))->get();
-        $assistants = $assistants->map(static function($assistant) use($assistantTransformer) {
+            ->map(static function ($v) {
+                return $v['model_id'];
+            }))->get();
+        $assistants = $assistants->map(static function ($assistant) use ($assistantTransformer) {
             return $assistantTransformer->transform($assistant);
         });
 
         $cityTransformer = new CityTransformer();
         $cities = City::whereIn('id', $financeCondition->conditions()
             ->where('model', City::class)->get(['model_id'])
-            ->map(static function($v) { return $v['model_id']; }))->get();
+            ->map(static function ($v) {
+                return $v['model_id'];
+            }))->get();
         $cities = $cities->map(static function ($city) use ($cityTransformer) {
             return $cityTransformer->transform($city);
         });
@@ -67,7 +71,9 @@ class FinanceConditionTransformer extends TransformerAbstract
         $doctorTransformer = new DoctorTransformer();
         $doctors = Doctor::whereIn('id', $financeCondition->conditions()
             ->where('model', Doctor::class)
-            ->get(['model_id'])->map(static function($v) { return $v['model_id']; })
+            ->get(['model_id'])->map(static function ($v) {
+                return $v['model_id'];
+            })
         )->get();
         $doctors = $doctors->map(static function ($doctor) use ($doctorTransformer) {
             return $doctorTransformer->transform($doctor);
@@ -76,7 +82,9 @@ class FinanceConditionTransformer extends TransformerAbstract
         $serviceTransformer = new ServiceTransformer();
         $services = Service::whereIn('id', $financeCondition->conditions()
             ->where('model', Service::class)->get(['model_id'])
-            ->map(static function($v) { return $v['model_id']; })
+            ->map(static function ($v) {
+                return $v['model_id'];
+            })
         )->get();
         $services = $services->map(static function ($service) use ($serviceTransformer) {
             return $serviceTransformer->transform($service);
@@ -85,14 +93,16 @@ class FinanceConditionTransformer extends TransformerAbstract
         $datePeriodTransformer = new DatePeriodTransformer();
         $datePeriods = DatePeriod::whereIn('id', $financeCondition->conditions()
             ->where('model', DatePeriod::class)->get(['model_id'])
-            ->map(static function($v) { return $v['model_id']; })
+            ->map(static function ($v) {
+                return $v['model_id'];
+            })
         )->get();
         $datePeriods = $datePeriods->map(static function ($period) use ($datePeriodTransformer) {
             return $datePeriodTransformer->transform($period);
         });
 
         return [
-            'id' => (int) $financeCondition->id,
+            'id' => (int)$financeCondition->id,
             'title' => $financeCondition->title,
             'value' => $financeCondition->value,
             'assistants' => $assistants,
@@ -102,8 +112,9 @@ class FinanceConditionTransformer extends TransformerAbstract
             'datePeriods' => $datePeriods,
             'type' => $financeCondition->type,
             'model' => $this->transformConditionModel($financeCondition->model),
-            'currencyId' => (int) $financeCondition->currency_id,
+            'currencyId' => (int)$financeCondition->currency_id,
             'currencyMode' => $financeCondition->currency_mode,
+            'order' => $financeCondition->order,
         ];
     }
 

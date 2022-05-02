@@ -42,7 +42,7 @@ class PatientAccidentControllerTest extends TestCase
     {
         /** @var Accident $case */
         $case = $this->createAccidentForDoc();
-        $response = $this->sendPut('/api/doctor/accidents/' . $case->id . '/patient',
+        $response = $this->sendPatch('/api/doctor/accidents/' . $case->id . '/patient',
             [
                 'name' => 'CARLO MCKENZIE',
                 'address' => '509 Wehner Landing North Mayafort, VA 23753-2717',

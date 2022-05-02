@@ -26,6 +26,7 @@ use Exception;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Transformers\statistics\TrafficTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -46,6 +47,7 @@ class TrafficController extends ApiController
             $year = (new Carbon())->format('Y');
         }
 
+
         $statistic = DB::table('accidents')
             ->join('doctor_accidents', static function ($join) {
                 $join->where('accidents.caseable_type', '=', DoctorAccident::class)
@@ -54,6 +56,7 @@ class TrafficController extends ApiController
             ->join('doctors', 'doctors.id', '=', 'doctor_accidents.doctor_id')
             ->select('doctors.id as id', 'doctors.name as name', DB::raw('count(accidents.id) as cases_count'))
             ->whereBetween('accidents.handling_time', [$year.'-01-01 00:00:00', $year.'-12-31 23:59:59'])
+            ->whereNull('accidents.' . AbstractModelService::FIELD_DELETED_AT)
             ->groupBy('doctors.id')
             ->orderBy('cases_count', 'desc')
             ->get();
@@ -77,6 +80,7 @@ class TrafficController extends ApiController
             ->join('assistants', 'assistants.id', '=', 'accidents.assistant_id')
             ->select('assistants.id as id', 'assistants.title as name', DB::raw('count(accidents.id) as cases_count'))
             ->whereBetween('accidents.handling_time', [$year.'-01-01 00:00:00', $year.'-12-31 23:59:59'])
+            ->whereNull('accidents.' . AbstractModelService::FIELD_DELETED_AT)
             ->groupBy('assistants.id')
             ->orderBy('cases_count', 'desc')
             ->get();

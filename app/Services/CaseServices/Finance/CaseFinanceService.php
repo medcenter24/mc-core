@@ -106,6 +106,7 @@ class CaseFinanceService
             $financeCondition->currency_mode = $condition->getCurrencyMode();
             $financeCondition->type = $condition->getConditionType();
             $financeCondition->model = $condition->getModel();
+            $financeCondition->order = $condition->getOrder();
             $financeCondition->save();
             $financeCondition->conditions()->delete(); // unassign all stored conditions
         } else {
@@ -117,6 +118,7 @@ class CaseFinanceService
                 'currency_mode' => $condition->getCurrencyMode(),
                 'type' => $condition->getConditionType(),
                 'model' => $condition->getModel(),
+                'order' => $condition->getOrder(),
             ]);
         }
 
@@ -149,7 +151,7 @@ class CaseFinanceService
         $conditions = $this->getFinanceConditionService()->findConditions($model, $conditionProps);
 
         // calculate formula by conditions
-        if ($conditions && $conditions->count()) {
+        if ($conditions->count()) {
             $formula = $this->getFormulaService()->createFormulaFromConditions($conditions);
         } else {
             $formula->addFloat(); // to have 0 instead of ''
@@ -216,7 +218,7 @@ class CaseFinanceService
      * Payment from the assistant to the company
      * @param Accident $accident
      * @return FormulaBuilderContract
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     public function getFromAssistantFormula(Accident $accident): FormulaBuilderContract
     {
@@ -254,6 +256,7 @@ class CaseFinanceService
         $caseFinanceCondition->setCurrencyMode((string)$request->json('currencyMode',
             FinanceConditionService::PARAM_CURRENCY_MODE_PERCENT));
         $caseFinanceCondition->setCurrency($request->json('currencyId', 0));
+        $caseFinanceCondition->setOrder((int)$request->json('order', 0));
 
         $financeConditionTransformer = new FinanceConditionTransformer();
         $modelName = $financeConditionTransformer->inverseTransformConditionModel($request->json('model', ''));
@@ -306,16 +309,16 @@ class CaseFinanceService
     /**
      * @param Accident $accident
      * @param array $data
-     * @param $relationName
+     * @param string $relationName
      */
-    private function savePayment(Accident $accident, array $data, $relationName): void
+    private function savePayment(Accident $accident, array $data, string $relationName): void
     {
         /** @var Payment $payment */
         $payment = $accident->$relationName;
         if ($payment) {
             $oldPayment = clone $payment;
             $payment->value = $data['price'];
-            $payment->fixed = (int) $data['fixed'] ? true : false;
+            $payment->fixed = (bool)((int)$data['fixed']);
             $payment->save();
         } else {
             $oldPayment = null;
@@ -323,7 +326,7 @@ class CaseFinanceService
                 'created_by' => auth()->user()->id,
                 'value' => $data['price'],
                 'currency_id' => $this->getCurrencyService()->getDefaultCurrency()->getAttribute('id'),
-                'fixed' => (int)$data['fixed'] ? true : false,
+                'fixed' => (bool)((int)$data['fixed']),
                 'description' => 'Created from CaseFinanceService',
             ]);
             $accident->$relationName()->associate($payment->id);

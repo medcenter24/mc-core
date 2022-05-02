@@ -17,26 +17,37 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
-class SearchFilter
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+
+trait FilterTraitInId
 {
-    public function __construct(
-        private readonly string $model = '',
-        private readonly mixed $values = null,
-    ) {
+    protected function getWhereOperation(): string
+    {
+        return 'IN';
+    }
+
+    protected function getValues(mixed $values): array
+    {
+        $ids = [];
+        if (is_array($values)) {
+            foreach ($values as $value) {
+                if (!empty($value['id'])) {
+                    $ids[] = $value['id'];
+                }
+            }
+        }
+        return $ids;
     }
 
     /**
-     * @return string
+     * @param mixed $whereValue
+     * @return bool
+     * @throws InconsistentDataException
      */
-    public function getModel(): string
+    protected function getLoaded(mixed $whereValue): bool
     {
-        return $this->model;
-    }
-
-    public function getValues(): mixed
-    {
-        return $this->values;
+        return !empty($this->getValues($whereValue));
     }
 }

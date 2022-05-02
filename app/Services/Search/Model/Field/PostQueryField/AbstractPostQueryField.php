@@ -17,36 +17,16 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Field\PostQueryField;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Search\Model\Field\Request\SearchField;
 
-class SearchFiltersCollection
+abstract class AbstractPostQueryField
 {
-    use ServiceLocatorTrait;
-
-    private Collection $filters;
-
-    public function load(array $filters): void
-    {
-        $this->filters = collect();
-        foreach ($filters as $key => $values) {
-            $this->filters->push(
-                $this->getSearchFilterFactory()
-                    ->create($key, $values)
-            );
-        }
-    }
-
-    public function getFilters(): Collection
-    {
-        return $this->filters;
-    }
-
-    private function getSearchFilterFactory(): SearchFilterFactory
-    {
-        return $this->getServiceLocator()->get(SearchFilterFactory::class);
-    }
+    abstract public function apply(
+        SearchField $searchField,
+        Collection $result,
+        int $position,
+    ): Collection;
 }

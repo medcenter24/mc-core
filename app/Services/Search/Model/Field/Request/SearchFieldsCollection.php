@@ -17,37 +17,32 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Field\Request;
 
-use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use Illuminate\Support\Collection;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 
-trait FilterTraitInId
+class SearchFieldsCollection
 {
-    protected function getWhereOperation(): string
-    {
-        return 'IN';
-    }
+    use ServiceLocatorTrait;
 
-    protected function getValues(mixed $values): array
+    private Collection $fields;
+
+    public function load(array $fields): void
     {
-        $ids = [];
-        if (is_array($values)) {
-            foreach ($values as $value) {
-                if (!empty($value['id'])) {
-                    $ids[] = $value['id'];
-                }
-            }
+        $this->fields = collect();
+        foreach ($fields as $field) {
+            $this->fields->push($this->getSearchFieldFactory()->create($field));
         }
-        return $ids;
     }
 
-    /**
-     * @param mixed $whereValue
-     * @return bool
-     * @throws InconsistentDataException
-     */
-    protected function getLoaded(mixed $whereValue): bool
+    public function getFields(): Collection
     {
-        return !empty($this->getValues($whereValue));
+        return $this->fields;
+    }
+
+    private function getSearchFieldFactory(): SearchFieldFactory
+    {
+        return $this->getServiceLocator()->get(SearchFieldFactory::class);
     }
 }

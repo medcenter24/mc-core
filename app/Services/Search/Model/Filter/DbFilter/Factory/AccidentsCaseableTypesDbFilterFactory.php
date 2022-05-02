@@ -17,44 +17,54 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
-use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
+use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
-use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
+use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
-class AccidentsVisitTimeRangesDbFilterFactory extends AbstractDbFilterFactory
+class AccidentsCaseableTypesDbFilterFactory extends AbstractDbFilterFactory
 {
-    use FilterTraitDateRange;
+    use FilterTraitInId;
+    use CaseTypeTransformer;
 
     protected function getTableName(): string
     {
-        return 'doctor_accidents';
+        return 'accidents';
     }
 
-    protected function getJoins(): array
-    {
-        return [
-            new SearchJoin(
-                'accidents',
-                $this->getTableName(),
-                AccidentService::FIELD_CASEABLE_ID,
-                AbstractModelService::FIELD_ID,
-            ),
-        ];
-    }
-
+    /**
+     * @param $whereValue
+     * @return SearchWhere[]
+     * @throws InconsistentDataException
+     */
     protected function getWheres($whereValue): array
     {
         return [
             new SearchWhere(
                 $this->getTableName(),
-                DoctorAccidentService::FIELD_VISIT_TIME,
+                AccidentService::FIELD_CASEABLE_TYPE,
                 $this->getValues($whereValue),
-                $this->getWhereOperation(),
             )
         ];
+    }
+
+    /**
+     * @param mixed $values
+     * @return array
+     * @throws InconsistentDataException
+     */
+    protected function getValues(mixed $values): array
+    {
+        $types = [];
+        $values = parent::getValues($values);
+        if (!empty($values)) {
+            foreach ($values as $value) {
+                $types[] = ['id' => $this->getInverseTransformedType($value)];
+            }
+        }
+
+        return $types;
     }
 }

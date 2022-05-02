@@ -17,26 +17,12 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Field;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\Request;
 
-class SearchField
+class SearchFilterFactory
 {
-    public function __construct(
-        private readonly string $id,
-        private readonly string $order,
-    ) {
-    }
-
-    public function getId(): string
+    public function create(string $model, mixed $value = null): SearchFilter
     {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOrder(): string
-    {
-        return $this->order;
+        return new SearchFilter($model, $value);
     }
 }

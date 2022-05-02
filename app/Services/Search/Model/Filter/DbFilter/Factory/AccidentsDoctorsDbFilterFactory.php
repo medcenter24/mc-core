@@ -17,21 +17,22 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
 use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\AccidentTypeService;
+use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
+use medcenter24\mcCore\App\Services\Entity\DoctorService;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
-class AccidentsAccidentTypesDbFilterFactory extends AbstractDbFilterFactory
+class AccidentsDoctorsDbFilterFactory extends AbstractDbFilterFactory
 {
     use FilterTraitInId;
 
     protected function getTableName(): string
     {
-        return 'accident_types';
+        return 'doctors';
     }
 
     protected function getJoins(): array
@@ -39,22 +40,33 @@ class AccidentsAccidentTypesDbFilterFactory extends AbstractDbFilterFactory
         return [
             new SearchJoin(
                 'accidents',
+                'doctor_accidents',
+                AccidentService::FIELD_CASEABLE_ID,
+                AbstractModelService::FIELD_ID,
+            ),
+            new SearchJoin(
+                'doctor_accidents',
                 $this->getTableName(),
-                AccidentService::FIELD_ACCIDENT_TYPE_ID,
-                AbstractModelService::FIELD_ID
+                DoctorAccidentService::FIELD_DOCTOR_ID,
+                DoctorService::FIELD_ID,
             ),
         ];
     }
 
-    protected function getWheres($whereValue): array
+    protected function getWheres(mixed $whereValue): array
     {
         return [
             new SearchWhere(
+                'accidents',
+                AccidentService::FIELD_CASEABLE_TYPE,
+                AccidentService::CASEABLE_TYPE_DOCTOR,
+            ),
+            new SearchWhere(
                 $this->getTableName(),
-                AbstractModelService::FIELD_ID,
+                DoctorService::FIELD_ID,
                 $this->getValues($whereValue),
                 $this->getWhereOperation(),
-            ),
+            )
         ];
     }
 }

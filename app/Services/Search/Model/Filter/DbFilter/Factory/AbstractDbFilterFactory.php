@@ -17,22 +17,19 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
-use medcenter24\mcCore\App\Services\Search\Model\Field\SearchDbField;
-use medcenter24\mcCore\App\Services\Search\Model\Field\SearchField;
+use medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\SearchDbFilter;
 
-abstract class AbstractDbFieldFactory
+abstract class AbstractDbFilterFactory
 {
-    public function create(SearchField $searchField): SearchDbField
+    public function create($whereValue): SearchDbFilter
     {
-        return new SearchDbField(
+        return new SearchDbFilter(
             $this->getTableName(),
-            $this->getSelectField(),
-            $searchField->getId(),
-            in_array($searchField->getOrder(), ['asc', 'desc']),
-            $searchField->getOrder(),
+            $this->getWheres($whereValue),
             $this->getJoins(),
+            $this->getLoaded($whereValue),
         );
     }
 
@@ -41,18 +38,20 @@ abstract class AbstractDbFieldFactory
      */
     abstract protected function getTableName(): string;
 
-    /**
-     * @return string
-     */
-    protected function getSelectField(): string {
-        $fields = $this->getSelectFieldParts();
-        return sprintf('%s.%s', $fields[0], $fields[1]);
+    protected function getValues(mixed $values): mixed
+    {
+        return $values;
     }
-
-    abstract protected function getSelectFieldParts();
 
     protected function getJoins(): array
     {
         return [];
+    }
+
+    abstract protected function getWheres($whereValue): array;
+
+    protected function getLoaded(mixed $whereValue): bool
+    {
+        return false;
     }
 }

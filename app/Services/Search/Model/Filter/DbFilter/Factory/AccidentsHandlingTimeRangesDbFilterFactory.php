@@ -17,54 +17,29 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
-use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
-use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
-class AccidentsCaseableTypesDbFilterFactory extends AbstractDbFilterFactory
+class AccidentsHandlingTimeRangesDbFilterFactory extends AbstractDbFilterFactory
 {
-    use FilterTraitInId;
-    use CaseTypeTransformer;
+    use FilterTraitDateRange;
 
     protected function getTableName(): string
     {
         return 'accidents';
     }
 
-    /**
-     * @param $whereValue
-     * @return SearchWhere[]
-     * @throws InconsistentDataException
-     */
     protected function getWheres($whereValue): array
     {
         return [
             new SearchWhere(
                 $this->getTableName(),
-                AccidentService::FIELD_CASEABLE_TYPE,
+                AccidentService::FIELD_HANDLING_TIME,
                 $this->getValues($whereValue),
-            )
+                $this->getWhereOperation(),
+            ),
         ];
-    }
-
-    /**
-     * @param mixed $values
-     * @return array
-     * @throws InconsistentDataException
-     */
-    protected function getValues(mixed $values): array
-    {
-        $types = [];
-        $values = parent::getValues($values);
-        if (!empty($values)) {
-            foreach ($values as $value) {
-                $types[] = ['id' => $this->getInverseTransformedType($value)];
-            }
-        }
-
-        return $types;
     }
 }

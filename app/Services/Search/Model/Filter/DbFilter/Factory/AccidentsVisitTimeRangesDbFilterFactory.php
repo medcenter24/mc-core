@@ -17,20 +17,21 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\AssistantService;
+use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
-class AccidentsAssistantsDbFilterFactory extends AbstractDbFilterFactory
+class AccidentsVisitTimeRangesDbFilterFactory extends AbstractDbFilterFactory
 {
-    use FilterTraitInId;
+    use FilterTraitDateRange;
 
     protected function getTableName(): string
     {
-        return 'assistants';
+        return 'doctor_accidents';
     }
 
     protected function getJoins(): array
@@ -39,18 +40,18 @@ class AccidentsAssistantsDbFilterFactory extends AbstractDbFilterFactory
             new SearchJoin(
                 'accidents',
                 $this->getTableName(),
-                AccidentService::FIELD_ASSISTANT_ID,
-                AssistantService::FIELD_ID,
+                AccidentService::FIELD_CASEABLE_ID,
+                AbstractModelService::FIELD_ID,
             ),
         ];
     }
 
-    protected function getWheres(mixed $whereValue): array
+    protected function getWheres($whereValue): array
     {
         return [
             new SearchWhere(
                 $this->getTableName(),
-                AssistantService::FIELD_TITLE,
+                DoctorAccidentService::FIELD_VISIT_TIME,
                 $this->getValues($whereValue),
                 $this->getWhereOperation(),
             )

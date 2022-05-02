@@ -20,9 +20,9 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Search\Model\Query\Loader;
 
 use Illuminate\Support\Collection;
-use medcenter24\mcCore\App\Services\Search\Model\Field\SearchDbField;
-use medcenter24\mcCore\App\Services\Search\Model\Field\SearchDbFieldFactory;
-use medcenter24\mcCore\App\Services\Search\Model\Field\SearchField;
+use medcenter24\mcCore\App\Services\Search\Model\Field\DbField\SearchDbField;
+use medcenter24\mcCore\App\Services\Search\Model\Field\DbField\SearchDbFieldFactory;
+use medcenter24\mcCore\App\Services\Search\Model\Field\Request\SearchField;
 use medcenter24\mcCore\App\Services\Search\Model\Query\SearchQuery;
 
 class SearchQueryFieldLoader extends AbstractSearchQueryLoader
@@ -32,7 +32,7 @@ class SearchQueryFieldLoader extends AbstractSearchQueryLoader
         /** @var SearchField $field */
         foreach ($collection as $field) {
             $dbField = $this->getDbField($searchQuery->getFrom(), $field);
-            if (!isset($dbField)) {
+            if (!isset($dbField) ) {
                 continue;
             }
             $searchQuery->addField([$dbField->getAlias() => $dbField->getSelectField()]);

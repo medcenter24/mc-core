@@ -19,31 +19,23 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
-trait FilterTraitDateRange
+use Illuminate\Support\Str;
+use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
+use medcenter24\mcCore\App\Services\Search\Model\Filter\Request\SearchFilter;
+
+class SearchDbFilterFactory
 {
-    protected function getWhereOperation(): string
-    {
-        return 'BETWEEN';
-    }
+    use ServiceLocatorTrait;
 
-    protected function getValues(mixed $values): array
+    public function create(string $srcTable, SearchFilter $filter): ?SearchDbFilter
     {
-        $dates = [];
-        $value = current($values);
-        if (is_string($value) && mb_strpos('>', $value)) {
-            [$from, $to] = explode('>', $value);
-            $dates[] = $from . ' 00:00:00';
-            $dates[] = $to . ' 23:59:59';
+        $table = Str::ucfirst($srcTable);
+        $model = Str::ucfirst(Str::camel($filter->getModel()));
+        $namespace = 'medcenter24\\mcCore\\App\\Services\\Search\\Model\\Filter\\DbFilter\\Factory\\';
+        $class = $namespace.$table.$model.'DbFilterFactory';
+        if (class_exists($class)) {
+            return $this->getServiceLocator()->get($class)->create($filter->getValues());
         }
-        return $dates;
-    }
-
-    /**
-     * @param mixed $whereValue
-     * @return bool
-     */
-    protected function getLoaded(mixed $whereValue): bool
-    {
-        return !empty($this->getValues($whereValue));
+        return null;
     }
 }

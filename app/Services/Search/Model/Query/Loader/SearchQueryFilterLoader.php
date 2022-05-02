@@ -20,10 +20,9 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Search\Model\Query\Loader;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Services\Search\Model\Filter\SearchDbFilter;
-use medcenter24\mcCore\App\Services\Search\Model\Filter\SearchDbFilterFactory;
-use medcenter24\mcCore\App\Services\Search\Model\Filter\SearchFilter;
+use medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\SearchDbFilter;
+use medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\SearchDbFilterFactory;
+use medcenter24\mcCore\App\Services\Search\Model\Filter\Request\SearchFilter;
 use medcenter24\mcCore\App\Services\Search\Model\Query\SearchQuery;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 

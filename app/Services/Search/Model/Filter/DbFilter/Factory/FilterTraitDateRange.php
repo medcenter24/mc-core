@@ -17,24 +17,33 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Field;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
-use Illuminate\Support\Str;
-use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
-
-class SearchDbFieldFactory
+trait FilterTraitDateRange
 {
-    use ServiceLocatorTrait;
-
-    public function create(string $srcTable, SearchField $field): ?SearchDbField
+    protected function getWhereOperation(): string
     {
-        $table = Str::ucfirst($srcTable);
-        $model = Str::ucfirst(Str::camel($field->getId()));
-        $namespace = 'medcenter24\\mcCore\\App\\Services\\Search\\Model\\Field\\DbField\\';
-        $class = $namespace.$table.$model.'DbFieldFactory';
-        if (class_exists($class)) {
-            return $this->getServiceLocator()->get($class)->create($field);
+        return 'BETWEEN';
+    }
+
+    protected function getValues(mixed $values): array
+    {
+        $dates = [];
+        $value = current($values);
+        if (is_string($value) && mb_strpos('>', $value)) {
+            [$from, $to] = explode('>', $value);
+            $dates[] = $from . ' 00:00:00';
+            $dates[] = $to . ' 23:59:59';
         }
-        return null;
+        return $dates;
+    }
+
+    /**
+     * @param mixed $whereValue
+     * @return bool
+     */
+    protected function getLoaded(mixed $whereValue): bool
+    {
+        return !empty($this->getValues($whereValue));
     }
 }

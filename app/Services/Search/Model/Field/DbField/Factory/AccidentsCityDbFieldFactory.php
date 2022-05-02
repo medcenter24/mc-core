@@ -17,22 +17,38 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField;
+namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField\Factory;
 
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Entity\CityService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 
-class AccidentsAssistRefNumDbFieldFactory extends AbstractDbFieldFactory
+class AccidentsCityDbFieldFactory extends AbstractDbFieldFactory
 {
     protected function getTableName(): string
     {
         return 'accidents';
     }
 
-    /**
-     * @return array
-     */
+    private function getJoinTable(): string
+    {
+        return 'cities';
+    }
+
+    protected function getJoins(): array
+    {
+        return [
+            new SearchJoin(
+                $this->getTableName(),
+                $this->getJoinTable(),
+                AccidentService::FIELD_CITY_ID,
+                CityService::FIELD_ID,
+            )
+        ];
+    }
+
     protected function getSelectFieldParts(): array
     {
-        return [$this->getTableName(), AccidentService::FIELD_ASSISTANT_REF_NUM];
+        return [$this->getJoinTable(), CityService::FIELD_TITLE];
     }
 }

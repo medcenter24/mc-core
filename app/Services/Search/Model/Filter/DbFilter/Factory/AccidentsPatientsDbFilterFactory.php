@@ -17,23 +17,18 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\PatientService;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
+use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
-class AccidentsPatientDbFieldFactory extends AbstractDbFieldFactory
+class AccidentsPatientsDbFilterFactory extends AbstractDbFilterFactory
 {
-    protected function getTableName(): string
-    {
-        return 'accidents';
-    }
+    use FilterTraitInId;
 
-    /**
-     * @return string
-     */
-    protected function getJoinTable(): string
+    protected function getTableName(): string
     {
         return 'patients';
     }
@@ -42,16 +37,23 @@ class AccidentsPatientDbFieldFactory extends AbstractDbFieldFactory
     {
         return [
             new SearchJoin(
+                'accidents',
                 $this->getTableName(),
-                $this->getJoinTable(),
                 AccidentService::FIELD_PATIENT_ID,
                 PatientService::FIELD_ID,
             ),
         ];
     }
 
-    protected function getSelectFieldParts(): array
+    protected function getWheres($whereValue): array
     {
-        return [$this->getJoinTable(), PatientService::FIELD_NAME];
+        return [
+            new SearchWhere(
+                $this->getTableName(),
+                PatientService::FIELD_ID,
+                $this->getValues($whereValue),
+                $this->getWhereOperation(),
+            ),
+        ];
     }
 }

@@ -17,53 +17,26 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Field;
+namespace medcenter24\mcCore\App\Services\Search\Model\Field\Request;
 
-class SearchDbField
+class SearchField
 {
     public function __construct(
-        private readonly string $tableName,
-        private readonly string $selectField,
-        private readonly string $alias,
-        private readonly bool $hasOrder,
+        private readonly string $id,
         private readonly string $order,
-        private readonly array $joins,
     ) {
     }
 
-    public function hasOrder(): bool
+    public function getId(): string
     {
-        return $this->hasOrder;
-    }
-
-    public function getOrder(): string
-    {
-        return $this->order;
-    }
-
-    public function getSelectField(): string
-    {
-        return $this->selectField;
-    }
-
-    /**
-     * @return array of SearchJoin
-     */
-    public function getJoins(): array
-    {
-        return $this->joins;
-    }
-
-    public function getTableName(): string
-    {
-        return $this->tableName;
+        return $this->id;
     }
 
     /**
      * @return string
      */
-    public function getAlias(): string
+    public function getOrder(): string
     {
-        return $this->alias;
+        return $this->order;
     }
 }

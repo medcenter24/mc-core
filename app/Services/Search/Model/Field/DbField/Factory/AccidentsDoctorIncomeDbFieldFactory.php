@@ -17,56 +17,42 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField\Factory;
 
 use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
-use medcenter24\mcCore\App\Services\Entity\DoctorService;
+use medcenter24\mcCore\App\Services\Entity\PaymentService;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
-use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
-class AccidentsDoctorsDbFilterFactory extends AbstractDbFilterFactory
+class AccidentsDoctorIncomeDbFieldFactory extends AbstractDbFieldFactory
 {
-    use FilterTraitInId;
-
     protected function getTableName(): string
     {
-        return 'doctors';
+        return 'accidents';
+    }
+
+    /**
+     * @return string
+     */
+    private function getJoinTable(): string
+    {
+        return 'payments';
     }
 
     protected function getJoins(): array
     {
         return [
             new SearchJoin(
-                'accidents',
-                'doctor_accidents',
-                AccidentService::FIELD_CASEABLE_ID,
-                AbstractModelService::FIELD_ID,
-            ),
-            new SearchJoin(
-                'doctor_accidents',
                 $this->getTableName(),
-                DoctorAccidentService::FIELD_DOCTOR_ID,
-                DoctorService::FIELD_ID,
+                $this->getJoinTable(),
+                AccidentService::FIELD_CASEABLE_PAYMENT_ID,
+                AbstractModelService::FIELD_ID,
             ),
         ];
     }
 
-    protected function getWheres(mixed $whereValue): array
+    protected function getSelectFieldParts(): array
     {
-        return [
-            new SearchWhere(
-                'accidents',
-                AccidentService::FIELD_CASEABLE_TYPE,
-                AccidentService::CASEABLE_TYPE_DOCTOR,
-            ),
-            new SearchWhere(
-                $this->getTableName(),
-                DoctorService::FIELD_ID,
-                $this->getValues($whereValue),
-                $this->getWhereOperation(),
-            )
-        ];
+        return [$this->getJoinTable(), PaymentService::FIELD_VALUE];
     }
 }

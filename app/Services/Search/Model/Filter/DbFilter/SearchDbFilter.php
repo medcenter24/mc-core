@@ -17,16 +17,44 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Field;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
-class SearchFieldFactory
+class SearchDbFilter
 {
+    public function __construct(
+        private readonly string $tableName,
+        private readonly array $wheres,
+        private readonly array $joins,
+        private readonly bool $loaded,
+    ) {
+    }
 
-    public function create(mixed $field): SearchField
+    /**
+     * @return string
+     */
+    public function getTableName(): string
     {
-        return new SearchField(
-            $field['id'],
-            $field['order'] ?? '',
-        );
+        return $this->tableName;
+    }
+
+    /**
+     * @return array
+     */
+    public function getJoins(): array
+    {
+        return $this->joins;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWheres(): array
+    {
+        return $this->wheres;
+    }
+
+    public function loaded(): bool
+    {
+        return $this->loaded;
     }
 }

@@ -17,44 +17,53 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField;
 
-class SearchDbFilter
+class SearchDbField
 {
     public function __construct(
         private readonly string $tableName,
-        private readonly array $wheres,
+        private readonly string $selectField,
+        private readonly string $alias,
+        private readonly bool $hasOrder,
+        private readonly string $order,
         private readonly array $joins,
-        private readonly bool $loaded,
     ) {
     }
 
-    /**
-     * @return string
-     */
-    public function getTableName(): string
+    public function hasOrder(): bool
     {
-        return $this->tableName;
+        return $this->hasOrder;
+    }
+
+    public function getOrder(): string
+    {
+        return $this->order;
+    }
+
+    public function getSelectField(): string
+    {
+        return $this->selectField;
     }
 
     /**
-     * @return array
+     * @return array of SearchJoin
      */
     public function getJoins(): array
     {
         return $this->joins;
     }
 
-    /**
-     * @return array
-     */
-    public function getWheres(): array
+    public function getTableName(): string
     {
-        return $this->wheres;
+        return $this->tableName;
     }
 
-    public function loaded(): bool
+    /**
+     * @return string
+     */
+    public function getAlias(): string
     {
-        return $this->loaded;
+        return $this->alias;
     }
 }

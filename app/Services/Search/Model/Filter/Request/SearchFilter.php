@@ -17,29 +17,26 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\Request;
 
-use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
-
-class AccidentsHandlingTimeRangesDbFilterFactory extends AbstractDbFilterFactory
+class SearchFilter
 {
-    use FilterTraitDateRange;
-
-    protected function getTableName(): string
-    {
-        return 'accidents';
+    public function __construct(
+        private readonly string $model = '',
+        private readonly mixed $values = null,
+    ) {
     }
 
-    protected function getWheres($whereValue): array
+    /**
+     * @return string
+     */
+    public function getModel(): string
     {
-        return [
-            new SearchWhere(
-                $this->getTableName(),
-                AccidentService::FIELD_HANDLING_TIME,
-                $this->getValues($whereValue),
-                $this->getWhereOperation(),
-            ),
-        ];
+        return $this->model;
+    }
+
+    public function getValues(): mixed
+    {
+        return $this->values;
     }
 }

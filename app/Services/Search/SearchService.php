@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Search;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\Search\Model\Query\Loader\SearchQueryFieldLoader;
 use medcenter24\mcCore\App\Services\Search\Model\Query\Loader\SearchQueryFilterLoader;
@@ -30,20 +29,6 @@ use medcenter24\mcCore\App\Services\Search\Model\Query\SearchQueryFactory;
 class SearchService
 {
     use ServiceLocatorTrait;
-
-    public const FIELD_NPP = 'npp'; // todo add this field after the result responsed
-    public const FIELD_PATIENT = 'patient';
-    public const FIELD_CITY = 'city';
-    public const FIELD_DOCTOR_INCOME = 'doctor-income';
-    public const FIELD_ASSIST_REF_NUM = 'assist-ref-num';
-
-    public const FIELDS_DB = [
-        self::FIELD_PATIENT,
-        self::FIELD_CITY,
-        self::FIELD_DOCTOR_INCOME,
-        self::FIELD_ASSIST_REF_NUM,
-    ];
-
 
     public function search(SearchRequest $searchRequest): Collection
     {
@@ -60,10 +45,12 @@ class SearchService
 
         $query = $this->getSearchQueryBuilder()->build($searchQuery);
 
-        Log::error('search query', [$query->toSql()]);
+//        \Illuminate\Support\Facades\Log::error('search query', [$query->toSql()]);
 //        var_dump($query->toSql());die;
 
-        return $query->get();
+        $data = $query->get();
+        return $this->getSearchResultService()
+            ->getResultData($data, $searchRequest);
     }
 
     private function getSearchQueryFactory(): SearchQueryFactory
@@ -84,5 +71,10 @@ class SearchService
     private function getSearchQueryBuilder(): SearchQueryBuilder
     {
         return $this->getServiceLocator()->get(SearchQueryBuilder::class);
+    }
+
+    private function getSearchResultService(): SearchResultService
+    {
+        return $this->getServiceLocator()->get(SearchResultService::class);
     }
 }

@@ -23,17 +23,27 @@ use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Services\Search\SearchRequest;
+use medcenter24\mcCore\App\Services\Search\SearchResultService;
 use medcenter24\mcCore\App\Services\Search\SearchService;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class SearchController extends ApiController
 {
-    public function search(Request $request, SearchRequest $searchRequest, SearchService $searchService): Response
-    {
+    public function search(
+        Request $request,
+        SearchRequest $searchRequest,
+        SearchService $searchService,
+        SearchResultService $searchResultService,
+    ): Response {
         /** @var ParameterBag $searchRequestParameterBag */
         $searchRequestParameterBag = $request->json();
         $searchRequest->load($searchRequestParameterBag);
         $data = $searchService->search($searchRequest);
+
+        if ($searchRequest->getResultType() === 'excel') {
+            var_dump('excel data loader');die;
+        }
+
         return $this->response()->array($data->toArray());
     }
 }

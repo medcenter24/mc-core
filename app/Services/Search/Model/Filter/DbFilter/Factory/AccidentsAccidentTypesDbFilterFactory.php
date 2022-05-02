@@ -17,20 +17,21 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\CityService;
+use medcenter24\mcCore\App\Services\Entity\AccidentTypeService;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
-class AccidentsCitiesDbFilterFactory extends AbstractDbFilterFactory
+class AccidentsAccidentTypesDbFilterFactory extends AbstractDbFilterFactory
 {
     use FilterTraitInId;
 
     protected function getTableName(): string
     {
-        return 'cities';
+        return 'accident_types';
     }
 
     protected function getJoins(): array
@@ -39,21 +40,21 @@ class AccidentsCitiesDbFilterFactory extends AbstractDbFilterFactory
             new SearchJoin(
                 'accidents',
                 $this->getTableName(),
-                AccidentService::FIELD_CITY_ID,
-                CityService::FIELD_ID,
+                AccidentService::FIELD_ACCIDENT_TYPE_ID,
+                AbstractModelService::FIELD_ID
             ),
         ];
     }
 
-    protected function getWheres(mixed $whereValue): array
+    protected function getWheres($whereValue): array
     {
         return [
             new SearchWhere(
                 $this->getTableName(),
-                CityService::FIELD_TITLE,
+                AbstractModelService::FIELD_ID,
                 $this->getValues($whereValue),
                 $this->getWhereOperation(),
-            )
+            ),
         ];
     }
 }

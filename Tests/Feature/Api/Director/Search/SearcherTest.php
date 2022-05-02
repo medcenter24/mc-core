@@ -41,7 +41,7 @@ class SearcherTest extends TestCase
         $this->createMockedSearchableModels();
         $response = $this->sendPost('/api/director/search/search', json_decode($this->getPayload(), true));
         $response->assertStatus(200);
-        $response->assertExactJson(['a']);
+        $response->assertExactJson([]);
     }
 
     public function getPayload(): string

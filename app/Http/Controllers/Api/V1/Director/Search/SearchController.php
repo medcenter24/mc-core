@@ -20,11 +20,12 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Search;
 
 use Dingo\Api\Http\Request;
-use Dingo\Api\Http\Response;
+use Illuminate\Http\Response;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Services\Search\SearchRequest;
-use medcenter24\mcCore\App\Services\Search\SearchResultService;
+use medcenter24\mcCore\App\Services\Search\SearchResultExporter;
 use medcenter24\mcCore\App\Services\Search\SearchService;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class SearchController extends ApiController
@@ -33,15 +34,15 @@ class SearchController extends ApiController
         Request $request,
         SearchRequest $searchRequest,
         SearchService $searchService,
-        SearchResultService $searchResultService,
-    ): Response {
+    ): Response|BinaryFileResponse
+    {
         /** @var ParameterBag $searchRequestParameterBag */
         $searchRequestParameterBag = $request->json();
         $searchRequest->load($searchRequestParameterBag);
         $data = $searchService->search($searchRequest);
 
         if ($searchRequest->getResultType() === 'excel') {
-            var_dump('excel data loader');die;
+            return (new SearchResultExporter($data))->download(time() . '_search_result.xlsx');
         }
 
         return $this->response()->array($data->toArray());

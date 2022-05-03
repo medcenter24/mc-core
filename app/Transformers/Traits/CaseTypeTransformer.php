@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Transformers\Traits;
 
 use Illuminate\Database\Eloquent\Model;
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Entity\HospitalAccident;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
@@ -43,6 +44,7 @@ trait CaseTypeTransformer
         return 'hospital';
     }
 
+    #[ArrayShape([DoctorAccident::class => "string", HospitalAccident::class => "string"])]
     public function getCaseTypeMap(): array
     {
         return [

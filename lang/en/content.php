@@ -16,7 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types=1);
+
 return [
+    'patient'                        => 'Patient',
+    'assist-ref-num'                 => 'Assistant Ref. Number',
+    'doctor-income'                  => 'Doctor Income',
     'regenerate'                     => 'Regenerate',
     'accident_status'                => 'Accident Status',
     'entities'                       => 'Entities',

@@ -17,41 +17,52 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Services\Entity\CityService;
 
 class CityTransformer extends AbstractTransformer
 {
+    private const REGION_ID = 'regionId';
+
     public function transform(Model $model): array
     {
-        
+
         $fields = parent::transform($model);
         $fields['regionTitle'] = $model->getAttribute('region')
             ? $model->getAttribute('region')->getAttribute('title')
             : '';
         $fields['countryTitle'] = $model->getAttribute('region') && $model->getAttribute('region')->getAttribute('country')
-        ? $model->getAttribute('region')->getAttribute('country')->getAttribute('title')
-        : '';
+            ? $model->getAttribute('region')->getAttribute('country')->getAttribute('title')
+            : '';
         return $fields;
     }
-    
+
+    #[ArrayShape([
+        0 => "string",
+        1 => "string",
+        self::REGION_ID => "string"
+    ])]
     protected function getMap(): array
     {
         return [
             CityService::FIELD_ID,
             CityService::FIELD_TITLE,
-            'regionId' => CityService::FIELD_REGION_ID,
+            self::REGION_ID => CityService::FIELD_REGION_ID,
         ];
     }
-    
-    protected function getMappedTypes(): array
+
+    #[ArrayShape([
+        CityService::FIELD_ID => "string",
+        CityService::FIELD_REGION_ID => "string"
+    ])] protected function getMappedTypes(): array
     {
         return [
-            CityService::FIELD_ID => self::VAR_INT,
+            CityService::FIELD_ID        => self::VAR_INT,
             CityService::FIELD_REGION_ID => self::VAR_INT,
         ];
     }

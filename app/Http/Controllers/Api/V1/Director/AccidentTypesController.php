@@ -21,28 +21,28 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director;
 
+use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\AccidentType;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
 use medcenter24\mcCore\App\Http\Requests\Api\AccidentTypeRequest;
 use medcenter24\mcCore\App\Transformers\AccidentTypeTransformer;
 
-// todo director can't control types of  the case insurance/non-insurance
 class AccidentTypesController extends ApiController
 {
-    public function index()
+    public function index(): Response
     {
         $types = AccidentType::orderBy('title')->get();
         return $this->response->collection($types, new AccidentTypeTransformer());
     }
 
-    public function show($id)
+    public function show($id): Response
     {
         $accidentType = AccidentType::findOrFail($id);
         return $this->response->item($accidentType, new AccidentTypeTransformer());
     }
 
-    public function store(AccidentTypeRequest $request)
+    public function store(AccidentTypeRequest $request): Response
     {
         $accidentType = AccidentType::create([
             'title' => $request->json('title', ''),
@@ -52,17 +52,17 @@ class AccidentTypesController extends ApiController
         return $this->response->created(null, $transformer->transform($accidentType));
     }
 
-    public function update($id, AccidentTypeRequest $request)
+    public function update($id, AccidentTypeRequest $request): Response
     {
         $accidentType = AccidentType::findOrFail($id);
         $accidentType->title = $request->json('title', '');
         $accidentType->description = $request->json('description', '');
         $accidentType->save();
         Log::info('Accident type updated', [$accidentType, $this->user()]);
-        $this->response->item($accidentType, new AccidentTypeTransformer());
+        return $this->response->item($accidentType, new AccidentTypeTransformer());
     }
 
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $accidentType = AccidentType::findOrFail($id);
         Log::info('Accident type deleted', [$accidentType, $this->user()]);

@@ -47,6 +47,7 @@ class SearchService
 
 //        \Illuminate\Support\Facades\Log::error('search query', [$query->toSql()]);
 //        var_dump($query->toSql());die;
+        // $q = $query->toSql();
 
         $data = $query->get();
         return $this->getSearchResultService()

@@ -50,7 +50,7 @@ class AccidentsAssistantsDbFilterFactory extends AbstractDbFilterFactory
         return [
             new SearchWhere(
                 $this->getTableName(),
-                AssistantService::FIELD_TITLE,
+                AssistantService::FIELD_ID,
                 $this->getValues($whereValue),
                 $this->getWhereOperation(),
             )

@@ -32,7 +32,7 @@ use medcenter24\mcCore\App\Services\Entity\PaymentService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
 
-class SearcherTest extends TestCase
+class SearcherWithAllFiltersTest extends TestCase
 {
     use DirectorTestTraitApi;
 
@@ -41,7 +41,15 @@ class SearcherTest extends TestCase
         $this->createMockedSearchableModels();
         $response = $this->sendPost('/api/director/search/search', json_decode($this->getPayload(), true));
         $response->assertStatus(200);
-        $response->assertExactJson([]);
+        $response->assertExactJson([
+            [
+                "assist-ref-num" => "PhpUnitRefNumAssistant",
+                "city" => "City",
+                "doctor-income" => 5.11,
+                "npp" => 1,
+                "patient" => "TEST-TESTOV",
+            ],
+        ]);
     }
 
     public function getPayload(): string

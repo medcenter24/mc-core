@@ -24,17 +24,16 @@
             <select name="roles[]" id="roles" size="4" class="form-control" multiple title="@lang('admin.roles')">
                 @foreach(medcenter24\mcCore\App\Entity\Role::all() as $role)
                     <option value="{{ $role->id }}"
-                        @if (old('roles') && count(old('roles')))
-                            @if (in_array($role->id, old('roles'), false))
-                                selected
-                            @endif
-                        @elseif (\Roles::hasRole($user, $role->title))
-                            selected
-                        @endif
-                    >
-
-                        {{ $role->title }}
-                    </option>
+                            @php
+                            if (!empty(old('roles'))) {
+                                if(in_array($role->id, old('roles'))) {
+                                    echo "selected";
+                                }
+                            } elseif(\Roles::hasRole($user, $role->title)) {
+                                echo "selected";
+                            }
+                            @endphp
+                    >{{ $role->title }}</option>
                 @endforeach
             </select>
         </div>

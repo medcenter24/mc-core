@@ -55,15 +55,15 @@ class RoleService extends AbstractModelService
      *
      * @param User|null $user
      * @param string $role
-     * @return mixed
+     * @return bool
      */
     public function hasRole(User $user = null, string $role = ''): bool
     {
-        if (!array_key_exists($role, $this->grantedRoles)) {
-            $this->grantedRoles[$role] = $user
-                && $user->roles()->where(self::FIELD_TITLE, $role)->count() > 0;
+        if (empty($this->grantedRoles[$user->id]) || !array_key_exists($role, $this->grantedRoles[$user->id])) {
+            $roles = $user->roles()->pluck(RoleService::FIELD_TITLE)->toArray();
+            $this->grantedRoles[$user->id][$role] = in_array($role, $roles);
         }
-        return $this->grantedRoles[$role];
+        return $this->grantedRoles[$user->id][$role];
     }
 
     public function isValidRoles(array $roles): bool

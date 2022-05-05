@@ -22,6 +22,9 @@ namespace medcenter24\mcCore\App\Http\Controllers\Admin;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
+use Illuminate\Validation\ValidationException;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
 use medcenter24\mcCore\App\Http\Controllers\AdminController;
 use medcenter24\mcCore\App\Http\Requests\UserRequest;
@@ -40,28 +43,34 @@ class UsersController extends AdminController
         return view('admin.users.index', compact('users'));
     }
 
-    public function show($id)
+    public function show($id): Factory|View|Application
     {
         $this->getMenuService()->markCurrentMenu('1.10');
         $user = User::findOrFail($id);
         return view('admin.users.show', compact('user'));
     }
 
-    public function create()
+    public function create(): Factory|View|Application
     {
         $this->getMenuService()->markCurrentMenu('1.10');
         $user = new User();
         return view('admin.users.create', compact('user'));
     }
 
-    public function edit($id)
+    /**
+     * @throws InconsistentDataException
+     */
+    public function edit($id): Factory|View|Application
     {
         $this->getMenuService()->markCurrentMenu('1.10');
         $user = User::findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
 
-    public function store(UserRequest $request)
+    /**
+     * @throws ValidationException
+     */
+    public function store(UserRequest $request): Redirector|Application|RedirectResponse
     {
         $this->validate($request, [
             'password' => 'required',
@@ -74,9 +83,8 @@ class UsersController extends AdminController
         return redirect('admin/users/' . $user->id);
     }
 
-    public function update(UserRequest $request, $id)
+    public function update(UserRequest $request, $id): Redirector|Application|RedirectResponse
     {
-
         $user = User::findOrFail($id);
 
         $user->email = $request->input('email');
@@ -99,10 +107,11 @@ class UsersController extends AdminController
         $user->roles()->attach($request->input('roles'));
     }
 
-    public function destroy($id)
+    public function destroy($id): Redirector|Application|RedirectResponse
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return redirect('admin/users')->with(['flash_message' => trans('content.deleted') . ' ' . $user->name]);
+        return redirect('admin/users')
+            ->with(['flash_message' => trans('content.deleted') . ' ' . $user->name]);
     }
 }

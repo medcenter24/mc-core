@@ -33,6 +33,7 @@ abstract class AbstractDbFieldFactory
             in_array($searchField->getOrder(), ['asc', 'desc']),
             $searchField->getOrder(),
             $this->getJoins(),
+            $this->getGroupBy(),
         );
     }
 
@@ -50,6 +51,11 @@ abstract class AbstractDbFieldFactory
     }
 
     abstract protected function getSelectFieldParts();
+
+    protected function getGroupBy(): array
+    {
+        return [];
+    }
 
     protected function getJoins(): array
     {

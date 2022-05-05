@@ -24,6 +24,7 @@ use medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\SearchDbFilter;
 use medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\SearchDbFilterFactory;
 use medcenter24\mcCore\App\Services\Search\Model\Filter\Request\SearchFilter;
 use medcenter24\mcCore\App\Services\Search\Model\Query\SearchQuery;
+use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
 class SearchQueryFilterLoader extends AbstractSearchQueryLoader
@@ -42,6 +43,10 @@ class SearchQueryFilterLoader extends AbstractSearchQueryLoader
             /** @var SearchWhere $where */
             foreach ($dbFilter->getWheres() as $where) {
                 $searchQuery->addWhere($where);
+            }
+            /** @var SearchGroupBy $group */
+            foreach ($dbFilter->getGroupBy() as $group) {
+                $searchQuery->addGroupBy($group);
             }
         }
     }

@@ -17,18 +17,14 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
+namespace medcenter24\mcCore\App\Services\Search\Model;
 
-class SearchDbFilter
+class SearchGroupBy
 {
     public function __construct(
-        private readonly string $tableName,
-        private readonly array $wheres,
-        private readonly array $joins,
-        private readonly array $groupBy,
-        private readonly bool $loaded,
-    ) {
-    }
+        private string $tableName,
+        private string $field,
+    ) {}
 
     /**
      * @return string
@@ -39,31 +35,26 @@ class SearchDbFilter
     }
 
     /**
-     * @return array
+     * @param string $tableName
      */
-    public function getJoins(): array
+    public function setTableName(string $tableName): void
     {
-        return $this->joins;
+        $this->tableName = $tableName;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getWheres(): array
+    public function getField(): string
     {
-        return $this->wheres;
-    }
-
-    public function loaded(): bool
-    {
-        return $this->loaded;
+        return $this->field;
     }
 
     /**
-     * @return array
+     * @param string $field
      */
-    public function getGroupBy(): array
+    public function setField(string $field): void
     {
-        return $this->groupBy;
+        $this->field = $field;
     }
 }

@@ -20,7 +20,9 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 use medcenter24\mcCore\App\Transformers\Traits\CaseTypeTransformer;
 
@@ -66,5 +68,15 @@ class AccidentsCaseableTypesDbFilterFactory extends AbstractDbFilterFactory
         }
 
         return $types;
+    }
+
+    protected function getGroupBy(): array
+    {
+        return [
+            new SearchGroupBy(
+                'accidents',
+                AbstractModelService::FIELD_ID,
+            )
+        ];
     }
 }

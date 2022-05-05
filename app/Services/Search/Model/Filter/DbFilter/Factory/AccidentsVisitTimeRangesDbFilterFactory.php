@@ -22,6 +22,7 @@ namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
@@ -54,6 +55,16 @@ class AccidentsVisitTimeRangesDbFilterFactory extends AbstractDbFilterFactory
                 DoctorAccidentService::FIELD_VISIT_TIME,
                 $this->getValues($whereValue),
                 $this->getWhereOperation(),
+            )
+        ];
+    }
+
+    protected function getGroupBy(): array
+    {
+        return [
+            new SearchGroupBy(
+                'accidents',
+                AbstractModelService::FIELD_ID,
             )
         ];
     }

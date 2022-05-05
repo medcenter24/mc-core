@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField\Factory;
 
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 
 class AccidentsAssistRefNumDbFieldFactory extends AbstractDbFieldFactory
 {
@@ -34,5 +35,19 @@ class AccidentsAssistRefNumDbFieldFactory extends AbstractDbFieldFactory
     protected function getSelectFieldParts(): array
     {
         return [$this->getTableName(), AccidentService::FIELD_ASSISTANT_REF_NUM];
+    }
+
+    protected function getGroupBy(): array
+    {
+        return [
+            new SearchGroupBy(
+                $this->getTableName(),
+                AccidentService::FIELD_ID,
+            ),
+            new SearchGroupBy(
+                $this->getTableName(),
+                AccidentService::FIELD_ASSISTANT_REF_NUM,
+            ),
+        ];
     }
 }

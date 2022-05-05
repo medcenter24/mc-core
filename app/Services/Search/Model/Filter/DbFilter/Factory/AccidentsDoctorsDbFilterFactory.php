@@ -23,6 +23,7 @@ use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 use medcenter24\mcCore\App\Services\Entity\DoctorService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
@@ -66,6 +67,16 @@ class AccidentsDoctorsDbFilterFactory extends AbstractDbFilterFactory
                 DoctorService::FIELD_ID,
                 $this->getValues($whereValue),
                 $this->getWhereOperation(),
+            )
+        ];
+    }
+
+    protected function getGroupBy(): array
+    {
+        return [
+            new SearchGroupBy(
+                'accidents',
+                AbstractModelService::FIELD_ID,
             )
         ];
     }

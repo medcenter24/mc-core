@@ -19,6 +19,7 @@
 
 namespace medcenter24\mcCore\Tests\Feature\Api;
 
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\User;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
@@ -26,11 +27,17 @@ trait JwtHeaders
 {
     /**
      * Return request headers needed to interact with the API.
-     * @param User $user
+     * @param User|null $user
      * @return array of headers.
      */
-    protected function headers(User $user = null)
-    {
+    #[ArrayShape([
+        'Accept' => "string",
+        'Access-Control-Allow-Credentials' => "string",
+        'Access-Control-Allow-Origin' => "mixed",
+        'Origin' => "mixed",
+        'Authorization' => "string"
+    ])]
+    protected function headers(User $user = null): array {
         $headers = [
             'Accept' => 'application/x.' . env('API_SUBTYPE') . '.' . env('API_VERSION') .'+json',
             'Access-Control-Allow-Credentials' => 'true',

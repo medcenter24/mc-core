@@ -24,6 +24,7 @@ use medcenter24\mcCore\App\Services\Search\Model\Field\DbField\SearchDbField;
 use medcenter24\mcCore\App\Services\Search\Model\Field\DbField\SearchDbFieldFactory;
 use medcenter24\mcCore\App\Services\Search\Model\Field\Request\SearchField;
 use medcenter24\mcCore\App\Services\Search\Model\Query\SearchQuery;
+use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 
 class SearchQueryFieldLoader extends AbstractSearchQueryLoader
 {
@@ -41,6 +42,10 @@ class SearchQueryFieldLoader extends AbstractSearchQueryLoader
             }
             if ($dbField->hasOrder()) {
                 $searchQuery->addOrder([$dbField->getSelectField() => $dbField->getOrder()]);
+            }
+            /** @var SearchGroupBy $group */
+            foreach ($dbField->getGroupBy() as $group) {
+                $searchQuery->addGroupBy($group);
             }
         }
     }

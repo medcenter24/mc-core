@@ -28,6 +28,7 @@ class SearchDbField
         private readonly bool $hasOrder,
         private readonly string $order,
         private readonly array $joins,
+        private readonly array $groupBy,
     ) {
     }
 
@@ -65,5 +66,13 @@ class SearchDbField
     public function getAlias(): string
     {
         return $this->alias;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroupBy(): array
+    {
+        return $this->groupBy;
     }
 }

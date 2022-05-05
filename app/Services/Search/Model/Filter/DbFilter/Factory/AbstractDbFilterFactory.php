@@ -29,6 +29,7 @@ abstract class AbstractDbFilterFactory
             $this->getTableName(),
             $this->getWheres($whereValue),
             $this->getJoins(),
+            $this->getGroupBy(),
             $this->getLoaded($whereValue),
         );
     }
@@ -49,6 +50,10 @@ abstract class AbstractDbFilterFactory
     }
 
     abstract protected function getWheres($whereValue): array;
+
+    protected function getGroupBy(): array {
+        return [];
+    }
 
     protected function getLoaded(mixed $whereValue): bool
     {

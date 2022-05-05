@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use medcenter24\mcCore\App\Services\Core\ServiceLocator\ServiceLocatorTrait;
 use medcenter24\mcCore\App\Services\Search\Model\Filter\Request\SearchFilter;
@@ -35,6 +36,8 @@ class SearchDbFilterFactory
         $class = $namespace.$table.$model.'DbFilterFactory';
         if (class_exists($class)) {
             return $this->getServiceLocator()->get($class)->create($filter->getValues());
+        } else {
+            Log::error('Filter not found', [$class]);
         }
         return null;
     }

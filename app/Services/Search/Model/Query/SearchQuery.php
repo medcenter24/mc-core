@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Search\Model\Query;
 
+use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
@@ -30,6 +31,7 @@ class SearchQuery
         private array $joins   = [], // [SearchJoin]
         private array $orders  = [], // [table.field => 'asc/desc']
         private array $wheres  = [], // [table.field, operation, value]
+        private array $groupBy = [], // [SearchGroupBy]
     ) {
     }
 
@@ -135,5 +137,18 @@ class SearchQuery
     public function addOrder(array $order): void
     {
         $this->orders = array_merge($this->orders, $order);
+    }
+
+    public function addGroupBy(SearchGroupBy $group): void
+    {
+        $this->groupBy[] = $group;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroupBy(): array
+    {
+        return $this->groupBy;
     }
 }

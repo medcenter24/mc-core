@@ -21,6 +21,7 @@ namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField\Factory;
 
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\PatientService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 
 class AccidentsPatientDbFieldFactory extends AbstractDbFieldFactory
@@ -53,5 +54,19 @@ class AccidentsPatientDbFieldFactory extends AbstractDbFieldFactory
     protected function getSelectFieldParts(): array
     {
         return [$this->getJoinTable(), PatientService::FIELD_NAME];
+    }
+
+    protected function getGroupBy(): array
+    {
+        return [
+            new SearchGroupBy(
+                $this->getTableName(),
+                AccidentService::FIELD_ID,
+            ),
+            new SearchGroupBy(
+                $this->getJoinTable(),
+                PatientService::FIELD_NAME,
+            ),
+        ];
     }
 }

@@ -21,6 +21,7 @@ namespace medcenter24\mcCore\App\Services\Search\Model\Query;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
 use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
@@ -32,6 +33,7 @@ class SearchQueryBuilder
         $this->addSelect($query, $searchQuery->getFields());
         $this->addJoin($query, $searchQuery->getJoins());
         $this->addWhere($query, $searchQuery->getWheres());
+        $this->addGroupBy($query, $searchQuery->getGroupBy());
         $this->addOrder($query, $searchQuery->getOrders());
         return $query;
     }
@@ -69,6 +71,20 @@ class SearchQueryBuilder
                 $join->getRightTable().'.'.$join->getRightTableField(),
                 $join->getType(),
             );
+        }
+    }
+
+    private function addGroupBy(Builder $query, array $groups): void
+    {
+        $grouped = [];
+        /** @var SearchGroupBy $group */
+        foreach ($groups as $group) {
+            $key = $group->getTableName().'.'.$group->getField();
+            if (in_array($key, $grouped)) {
+                continue;
+            }
+            $query->groupBy($key);
+            $grouped[] = $key;
         }
     }
 

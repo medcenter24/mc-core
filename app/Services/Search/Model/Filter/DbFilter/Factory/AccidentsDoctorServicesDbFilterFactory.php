@@ -17,57 +17,66 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField\Factory;
+namespace medcenter24\mcCore\App\Services\Search\Model\Filter\DbFilter\Factory;
 
+use medcenter24\mcCore\App\Entity\DoctorAccident;
 use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\PaymentService;
 use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
+use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
-class AccidentsDoctorIncomeDbFieldFactory extends AbstractDbFieldFactory
+class AccidentsDoctorServicesDbFilterFactory extends AbstractDbFilterFactory
 {
+    use FilterTraitInId;
+
     protected function getTableName(): string
     {
-        return 'accidents';
-    }
-
-    /**
-     * @return string
-     */
-    private function getJoinTable(): string
-    {
-        return 'payments';
+        return 'serviceables';
     }
 
     protected function getJoins(): array
     {
         return [
             new SearchJoin(
-                $this->getTableName(),
-                $this->getJoinTable(),
-                AccidentService::FIELD_CASEABLE_PAYMENT_ID,
+                'accidents',
+                'doctor_accidents',
+                AccidentService::FIELD_CASEABLE_ID,
                 AbstractModelService::FIELD_ID,
+            ),
+            new SearchJoin(
+                'doctor_accidents',
+                $this->getTableName(),
+                AbstractModelService::FIELD_ID,
+                'serviceable_id',
             ),
         ];
     }
 
-    protected function getSelectFieldParts(): array
+    protected function getWheres($whereValue): array
     {
-        return [$this->getJoinTable(), PaymentService::FIELD_VALUE];
+        return [
+            new SearchWhere(
+                $this->getTableName(),
+                'serviceable_type',
+                DoctorAccident::class,
+            ),
+            new SearchWhere(
+                $this->getTableName(),
+                'service_id',
+                $this->getValues($whereValue),
+                $this->getWhereOperation(),
+            ),
+        ];
     }
 
     protected function getGroupBy(): array
     {
         return [
             new SearchGroupBy(
-                $this->getTableName(),
-                AccidentService::FIELD_ID,
-            ),
-            new SearchGroupBy(
-                $this->getJoinTable(),
-                PaymentService::FIELD_VALUE,
-            ),
+                'accidents',
+                AbstractModelService::FIELD_ID,
+            )
         ];
     }
 }

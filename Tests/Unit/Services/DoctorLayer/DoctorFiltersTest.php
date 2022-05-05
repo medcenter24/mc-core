@@ -15,8 +15,9 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\Tests\Unit\Services\DoctorLayer;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\Tests\Unit\Services\DoctorLayer;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use medcenter24\mcCore\App\Entity\Diagnostic;
@@ -28,7 +29,7 @@ use medcenter24\mcCore\Tests\TestCase;
 class DoctorFiltersTest extends TestCase
 {
     use DatabaseMigrations;
-    
+
     public function testGetActiveByDoctor(): void
     {
         $service = new DiagnosticService();

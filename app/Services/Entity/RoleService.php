@@ -59,11 +59,15 @@ class RoleService extends AbstractModelService
      */
     public function hasRole(User $user = null, string $role = ''): bool
     {
-        if (empty($this->grantedRoles[$user->id]) || !array_key_exists($role, $this->grantedRoles[$user->id])) {
-            $roles = $user->roles()->pluck(RoleService::FIELD_TITLE)->toArray();
-            $this->grantedRoles[$user->id][$role] = in_array($role, $roles);
+        $hasRole = false;
+        if (!empty($user)) {
+            if (empty($this->grantedRoles[$user->id]) || !array_key_exists($role, $this->grantedRoles[$user->id])) {
+                $roles = $user->roles()->pluck(RoleService::FIELD_TITLE)->toArray();
+                $this->grantedRoles[$user->id][$role] = in_array($role, $roles);
+            }
+            $hasRole = $this->grantedRoles[$user->id][$role];
         }
-        return $this->grantedRoles[$user->id][$role];
+        return $hasRole;
     }
 
     public function isValidRoles(array $roles): bool

@@ -25,10 +25,13 @@ use medcenter24\mcCore\App\Services\Entity\AccidentStatusService;
 use medcenter24\mcCore\App\Services\Entity\AccidentTypeService;
 use medcenter24\mcCore\App\Services\Entity\AssistantService;
 use medcenter24\mcCore\App\Services\Entity\CityService;
+use medcenter24\mcCore\App\Services\Entity\DiagnosticService;
 use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 use medcenter24\mcCore\App\Services\Entity\DoctorService;
 use medcenter24\mcCore\App\Services\Entity\PatientService;
 use medcenter24\mcCore\App\Services\Entity\PaymentService;
+use medcenter24\mcCore\App\Services\Entity\ServiceService;
+use medcenter24\mcCore\App\Services\Entity\SurveyService;
 use medcenter24\mcCore\Tests\Feature\Api\DirectorTestTraitApi;
 use medcenter24\mcCore\Tests\TestCase;
 
@@ -261,10 +264,29 @@ class SearcherWithAllFiltersTest extends TestCase
 
         /** @var DoctorAccidentService $doctorAccidentService */
         $doctorAccidentService = $this->getServiceLocator()->get(DoctorAccidentService::class);
+        /** @var DoctorAccident $doctorAccident */
         $doctorAccident = $doctorAccidentService->create([
             'visit_time' => '2022-04-19 13:04:05',
             'doctor_id'  => $doctor->getAttribute('id'),
         ]);
+
+        $serviceService = $this->getServiceLocator()->get(ServiceService::class);
+        $service = $serviceService->create([
+            ServiceService::FIELD_TITLE => 'ser1',
+        ]);
+        $doctorAccident->services()->attach($service);
+
+        $surveyService = $this->getServiceLocator()->get(SurveyService::class);
+        $survey = $surveyService->create([
+            SurveyService::FIELD_TITLE => 'sur1',
+        ]);
+        $doctorAccident->surveys()->attach($survey);
+
+        $diagnosticService = $this->getServiceLocator()->get(DiagnosticService::class);
+        $diagnostic = $diagnosticService->create([
+            DiagnosticService::FIELD_TITLE => 'diag1',
+        ]);
+        $doctorAccident->diagnostics()->attach($diagnostic);
 
         /** @var PaymentService $paymentService */
         $paymentService = $this->getServiceLocator()->get(PaymentService::class);

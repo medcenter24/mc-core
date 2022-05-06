@@ -50,6 +50,9 @@ class SearchService
         // $q = $query->toSql();
 
         $data = $query->get();
+        if (empty($searchQuery->getFields())) {
+            $data = collect([['count' => $data->count()]]);
+        }
         return $this->getSearchResultService()
             ->getResultData($data, $searchRequest);
     }

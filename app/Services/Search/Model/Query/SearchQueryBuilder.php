@@ -103,6 +103,16 @@ class SearchQueryBuilder
                 case '=':
                     $query->where($col, $where->getOperator(), $where->getValue());
                     break;
+                case 'isNotNull':
+                    if ($where->getValue()) {
+                        $query->whereNotNull($col);
+                    }
+                    break;
+                case 'isNull':
+                    if ($where->getValue()) {
+                        $query->whereNull($col);
+                    }
+                    break;
             }
         }
     }

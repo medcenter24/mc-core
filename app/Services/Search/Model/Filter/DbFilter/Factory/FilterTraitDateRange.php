@@ -30,8 +30,12 @@ trait FilterTraitDateRange
     {
         $dates = [];
         $value = current($values);
-        if (is_string($value) && mb_strpos('>', $value)) {
-            [$from, $to] = explode('>', $value);
+        if (is_string($value)) {
+            if (str_contains($value, '>')) {
+                [$from, $to] = explode('>', $value);
+            } else {
+                $from = $to = trim($value);
+            }
             $dates[] = $from . ' 00:00:00';
             $dates[] = $to . ' 23:59:59';
         }

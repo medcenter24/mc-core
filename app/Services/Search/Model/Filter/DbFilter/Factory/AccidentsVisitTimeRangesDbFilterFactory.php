@@ -68,4 +68,9 @@ class AccidentsVisitTimeRangesDbFilterFactory extends AbstractDbFilterFactory
             )
         ];
     }
+
+    protected function getLoaded(mixed $whereValue): bool
+    {
+        return !empty($this->getValues($whereValue));
+    }
 }

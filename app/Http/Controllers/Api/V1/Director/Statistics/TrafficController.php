@@ -95,13 +95,15 @@ class TrafficController extends ApiController
                 ->distinct()
                 ->select(DB::raw('strftime(\'%Y\', accidents.handling_time) as year'))
                 ->groupBy(DB::raw('strftime(\'%Y\', accidents.handling_time)'))
+                ->whereNull('accidents.' . AbstractModelService::FIELD_DELETED_AT)
                 ->get();
         } else {
             $years = DB::table('accidents')
                 ->distinct()
                 ->select(DB::raw('EXTRACT(YEAR FROM accidents.handling_time) as year'))
                 ->whereNotNull('accidents.handling_time')
-                ->groupBy(DB::raw('EXTRACT(YEAR FROM accidents.handling_time)'))
+                ->whereNull('accidents.' . AbstractModelService::FIELD_DELETED_AT)
+                ->groupBy('year')
                 ->get();
         }
         $years = $years->filter(static function($y) {

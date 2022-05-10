@@ -70,6 +70,11 @@ class CaseFinanceControllerSaveTest extends TestCase
                         'currency_id' => 1,
                         'fixed' => 1,
                     ],
+                    'cashPayment' => [
+                        'value' => 1,
+                        'currency_id' => 1,
+                        'fixed' => 1,
+                    ],
                 ],
 
                 // new data for rewriting
@@ -149,10 +154,12 @@ class CaseFinanceControllerSaveTest extends TestCase
         $incomePayment = $this->paymentService->create($paymentData['incomePayment']);
         $caseablePayment = $this->paymentService->create($paymentData['caseablePayment']);
         $assistantPayment = $this->paymentService->create($paymentData['assistantPayment']);
+        $cashPayment = $this->paymentService->create($paymentData['cashPayment']);
 
         $accident->incomePayment()->associate($incomePayment);
         $accident->paymentToCaseable()->associate($caseablePayment);
         $accident->paymentFromAssistant()->associate($assistantPayment);
+        $accident->cashPayment()->associate($cashPayment);
         $accident->save();
 
         // write data

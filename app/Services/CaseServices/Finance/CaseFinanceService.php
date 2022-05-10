@@ -301,6 +301,9 @@ class CaseFinanceService
             case 'caseable':
                 $this->savePayment($accident, $data, 'paymentToCaseable');
                 break;
+            case 'cash':
+                $this->savePayment($accident, $data, 'cashPayment');
+                break;
             default:
                 throw new InconsistentDataException('Undefined finance type');
         }

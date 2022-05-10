@@ -113,6 +113,7 @@ class AccidentRequest extends JsonRequest
             'cityId' => 'exists_if_set:cities,id',
             'caseablePaymentId' => 'exists_if_set:payments,id',
             'incomePaymentId' => 'exists_if_set:payments,id',
+            'cashPaymentId' => 'exists_if_set:payments,id',
             'assistantPaymentId' => 'exists_if_set:payments,id',
             'refNum' => 'max:50',
             'title' => 'max:255',

@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use medcenter24\mcCore\App\Exceptions\InconsistentDataException;
+use medcenter24\mcCore\App\Exceptions\NotImplementedException;
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Entity\Payment;
 use medcenter24\mcCore\App\Services\Entity\CurrencyService;
@@ -33,11 +34,15 @@ use medcenter24\mcCore\App\Services\Formula\FormulaResultService;
 use medcenter24\mcCore\App\Services\Formula\FormulaViewService;
 use Illuminate\Support\Collection;
 use Throwable;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class CaseFinanceViewService
 {
-    public const FINANCE_TYPES = ['income', 'assistant', 'caseable'];
+    public const TYPE_INCOME = 'income';
+    public const TYPE_ASSISTANT = 'assistant';
+    public const TYPE_CASEABLE = 'caseable';
+    public const TYPE_CASH = 'cash';
+
+    public const FINANCE_TYPES = [self::TYPE_INCOME, self::TYPE_ASSISTANT, self::TYPE_CASEABLE, self::TYPE_CASH];
 
     private CaseFinanceService $caseFinanceService;
     private FormulaResultService $formulaResultService;
@@ -72,14 +77,15 @@ class CaseFinanceViewService
         $types = array_intersect($types, self::FINANCE_TYPES);
         foreach ($types as $type) {
             $data = match ($type) {
-                'income' => $this->getIncomeData($accident),
-                'assistant' => $this->getAssistantData($accident),
-                'caseable' => $this->getCaseableData($accident),
+                self::TYPE_INCOME => $this->getIncomeData($accident),
+                self::TYPE_ASSISTANT => $this->getAssistantData($accident),
+                self::TYPE_CASEABLE => $this->getCaseableData($accident),
+                self::TYPE_CASH => $this->getCashData($accident),
                 default => throw new InconsistentDataException('Undefined finance type'),
             };
 
             $currency = $this->hasPayment($data)
-                ? $this->getPayment($data)->currency
+                ? $this->getPayment($data)->getAttribute('currency')
                 : $this->currencyService->getDefaultCurrency();
 
             $typeResult = collect([
@@ -153,7 +159,7 @@ class CaseFinanceViewService
      * @param Accident $accident
      * @return array
      * @throws InconsistentDataException
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     private function getIncomeData(Accident $accident): array
     {
@@ -187,9 +193,7 @@ class CaseFinanceViewService
     private function getValueFromData(array $data): float
     {
         $res = 0;
-        if (
-            $data['payment']
-            && $data['payment'] instanceof Payment
+        if ($data['payment'] instanceof Payment
             && ($data['payment']->fixed || (array_key_exists('formula', $data) && $data['formula'] === 'invoice'))
         ) {
             $res = $data['payment']->value;
@@ -201,13 +205,14 @@ class CaseFinanceViewService
     }
 
     /**
-     * @param $accident
+     * @param Accident $accident
      * @return array
      * @throws FormulaException
+     * @throws NotImplementedException
      */
     private function getAssistantData(Accident $accident): array
     {
-        $payment = $accident->paymentFromAssistant;
+        $payment = $accident->getAttribute('paymentFromAssistant');
         $formula = 'fixed';
         if (!$payment || !$payment->fixed) {
             $payment = $this->getAssistantInvoice($accident);
@@ -222,10 +227,10 @@ class CaseFinanceViewService
     private function getAssistantInvoice(Accident $accident)
     {
         $invoice = null;
-        if ($accident->assistantInvoice
-            && $accident->assistantInvoice->payment) {
+        if ($accident->getAttribute('assistantInvoice')
+            && $accident->getAttribute('assistantInvoice')->payment) {
 
-            $invoice = $accident->assistantInvoice->payment;
+            $invoice = $accident->getAttribute('assistantInvoice')->payment;
         }
         return $invoice;
     }
@@ -258,7 +263,7 @@ class CaseFinanceViewService
         // 3. Get formula if not fixed and no invoice payment
         if(!$hasFixedPayment && !$invoicePayment) {
             // it's possible that accident doesn't have caseable (new one)
-            if ($accident->getAttribute('caseable')) {
+            if ($accident->getAttribute(self::TYPE_CASEABLE)) {
                 $formula = $accident->isDoctorCaseable()
                     ? $this->caseFinanceService->getToDoctorFormula($accident)
                     : $this->caseFinanceService->getToHospitalFormula($accident);
@@ -271,23 +276,30 @@ class CaseFinanceViewService
         return compact('payment', 'formula');
     }
 
-    private function getCaseableInvoice(Accident $accident)
+    private function getCaseableInvoice(Accident $accident): ?Payment
     {
         $invoice = null;
         if ($accident->isDoctorCaseable()
-            && $accident->caseable
-            && $accident->caseable->doctorInvoice
-            && $accident->caseable->doctorInvoice->payment) {
+            && $accident->getAttribute('caseable')
+            && $accident->getAttribute('caseable')->doctorInvoice
+            && $accident->getAttribute('caseable')->doctorInvoice->payment) {
 
-            $invoice = $accident->caseable->doctorInvoice->payment;
+            $invoice = $accident->getAttribute('caseable')->doctorInvoice->payment;
         }
         if ($accident->isHospitalCaseable()
-            && $accident->caseable
-            && $accident->caseable->hospitalInvoice
-            && $accident->caseable->hospitalInvoice->payment) {
+            && $accident->getAttribute('caseable')
+            && $accident->getAttribute('caseable')->hospitalInvoice
+            && $accident->getAttribute('caseable')->hospitalInvoice->payment) {
 
-            $invoice = $accident->caseable->hospitalInvoice->payment;
+            $invoice = $accident->getAttribute('caseable')->hospitalInvoice->payment;
         }
         return $invoice;
+    }
+
+    private function getCashData(Accident $accident): array
+    {
+        $payment = $accident->getAttribute('cashPayment');
+        $formula = '';
+        return compact('payment', 'formula');
     }
 }

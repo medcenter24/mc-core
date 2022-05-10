@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -47,6 +46,7 @@ class AccidentService extends AbstractModelService
     public const FIELD_CITY_ID = 'city_id';
     public const FIELD_CASEABLE_PAYMENT_ID = 'caseable_payment_id';
     public const FIELD_INCOME_PAYMENT_ID = 'income_payment_id';
+    public const FIELD_CASH_PAYMENT_ID = 'cash_payment_id';
     // for the calculation and statistic payment could be changed
     // and will be not the same as invoice payment is
     public const FIELD_ASSISTANT_PAYMENT_ID = 'assistant_payment_id';

@@ -82,6 +82,15 @@ class Accident extends AccidentAbstract
     }
 
     /**
+     * Paid in cash
+     * @return BelongsTo
+     */
+    public function cashPayment(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class, AccidentService::FIELD_CASH_PAYMENT_ID);
+    }
+
+    /**
      * Case checkpoints - statuses which could be selected in different order
      *
      * @return BelongsToMany

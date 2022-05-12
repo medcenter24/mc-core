@@ -16,13 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Models\Formula\Operations;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Models\Formula\Operations;
 
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use medcenter24\mcCore\App\Contract\Formula\Operation;
 use medcenter24\mcCore\App\Contract\Formula\Variable;
+use Throwable;
 
 abstract class AbstractOperation implements Operation
 {
@@ -30,12 +32,9 @@ abstract class AbstractOperation implements Operation
      * Weight of the action (mul|div|percent needs to be done firstly)
      * @var int
      */
-    protected $weight = 0;
+    protected int $weight = 0;
 
-    /**
-     * @var FormulaBuilder|Variable
-     */
-    protected $variable;
+    protected Variable|FormulaBuilder $variable;
 
     /**
      * Add constructor.
@@ -58,7 +57,7 @@ abstract class AbstractOperation implements Operation
 
     /**
      * @return string
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function varView(): string
     {
@@ -68,7 +67,7 @@ abstract class AbstractOperation implements Operation
     /**
      * @return FormulaBuilder|Variable
      */
-    public function getVar()
+    public function getVar(): FormulaBuilder|Variable
     {
         return $this->variable;
     }
@@ -76,9 +75,9 @@ abstract class AbstractOperation implements Operation
     /**
      * Execute operation
      * @param $result
-     * @return mixed
+     * @return float|int
      */
-    abstract public function runOperation($result);
+    abstract public function runOperation($result): float|int;
 
     /**
      * @param bool $visible

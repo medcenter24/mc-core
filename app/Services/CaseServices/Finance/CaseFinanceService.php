@@ -95,7 +95,7 @@ class CaseFinanceService
      * @param int $id
      * @return mixed
      */
-    public function saveCondition(CaseFinanceCondition $condition, $id = 0)
+    public function saveCondition(CaseFinanceCondition $condition, int $id = 0): FinanceCondition
     {
         if ($id) {
             /** @var FinanceCondition $financeCondition */
@@ -143,7 +143,8 @@ class CaseFinanceService
      * @return FormulaBuilderContract
      * @throws FormulaException|NotImplementedException
      */
-    private function generateFormula(string $model, $conditionProps): FormulaBuilderContract {
+    private function generateFormula(string $model, $conditionProps): FormulaBuilderContract
+    {
         /** @var FormulaBuilder $formula */
         $formula = $this->newFormula();
         // delete empty values
@@ -165,7 +166,7 @@ class CaseFinanceService
      * @param Accident $accident
      * @return mixed
      * @throws InconsistentDataException
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     public function getToDoctorFormula(Accident $accident): FormulaBuilderContract
     {
@@ -196,7 +197,7 @@ class CaseFinanceService
      * @param Accident $accident
      * @return FormulaBuilderContract
      * @throws InconsistentDataException
-     * @throws FormulaException
+     * @throws FormulaException|NotImplementedException
      */
     public function getToHospitalFormula(Accident $accident): FormulaBuilderContract
     {
@@ -240,7 +241,7 @@ class CaseFinanceService
      * @param int $id
      * @return mixed
      */
-    public function updateFinanceConditionByRequest(FinanceConditionRequest $request, $id = 0)
+    public function updateFinanceConditionByRequest(FinanceConditionRequest $request, int $id = 0): FinanceCondition
     {
         $caseFinanceCondition = $this->createCondition();
 
@@ -267,7 +268,7 @@ class CaseFinanceService
 
     /**
      * Adding clause to the condition
-     * @param $toCondition
+     * @param CaseFinanceCondition $toCondition
      * @param FinanceConditionRequest $request
      * @param $className
      * @param $jsonKey

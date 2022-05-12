@@ -16,8 +16,9 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Contract\Formula;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Contract\Formula;
 
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use Illuminate\Support\Collection;
@@ -50,65 +51,65 @@ interface FormulaBuilder
 
     /**
      * Adding integer
-     * @param string|int|float $val
+     * @param mixed $val
      * @return FormulaBuilder
      */
-    public function addInteger($val = 0): FormulaBuilder;
+    public function addInteger(mixed $val = 0): FormulaBuilder;
 
     /**
      * Adding float
-     * @param string|int|float $val
+     * @param mixed $val
      * @param int $precision
      * @return FormulaBuilder
      */
-    public function addFloat($val = 0, int $precision = 2): FormulaBuilder;
+    public function addFloat(mixed $val = 0, int $precision = 2): FormulaBuilder;
 
     /**
      * Subtract integer to the formula
-     * @param string|int|float $val
+     * @param mixed $val
      * @return FormulaBuilder
      */
-    public function subInteger($val = 0): FormulaBuilder;
+    public function subInteger(mixed $val = 0): FormulaBuilder;
 
     /**
      * Subtract float
-     * @param string|int|float $val
+     * @param mixed $val
      * @param int $precision
      * @return FormulaBuilder
      */
-    public function subFloat($val = 0, int $precision = 2): FormulaBuilder;
+    public function subFloat(mixed $val = 0, int $precision = 2): FormulaBuilder;
 
     /**
      * Multiply integer
-     * @param string|int|float $val
+     * @param mixed $val
      * @return FormulaBuilder
      */
-    public function mulInteger($val = 1): FormulaBuilder;
+    public function mulInteger(mixed $val = 1): FormulaBuilder;
 
     /**
      * Multiply float
-     * @param string|int|float $val
+     * @param mixed $val
      * @param int $precision
      * @return FormulaBuilder
      */
-    public function mulFloat($val = 1, int $precision = 2): FormulaBuilder;
+    public function mulFloat(mixed $val = 1, int $precision = 2): FormulaBuilder;
 
     /**
      * Divide integer
-     * @param string|int|float $val
+     * @param mixed $val
      * @return FormulaBuilder
      * @throws FormulaException if divide by 0
      */
-    public function divInteger($val = 1): FormulaBuilder;
+    public function divInteger(mixed $val = 1): FormulaBuilder;
 
     /**
      * Multiply float
-     * @param string|int|float $val
+     * @param mixed $val
      * @param int $precision
      * @return FormulaBuilder
      * @throws FormulaException if divide by 0
      */
-    public function divFloat($val = 1, int $precision = 2): FormulaBuilder;
+    public function divFloat(mixed $val = 1, int $precision = 2): FormulaBuilder;
 
     /**
      * Creates Nested Formula which injected with operation Add
@@ -141,20 +142,20 @@ interface FormulaBuilder
 
     /**
      * adding percents to the percents which needs to be taken from the result
-     * @param float $percent
+     * @param float|int $percent
      * @return FormulaBuilder
      */
-    public function addPercent($percent = 0.0): FormulaBuilder;
+    public function addPercent(float|int $percent = 0.0): FormulaBuilder;
 
     /**
      * sub percents from the percents which needs to be taken from the result
-     * @param float $percent
+     * @param float|int $percent
      * @return FormulaBuilder
      */
-    public function subPercent($percent = 0.0): FormulaBuilder;
+    public function subPercent(float|int $percent = 0.0): FormulaBuilder;
 
     /**
-     * to define in in the formula we have nested formula
+     * to define in the formula we have nested formula
      * @return FormulaBuilder
      */
     public function getVar(): FormulaBuilder;

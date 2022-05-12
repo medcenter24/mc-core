@@ -16,22 +16,20 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Models\Formula\Operations;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Models\Formula\Operations;
 
 class Mul extends AbstractOperation
 {
-    protected $weight = 1;
+    protected int $weight = 1;
 
-    /**
-     * @return string
-     */
     public function getLeftSignView(): string
     {
         return ' * ';
     }
 
-    public function runOperation($result)
+    public function runOperation($result): float|int
     {
         return $result * $this->variable->getResult();
     }

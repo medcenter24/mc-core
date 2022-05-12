@@ -16,12 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Models\Formula\Operations;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Models\Formula\Operations;
 
 class Percent extends AbstractOperation
 {
-    protected $weight = 2;
+    protected int $weight = 2;
 
     /**
      * @return string
@@ -36,7 +37,7 @@ class Percent extends AbstractOperation
         return '%';
     }
 
-    public function runOperation($result)
+    public function runOperation($result): float|int
     {
         return $result * ($this->variable->getResult() / 100);
     }

@@ -16,8 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types=1);
+
 namespace medcenter24\mcCore\App\Contract\Formula;
 
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 
 interface Result
 {
@@ -25,7 +28,7 @@ interface Result
      * Calculate and get result
      * @param FormulaBuilder $formulaBuilder
      * @return int|float
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
-    public function calculate(FormulaBuilder $formulaBuilder);
+    public function calculate(FormulaBuilder $formulaBuilder): float|int;
 }

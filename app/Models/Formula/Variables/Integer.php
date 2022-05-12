@@ -16,17 +16,15 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Models\Formula\Variables;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Models\Formula\Variables;
 
 use medcenter24\mcCore\App\Contract\Formula\Variable;
 
 class Integer implements Variable
 {
-    /**
-     * @var int
-     */
-    private $var;
+    private int $var;
 
     public function __construct($var)
     {

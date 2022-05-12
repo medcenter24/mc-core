@@ -121,7 +121,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'type'  => 'income',
                     'loading' => false,
                     'currency' => [],
-                    'formula' => '0.00 - 0.00',
+                    'formula' => '0.00 + 0.00 - 0.00',
                 ],
                 [
                     'type' => 'assistant',
@@ -166,7 +166,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'loading' => false,
                     'calculatedValue' => -10,
                     'currency' => [],
-                    'formula' => '0.00 - 10.00',
+                    'formula' => '0.00 + 0.00 - 10.00',
                 ],
                 [
                     'type' => 'assistant',
@@ -275,7 +275,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'loading' => false,
                     'calculatedValue' => 1659.81,
                     'currency' => [],
-                    'formula' => '3806.00 - 2146.19',
+                    'formula' => '3806.00 + 0.00 - 2146.19',
                 ],
                 [
                     'type' => 'assistant',
@@ -326,7 +326,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'loading' => false,
                     'calculatedValue' => 5.01,
                     'currency' => [],
-                    'formula' => '10.00 - 4.99',
+                    'formula' => '10.00 + 0.00 - 4.99',
                 ],
                 [
                     'type' => 'assistant',
@@ -374,7 +374,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'loading' => false,
                     'calculatedValue' => -10,
                     'currency' => [],
-                    'formula' => '0.00 - 10.00',
+                    'formula' => '0.00 + 0.00 - 10.00',
                 ],
                 [
                     'type' => 'assistant',
@@ -437,7 +437,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'loading' => false,
                     'calculatedValue' => -5,
                     'currency' => [],
-                    'formula' => '5.00 - 10.00',
+                    'formula' => '5.00 + 0.00 - 10.00',
                 ],
                 [
                     'type' => 'assistant',
@@ -506,7 +506,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'loading' => false,
                     'calculatedValue' => 7,
                     'currency' => [],
-                    'formula' => '5.00 - -2.00',
+                    'formula' => '5.00 + 0.00 - -2.00',
                 ],
                 [
                     'type' => 'assistant',
@@ -683,7 +683,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'type'  => 'income',
                     'loading' => false,
                     'calculatedValue' => 16,
-                    'formula' => '20.00 - 4.00',
+                    'formula' => '20.00 + 0.00 - 4.00',
                     'payment' => [
                         'id' => $incomePayment->id,
                     ]
@@ -760,7 +760,7 @@ class CaseControllerFinanceActionTest extends TestCase
                     'type'  => 'income',
                     'loading' => false,
                     'calculatedValue' => 10,
-                    'formula' => '10.00 - 0.00',
+                    'formula' => '10.00 + 0.00 - 0.00',
                     'payment' => [
                         'id' => $incomePayment->id,
                     ]

@@ -1,10 +1,9 @@
 <?php
-/**
+/*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,24 +12,35 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) MedCenter24.com;
+ * Copyright (c) 2022 (original work) MedCenter24.com;
  */
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Models\Formula\Operations;
+namespace medcenter24\mcCore\App\Services\Search\Model\Field\DbField\Factory;
 
-class Mul extends AbstractOperation
+use medcenter24\mcCore\App\Services\Entity\AccidentService;
+use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
+
+class AccidentsHandlingDateDbFieldFactory extends AbstractDbFieldFactory
 {
-    protected int $weight = 1;
-
-    public function getLeftSignView(): string
+    protected function getTableName(): string
     {
-        return ' * ';
+        return 'accidents';
     }
 
-    public function runOperation($result): float|int
+    protected function getSelectFieldParts(): array
     {
-        return $result * $this->variable->getResult();
+        return [$this->getTableName(), AccidentService::FIELD_HANDLING_TIME];
+    }
+
+    protected function getGroupBy(): array
+    {
+        return [
+            new SearchGroupBy(
+                $this->getTableName(),
+                AccidentService::FIELD_ID,
+            ),
+        ];
     }
 }

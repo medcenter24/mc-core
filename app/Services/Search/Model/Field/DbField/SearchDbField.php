@@ -29,6 +29,7 @@ class SearchDbField
         private readonly string $order,
         private readonly array $joins,
         private readonly array $groupBy,
+        private readonly array $wheres,
     ) {
     }
 
@@ -74,5 +75,13 @@ class SearchDbField
     public function getGroupBy(): array
     {
         return $this->groupBy;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWheres(): array
+    {
+        return $this->wheres;
     }
 }

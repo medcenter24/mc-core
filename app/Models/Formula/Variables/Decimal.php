@@ -16,29 +16,24 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Models\Formula\Variables;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Models\Formula\Variables;
 
 use medcenter24\mcCore\App\Contract\Formula\Variable;
 
 class Decimal implements Variable
 {
-    /**
-     * @var float
-     */
-    private $var;
+    private float $var;
 
-    /**
-     * @var int
-     */
-    private $precision;
+    private ?int $precision;
 
     /**
      * Decimal constructor.
-     * @param $var
-     * @param int $precision
+     * @param mixed $var
+     * @param int|null $precision
      */
-    public function __construct($var, int $precision = null)
+    public function __construct(mixed $var, int $precision = null)
     {
         if ($precision === null) {
             $precision = 2;
@@ -47,12 +42,12 @@ class Decimal implements Variable
         $this->precision = $precision;
     }
 
-    public function getVar()
+    public function getVar(): float
     {
         return $this->var;
     }
 
-    public function getResult()
+    public function getResult(): float
     {
         return $this->getVar();
     }

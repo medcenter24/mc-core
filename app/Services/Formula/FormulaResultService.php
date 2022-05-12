@@ -16,31 +16,33 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\Formula;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Services\Formula;
 
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use medcenter24\mcCore\App\Contract\Formula\Operation;
 use medcenter24\mcCore\App\Contract\Formula\Result;
+use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
 use medcenter24\mcCore\App\Models\Formula\Variables\Decimal;
 
 class FormulaResultService implements Result
 {
     /**
      * Calculate and get result
-     * @param FormulaBuilder $formula
+     * @param FormulaBuilder $formulaBuilder
      * @return int|float
-     * @throws \medcenter24\mcCore\App\Models\Formula\Exception\FormulaException
+     * @throws FormulaException
      */
-    public function calculate(FormulaBuilder $formula)
+    public function calculate(FormulaBuilder $formulaBuilder): float|int
     {
         $result = false;
         // do not change the real formula, pls
-        $formulaC = clone $formula;
+        $formulaC = clone $formulaBuilder;
         $collection = $formulaC->getFormulaCollection();
         $collection = $collection->sortByDesc(function (Operation $op, $key) {
             if (!$key) {
-                // first operation in the row doesn't have any sense - this is just a variable
+                // first operation in the row doesn't have any sense - this is just a variable,
                 // but it should be first in the row
                 return 1000;
             }
@@ -58,7 +60,6 @@ class FormulaResultService implements Result
                     $result = $partRes;
                 } else {
                     $newOpClass = get_class($operation);
-                    /** @var Operation $newOp */
                     $newOp = new $newOpClass(new Decimal($partRes));
                     $result = $newOp->runOperation($result);
                 }

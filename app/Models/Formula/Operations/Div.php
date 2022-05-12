@@ -16,22 +16,24 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Models\Formula\Operations;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Models\Formula\Operations;
 
 use medcenter24\mcCore\App\Contract\Formula\Variable;
 use medcenter24\mcCore\App\Models\Formula\Exception\FormulaException;
+use medcenter24\mcCore\App\Models\Formula\FormulaBuilder;
 
 class Div extends AbstractOperation
 {
-    protected $weight = 1;
+    protected int $weight = 1;
 
     /**
      * Div constructor.
-     * @param Variable $var
+     * @param FormulaBuilder|Variable $var
      * @throws FormulaException
      */
-    public function __construct(Variable $var)
+    public function __construct(FormulaBuilder|Variable $var)
     {
         if ($var->getResult() === 0) {
             throw new FormulaException('Divide by zero');
@@ -47,7 +49,7 @@ class Div extends AbstractOperation
         return ' / ';
     }
 
-    public function runOperation($result)
+    public function runOperation($result): int|float
     {
         return $result / $this->variable->getResult();
     }

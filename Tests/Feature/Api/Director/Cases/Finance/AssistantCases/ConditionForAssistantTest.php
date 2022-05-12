@@ -117,7 +117,7 @@ class ConditionForAssistantTest extends TestCase
                     'loading' => false,
                     'calculatedValue' => 16.83,
                     'currency' => [],
-                    'formula' => '16.83 - 0.00',
+                    'formula' => '16.83 + 0.00 - 0.00',
                 ],
                 [
                     'type' => 'assistant',

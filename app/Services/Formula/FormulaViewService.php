@@ -16,12 +16,12 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Services\Formula;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Services\Formula;
 
 use medcenter24\mcCore\App\Contract\Formula\FormulaBuilder;
 use medcenter24\mcCore\App\Contract\Formula\Operation;
-use ArrayIterator;
 use Throwable;
 
 class FormulaViewService

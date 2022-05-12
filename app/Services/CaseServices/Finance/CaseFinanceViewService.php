@@ -171,6 +171,9 @@ class CaseFinanceViewService
             $caseableData = $this->getCaseableData($accident);
             $caseableValue = $this->getValueFromData($caseableData);
 
+            $cashData = $this->getCashData($accident);
+            $cashValue = $this->getValueFromData($cashData);
+
             $formula = $this->caseFinanceService->newFormula();
             // I need to sub 2 different results instead of sub formula builders
             // to not get 1. big formula 2. data inconsistencies
@@ -180,6 +183,7 @@ class CaseFinanceViewService
             // use in formula
             $formula
                 ->subFloat($assistantValue)
+                ->addFloat($cashValue)
                 ->subFloat($caseableValue);
         }
         return compact('payment', 'formula');

@@ -16,10 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types=1);
+
 namespace medcenter24\mcCore\App\Models\Formula\Exception;
 
+use Exception;
 
-class FormulaException extends \Exception
+class FormulaException extends Exception
 {
 
 }

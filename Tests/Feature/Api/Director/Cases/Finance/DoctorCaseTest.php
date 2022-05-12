@@ -21,7 +21,6 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\Tests\Feature\Api\Director\Cases\Finance;
 
-use Facade\Ignition\Tabs\Tab;
 use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\Assistant;
 use medcenter24\mcCore\App\Entity\Doctor;
@@ -115,7 +114,7 @@ class DoctorCaseTest extends TestCase
                         'loading' => false,
                         'calculatedValue' => 4.01,
                         'currency' => [],
-                        'formula' => '10.00 - 5.99',
+                        'formula' => '10.00 + 0.00 - 5.99',
                     ],
                     'assistant' => [
                         'type' => 'assistant',

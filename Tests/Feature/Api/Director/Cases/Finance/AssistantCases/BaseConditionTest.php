@@ -92,7 +92,7 @@ class BaseConditionTest extends TestCase
                             'code'  => 'eu',
                             'ico'   => 'fa fa-euro',
                         ],
-                        'formula'         => '10.00 - 0.00',
+                        'formula'         => '10.00 + 0.00 - 0.00',
                         'calculatedValue' => 10,
                     ],
                     [
@@ -163,7 +163,7 @@ class BaseConditionTest extends TestCase
                             'code'  => 'eu',
                             'ico'   => 'fa fa-euro',
                         ],
-                        'formula'         => '11.00 - 0.00',
+                        'formula'         => '11.00 + 0.00 - 0.00',
                         'calculatedValue' => 11,
                     ],
                     [
@@ -192,6 +192,20 @@ class BaseConditionTest extends TestCase
                         'formula'         => 0,
                         'calculatedValue' => 0,
                     ],
+                    [
+                        'type' => 'cash',
+                        'loading' => false,
+                        'payment' => NULL,
+                        'currency' =>
+                            array (
+                                'id' => 2,
+                                'title' => 'Euro',
+                                'code' => 'eu',
+                                'ico' => 'fa fa-euro',
+                            ),
+                        'formula' => '',
+                        'calculatedValue' => 0,
+                    ]
                 ],
             ]
         );
@@ -243,7 +257,7 @@ class BaseConditionTest extends TestCase
                             'code'  => 'eu',
                             'ico'   => 'fa fa-euro',
                         ],
-                        'formula'         => '10.00 - 0.00',
+                        'formula'         => '10.00 + 0.00 - 0.00',
                         'calculatedValue' => 10,
                     ],
                     [
@@ -272,6 +286,20 @@ class BaseConditionTest extends TestCase
                         'formula'         => 0,
                         'calculatedValue' => 0,
                     ],
+                    [
+                        'type' => 'cash',
+                        'loading' => false,
+                        'payment' => NULL,
+                        'currency' =>
+                            array (
+                                'id' => 2,
+                                'title' => 'Euro',
+                                'code' => 'eu',
+                                'ico' => 'fa fa-euro',
+                            ),
+                        'formula' => '',
+                        'calculatedValue' => 0,
+                    ]
                 ],
             ]
         );
@@ -339,7 +367,7 @@ class BaseConditionTest extends TestCase
                             'code'  => 'eu',
                             'ico'   => 'fa fa-euro',
                         ],
-                        'formula'         => '10.10 - 0.00',
+                        'formula'         => '10.10 + 0.00 - 0.00',
                         'calculatedValue' => 10.1,
                     ],
                     [
@@ -368,6 +396,20 @@ class BaseConditionTest extends TestCase
                         'formula'         => 0,
                         'calculatedValue' => 0,
                     ],
+                    [
+                        'type' => 'cash',
+                        'loading' => false,
+                        'payment' => NULL,
+                        'currency' =>
+                            array (
+                                'id' => 2,
+                                'title' => 'Euro',
+                                'code' => 'eu',
+                                'ico' => 'fa fa-euro',
+                            ),
+                        'formula' => '',
+                        'calculatedValue' => 0,
+                    ]
                 ],
             ]
         );
@@ -471,7 +513,7 @@ class BaseConditionTest extends TestCase
                             'code'  => 'eu',
                             'ico'   => 'fa fa-euro',
                         ],
-                        'formula'         => '10.00 - 0.00',
+                        'formula'         => '10.00 + 0.00 - 0.00',
                         'calculatedValue' => 10,
                     ],
                     [
@@ -500,6 +542,20 @@ class BaseConditionTest extends TestCase
                         'formula'         => 0,
                         'calculatedValue' => 0,
                     ],
+                    [
+                        'type' => 'cash',
+                        'loading' => false,
+                        'payment' => NULL,
+                        'currency' =>
+                            array (
+                                'id' => 2,
+                                'title' => 'Euro',
+                                'code' => 'eu',
+                                'ico' => 'fa fa-euro',
+                            ),
+                        'formula' => '',
+                        'calculatedValue' => 0,
+                    ]
                 ],
             ]
         );

@@ -16,11 +16,11 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
+declare(strict_types=1);
+
 namespace medcenter24\mcCore\App\Models\Cases\Finance;
 
-
 use medcenter24\mcCore\App\Models\Cases\Finance\Operations\IfOperation;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
@@ -29,21 +29,9 @@ use Illuminate\Support\Collection;
  */
 class CaseFinanceCondition
 {
-    /**
-     * @var Collection
-     */
-    private $condition;
-
-    /**
-     * @var int
-     */
-    private $value = 0;
-
-    /**
-     * Currency of the condition
-     * @var int
-     */
-    private $currencyId = 0;
+    private Collection $condition;
+    private mixed $value = 0;
+    private int $currencyId = 0;
 
     /**
      * Mode of the currency:
@@ -51,7 +39,7 @@ class CaseFinanceCondition
      *  - Percent - if the value is a percent to calculate from the total
      * @var string
      */
-    private $currencyMode = '';
+    private string $currencyMode = '';
 
     /**
      * Type of the condition:
@@ -62,12 +50,12 @@ class CaseFinanceCondition
      *      subtract "-"
      * @var string
      */
-    private $conditionType = 'add';
+    private string $conditionType = 'add';
 
     /**
      * @var string
      */
-    private $title = '';
+    private string $title = '';
 
     /**
      * Model of the condition to know for what we need to attach this condition
@@ -76,7 +64,7 @@ class CaseFinanceCondition
      *  Accident::class - to calculate income for the company from the case
      * @var string
      */
-    private $model;
+    private string $model;
 
     private int $order;
 
@@ -89,7 +77,7 @@ class CaseFinanceCondition
     }
 
     /**
-     * @param Model|string $modelName
+     * @param string $modelName
      * @param int $id
      * @return $this
      */
@@ -102,19 +90,19 @@ class CaseFinanceCondition
 
     /**
      * Set price for the rule
-     * @param int $price
+     * @param mixed $price
      * @return $this
      */
-    public function thenValue($price = 0): self
+    public function thenValue(mixed $price = 0): self
     {
         $this->value = $price;
         return $this;
     }
 
     /**
-     * @return int
+     * @return mixed
      */
-    public function getValue(): int
+    public function getValue(): mixed
     {
         return $this->value;
     }
@@ -171,7 +159,7 @@ class CaseFinanceCondition
      * @param string $type
      * @return $this
      */
-    public function setConditionType($type = 'add'): self
+    public function setConditionType(string $type = 'add'): self
     {
         $this->conditionType = $type;
         return $this;
@@ -190,7 +178,7 @@ class CaseFinanceCondition
      * @param string $title
      * @return $this
      */
-    public function setTitle($title = ''): self
+    public function setTitle(string $title = ''): self
     {
         $this->title = $title;
         return $this;

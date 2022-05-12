@@ -34,6 +34,7 @@ abstract class AbstractDbFieldFactory
             $searchField->getOrder(),
             $this->getJoins(),
             $this->getGroupBy(),
+            $this->getWheres(),
         );
     }
 
@@ -58,6 +59,11 @@ abstract class AbstractDbFieldFactory
     }
 
     protected function getJoins(): array
+    {
+        return [];
+    }
+
+    protected function getWheres(): array
     {
         return [];
     }

@@ -47,6 +47,9 @@ class SearchQueryFieldLoader extends AbstractSearchQueryLoader
             foreach ($dbField->getGroupBy() as $group) {
                 $searchQuery->addGroupBy($group);
             }
+            foreach ($dbField->getWheres() as $where) {
+                $searchQuery->addWhere($where);
+            }
         }
     }
 

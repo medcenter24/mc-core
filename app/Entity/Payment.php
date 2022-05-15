@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\PaymentService;
 
 /**
@@ -38,7 +39,7 @@ class Payment extends Model
 
     protected $fillable = PaymentService::FILLABLE;
     protected $visible = PaymentService::VISIBLE;
-    protected $dates = PaymentService::DATE_FIELDS;
+    protected $dates = AbstractModelService::DATE_FIELDS;
 
     /**
      * @return BelongsTo

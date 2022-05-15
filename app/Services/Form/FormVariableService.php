@@ -53,6 +53,8 @@ class FormVariableService
     public const VAR_ACCIDENT_INCOME_CURRENCY_TITLE = ':accident.income.currency.title';
     public const VAR_ACCIDENT_INCOME_VALUE = ':accident.income.value';
 
+    public const VAR_ACCIDENT_ASSISTANT_INVOICE_PRICE = ':accident.assistantInvoice.payment.value';
+
     public const INCOME_VARS = [
         self::VAR_ACCIDENT_INCOME_CURRENCY_ICO,
         self::VAR_ACCIDENT_INCOME_CURRENCY_TITLE,
@@ -93,6 +95,7 @@ class FormVariableService
             self::VAR_ACCIDENT_CITY_REGION_TITLE,
             self::VAR_ACCIDENT_CITY_TITLE,
             self::VAR_ACCIDENT_DOCUMENTS,
+            self::VAR_ACCIDENT_ASSISTANT_INVOICE_PRICE,
         ];
     }
 }

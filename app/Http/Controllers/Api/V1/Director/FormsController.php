@@ -73,7 +73,18 @@ class FormsController extends ModelApiController
             $this->response->errorNotFound();
         }
         $source = call_user_func([$form->formable_type, 'findOrFail'], $srcId);
-        return response()->download($this->getModelService()->getPdfPath($form, $source));
+        $path = $this->getModelService()->getPdfPath($form, $source);
+        return response()->download(
+            $path,
+            $this->getModelService()->getFileName($source).'.pdf',
+            [
+                // todo we can allow caching for closed cases
+                'Access-Control-Expose-Headers' => 'Content-Disposition',
+                'Cache-Control' => 'maxage=1',
+                'Content-type' => 'application/pdf',
+                'Expires' => gmdate('D, d M Y H:i:s', time()+1).' GMT',
+            ]
+        );
     }
 
     /**

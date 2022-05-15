@@ -115,11 +115,12 @@ class FormService extends AbstractModelService
      */
     public function getPdfPath(Form $form, Model $source): string
     {
-        $uniq = $this->getCacheableUniqValue($source) . '.pdf';
+        $uniq = $this->getFileName($source) . '.pdf';
 
-        if (!Storage::disk(self::PDF_DISK)->exists($uniq)) {
+        // todo probably later we'll need this cache?
+        // if (!Storage::disk(self::PDF_DISK)->exists($uniq)) {
             $this->toPdf($form, $source, $uniq);
-        }
+        // }
 
         return Storage::disk(self::PDF_DISK)->path($uniq);
     }
@@ -184,24 +185,31 @@ class FormService extends AbstractModelService
      * @return string
      * @throws InconsistentDataException
      */
-    private function getCacheableUniqValue(Model $model): string
+    public function getFileName(Model $model): string
     {
         $modelClass = get_class($model);
-        switch ($modelClass) {
-            case Accident::class :
-                $value = $model->ref_num . '_' . $model->updated_at->format('Ymd_His');
-                break;
-            default:
-                throw new InconsistentDataException('Undefined model ' . $modelClass);
-        }
-        return $value;
+        return match ($modelClass) {
+            Accident::class => $this->getAccidentReportName($model),
+            default => throw new InconsistentDataException('Undefined model ' . $modelClass),
+        };
+    }
+
+    private function getAccidentReportName(Model $accident): string
+    {
+        $patientName = $accident->getAttribute('patient')->getAttribute('name') ?? 'no_patient';
+        $assistRef = $accident->getAttribute(AccidentService::FIELD_ASSISTANT_REF_NUM) ?? 'no_assistant_ref_num';
+        $refNum = $accident->getAttribute(AccidentService::FIELD_REF_NUM) ?? 'no_ref_num';
+        $name = sprintf('%s_%s_%s', $patientName, $assistRef, $refNum);
+        return str_replace(' ', '_', $name);
     }
 
     /**
      * @param Form $form
      * @param Model $source
      * @return string
+     * @throws FormulaException
      * @throws InconsistentDataException
+     * @throws Throwable
      */
     public function getHtml(Form $form, Model $source): string
     {

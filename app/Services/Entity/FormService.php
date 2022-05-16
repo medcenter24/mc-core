@@ -200,7 +200,7 @@ class FormService extends AbstractModelService
         $assistRef = $accident->getAttribute(AccidentService::FIELD_ASSISTANT_REF_NUM) ?? 'no_assistant_ref_num';
         $refNum = $accident->getAttribute(AccidentService::FIELD_REF_NUM) ?? 'no_ref_num';
         $name = sprintf('%s_%s_%s', $patientName, $assistRef, $refNum);
-        return str_replace(' ', '_', $name);
+        return preg_replace('/[^\da-zA-Z_\-]/', '_', $name);
     }
 
     /**

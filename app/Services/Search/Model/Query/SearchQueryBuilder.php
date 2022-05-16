@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace medcenter24\mcCore\App\Services\Search\Model\Query;
 
 use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use medcenter24\mcCore\App\Services\Search\Model\SearchGroupBy;
 use medcenter24\mcCore\App\Services\Search\Model\SearchJoin;
@@ -27,6 +28,8 @@ use medcenter24\mcCore\App\Services\Search\Model\SearchWhere;
 
 class SearchQueryBuilder
 {
+    private array $fields = [];
+
     public function build(SearchQuery $searchQuery): Builder
     {
         $query = $this->createQuery($searchQuery->getFrom());
@@ -48,6 +51,7 @@ class SearchQueryBuilder
         if (empty($fields)) {
             $query->addSelect(DB::raw('COUNT(*) as count'));
         } else {
+            $this->fields = array_merge($this->fields, $fields);
             foreach ($fields as $alias => $field) {
                 $query->addSelect(DB::raw(sprintf('%s AS "%s"', $field, $alias)));
             }
@@ -59,16 +63,32 @@ class SearchQueryBuilder
         $joinedTables = [];
         /** @var SearchJoin $join */
         foreach ($joins as $join) {
-            if (in_array($join->getRightTable(), $joinedTables)) {
+            $joinTable = $join->getRightTable();
+
+            if (is_array($joinTable)) {
+                $joinTableName = $joinTable[0];
+                $joinTableAlias = $joinTable[1];
+            } else {
+                $joinTableName = $joinTable;
+                $joinTableAlias = $joinTable;
+            }
+
+            if (in_array($joinTableAlias, $joinedTables)) {
                 continue; // do not join twice from filter and fields
             }
-            $joinedTables[] = $join->getRightTable();
+            $joinedTables[] = $joinTableAlias;
 
             $query->join(
-                $join->getRightTable(),
-                $join->getLeftTable().'.'.$join->getLeftTableField(),
-                $join->getOperator(),
-                $join->getRightTable().'.'.$join->getRightTableField(),
+                sprintf('%s as %s', $joinTableName, $joinTableAlias),
+                static function(JoinClause $joiner) use ($join, $joinTableAlias) {
+                    $joiner->on(
+                        $join->getLeftTable().'.'.$join->getLeftTableField(),
+                        $join->getOperator(),
+                        $joinTableAlias.'.'.$join->getRightTableField(),
+                    );
+                },
+                null,
+                null,
                 $join->getType(),
             );
         }
@@ -80,6 +100,11 @@ class SearchQueryBuilder
         /** @var SearchGroupBy $group */
         foreach ($groups as $group) {
             $key = $group->getTableName().'.'.$group->getField();
+
+            if (in_array($key, $this->fields)) {
+                $key = array_search($key, $this->fields);
+            }
+
             if (in_array($key, $grouped)) {
                 continue;
             }

@@ -413,7 +413,7 @@ $api->group([
                 $api->post('/', FormsController::class . '@store');
                 $api->put('{id}', FormsController::class . '@update');
                 $api->delete('{id}', FormsController::class . '@destroy');
-                $api->get('/{formId}/{srcId}/pdf', FormsController::class . '@pdf');
+                $api->get('/{formId}/{srcId}/pdf/{time}', FormsController::class . '@pdf');
                 $api->get('/{formId}/{srcId}/html', FormsController::class . '@html');
             });
 

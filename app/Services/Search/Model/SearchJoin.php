@@ -23,14 +23,12 @@ class SearchJoin
 {
     public function __construct(
         private string $leftTable = '',
-        private string $rightTable = '',
+        private string|array $rightTable = '', // array if alias
         private string $leftTableField = '',
         private string $rightTableField = '',
         private string $operator = '=',
         private string $type = 'left',
-    )
-    {
-    }
+    ) { }
 
     /**
      * @return string
@@ -49,17 +47,17 @@ class SearchJoin
     }
 
     /**
-     * @return string
+     * @return string|array
      */
-    public function getRightTable(): string
+    public function getRightTable(): string|array
     {
         return $this->rightTable;
     }
 
     /**
-     * @param string $rightTable
+     * @param string|array $rightTable
      */
-    public function setRightTable(string $rightTable): void
+    public function setRightTable(string|array $rightTable): void
     {
         $this->rightTable = $rightTable;
     }

@@ -40,12 +40,17 @@ class AccidentsIncomeDbFieldFactory extends AbstractDbFieldFactory
         return 'payments';
     }
 
+    private function getJoinAlias(): string
+    {
+        return 'incomes';
+    }
+
     protected function getJoins(): array
     {
         return [
             new SearchJoin(
                 $this->getTableName(),
-                $this->getJoinTable(),
+                [$this->getJoinTable(), $this->getJoinAlias()],
                 AccidentService::FIELD_INCOME_PAYMENT_ID,
                 AbstractModelService::FIELD_ID,
             ),
@@ -54,7 +59,7 @@ class AccidentsIncomeDbFieldFactory extends AbstractDbFieldFactory
 
     protected function getSelectFieldParts(): array
     {
-        return [$this->getJoinTable(), PaymentService::FIELD_VALUE];
+        return [$this->getJoinAlias(), PaymentService::FIELD_VALUE];
     }
 
     protected function getGroupBy(): array
@@ -65,7 +70,7 @@ class AccidentsIncomeDbFieldFactory extends AbstractDbFieldFactory
                 AccidentService::FIELD_ID,
             ),
             new SearchGroupBy(
-                $this->getJoinTable(),
+                $this->getJoinAlias(),
                 PaymentService::FIELD_VALUE,
             ),
         ];

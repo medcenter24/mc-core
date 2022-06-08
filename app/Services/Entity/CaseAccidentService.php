@@ -56,11 +56,12 @@ class CaseAccidentService implements ModelService
     public const PROPERTY_DOCUMENTS = 'documents';
     public const PROPERTY_CHECKPOINTS = 'checkpoints';
     public const PROPERTY_PATIENT = 'patient';
+    private const PROPERTY_SERVICEABLES = 'serviceables';
 
     /**
      * @return Model|Accident
      */
-    public function getModel(): Model
+    public function getModel(): Model|Accident
     {
         return new Accident();
     }
@@ -70,7 +71,7 @@ class CaseAccidentService implements ModelService
      * @return Model|Accident
      * @throws InconsistentDataException
      */
-    public function create(array $data = []): Model
+    public function create(array $data = []): Model|Accident
     {
         return $this->flushAccidentData($data);
     }
@@ -79,22 +80,22 @@ class CaseAccidentService implements ModelService
      * @param Accident $accident
      * @return Model|null|AccidentAbstract
      */
-    private function getCaseable(Accident $accident): ?Model
+    private function getCaseable(Accident $accident): Model|Accident|null
     {
         $caseable = null;
         if ($this->getAccidentService()->isDoctorAccident($accident)) {
             $caseable = $this->getDoctorAccidentService()
-                ->first([DoctorAccidentService::FIELD_ID => $accident->getAttribute(AccidentService::FIELD_CASEABLE_ID)]);
+                ->first([AbstractModelService::FIELD_ID => $accident->getAttribute(AccidentService::FIELD_CASEABLE_ID)]);
         } elseif ($this->getAccidentService()->isHospitalAccident($accident)) {
             $caseable = $this->getHospitalAccidentService()
-                ->first([HospitalAccidentService::FIELD_ID => $accident->getAttribute(AccidentService::FIELD_CASEABLE_ID)]);
+                ->first([AbstractModelService::FIELD_ID => $accident->getAttribute(AccidentService::FIELD_CASEABLE_ID)]);
         }
         return $caseable;
     }
 
     /**
      * @param array $data
-     * @param Accident|null|Model $accident
+     * @param Accident|null $accident
      * @return Accident
      * @throws InconsistentDataException
      */
@@ -465,13 +466,14 @@ class CaseAccidentService implements ModelService
     {
         if ($this->isDoctorCase($data)) {
             $this->updateMorph($caseable, $data, self::PROPERTY_SERVICES);
+            $this->updateMorphedOrder($caseable, $data, self::PROPERTY_SERVICES, self::PROPERTY_SERVICEABLES);
             $this->updateMorph($caseable, $data, self::PROPERTY_SURVEYS);
             $this->updateMorph($caseable, $data, self::PROPERTY_DIAGNOSTICS);
         }
     }
 
     /**
-     * @param Model|DoctorAccident $caseable
+     * @param Model $caseable
      * @param array $data
      * @param string $key
      * @return void
@@ -479,12 +481,24 @@ class CaseAccidentService implements ModelService
     private function updateMorph(Model $caseable, array $data, string $key): void
     {
         $caseable->$key()->detach();
-        if (
-            array_key_exists($key, $data)
-            && is_array($data[$key])
-            && count($data[$key])
-        ) {
+        if (!empty($data[$key])) {
             $caseable->$key()->attach($data[$key]);
+        }
+    }
+
+    private function updateMorphedOrder(Model $caseable, array $data, string $key, string $table): void
+    {
+        if (!empty($data[$key])) {
+            $order = 1;
+            foreach ($data[$key] as $service_id) {
+                $queryBuilder = DB::table($table);
+                $queryBuilder->where([
+                    'service_id' => $service_id,
+                    'serviceable_type' => $caseable::class,
+                    'serviceable_id' => $caseable->getAttribute(AbstractModelService::FIELD_ID),
+                ]);
+                $queryBuilder->update(['sort' => $order++]);
+            }
         }
     }
 

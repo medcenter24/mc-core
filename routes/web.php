@@ -51,10 +51,7 @@ Route::group(['prefix' => 'telegram'], static function () {
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], static function () {
-    # Route::get('/', MainController::class . '@index'); // todo add statistic or graph on how the site is filled with data
-    Route::get('/', static function () {
-        return redirect('admin/users');
-    });
+    Route::get('/', MainController::class . '@index');
     Route::resource('users', UsersController::class);
     Route::resource('roles', RolesController::class);
     Route::resource('invites', 'Admin\InvitesController');

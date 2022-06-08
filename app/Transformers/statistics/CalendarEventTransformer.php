@@ -17,11 +17,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Transformers\statistics;
 
 use Illuminate\Database\Eloquent\Model;
+use JetBrains\PhpStorm\ArrayShape;
+use medcenter24\mcCore\App\Services\Entity\AbstractModelService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Transformers\AbstractTransformer;
 
@@ -40,13 +42,14 @@ class CalendarEventTransformer extends AbstractTransformer
     /**
      * @inheritDoc
      */
+    #[ArrayShape([0 => "string", 1 => "string", 'start' => "string", 'end' => "string", 'status' => "string"])]
     protected function getMap(): array
     {
         return [
             AccidentService::FIELD_ID,
             AccidentService::FIELD_TITLE,
-            'start' => AccidentService::FIELD_CREATED_AT,
-            'end' => AccidentService::FIELD_HANDLING_TIME,
+            'start'  => AbstractModelService::FIELD_CREATED_AT,
+            'end'    => AccidentService::FIELD_HANDLING_TIME,
             'status' => AccidentService::FIELD_ACCIDENT_STATUS_ID,
         ];
     }
@@ -54,12 +57,17 @@ class CalendarEventTransformer extends AbstractTransformer
     /**
      * @return array
      */
-    protected function getMappedTypes(): array
-    {
+    #[ArrayShape([
+        AccidentService::FIELD_ID                 => "string",
+        AbstractModelService::FIELD_CREATED_AT    => "string",
+        AccidentService::FIELD_HANDLING_TIME      => "string",
+        AccidentService::FIELD_ACCIDENT_STATUS_ID => "string"
+    ])]
+    protected function getMappedTypes(): array {
         return [
-            AccidentService::FIELD_ID => self::VAR_INT,
-            AccidentService::FIELD_CREATED_AT => self::VAR_DATETIME,
-            AccidentService::FIELD_HANDLING_TIME => self::VAR_DATETIME,
+            AccidentService::FIELD_ID                 => self::VAR_INT,
+            AbstractModelService::FIELD_CREATED_AT    => self::VAR_DATETIME,
+            AccidentService::FIELD_HANDLING_TIME      => self::VAR_DATETIME,
             AccidentService::FIELD_ACCIDENT_STATUS_ID => self::VAR_INT,
         ];
     }

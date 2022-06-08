@@ -16,12 +16,13 @@
  * Copyright (c) 2019 (original work) MedCenter24.com;
  */
 
-namespace medcenter24\mcCore\App\Helpers;
+declare(strict_types=1);
 
+namespace medcenter24\mcCore\App\Helpers;
 
 trait DoctorTrait
 {
-    private $isDoctor = false;
+    private bool $isDoctor = false;
 
     public function markAsDoctor(): void
     {

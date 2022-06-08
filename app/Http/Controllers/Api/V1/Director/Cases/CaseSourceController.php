@@ -22,13 +22,15 @@ namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases;
 
 use Dingo\Api\Http\Response;
 use Illuminate\Support\Collection;
+use medcenter24\mcCore\App\Entity\Accident;
 use medcenter24\mcCore\App\Entity\Diagnostic;
-use medcenter24\mcCore\App\Entity\Service;
 use medcenter24\mcCore\App\Entity\Survey;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Accident\Service\AccidentServicesService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
 use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
+use medcenter24\mcCore\App\Transformers\Case\CaseServicesTransformer;
 use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
 use medcenter24\mcCore\App\Transformers\ServiceTransformer;
 use medcenter24\mcCore\App\Transformers\SurveyTransformer;
@@ -65,24 +67,24 @@ class CaseSourceController extends ApiController
     }
 
     /**
-     * @param $id
-     * @param RoleService $roleService
-     * @param AccidentService $accidentServiceService
+     * @param int $id
+     * @param AccidentServicesService $accidentServices
      * @return Response
      */
-    public function getServices($id, RoleService $roleService, AccidentService $accidentServiceService): Response
-    {
+    public function getServices(
+        int $id,
+        AccidentServicesService $accidentServices
+    ): Response {
+        /** @var Accident $accident */
         $accident = $this->getAccidentService()->first([AccidentService::FIELD_ID => $id]);
         if (!$accident) {
             $this->response->errorNotFound();
         }
-        $accidentServices = $accidentServiceService->getAccidentServices($accident);
-        $accidentServices->each(function (Service $doctorService) use ($roleService) {
-            if ($doctorService->created_by && $roleService->hasRole($doctorService->creator, 'doctor')) {
-                $doctorService->markAsDoctor();
-            }
-        });
-        return $this->response->collection($accidentServices, new ServiceTransformer());
+
+        return $this->response->collection(
+            $accidentServices->getAccidentServices($accident),
+            new CaseServicesTransformer(),
+        );
     }
 
     /**

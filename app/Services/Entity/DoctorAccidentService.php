@@ -20,6 +20,10 @@ declare(strict_types = 1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
+use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 
 class DoctorAccidentService extends AbstractModelService
@@ -71,5 +75,28 @@ class DoctorAccidentService extends AbstractModelService
             self::FIELD_RECOMMENDATION => '',
             self::FIELD_INVESTIGATION => '',
         ];
+    }
+
+    public function getSortedServices(int $accidentId): Collection {
+        $queryBuilder = DB::table('accidents');
+        $queryBuilder->where('accidents.id', '=', $accidentId);
+        $queryBuilder->where('accidents.caseable_type', '=', DoctorAccident::class);
+        $queryBuilder->join('doctor_accidents as da',
+            static function(JoinClause $joiner) {
+                $joiner->on('accidents.caseable_id', '=', 'da.id');
+            });
+        $queryBuilder->join('serviceables as sp',
+            static function(JoinClause $joiner) {
+                $joiner->on('da.id', '=', 'sp.serviceable_id');
+                $joiner->where('sp.serviceable_type', '=', DoctorAccident::class);
+            });
+        $queryBuilder->join('services as s',
+            static function(JoinClause $joiner) {
+                $joiner->on('s.id', '=', 'sp.service_id');
+            });
+        $queryBuilder->select('s.*');
+        $queryBuilder->addSelect(DB::raw('sp.sort AS "sort"'));
+        $queryBuilder->orderBy('sp.sort');
+        return $queryBuilder->get();
     }
 }

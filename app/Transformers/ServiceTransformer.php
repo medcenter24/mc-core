@@ -22,8 +22,7 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Transformers;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
-use medcenter24\mcCore\App\Entity\Service;
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Services\Entity\ServiceService;
 use medcenter24\mcCore\App\Transformers\Traits\DiseasableTransformer;
 use medcenter24\mcCore\App\Transformers\Traits\UserTypeTransformer;
@@ -34,7 +33,7 @@ class ServiceTransformer extends AbstractTransformer
     use UserTypeTransformer;
 
     /**
-     * @param Model|Service $model
+     * @param Model $model
      * @return array
      */
     public function transform(Model $model): array
@@ -56,6 +55,7 @@ class ServiceTransformer extends AbstractTransformer
         ];
     }
 
+    #[ArrayShape([ServiceService::FIELD_ID => "string"])]
     protected function getMappedTypes(): array
     {
         return [
@@ -66,7 +66,6 @@ class ServiceTransformer extends AbstractTransformer
     public function inverseTransform(array $data): array
     {
         $transformed = parent::inverseTransform($data);
-        $transformed = $this->inverseDiseasesTransform($transformed);
-        return $transformed;
+        return $this->inverseDiseasesTransform($transformed);
     }
 }

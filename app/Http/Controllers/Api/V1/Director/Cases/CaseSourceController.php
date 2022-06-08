@@ -21,19 +21,14 @@ declare(strict_types = 1);
 namespace medcenter24\mcCore\App\Http\Controllers\Api\V1\Director\Cases;
 
 use Dingo\Api\Http\Response;
-use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\Entity\Accident;
-use medcenter24\mcCore\App\Entity\Diagnostic;
-use medcenter24\mcCore\App\Entity\Survey;
 use medcenter24\mcCore\App\Http\Controllers\Api\ApiController;
+use medcenter24\mcCore\App\Services\Accident\Diagnostic\AccidentDiagnosticService;
 use medcenter24\mcCore\App\Services\Accident\Service\AccidentServicesService;
+use medcenter24\mcCore\App\Services\Accident\Survey\AccidentSurveyService;
 use medcenter24\mcCore\App\Services\Entity\AccidentService;
-use medcenter24\mcCore\App\Services\Entity\RoleService;
 use medcenter24\mcCore\App\Transformers\AccidentCheckpointTransformer;
 use medcenter24\mcCore\App\Transformers\Case\CaseServicesTransformer;
-use medcenter24\mcCore\App\Transformers\DiagnosticTransformer;
-use medcenter24\mcCore\App\Transformers\ServiceTransformer;
-use medcenter24\mcCore\App\Transformers\SurveyTransformer;
 
 class CaseSourceController extends ApiController
 {
@@ -46,24 +41,24 @@ class CaseSourceController extends ApiController
     }
 
     /**
-     * @param $id
-     * @param RoleService $roleService
+     * @param int $id
+     * @param AccidentDiagnosticService $accidentDiagnosticService
      * @return Response
      */
-    public function getDiagnostics($id, RoleService $roleService): Response
-    {
+    public function getDiagnostics(
+        int $id,
+        AccidentDiagnosticService $accidentDiagnosticService,
+    ): Response {
+        /** @var Accident $accident */
         $accident = $this->getAccidentService()->first([AccidentService::FIELD_ID => $id]);
         if (!$accident) {
             $this->response->errorNotFound();
         }
-        /** @var Collection $accidentDiagnostics */
-        $accidentDiagnostics = $accident->caseable->diagnostics;
-        $accidentDiagnostics->each(function (Diagnostic $diagnostic) use ($roleService) {
-            if ($diagnostic->created_by && $roleService->hasRole($diagnostic->creator, 'doctor')) {
-                $diagnostic->markAsDoctor();
-            }
-        });
-        return $this->response->collection($accidentDiagnostics, new DiagnosticTransformer());
+
+        return $this->response->collection(
+            $accidentDiagnosticService->getAccidentDiagnostics($accident),
+            new CaseServicesTransformer(),
+        );
     }
 
     /**
@@ -88,23 +83,22 @@ class CaseSourceController extends ApiController
     }
 
     /**
-     * @param $id
-     * @param RoleService $roleService
+     * @param int $id
+     * @param AccidentSurveyService $accidentSurvey
      * @return Response
      */
-    public function getSurveys($id, RoleService $roleService): Response
+    public function getSurveys(int $id, AccidentSurveyService $accidentSurvey): Response
     {
+        /** @var Accident $accident */
         $accident = $this->getAccidentService()->first([AccidentService::FIELD_ID => $id]);
         if (!$accident) {
             $this->response->errorNotFound();
         }
-        $accidentSurveys = $accident->caseable->surveys;
-        $accidentSurveys->each(function (Survey $doctorSurvey) use ($roleService) {
-            if ($doctorSurvey->created_by && $roleService->hasRole($doctorSurvey->creator, 'doctor')) {
-                $doctorSurvey->markAsDoctor();
-            }
-        });
-        return $this->response->collection($accidentSurveys, new SurveyTransformer());
+
+        return $this->response->collection(
+            $accidentSurvey->getAccidentSurveys($accident),
+            new CaseServicesTransformer(),
+        );
     }
 
     /**

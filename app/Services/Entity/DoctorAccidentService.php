@@ -16,14 +16,14 @@
  * Copyright (c) 2020 (original work) MedCenter24.com;
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace medcenter24\mcCore\App\Services\Entity;
 
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use JetBrains\PhpStorm\ArrayShape;
 use medcenter24\mcCore\App\Entity\DoctorAccident;
 
 class DoctorAccidentService extends AbstractModelService
@@ -68,31 +68,85 @@ class DoctorAccidentService extends AbstractModelService
         return DoctorAccident::class;
     }
 
+    #[ArrayShape([
+        self::FIELD_DOCTOR_ID => "int",
+        self::FIELD_RECOMMENDATION => "string",
+        self::FIELD_INVESTIGATION => "string"
+    ])]
     protected function getFillableFieldDefaults(): array
     {
         return [
-            self::FIELD_DOCTOR_ID => 0,
+            self::FIELD_DOCTOR_ID      => 0,
             self::FIELD_RECOMMENDATION => '',
-            self::FIELD_INVESTIGATION => '',
+            self::FIELD_INVESTIGATION  => '',
         ];
     }
 
-    public function getSortedServices(int $accidentId): Collection {
+    public function getSortedServices(int $accidentId): Collection
+    {
         $queryBuilder = DB::table('accidents');
         $queryBuilder->where('accidents.id', '=', $accidentId);
         $queryBuilder->where('accidents.caseable_type', '=', DoctorAccident::class);
         $queryBuilder->join('doctor_accidents as da',
-            static function(JoinClause $joiner) {
+            static function (JoinClause $joiner) {
                 $joiner->on('accidents.caseable_id', '=', 'da.id');
             });
         $queryBuilder->join('serviceables as sp',
-            static function(JoinClause $joiner) {
+            static function (JoinClause $joiner) {
                 $joiner->on('da.id', '=', 'sp.serviceable_id');
                 $joiner->where('sp.serviceable_type', '=', DoctorAccident::class);
             });
         $queryBuilder->join('services as s',
-            static function(JoinClause $joiner) {
+            static function (JoinClause $joiner) {
                 $joiner->on('s.id', '=', 'sp.service_id');
+            });
+        $queryBuilder->select('s.*');
+        $queryBuilder->addSelect(DB::raw('sp.sort AS "sort"'));
+        $queryBuilder->orderBy('sp.sort');
+        return $queryBuilder->get();
+    }
+
+    public function getSortedDiagnostics(int $accidentId): Collection
+    {
+        $queryBuilder = DB::table('accidents');
+        $queryBuilder->where('accidents.id', '=', $accidentId);
+        $queryBuilder->where('accidents.caseable_type', '=', DoctorAccident::class);
+        $queryBuilder->join('doctor_accidents as da',
+            static function (JoinClause $joiner) {
+                $joiner->on('accidents.caseable_id', '=', 'da.id');
+            });
+        $queryBuilder->join('diagnosticables as dp',
+            static function (JoinClause $joiner) {
+                $joiner->on('da.id', '=', 'dp.diagnosticable_id');
+                $joiner->where('dp.diagnosticable_type', '=', DoctorAccident::class);
+            });
+        $queryBuilder->join('diagnostics as d',
+            static function (JoinClause $joiner) {
+                $joiner->on('d.id', '=', 'dp.diagnostic_id');
+            });
+        $queryBuilder->select('d.*');
+        $queryBuilder->addSelect(DB::raw('dp.sort AS "sort"'));
+        $queryBuilder->orderBy('dp.sort');
+        return $queryBuilder->get();
+    }
+
+    public function getSortedSurveys(int $accidentId): Collection
+    {
+        $queryBuilder = DB::table('accidents');
+        $queryBuilder->where('accidents.id', '=', $accidentId);
+        $queryBuilder->where('accidents.caseable_type', '=', DoctorAccident::class);
+        $queryBuilder->join('doctor_accidents as da',
+            static function (JoinClause $joiner) {
+                $joiner->on('accidents.caseable_id', '=', 'da.id');
+            });
+        $queryBuilder->join('surveables as sp',
+            static function (JoinClause $joiner) {
+                $joiner->on('da.id', '=', 'sp.surveable_id');
+                $joiner->where('sp.surveable_type', '=', DoctorAccident::class);
+            });
+        $queryBuilder->join('surveys as s',
+            static function (JoinClause $joiner) {
+                $joiner->on('s.id', '=', 'sp.survey_id');
             });
         $queryBuilder->select('s.*');
         $queryBuilder->addSelect(DB::raw('sp.sort AS "sort"'));

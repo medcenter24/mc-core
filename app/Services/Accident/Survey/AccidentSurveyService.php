@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace medcenter24\mcCore\App\Services\Accident\Service;
+namespace medcenter24\mcCore\App\Services\Accident\Survey;
 
 use Illuminate\Support\Collection;
 use medcenter24\mcCore\App\Entity\Accident;
@@ -27,7 +27,7 @@ use medcenter24\mcCore\App\Services\Entity\DoctorAccidentService;
 use medcenter24\mcCore\App\Services\Entity\RoleService;
 use medcenter24\mcCore\App\Services\Entity\UserService;
 
-class AccidentServicesService
+class AccidentSurveyService
 {
     public function __construct(
         protected RoleService $roleService,
@@ -38,27 +38,27 @@ class AccidentServicesService
 
     }
 
-    public function getAccidentServices(Accident $accident): Collection
+    public function getAccidentSurveys(Accident $accident): Collection
     {
         if ($this->accidentServiceService->isDoctorAccident($accident)) {
-            $services = $this->getDoctorAccidentServices($accident);
+            $services = $this->getDoctorAccidentSurveys($accident);
         }
         return $services ?? collect();
     }
 
-    private function getDoctorAccidentServices(Accident $accident): Collection
+    private function getDoctorAccidentSurveys(Accident $accident): Collection
     {
-        $services = $this->doctorAccidentService
-            ->getSortedServices($accident->getAttribute(AccidentService::FIELD_ID));
+        $surveys = $this->doctorAccidentService
+            ->getSortedSurveys($accident->getAttribute(AccidentService::FIELD_ID));
 
         $roleService = $this->roleService;
-        $services->each(function ($doctorService) use ($roleService) {
-            if ($doctorService->created_by) {
+        $surveys->each(function ($survey) use ($roleService) {
+            if ($survey->created_by) {
                 /** @var User $user */
-                $user = $this->userService->first([UserService::FIELD_ID => $doctorService->created_by]);
-                $doctorService->isDoctor = empty($user) || $roleService->hasRole($user, 'doctor');
+                $user = $this->userService->first([UserService::FIELD_ID => $survey->created_by]);
+                $survey->isDoctor = empty($user) || $roleService->hasRole($user, 'doctor');
             }
         });
-        return $services;
+        return $surveys;
     }
 }

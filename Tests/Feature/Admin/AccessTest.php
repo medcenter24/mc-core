@@ -42,7 +42,7 @@ class AccessTest extends TestCase
     public function testAdmin(): void
     {
         Roles::shouldReceive('hasRole')
-            ->times(1)
+            ->times(16)
             ->andReturnUsing(static function ($user, $role) {
                 return true;
             });
@@ -51,8 +51,7 @@ class AccessTest extends TestCase
             ->actingAs(User::factory()->make())
             ->get('/admin');
 
-        $response->assertStatus(302);
-        $response->assertRedirect('/admin/users');
+        $response->assertStatus(200);
     }
 
     public function testDoctor(): void

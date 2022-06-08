@@ -91,7 +91,7 @@ class AuthorizationTest extends TestCase
         ]);
 
         Roles::shouldReceive('hasRole')
-            ->times(1)
+            ->times(16)
             ->andReturnUsing(function ($user, $role) {
                 return true;
             });
@@ -106,7 +106,6 @@ class AuthorizationTest extends TestCase
         $response->assertStatus(302);
 
         $r2 = $this->get('admin');
-        $r2->assertStatus(302);
-        $r2->assertRedirect('/admin/users');
+        $r2->assertStatus(200);
     }
 }

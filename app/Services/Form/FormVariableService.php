@@ -66,6 +66,12 @@ class FormVariableService
      */
     public const PROGRAMMED_VARS = self::INCOME_VARS;
 
+    public const PROGRAMMED_RESOURCES = [
+        self::VAR_ACCIDENT_CASEABLE_SERVICES,
+        self::VAR_ACCIDENT_CASEABLE_SURVEYS,
+        self::VAR_ACCIDENT_CASEABLE_DIAGNOSTICS
+    ];
+
     public function getAccidentVariables(): array
     {
         return [

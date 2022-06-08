@@ -511,10 +511,10 @@ class CaseAccidentService implements ModelService
     }
 
     /**
-     * @param $data
+     * @param array $data
      * @return Model|Patient|null
      */
-    private function getPatient(array $data): ?Model
+    private function getPatient(array $data): Model|Patient|null
     {
         $patient = null;
         if (
@@ -539,7 +539,7 @@ class CaseAccidentService implements ModelService
      * @return Model|Accident
      * @throws InconsistentDataException
      */
-    public function findAndUpdate(array $filterByFields, array $data): Model
+    public function findAndUpdate(array $filterByFields, array $data): Model|Accident
     {
         $filter = [];
         foreach ($filterByFields as $field) {
@@ -563,7 +563,7 @@ class CaseAccidentService implements ModelService
      * @param array $data
      * @return Model|Accident
      */
-    public function firstOrCreate(array $data = []): Model
+    public function firstOrCreate(array $data = []): Model|Accident
     {
         return $this->getAccidentService()->firstOrCreate($data);
     }
@@ -572,7 +572,7 @@ class CaseAccidentService implements ModelService
      * @param array $filters
      * @return Model|null|Accident
      */
-    public function first(array $filters = []): ?Model
+    public function first(array $filters = []): Model|Accident|null
     {
         return $this->getAccidentService()->first($filters);
     }

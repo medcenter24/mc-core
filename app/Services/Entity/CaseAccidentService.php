@@ -57,6 +57,8 @@ class CaseAccidentService implements ModelService
     public const PROPERTY_CHECKPOINTS = 'checkpoints';
     public const PROPERTY_PATIENT = 'patient';
     private const PROPERTY_SERVICEABLES = 'serviceables';
+    private const PROPERTY_SURVEABLES = 'surveables';
+    private const PROPERTY_DIAGNOSTICABLES = 'diagnosticables';
 
     /**
      * @return Model|Accident
@@ -465,10 +467,15 @@ class CaseAccidentService implements ModelService
     private function updateCaseableMorphs(Model $caseable, $data): void
     {
         if ($this->isDoctorCase($data)) {
+
             $this->updateMorph($caseable, $data, self::PROPERTY_SERVICES);
-            $this->updateMorphedOrder($caseable, $data, self::PROPERTY_SERVICES, self::PROPERTY_SERVICEABLES);
+            $this->updateMorphedServicesOrder($caseable, $data, self::PROPERTY_SERVICES, self::PROPERTY_SERVICEABLES);
+
             $this->updateMorph($caseable, $data, self::PROPERTY_SURVEYS);
+            $this->updateMorphedSurveysOrder($caseable, $data, self::PROPERTY_SURVEYS, self::PROPERTY_SURVEABLES);
+
             $this->updateMorph($caseable, $data, self::PROPERTY_DIAGNOSTICS);
+            $this->updateMorphedDiagnosticablesOrder($caseable, $data, self::PROPERTY_DIAGNOSTICS, self::PROPERTY_DIAGNOSTICABLES);
         }
     }
 
@@ -486,16 +493,48 @@ class CaseAccidentService implements ModelService
         }
     }
 
-    private function updateMorphedOrder(Model $caseable, array $data, string $key, string $table): void
+    private function updateMorphedServicesOrder(Model $caseable, array $data, string $key, string $table): void
     {
         if (!empty($data[$key])) {
             $order = 1;
-            foreach ($data[$key] as $service_id) {
+            foreach ($data[$key] as $id) {
                 $queryBuilder = DB::table($table);
                 $queryBuilder->where([
-                    'service_id' => $service_id,
+                    'service_id' => $id,
                     'serviceable_type' => $caseable::class,
                     'serviceable_id' => $caseable->getAttribute(AbstractModelService::FIELD_ID),
+                ]);
+                $queryBuilder->update(['sort' => $order++]);
+            }
+        }
+    }
+
+    private function updateMorphedSurveysOrder(Model $caseable, array $data, string $key, string $table): void
+    {
+        if (!empty($data[$key])) {
+            $order = 1;
+            foreach ($data[$key] as $id) {
+                $queryBuilder = DB::table($table);
+                $queryBuilder->where([
+                    'survey_id' => $id,
+                    'surveable_type' => $caseable::class,
+                    'surveable_id' => $caseable->getAttribute(AbstractModelService::FIELD_ID),
+                ]);
+                $queryBuilder->update(['sort' => $order++]);
+            }
+        }
+    }
+
+    private function updateMorphedDiagnosticablesOrder(Model $caseable, array $data, string $key, string $table): void
+    {
+        if (!empty($data[$key])) {
+            $order = 1;
+            foreach ($data[$key] as $id) {
+                $queryBuilder = DB::table($table);
+                $queryBuilder->where([
+                    'diagnostic_id' => $id,
+                    'diagnosticable_type' => $caseable::class,
+                    'diagnosticable_id' => $caseable->getAttribute(AbstractModelService::FIELD_ID),
                 ]);
                 $queryBuilder->update(['sort' => $order++]);
             }
